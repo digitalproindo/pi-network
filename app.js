@@ -1,45 +1,53 @@
 const Pi = window.Pi;
 Pi.init({ version: "2.0" });
 
-// Pastikan variabel ini global agar status login tersimpan
-let currentUser = null;
+// Pastikan variabel ini berada di paling atas agar bisa diakses semua fungsi
+let isAuthorized = false; 
 
 async function authPi() {
     try {
-        // 'payments' wajib ada di sini agar tombol beli tidak error
-        const scopes = ['username', 'payments', 'wallet_address']; 
+        console.log("Memulai Autentikasi...");
+        const scopes = ['username', 'payments', 'wallet_address'];
+        
+        // Proses login
         const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
         
-        currentUser = auth.user;
-        alert("Koneksi Berhasil! Selamat datang, " + auth.user.username);
+        // JIKA BERHASIL:
+        isAuthorized = true; 
+        alert("Koneksi Berhasil! Halo " + auth.user.username);
         
-        // Sembunyikan tombol login setelah berhasil
-        document.getElementById('login-btn').style.display = 'none';
+        // Ubah teks tombol login agar user tahu mereka sudah konek
+        const loginBtn = document.getElementById('login-btn');
+        loginBtn.innerText = "Connected: " + auth.user.username;
+        loginBtn.style.background = "#28a745"; // Berubah jadi Hijau sukses
+        
     } catch (err) {
+        isAuthorized = false;
         alert("Gagal Login: " + err.message);
+        console.error(err);
     }
 }
 
 async function handlePayment() {
-    // Cek apakah user sudah login (punya scope) sebelum bayar
-    if (!currentUser) {
-        alert("Silakan klik 'Connect to Pi Wallet' terlebih dahulu!");
-        authPi(); // Pemicu otomatis login jika belum login
+    // Cek status login sebelum transaksi
+    if (!isAuthorized) {
+        alert("Sistem: Anda belum login. Menjalankan koneksi otomatis...");
+        await authPi(); // Panggil fungsi login jika belum
         return;
     }
 
     try {
         const paymentData = {
             amount: 1500,
-            memo: "Unit Properti - PT. DIGITAL PROPERTY INDONESIA",
-            metadata: { productId: "premium-villa-001" },
+            memo: "Pembelian Properti - PT. DIGITAL PROPERTY INDONESIA",
+            metadata: { productId: "premium-001" },
         };
 
         const paymentCallbacks = {
-            onReadyForServerApproval: (id) => alert("Menunggu Approval..."),
+            onReadyForServerApproval: (id) => alert("Menunggu Approval Server..."),
             onReadyForServerCompletion: (id, txid) => alert("Bayar Berhasil! TXID: " + txid),
             onCancel: (id) => console.log("Batal"),
-            onError: (err, pay) => alert("Error: " + err.message)
+            onError: (err, pay) => alert("Error Pembayaran: " + err.message)
         };
 
         await Pi.createPayment(paymentData, paymentCallbacks);
@@ -50,7 +58,11 @@ async function handlePayment() {
 
 function onIncompletePaymentFound(payment) { }
 
+// Pastikan Event Listener terpasang dengan benar
 document.addEventListener("DOMContentLoaded", function() {
-    document.getElementById('login-btn').addEventListener('click', authPi);
-    document.getElementById('pay-button').addEventListener('click', handlePayment);
+    const loginBtn = document.getElementById('login-btn');
+    const payBtn = document.getElementById('pay-button');
+
+    if (loginBtn) loginBtn.onclick = authPi;
+    if (payBtn) payBtn.onclick = handlePayment;
 });

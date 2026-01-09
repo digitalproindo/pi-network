@@ -35,7 +35,8 @@
     <section class="hero">
         <div class="hero-content">
             <h1>Masa Depan Properti Digital</h1>
-            <p>Miliki aset premium dengan Koin $\pi$</p>
+            <p>Miliki aset premium dengan Koin π</p>
+            <button id="login-btn" class="btn-connect">Connect to Pi Wallet</button>
         </div>
         <div class="hero-3d-box">
             <div class="floating-cube"></div>
@@ -44,8 +45,8 @@
 
     <section class="product-container">
         <div class="mobile-gallery">
-            <img src="https://via.placeholder.com/400x500" alt="Property 1">
-            <img src="https://via.placeholder.com/400x500" alt="Property 2">
+            <img src="assets/property-1.jpg" alt="Eksterior Villa" onerror="this.src='https://via.placeholder.com/400x500?text=Property+1'">
+            <img src="assets/property-2.jpg" alt="Interior Villa" onerror="this.src='https://via.placeholder.com/400x500?text=Property+2'">
         </div>
         
         <div class="product-info">
@@ -53,18 +54,12 @@
             <h2>Modern Smart Villa - Jakarta Selatan</h2>
             <p class="description">Fasilitas lengkap dengan sistem smart home terintegrasi. Lokasi strategis dan desain arsitektur futuristik.</p>
             <div class="price-box">
-                <span class="label">Harga:</span>
+                <span class="label">Harga Properti:</span>
                 <span class="pi-price">π 1.500</span>
             </div>
-            <button class="btn-buy" onclick="handlePayment()">Beli Sekarang</button>
+            <button id="pay-button" class="btn-buy">Beli Sekarang</button>
         </div>
     </section>
-
-    <div style="text-align: center; margin: 20px;">
-    <button id="login-btn" style="padding: 15px 30px; background: #6741d9; color: white; border-radius: 25px; border: none; font-weight: bold; cursor: pointer;">
-        Connect to Pi Wallet
-    </button>
-</div>
 
     <footer>
         <div class="footer-grid">
@@ -87,7 +82,7 @@
     </footer>
 
     <script>
-        // Script untuk Hamburger Menu
+        // Toggle Hamburger Menu
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
 
@@ -96,5 +91,7 @@
             hamburger.classList.toggle('toggle');
         });
     </script>
+
+    <script src="app.js"></script>
 </body>
 </html>

@@ -2,33 +2,29 @@ const Pi = window.Pi;
 Pi.init({ version: "2.0" });
 
 async function authPi() {
-    // Alert ini akan muncul jika tombol berhasil memanggil fungsi ini
     alert("Sistem: Mencoba menghubungi Pi Wallet..."); 
 
     try {
+        // Gunakan timeout untuk melihat apakah SDK merespons
         const scopes = ['username', 'payments', 'wallet_address'];
-        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
         
-        alert("Berhasil! Selamat datang " + auth.user.username);
-        
-        // Ganti warna tombol secara permanen jika sukses
-        const btn = document.getElementById('login-btn');
-        btn.innerText = "Wallet Connected";
-        btn.style.background = "#28a745"; // Hijau
+        await Pi.authenticate(scopes, (payment) => {
+            console.log("Incomplete payment found", payment);
+        }).then(function(auth) {
+            alert("BERHASIL LOGIN! Halo: " + auth.user.username);
+            document.getElementById('login-btn').innerText = "Wallet Connected";
+            document.getElementById('login-btn').style.background = "green";
+        }).catch(function(error) {
+            alert("SDK Error: " + error.message);
+        });
+
     } catch (err) {
-        alert("Gagal Terhubung: " + err.message);
-        console.error(err);
+        alert("Gagal Total: " + err.message);
     }
 }
 
-function onIncompletePaymentFound(payment) {
-    console.log("Payment incomplete", payment);
-}
-
-// Memastikan tombol terhubung ke fungsi saat halaman dimuat
+// Pasang event listener
 window.onload = function() {
-    const loginButton = document.getElementById('login-btn');
-    if (loginButton) {
-        loginButton.onclick = authPi;
-    }
+    document.getElementById('login-btn').onclick = authPi;
+    document.getElementById('pay-button').onclick = handlePayment; // Pastikan fungsi ini ada
 };

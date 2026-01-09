@@ -1,68 +1,80 @@
-const Pi = window.Pi;
-Pi.init({ version: "2.0" });
+let piUser = null;
 
-// Pastikan variabel ini berada di paling atas agar bisa diakses semua fungsi
-let isAuthorized = false; 
+// INIT PI SDK
+document.addEventListener("DOMContentLoaded", () => {
+  if (!window.Pi) {
+    document.getElementById("output").innerText =
+      "❌ Pi SDK not loaded";
+    return;
+  }
 
-async function authPi() {
-    try {
-        console.log("Memulai Autentikasi...");
-        const scopes = ['username', 'payments', 'wallet_address'];
-        
-        // Proses login
-        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-        
-        // JIKA BERHASIL:
-        isAuthorized = true; 
-        alert("Koneksi Berhasil! Halo " + auth.user.username);
-        
-        // Ubah teks tombol login agar user tahu mereka sudah konek
-        const loginBtn = document.getElementById('login-btn');
-        loginBtn.innerText = "Connected: " + auth.user.username;
-        loginBtn.style.background = "#28a745"; // Berubah jadi Hijau sukses
-        
-    } catch (err) {
-        isAuthorized = false;
-        alert("Gagal Login: " + err.message);
-        console.error(err);
-    }
-}
+  Pi.init({
+    version: "2.0",
+    sandbox: false
+  });
 
-async function handlePayment() {
-    // Cek status login sebelum transaksi
-    if (!isAuthorized) {
-        alert("Sistem: Anda belum login. Menjalankan koneksi otomatis...");
-        await authPi(); // Panggil fungsi login jika belum
-        return;
-    }
-
-    try {
-        const paymentData = {
-            amount: 1500,
-            memo: "Pembelian Properti - PT. DIGITAL PROPERTY INDONESIA",
-            metadata: { productId: "premium-001" },
-        };
-
-        const paymentCallbacks = {
-            onReadyForServerApproval: (id) => alert("Menunggu Approval Server..."),
-            onReadyForServerCompletion: (id, txid) => alert("Bayar Berhasil! TXID: " + txid),
-            onCancel: (id) => console.log("Batal"),
-            onError: (err, pay) => alert("Error Pembayaran: " + err.message)
-        };
-
-        await Pi.createPayment(paymentData, paymentCallbacks);
-    } catch (err) {
-        alert("Sistem Error: " + err.message);
-    }
-}
-
-function onIncompletePaymentFound(payment) { }
-
-// Pastikan Event Listener terpasang dengan benar
-document.addEventListener("DOMContentLoaded", function() {
-    const loginBtn = document.getElementById('login-btn');
-    const payBtn = document.getElementById('pay-button');
-
-    if (loginBtn) loginBtn.onclick = authPi;
-    if (payBtn) payBtn.onclick = handlePayment;
+  document.getElementById("output").innerText =
+    "✅ Pi SDK Loaded";
 });
+
+// CONNECT WALLET
+window.connectPi = async function () {
+  try {
+    const scopes = ["username", "payments"];
+    const auth = await Pi.authenticate(scopes, () => {});
+    piUser = auth.user;
+
+    document.getElementById("output").innerText =
+      "✅ Connected as " + piUser.username;
+  } catch (err) {
+    document.getElementById("output").innerText =
+      "❌ Connect failed: " + err;
+  }
+};
+
+// PAY WITH PI
+window.payWithPi = async function () {
+  if (!piUser) {
+    document.getElementById("output").innerText =
+      "❗ Please connect Pi Wallet first";
+    return;
+  }
+
+  document.getElementById("output").innerText =
+    "⏳ Preparing payment...";
+
+  Pi.createPayment(
+    {
+      amount: 1,
+      memo: "CTFPROPERTY Payment",
+      metadata: { app: "CTFPROPERTY" }
+    },
+    {
+      onReadyForServerApproval: async (paymentId) => {
+        await fetch("/api/approve-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentId })
+        });
+      },
+
+      onReadyForServerCompletion: async (paymentId) => {
+        await fetch("/api/complete-payment", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ paymentId })
+        });
+      },
+
+      onCancel: () => {
+        document.getElementById("output").innerText =
+          "❌ Payment cancelled";
+      },
+
+      onError: (error) => {
+        document.getElementById("output").innerText =
+          "❌ Payment error: " + error;
+      }
+    }
+  );
+};

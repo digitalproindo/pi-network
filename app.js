@@ -1,80 +1,57 @@
-let piUser = null;
+// Inisialisasi Pi SDK secara global
+const Pi = window.Pi;
+Pi.init({ version: "2.0" });
 
-// INIT PI SDK
-document.addEventListener("DOMContentLoaded", () => {
-  if (!window.Pi) {
-    document.getElementById("output").innerText =
-      "❌ Pi SDK not loaded";
-    return;
-  }
+let userAuthenticated = false;
 
-  Pi.init({
-    version: "2.0",
-    sandbox: false
-  });
-
-  document.getElementById("output").innerText =
-    "✅ Pi SDK Loaded";
-});
-
-// CONNECT WALLET
-window.connectPi = async function () {
-  try {
-    const scopes = ["username", "payments"];
-    const auth = await Pi.authenticate(scopes, () => {});
-    piUser = auth.user;
-
-    document.getElementById("output").innerText =
-      "✅ Connected as " + piUser.username;
-  } catch (err) {
-    document.getElementById("output").innerText =
-      "❌ Connect failed: " + err;
-  }
-};
-
-// PAY WITH PI
-window.payWithPi = async function () {
-  if (!piUser) {
-    document.getElementById("output").innerText =
-      "❗ Please connect Pi Wallet first";
-    return;
-  }
-
-  document.getElementById("output").innerText =
-    "⏳ Preparing payment...";
-
-  Pi.createPayment(
-    {
-      amount: 1,
-      memo: "CTFPROPERTY Payment",
-      metadata: { app: "CTFPROPERTY" }
-    },
-    {
-      onReadyForServerApproval: async (paymentId) => {
-        await fetch("/api/approve-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ paymentId })
-        });
-      },
-
-      onReadyForServerCompletion: async (paymentId) => {
-        await fetch("/api/complete-payment", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ paymentId })
-        });
-      },
-
-      onCancel: () => {
-        document.getElementById("output").innerText =
-          "❌ Payment cancelled";
-      },
-
-      onError: (error) => {
-        document.getElementById("output").innerText =
-          "❌ Payment error: " + error;
-      }
+async function authPi() {
+    try {
+        // Memaksa permintaan scope agar tidak error 'payments'
+        const scopes = ['username', 'payments', 'wallet_address'];
+        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+        
+        userAuthenticated = true;
+        alert("Login Berhasil: " + auth.user.username);
+        
+        // Visual feedback
+        const btn = document.getElementById('login-btn');
+        btn.innerHTML = "Wallet Connected";
+        btn.style.backgroundColor = "#28a745"; 
+    } catch (err) {
+        alert("Login Gagal: " + err.message);
+        console.error(err);
     }
-  );
+}
+
+async function handlePayment() {
+    // Jika belum login, jalankan authPi dulu secara otomatis
+    if (!userAuthenticated) {
+        alert("Melakukan koneksi wallet...");
+        await authPi();
+    }
+
+    try {
+        const payment = await Pi.createPayment({
+            amount: 1500,
+            memo: "Property Unit - PT. DIGITAL PROPERTY INDONESIA",
+            metadata: { id: "P001" },
+        }, {
+            onReadyForServerApproval: (id) => alert("Menunggu Approval..."),
+            onReadyForServerCompletion: (id, txid) => alert("Sukses! TXID: " + txid),
+            onCancel: (id) => console.log("Batal"),
+            onError: (err) => alert("Error: " + err.message),
+        });
+    } catch (e) {
+        console.error(e);
+    }
+}
+
+function onIncompletePaymentFound(payment) {
+    // Kosongkan untuk simulasi awal
+}
+
+// Pastikan tombol terhubung
+window.onload = () => {
+    document.getElementById('login-btn').onclick = authPi;
+    document.getElementById('pay-button').onclick = handlePayment;
 };

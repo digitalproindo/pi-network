@@ -1,57 +1,46 @@
-// Inisialisasi Pi SDK secara global
+// Inisialisasi awal
 const Pi = window.Pi;
-Pi.init({ version: "2.0" });
 
-let userAuthenticated = false;
+async function initPi() {
+    try {
+        await Pi.init({ version: "2.0" });
+        console.log("Pi SDK initialized");
+    } catch (e) {
+        alert("Gagal memuat SDK Pi: " + e.message);
+    }
+}
+
+// Jalankan init segera
+initPi();
 
 async function authPi() {
+    console.log("Tombol diklik, mencoba autentikasi...");
     try {
-        // Memaksa permintaan scope agar tidak error 'payments'
         const scopes = ['username', 'payments', 'wallet_address'];
-        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
         
-        userAuthenticated = true;
-        alert("Login Berhasil: " + auth.user.username);
+        // Memunculkan pop-up autentikasi
+        const auth = await Pi.authenticate(scopes, (payment) => {
+            console.log("Incomplete payment:", payment);
+        });
+
+        alert("Berhasil! Selamat datang " + auth.user.username);
+        document.getElementById('login-btn').innerText = "Connected: " + auth.user.username;
+        document.getElementById('login-btn').style.background = "green";
         
-        // Visual feedback
-        const btn = document.getElementById('login-btn');
-        btn.innerHTML = "Wallet Connected";
-        btn.style.backgroundColor = "#28a745"; 
     } catch (err) {
-        alert("Login Gagal: " + err.message);
+        alert("Gagal Koneksi: " + err.message);
         console.error(err);
     }
 }
 
-async function handlePayment() {
-    // Jika belum login, jalankan authPi dulu secara otomatis
-    if (!userAuthenticated) {
-        alert("Melakukan koneksi wallet...");
-        await authPi();
+// Menggunakan metode penugasan langsung agar lebih pakem
+window.onload = function() {
+    const btn = document.getElementById('login-btn');
+    if (btn) {
+        btn.onclick = function() {
+            authPi();
+        };
+    } else {
+        alert("Tombol login-btn tidak ditemukan di HTML!");
     }
-
-    try {
-        const payment = await Pi.createPayment({
-            amount: 1500,
-            memo: "Property Unit - PT. DIGITAL PROPERTY INDONESIA",
-            metadata: { id: "P001" },
-        }, {
-            onReadyForServerApproval: (id) => alert("Menunggu Approval..."),
-            onReadyForServerCompletion: (id, txid) => alert("Sukses! TXID: " + txid),
-            onCancel: (id) => console.log("Batal"),
-            onError: (err) => alert("Error: " + err.message),
-        });
-    } catch (e) {
-        console.error(e);
-    }
-}
-
-function onIncompletePaymentFound(payment) {
-    // Kosongkan untuk simulasi awal
-}
-
-// Pastikan tombol terhubung
-window.onload = () => {
-    document.getElementById('login-btn').onclick = authPi;
-    document.getElementById('pay-button').onclick = handlePayment;
 };

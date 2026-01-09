@@ -3,25 +3,16 @@ Pi.init({ version: "2.0" });
 
 async function authPi() {
     try {
-        console.log("Memulai Autentikasi...");
         const scopes = ['username', 'payments'];
         const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-        
-        // Ganti console.log dengan alert agar terlihat di HP
-        alert(`Halo ${auth.user.username}, selamat datang di PT. Digital Property Indonesia!`);
-        
-        // Jika berhasil sampai sini, Step 5 di Portal akan HIJAU
+        alert("Koneksi Berhasil: " + auth.user.username);
+        // Begitu tombol ini diklik dan Anda setuju, Checklist Step 5 akan HIJAU
     } catch (err) {
-        alert("Gagal Login: " + err.message);
-        console.error("Gagal autentikasi:", err);
+        alert("Error: " + err.message);
     }
 }
 
-function onIncompletePaymentFound(payment) {
-    console.log("Payment incomplete found", payment);
-}
+function onIncompletePaymentFound(payment) { /* Biarkan kosong dulu */ }
 
-// Jalankan otomatis saat halaman selesai dimuat
-window.onload = function() {
-    authPi();
-};
+// Pemicu Klik Tombol
+document.getElementById('login-btn').addEventListener('click', authPi);

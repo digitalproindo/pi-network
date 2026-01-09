@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT. Digital Property Indonesia - Pi Marketplace</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+</head>
+<body>
+
+    <header>
+        <div class="logo">DIGITAL<span>PROPERTY</span></div>
+        <nav>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Marketplace</a>
+                    <ul class="dropdown">
+                        <li><a href="#">Apartemen</a></li>
+                        <li><a href="#">Tanah</a></li>
+                        <li><a href="#">Villa</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">Portfolio</a></li>
+                <li><a href="#">Hubungi Kami</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Masa Depan Properti Digital</h1>
+            <p>Miliki aset premium dengan Koin $\pi$</p>
+        </div>
+        <div class="hero-3d-box">
+            <div class="floating-cube"></div>
+        </div>
+    </section>
+
+    <section class="product-container">
+        <div class="mobile-gallery">
+            <img src="https://via.placeholder.com/400x500" alt="Property 1">
+            <img src="https://via.placeholder.com/400x500" alt="Property 2">
+        </div>
+        
+        <div class="product-info">
+            <span class="badge">Premium Listing</span>
+            <h2>Modern Smart Villa - Jakarta Selatan</h2>
+            <p class="description">Fasilitas lengkap dengan sistem smart home terintegrasi. Lokasi strategis dan desain arsitektur futuristik.</p>
+            <div class="price-box">
+                <span class="label">Harga:</span>
+                <span class="pi-price">π 1.500</span>
+            </div>
+            <button class="btn-buy" onclick="handlePayment()">Beli Sekarang</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-about">
+                <h3>PT. DIGITAL PROPERTY INDONESIA</h3>
+                <p>Solusi properti masa depan berbasis blockchain.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Navigasi</h4>
+                <ul>
+                    <li>Kebijakan Privasi</li>
+                    <li>Syarat & Ketentuan</li>
+                    <li>Bantuan</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 PT. Digital Property Indonesia. All Rights Reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Script untuk Hamburger Menu
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('nav-links');
+
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('toggle');
+        });
+    </script>
+</body>
+</html>

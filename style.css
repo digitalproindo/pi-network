@@ -1,0 +1,86 @@
+:root {
+    --primary-gold: #D4AF37;
+    --pi-purple: #6741d9;
+    --dark-bg: #0f0f0f;
+    --card-bg: #1a1a1a;
+    --text-light: #f4f4f4;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+
+body { background-color: var(--dark-bg); color: var(--text-light); }
+
+/* Header & Hamburger */
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(0, 0, 0, 0.9);
+    position: sticky; top: 0; z-index: 1000;
+}
+
+.logo { font-weight: bold; font-size: 1.5rem; letter-spacing: 2px; }
+.logo span { color: var(--primary-gold); }
+
+.nav-links { display: flex; list-style: none; gap: 20px; }
+.nav-links a { color: white; text-decoration: none; font-size: 0.9rem; }
+
+/* Hamburger Menu (Mobile Only) */
+.hamburger { display: none; cursor: pointer; }
+.hamburger span {
+    display: block; width: 25px; height: 3px; background: white;
+    margin: 5px; transition: 0.3s;
+}
+
+/* Hero & Product Section */
+.hero {
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 5%;
+}
+
+.mobile-gallery {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 Gambar sesuai permintaan */
+    gap: 15px;
+    padding: 20px;
+}
+
+.mobile-gallery img {
+    width: 100%; border-radius: 12px; border: 1px solid var(--primary-gold);
+}
+
+.product-container {
+    display: flex; gap: 40px; padding: 50px 5%; align-items: center;
+}
+
+.price-box {
+    margin: 20px 0; padding: 15px; background: var(--card-bg);
+    border-radius: 8px; border-left: 5px solid var(--pi-purple);
+}
+
+.pi-price { font-size: 2rem; color: var(--primary-gold); font-weight: bold; }
+
+.btn-buy {
+    background: var(--pi-purple); color: white; border: none;
+    padding: 15px 30px; border-radius: 30px; cursor: pointer; width: 100%;
+}
+
+/* Footer */
+footer { background: #050505; padding: 50px 5% 20px; border-top: 1px solid #333; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 50px; margin-bottom: 30px; }
+
+/* Responsive Settings */
+@media (max-width: 768px) {
+    .nav-links {
+        position: fixed; right: -100%; top: 70px; flex-direction: column;
+        background: var(--dark-bg); width: 70%; height: 100vh; padding: 40px; transition: 0.5s;
+    }
+    .nav-links.active { right: 0; }
+    .hamburger { display: block; }
+    .product-container { flex-direction: column; }
+    .footer-grid { grid-template-columns: 1fr; }
+}

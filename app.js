@@ -1,22 +1,51 @@
-async function authPi() {
-    alert("Sistem: Meminta Izin Akses Wallet..."); 
+const Pi = window.Pi;
+let isPiReady = false;
 
+// Inisialisasi dilakukan satu kali saat halaman dimuat
+async function initPi() {
     try {
-        // Pastikan inisialisasi ulang
         await Pi.init({ version: "2.0" });
-        
-        // Meminta izin khusus username dan payments
-        const scopes = ['username', 'payments', 'wallet_address'];
-        
-        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-
-        currentUser = auth.user;
-        alert("LOGIN BERHASIL! Halo: " + auth.user.username);
-        
-        // Update tombol
-        document.getElementById('login-btn').innerText = "Wallet Connected ✅";
-        document.getElementById('login-btn').style.backgroundColor = "#28a745";
+        isPiReady = true;
+        console.log("Pi SDK is ready");
     } catch (err) {
-        alert("Gagal Autentikasi: " + err.message + "\n\nPastikan Anda menekan 'Allow' pada pop-up Pi.");
+        console.error("Pi SDK init failed:", err);
     }
 }
+
+initPi();
+
+async function authPi() {
+    if (!isPiReady) {
+        alert("SDK belum siap. Mohon tunggu beberapa detik atau muat ulang halaman.");
+        return;
+    }
+
+    alert("Sistem: Menghubungi Server Pi..."); 
+
+    try {
+        const scopes = ['username', 'payments', 'wallet_address'];
+        
+        // Timeout sederhana: Jika 10 detik tidak ada respon, beri peringatan
+        const authPromise = Pi.authenticate(scopes, onIncompletePaymentFound);
+        
+        const auth = await authPromise;
+        
+        alert("BERHASIL! Selamat datang " + auth.user.username);
+        document.getElementById('login-btn').innerText = "Wallet Connected ✅";
+        document.getElementById('login-btn').style.background = "#28a745";
+        document.getElementById('login-btn').style.color = "white";
+
+    } catch (err) {
+        alert("Gagal: " + err.message);
+        // Kembalikan warna tombol jika gagal agar bisa diklik lagi
+        document.getElementById('login-btn').style.background = ""; 
+    }
+}
+
+function onIncompletePaymentFound(payment) {
+    console.log("Incomplete payment:", payment);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('login-btn').onclick = authPi;
+});

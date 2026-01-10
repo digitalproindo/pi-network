@@ -1,35 +1,30 @@
 const Pi = window.Pi;
 
-// Fungsi untuk memastikan SDK siap sebelum dijalankan
-async function startApp() {
+async function authPi() {
+    alert("Sistem: Membuka Jendela Autentikasi Pi..."); 
+
     try {
+        // Tambahkan inisialisasi ulang tepat sebelum login untuk memastikan koneksi
         await Pi.init({ version: "2.0" });
-        console.log("Pi SDK siap.");
+        
+        const scopes = ['username', 'payments', 'wallet_address'];
+        
+        // Memanggil autentikasi dengan penanganan error yang lebih detail
+        const auth = await Pi.authenticate(scopes, (payment) => {
+            console.log("Incomplete payment found", payment);
+        });
+
+        alert("BERHASIL! Selamat datang " + auth.user.username);
+        
+        // Update tampilan tombol secara permanen
+        const btn = document.getElementById('login-btn');
+        btn.innerText = "Wallet Connected ✅";
+        btn.style.backgroundColor = "#28a745";
+        
+        // Begitu tombol "Allow" diklik di jendela asli, Step 5 Portal jadi HIJAU
     } catch (err) {
-        console.error("Gagal inisialisasi SDK:", err);
+        // Jika error, kita ingin tahu pesan aslinya dari Pi
+        alert("Pesan SDK: " + err.message);
+        console.error(err);
     }
 }
-
-function authPi() {
-    alert("Sistem: Membuka Jendela Autentikasi Pi..."); 
-    
-    // Menggunakan metode callback murni untuk kompatibilitas maksimal
-    Pi.authenticate(['username', 'payments', 'wallet_address'], function(payment) {
-        console.log("Pembayaran tertunda:", payment);
-    }).then(function(auth) {
-        alert("KONEKSI SUKSES! Halo " + auth.user.username);
-        document.getElementById('login-btn').innerText = "Connected";
-        document.getElementById('login-btn').style.background = "green";
-    }).catch(function(error) {
-        alert("Kesalahan dari Pi: " + error.message);
-    });
-}
-
-// Jalankan inisialisasi
-startApp();
-
-// Pasang fungsi ke tombol
-window.onload = function() {
-    document.getElementById('login-btn').onclick = authPi;
-    document.getElementById('pay-button').onclick = handlePayment;
-};

@@ -50,8 +50,8 @@ async function handlePayment() {
         return;
     }
 
-    // Memberi tahu user bahwa dompet sedang dibuka
-    alert("Membuka Jendela Pembayaran Pi Testnet...");
+    // Alert awal sebelum proses dimulai agar user tahu aplikasi merespon
+    alert("Menghubungi dompet Pi... Mohon tunggu jendela ungu muncul.");
 
     try {
         const paymentData = {
@@ -62,23 +62,25 @@ async function handlePayment() {
 
         const callbacks = {
             onReadyForServerApproval: (paymentId) => {
-                console.log("Payment ID untuk approval:", paymentId);
-                // Di Testnet ini sering otomatis, namun alert membantu memantau proses
-                alert("Sedang memproses persetujuan...");
+                // PENTING: Jangan gunakan alert di sini agar jendela dompet tidak terhalang
+                console.log("Payment ID didapat, menunggu persetujuan server:", paymentId);
             },
             onReadyForServerCompletion: (paymentId, txid) => {
+                // Tampilkan alert sukses hanya setelah pembayaran benar-benar selesai
                 alert("PEMBAYARAN BERHASIL!\nTXID: " + txid);
                 console.log("Transaksi Selesai:", txid);
             },
             onCancel: (paymentId) => {
-                alert("Pembayaran dibatalkan oleh pengguna.");
+                console.log("Pembayaran dibatalkan atau timeout.");
             },
             onError: (error, payment) => {
-                alert("Error Pembayaran: " + error.message);
+                // Memberi tahu jika terjadi error asli atau timeout 60 detik
+                alert("Error/Timeout: " + error.message);
+                console.error("Payment Error:", error);
             }
         };
 
-        // Perintah WAJIB untuk memicu jendela saldo Testnet
+        // Memanggil jendela pembayaran asli
         await Pi.createPayment(paymentData, callbacks);
 
     } catch (err) {
@@ -86,12 +88,12 @@ async function handlePayment() {
     }
 }
 
-// 4. Penanganan jika ada pembayaran yang terputus di tengah jalan
+// 4. Penanganan pembayaran menggantung
 function onIncompletePaymentFound(payment) {
     console.log("Pembayaran menggantung ditemukan:", payment);
 }
 
-// 5. Menghubungkan tombol HTML dengan fungsi JavaScript di atas
+// 5. Listener tombol
 document.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById('login-btn');
     const payBtn = document.getElementById('pay-button');

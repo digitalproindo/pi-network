@@ -10,28 +10,19 @@ async function startApp() {
     }
 }
 
-async function authPi() {
-    // Tetap gunakan alert untuk memastikan tombol merespon
+function authPi() {
     alert("Sistem: Membuka Jendela Autentikasi Pi..."); 
-
-    try {
-        const scopes = ['username', 'payments', 'wallet_address'];
-        
-        // Memanggil autentikasi
-        const auth = await Pi.authenticate(scopes, (payment) => {
-            console.log("Pembayaran tertunda:", payment);
-        });
-
-        alert("Koneksi Berhasil! Selamat datang " + auth.user.username);
-        
-        // Update tampilan tombol
-        const btn = document.getElementById('login-btn');
-        btn.innerText = "Connected: " + auth.user.username;
-        btn.style.backgroundColor = "#28a745";
-    } catch (err) {
-        // Jika ada error dari SDK, tampilkan pesannya
-        alert("Pesan dari Pi: " + err.message);
-    }
+    
+    // Menggunakan metode callback murni untuk kompatibilitas maksimal
+    Pi.authenticate(['username', 'payments', 'wallet_address'], function(payment) {
+        console.log("Pembayaran tertunda:", payment);
+    }).then(function(auth) {
+        alert("KONEKSI SUKSES! Halo " + auth.user.username);
+        document.getElementById('login-btn').innerText = "Connected";
+        document.getElementById('login-btn').style.background = "green";
+    }).catch(function(error) {
+        alert("Kesalahan dari Pi: " + error.message);
+    });
 }
 
 // Jalankan inisialisasi

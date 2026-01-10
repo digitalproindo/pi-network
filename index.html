@@ -1,11 +1,4 @@
-<!DOCTYPE html><head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT. Digital Property Indonesia</title>
-    
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <link rel="stylesheet" href="style.css">
-</head>
+<!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -95,6 +88,7 @@
         .hero-content h1 {
             font-size: 3.5rem;
             margin-bottom: 10px;
+            line-height: 1.1;
         }
 
         .btn-connect {
@@ -107,6 +101,7 @@
             cursor: pointer;
             box-shadow: 0 0 20px rgba(103, 65, 217, 0.4);
             transition: 0.3s;
+            margin-top: 20px;
         }
 
         .btn-connect:hover {
@@ -132,6 +127,8 @@
 
         .mobile-gallery img {
             width: 100%;
+            height: 350px;
+            object-fit: cover;
             border-radius: 15px;
             border: 1px solid #333;
             transition: 0.4s;
@@ -209,7 +206,7 @@
         /* RESPONSIVE TABLET & MOBILE */
         @media (max-width: 992px) {
             .hero { flex-direction: column; text-align: center; height: auto; padding: 50px 5%; }
-            .hero-content h1 { font-size: 2.5rem; }
+            .hero-content h1 { font-size: 2.2rem; }
             .product-container { grid-template-columns: 1fr; padding: 50px 5%; }
             .nav-links {
                 display: none;
@@ -226,6 +223,7 @@
             .nav-links.active { display: flex; }
             .hamburger { display: flex; }
             .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            .mobile-gallery img { height: 250px; }
         }
     </style>
 </head>
@@ -255,7 +253,7 @@
             <button id="login-btn" class="btn-connect">Connect to Pi Wallet</button>
         </div>
         <div class="hero-3d-box">
-            <img src="https://via.placeholder.com/500x400/1a1a1a/D4AF37?text=Luxury+Property+3D" alt="Hero Property" style="max-width: 100%; border-radius: 20px;">
+            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=80" alt="Hero Property" style="max-width: 100%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
         </div>
     </section>
 
@@ -281,7 +279,7 @@
         <div class="footer-grid">
             <div class="footer-about">
                 <h3>PT. DIGITAL PROPERTY INDONESIA</h3>
-                <p>Kami adalah pelopor marketplace properti masa depan yang menghubungkan aset dunia nyata dengan teknologi blockchain Pi Network.</p>
+                <p>Pelopor marketplace properti berbasis blockchain yang menghubungkan aset dunia nyata dengan ekosistem Pi Network.</p>
             </div>
             <div class="footer-links">
                 <h4>Navigasi Cepat</h4>
@@ -298,13 +296,12 @@
     </footer>
 
     <script>
-        // Toggle Hamburger Menu
+        // UI Logic - Hamburger Menu
         const hamburger = document.getElementById('hamburger');
         const navLinks = document.getElementById('nav-links');
 
         hamburger.addEventListener('click', () => {
             navLinks.classList.toggle('active');
-            // Animasi sederhana hamburger
             hamburger.querySelectorAll('span').forEach((s, i) => {
                 if(navLinks.classList.contains('active')) {
                     if(i===0) s.style.transform = "rotate(45deg) translate(5px, 5px)";

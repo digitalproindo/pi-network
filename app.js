@@ -1,6 +1,7 @@
 const Pi = window.Pi;
 let currentUser = null;
 
+// Inisialisasi SDK
 Pi.init({ version: "2.0" });
 
 async function authPi() {
@@ -23,40 +24,49 @@ async function authPi() {
 }
 
 async function handlePayment() {
-    if (!currentUser) return alert("Silakan Login Dahulu");
+    if (!currentUser) return alert("Silakan Login Dahulu!");
+
+    console.log("Memulai jabat tangan dengan server Pi...");
 
     try {
-        console.log("Memicu transaksi...");
-        
         await Pi.createPayment({
             amount: 0.005,
-            memo: "Pembayaran Villa Digital Property",
+            memo: "DP Unit Villa - Digital Property",
             metadata: { productId: "villa-001" },
         }, {
             onReadyForServerApproval: async (paymentId) => {
                 console.log("Menghubungi Backend Approval...");
                 
-                // MENGHUBUNGI API VERCEL YANG KITA BUAT TADI
-                await fetch('/api/approve', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ paymentId })
-                });
-
-                console.log("Server Approval Berhasil!");
+                // Memanggil file api/approve.js yang kita buat di Vercel
+                try {
+                    await fetch('/api/approve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId })
+                    });
+                    console.log("Server Approval Berhasil!");
+                } catch (e) {
+                    console.error("Gagal menghubungi API Approval", e);
+                }
             },
             onReadyForServerCompletion: (paymentId, txid) => {
-                alert("TRANSAKSI SUKSES!\nTXID: " + txid);
+                alert("PEMBAYARAN SUKSES!\nTXID: " + txid);
             },
-            onCancel: (paymentId) => console.log("Dibatalkan"),
-            onError: (error) => alert("Error: " + error.message)
+            onCancel: (paymentId) => {
+                console.log("Pembayaran dibatalkan oleh pengguna.");
+            },
+            onError: (error) => {
+                alert("Status: " + error.message);
+            }
         });
     } catch (err) {
-        console.error(err);
+        console.error("Critical Error:", err);
     }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('login-btn').onclick = authPi;
-    document.getElementById('pay-button').onclick = handlePayment;
+    const loginBtn = document.getElementById('login-btn');
+    const payBtn = document.getElementById('pay-button');
+    if (loginBtn) loginBtn.onclick = authPi;
+    if (payBtn) payBtn.onclick = handlePayment;
 });

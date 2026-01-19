@@ -1,72 +1,97 @@
 const Pi = window.Pi;
 let currentUser = null;
 
-// Inisialisasi SDK
+// 1. Inisialisasi SDK secepat mungkin saat script dimuat
 Pi.init({ version: "2.0" });
 
+// 2. Fungsi Autentikasi (Tombol Connect)
 async function authPi() {
     try {
         const scopes = ['username', 'payments', 'wallet_address'];
-        const auth = await Pi.authenticate(scopes, (payment) => {
-            console.log("Incomplete payment found", payment);
-        });
-        currentUser = auth.user;
         
+        // Memanggil jendela login asli Pi
+        const auth = await Pi.authenticate(scopes, (payment) => {
+            console.log("Ditemukan pembayaran menggantung:", payment);
+        });
+
+        currentUser = auth.user;
+        alert("BERHASIL! Selamat datang " + auth.user.username);
+        
+        // Update tampilan tombol Connect agar user tahu sudah terhubung
         const btn = document.getElementById('login-btn');
         if (btn) {
             btn.innerText = "Connected ✅";
             btn.style.backgroundColor = "#28a745";
+            btn.style.color = "white";
         }
-        alert("Login Berhasil!");
     } catch (err) {
-        alert("Login Error: " + err.message);
+        alert("Gagal Login: " + err.message);
     }
 }
 
+// 3. Fungsi Pembayaran (Tombol Beli Sekarang)
 async function handlePayment() {
-    if (!currentUser) return alert("Silakan Login Dahulu!");
+    if (!currentUser) {
+        alert("Silakan klik 'Connect to Pi Wallet' terlebih dahulu!");
+        return;
+    }
 
-    console.log("Memulai jabat tangan dengan server Pi...");
+    // Konsol log sebagai indikator proses dimulai di latar belakang
+    console.log("Memulai proses pembayaran...");
 
     try {
-        await Pi.createPayment({
+        const paymentData = {
             amount: 0.005,
-            memo: "DP Unit Villa - Digital Property",
-            metadata: { productId: "villa-001" },
-        }, {
+            memo: "DP Properti - PT. Digital Property Indonesia",
+            metadata: { productId: "property-001" },
+        };
+
+        await Pi.createPayment(paymentData, {
             onReadyForServerApproval: async (paymentId) => {
-                console.log("Menghubungi Backend Approval...");
+                console.log("Menghubungi Backend Approval untuk ID:", paymentId);
                 
-                // Memanggil file api/approve.js yang kita buat di Vercel
+                // MENGHUBUNGI API VERCEL (api/approve.js)
+                // Ini adalah langkah kunci untuk menghindari timeout 60 detik
                 try {
                     await fetch('/api/approve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ paymentId })
                     });
-                    console.log("Server Approval Berhasil!");
+                    console.log("Approval Berhasil dikirim ke Server Pi!");
                 } catch (e) {
-                    console.error("Gagal menghubungi API Approval", e);
+                    console.error("Gagal menghubungi API Backend:", e);
                 }
             },
             onReadyForServerCompletion: (paymentId, txid) => {
-                alert("PEMBAYARAN SUKSES!\nTXID: " + txid);
+                // Muncul saat user sudah memasukkan passphrase dan transaksi sukses di blockchain
+                alert("TRANSAKSI BERHASIL!\nTXID: " + txid);
+                console.log("Transaksi Selesai:", txid);
             },
             onCancel: (paymentId) => {
-                console.log("Pembayaran dibatalkan oleh pengguna.");
+                console.log("Pembayaran dibatalkan pengguna.");
             },
-            onError: (error) => {
+            onError: (error, payment) => {
                 alert("Status: " + error.message);
+                console.error("Payment Error:", error);
             }
         });
+
     } catch (err) {
-        console.error("Critical Error:", err);
+        console.error("Gagal memicu jendela dompet:", err);
     }
 }
 
+// 4. Hubungkan fungsi ke elemen HTML setelah halaman siap
 document.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById('login-btn');
     const payBtn = document.getElementById('pay-button');
-    if (loginBtn) loginBtn.onclick = authPi;
-    if (payBtn) payBtn.onclick = handlePayment;
+
+    if (loginBtn) {
+        loginBtn.onclick = authPi;
+    }
+
+    if (payBtn) {
+        payBtn.onclick = handlePayment;
+    }
 });

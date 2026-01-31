@@ -2,61 +2,49 @@ document.addEventListener("DOMContentLoaded", () => {
     const Pi = window.Pi;
     let currentUser = null;
 
-    // 1. Inisialisasi SDK
+    // Inisialisasi SDK
     Pi.init({ version: "2.0", sandbox: true });
 
-    // --- FUNGSI PENANGANAN PEMBAYARAN MENGGANTUNG (PEMBERSIH ERROR) ---
-    // Fungsi ini wajib dipanggil saat ada transaksi lama yang "Expired" atau "Pending"
+    // Fungsi Bersihkan Transaksi Menggantung
     async function handleIncompletePayment(payment) {
-        console.warn("Menyelesaikan pembayaran menggantung otomatis...", payment.identifier);
         try {
-            const response = await fetch('/api/complete', {
+            await fetch('/api/complete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    paymentId: payment.identifier, 
-                    txid: payment.transaction.txid 
-                })
+                body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
             });
-            if (response.ok) {
-                console.log("Transaksi lama berhasil dibersihkan.");
-            }
-        } catch (err) {
-            console.error("Gagal membersihkan transaksi lama:", err);
-        }
+        } catch (err) { console.error("Cleanup error:", err); }
     }
 
-    // --- FUNGSI AUTENTIKASI ---
+    // Fungsi Login
     async function authPi() {
         try {
-            // Callback (payment) di bawah ini otomatis terpanggil jika ada transaksi macet
             const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
                 handleIncompletePayment(payment);
             });
-
             currentUser = auth.user;
             
+            // Ubah teks tombol login menjadi username
             const loginBtn = document.getElementById('login-btn');
             if (loginBtn) {
                 loginBtn.innerText = `User: ${currentUser.username} ✅`;
                 loginBtn.style.backgroundColor = "#10b981";
             }
-            alert("Terhubung sebagai: " + currentUser.username);
-
+            alert("Terhubung: " + currentUser.username);
         } catch (err) {
-            alert("Koneksi Gagal. Gunakan Pi Browser.");
+            alert("Gagal terhubung. Gunakan Pi Browser.");
         }
     }
 
-    // --- FUNGSI PEMBAYARAN ---
-    async function handlePayment() {
+    // Fungsi Pembayaran Dinamis (Menerima amount dan nama produk)
+    window.handlePayment = async function(amount, productName) {
         if (!currentUser) return alert("Silakan Login terlebih dahulu!");
 
         try {
             await Pi.createPayment({
-                amount: 0.005,
-                memo: "Pembelian Digital Pro Indo",
-                metadata: { productId: "item-123" },
+                amount: amount,
+                memo: `Beli ${productName} - Digital Pro Indo`,
+                metadata: { productName: productName },
             }, {
                 onReadyForServerApproval: async (paymentId) => {
                     const res = await fetch('/api/approve', {
@@ -72,20 +60,18 @@ document.addEventListener("DOMContentLoaded", () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ paymentId, txid })
                     });
-                    if (res.ok) alert("PEMBAYARAN SUKSES!");
+                    if (res.ok) alert(`Sukses Membeli ${productName}!`);
                 },
-                onCancel: (paymentId) => console.log("Dibatalkan:", paymentId),
+                onCancel: (paymentId) => console.log("Batal:", paymentId),
                 onError: (error, payment) => {
-                    if (payment) handleIncompletePayment(payment); // Bersihkan jika error di tengah jalan
+                    if (payment) handleIncompletePayment(payment);
                     alert("Error: " + error.message);
                 }
             });
-        } catch (err) {
-            console.error(err);
-        }
-    }
+        } catch (err) { console.error(err); }
+    };
 
-    // Event Listeners
-    document.getElementById('login-btn').onclick = authPi;
-    document.getElementById('pay-button').onclick = handlePayment;
+    // Pasang Event Listener ke Tombol Login
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) loginBtn.onclick = authPi;
 });

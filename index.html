@@ -4,69 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Digital Pro Indo - Pi Marketplace</title>
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <link rel="stylesheet" href="style.css">
+    
     <style>
         :root {
             --pi-color: #6d28d9;
             --pi-gold: #ffa500;
+            --bg-light: #f8fafc;
         }
+        
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f4f4f9;
-            text-align: center;
+            background-color: var(--bg-light);
+            color: #1e293b;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
+
         header {
+            width: 100%;
             background-color: var(--pi-color);
             color: white;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 25px 0;
+            text-align: center;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
         .container {
-            padding: 20px;
-            max-width: 500px;
-            margin: auto;
+            width: 90%;
+            max-width: 450px;
+            margin: 20px auto;
         }
+
         .card {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
+            text-align: center;
         }
+
         .product-img {
             width: 100%;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            background-color: #e2e8f0;
         }
+
+        h1, h2, h3 { margin: 10px 0; }
+        p { color: #64748b; line-height: 1.5; }
+
+        .price-tag {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--pi-color);
+            margin: 15px 0;
+        }
+
         button {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 16px;
-            font-weight: bold;
+            font-weight: 700;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.2s ease;
             margin-top: 10px;
         }
+
         #login-btn {
             background-color: var(--pi-gold);
             color: white;
+            box-shadow: 0 4px 0px #cc8400;
         }
+
+        #login-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0px #cc8400;
+        }
+
         #pay-button {
             background-color: var(--pi-color);
             color: white;
+            box-shadow: 0 4px 0px #4c1d95;
         }
-        button:active {
-            transform: scale(0.98);
+
+        #pay-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0px #4c1d95;
         }
-        .price {
-            font-size: 24px;
-            color: var(--pi-color);
-            font-weight: bold;
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            background: #f1f5f9;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -74,24 +114,33 @@
 
     <header>
         <h1>Digital Pro Indo</h1>
-        <p>Marketplace Properti Digital</p>
+        <p>Marketplace Properti Digital Terpercaya</p>
     </header>
 
     <div class="container">
         <div class="card">
-            <p>Selamat datang di Ekosistem Pi</p>
+            <div class="status-badge">Pi Network Testnet</div>
+            <h3>Koneksi Dompet</h3>
+            <p>Hubungkan dompet Pi Anda untuk memulai transaksi aman.</p>
             <button id="login-btn">Hubungkan Pi Wallet</button>
         </div>
 
         <div class="card">
-            <img src="aset/product.jpg" alt="Digital Item" class="product-img" onerror="this.src='https://via.placeholder.com/300x200?text=Digital+Pro+Indo'">
-            <h3>Item Digital Pro #123</h3>
-            <p>Akses premium ke aset digital eksklusif.</p>
-            <p class="price">π 0.005</p>
+            <img src="aset/product.jpg" alt="Item Digital" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=400'">
+            <h3>Lisensi Aset Digital Premium</h3>
+            <p>Akses penuh ke koleksi properti digital eksklusif dari Digital Pro Indo.</p>
+            <div class="price-tag">π 0.005</div>
             <button id="pay-button">Beli Sekarang</button>
         </div>
+
+        <footer style="color: #cbd5e1; font-size: 12px; margin-top: 20px;">
+            &copy; 2026 Digital Pro Indo - Powered by Pi Network
+        </footer>
     </div>
 
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    
     <script src="app.js"></script>
+
 </body>
 </html>

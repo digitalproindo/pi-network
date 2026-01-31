@@ -1,47 +1,16 @@
-// Memastikan script berjalan setelah DOM dimuat sepenuhnya
 document.addEventListener("DOMContentLoaded", () => {
     const Pi = window.Pi;
     let currentUser = null;
 
     // 1. Inisialisasi SDK
-    // sandbox: true memungkinkan testing di browser biasa (Vercel/Desktop)
     Pi.init({ version: "2.0", sandbox: true });
 
-    console.log("Pi SDK Berhasil Dimuat");
-
-    // --- FUNGSI AUTENTIKASI ---
-    async function authPi() {
-        try {
-            console.log("Mencoba Login...");
-            
-            // Meminta izin akses data user dan pembayaran
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                console.warn("Pembayaran tertunda terdeteksi:", payment);
-                handleIncompletePayment(payment);
-            });
-
-            currentUser = auth.user;
-            console.log("Berhasil Login:", currentUser.username);
-
-            // Perbarui UI Tombol Login
-            const loginBtn = document.getElementById('login-btn');
-            if (loginBtn) {
-                loginBtn.innerText = `User: ${currentUser.username} ✅`;
-                loginBtn.style.backgroundColor = "#10b981"; // Hijau sukses
-            }
-            
-            alert("Dompet Berhasil Terhubung!\nSelamat datang, " + currentUser.username);
-
-        } catch (err) {
-            console.error("Gagal Login:", err);
-            alert("Koneksi Gagal. Pastikan Anda membuka di Pi Browser dan memberikan izin akses.");
-        }
-    }
-
-    // --- FUNGSI PENANGANAN PEMBAYARAN TERGANTUNG ---
+    // --- FUNGSI PENANGANAN PEMBAYARAN MENGGANTUNG (PEMBERSIH ERROR) ---
+    // Fungsi ini wajib dipanggil saat ada transaksi lama yang "Expired" atau "Pending"
     async function handleIncompletePayment(payment) {
+        console.warn("Menyelesaikan pembayaran menggantung otomatis...", payment.identifier);
         try {
-            await fetch('/api/complete', {
+            const response = await fetch('/api/complete', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
@@ -49,69 +18,74 @@ document.addEventListener("DOMContentLoaded", () => {
                     txid: payment.transaction.txid 
                 })
             });
-            console.log("Pembayaran tertunda berhasil diselesaikan secara otomatis.");
+            if (response.ok) {
+                console.log("Transaksi lama berhasil dibersihkan.");
+            }
         } catch (err) {
-            console.error("Gagal sinkronisasi pembayaran tertunda:", err);
+            console.error("Gagal membersihkan transaksi lama:", err);
         }
     }
 
-    // --- FUNGSI PEMBAYARAN (TESTNET) ---
-    async function handlePayment() {
-        if (!currentUser) {
-            return alert("Silakan klik 'Hubungkan Pi Wallet' terlebih dahulu!");
+    // --- FUNGSI AUTENTIKASI ---
+    async function authPi() {
+        try {
+            // Callback (payment) di bawah ini otomatis terpanggil jika ada transaksi macet
+            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
+                handleIncompletePayment(payment);
+            });
+
+            currentUser = auth.user;
+            
+            const loginBtn = document.getElementById('login-btn');
+            if (loginBtn) {
+                loginBtn.innerText = `User: ${currentUser.username} ✅`;
+                loginBtn.style.backgroundColor = "#10b981";
+            }
+            alert("Terhubung sebagai: " + currentUser.username);
+
+        } catch (err) {
+            alert("Koneksi Gagal. Gunakan Pi Browser.");
         }
+    }
+
+    // --- FUNGSI PEMBAYARAN ---
+    async function handlePayment() {
+        if (!currentUser) return alert("Silakan Login terlebih dahulu!");
 
         try {
             await Pi.createPayment({
                 amount: 0.005,
-                memo: "Test Purchase - Digital Pro Indo",
+                memo: "Pembelian Digital Pro Indo",
                 metadata: { productId: "item-123" },
             }, {
-                // Tahap A: Persetujuan Backend Anda
                 onReadyForServerApproval: async (paymentId) => {
-                    console.log("Approval Server untuk ID:", paymentId);
-                    const response = await fetch('/api/approve', {
+                    const res = await fetch('/api/approve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ paymentId })
                     });
-                    return response.ok;
+                    return res.ok;
                 },
-                // Tahap B: Konfirmasi Transaksi Blockchain Selesai
                 onReadyForServerCompletion: async (paymentId, txid) => {
-                    console.log("Blockchain Sukses. TXID:", txid);
-                    const response = await fetch('/api/complete', {
+                    const res = await fetch('/api/complete', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ paymentId, txid })
                     });
-                    
-                    if (response.ok) {
-                        alert("PEMBAYARAN SUKSES!\nSaldo Testnet telah berpindah.");
-                    } else {
-                        alert("Pembayaran terkirim namun gagal verifikasi server.");
-                    }
+                    if (res.ok) alert("PEMBAYARAN SUKSES!");
                 },
-                onCancel: (paymentId) => {
-                    console.log("Pembayaran dibatalkan pengguna. ID:", paymentId);
-                },
+                onCancel: (paymentId) => console.log("Dibatalkan:", paymentId),
                 onError: (error, payment) => {
-                    console.error("Kesalahan Pembayaran:", error);
-                    if (payment) {
-                        handleIncompletePayment(payment);
-                    }
-                    alert("Terjadi kesalahan: " + error.message);
+                    if (payment) handleIncompletePayment(payment); // Bersihkan jika error di tengah jalan
+                    alert("Error: " + error.message);
                 }
             });
         } catch (err) {
-            console.error("Gagal memanggil CreatePayment:", err);
+            console.error(err);
         }
     }
 
-    // --- PASANG EVENT KE TOMBOL ---
-    const btnLogin = document.getElementById('login-btn');
-    const btnPay = document.getElementById('pay-button');
-
-    if (btnLogin) btnLogin.onclick = authPi;
-    if (btnPay) btnPay.onclick = handlePayment;
+    // Event Listeners
+    document.getElementById('login-btn').onclick = authPi;
+    document.getElementById('pay-button').onclick = handlePayment;
 });

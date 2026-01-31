@@ -3,316 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT. Digital Property Indonesia - Pi Marketplace</title>
-    
+    <title>Digital Pro Indo - Pi Marketplace</title>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
+    <link rel="stylesheet" href="style.css">
     <style>
         :root {
-            --gold: #D4AF37;
-            --pi-purple: #6741d9;
-            --dark-bg: #0f0f0f;
-            --card-bg: #1a1a1a;
-            --text-white: #ffffff;
+            --pi-color: #6d28d9;
+            --pi-gold: #ffa500;
         }
-
         body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark-bg);
-            color: var(--text-white);
-            overflow-x: hidden;
-        }
-
-        /* HEADER & NAVIGATION */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 5%;
-            background: rgba(0, 0, 0, 0.9);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid #333;
-        }
-
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .logo span { color: var(--gold); }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-        }
-
-        .nav-links a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-            transition: 0.3s;
-        }
-
-        .nav-links a:hover { color: var(--gold); }
-
-        /* HAMBURGER */
-        .hamburger {
-            display: none;
-            cursor: pointer;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .hamburger span {
-            width: 30px;
-            height: 3px;
-            background: white;
-            transition: 0.3s;
-        }
-
-        /* HERO SECTION */
-        .hero {
-            height: 70vh;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 0 10%;
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            line-height: 1.1;
-        }
-
-        .btn-connect {
-            background: var(--pi-purple);
-            color: white;
-            padding: 15px 35px;
-            border: none;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 0 20px rgba(103, 65, 217, 0.4);
-            transition: 0.3s;
-            margin-top: 20px;
-        }
-
-        .btn-connect:hover {
-            transform: scale(1.05);
-            background: var(--gold);
-            color: black;
-        }
-
-        /* PRODUCT CONTAINER */
-        .product-container {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 50px;
-            padding: 80px 10%;
-            align-items: center;
-        }
-
-        .mobile-gallery {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-        }
-
-        .mobile-gallery img {
-            width: 100%;
-            height: 350px;
-            object-fit: cover;
-            border-radius: 15px;
-            border: 1px solid #333;
-            transition: 0.4s;
-        }
-
-        .mobile-gallery img:hover {
-            border-color: var(--gold);
-            transform: translateY(-10px);
-        }
-
-        .product-info .badge {
-            background: var(--gold);
-            color: black;
-            padding: 5px 15px;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .price-box {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            margin: 25px 0;
-            border-left: 5px solid var(--gold);
-        }
-
-        .pi-price {
-            font-size: 2.5rem;
-            color: var(--gold);
-            font-weight: bold;
-            display: block;
-        }
-
-        .btn-buy {
-            width: 100%;
-            padding: 18px;
-            background: transparent;
-            color: var(--gold);
-            border: 2px solid var(--gold);
-            font-size: 1.1rem;
-            font-weight: bold;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .btn-buy:hover {
-            background: var(--gold);
-            color: black;
-        }
-
-        /* FOOTER */
-        footer {
-            padding: 60px 10% 20px;
-            background: #050505;
-            border-top: 1px solid #222;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 100px;
-            margin-bottom: 40px;
-        }
-
-        .footer-bottom {
+            padding: 0;
+            background-color: #f4f4f9;
             text-align: center;
-            font-size: 0.8rem;
-            color: #666;
-            padding-top: 20px;
-            border-top: 1px solid #111;
         }
-
-        /* RESPONSIVE TABLET & MOBILE */
-        @media (max-width: 992px) {
-            .hero { flex-direction: column; text-align: center; height: auto; padding: 50px 5%; }
-            .hero-content h1 { font-size: 2.2rem; }
-            .product-container { grid-template-columns: 1fr; padding: 50px 5%; }
-            .nav-links {
-                display: none;
-                position: absolute;
-                top: 70px;
-                right: 5%;
-                background: #111;
-                width: 250px;
-                flex-direction: column;
-                padding: 30px;
-                border-radius: 15px;
-                border: 1px solid #333;
-            }
-            .nav-links.active { display: flex; }
-            .hamburger { display: flex; }
-            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
-            .mobile-gallery img { height: 250px; }
+        header {
+            background-color: var(--pi-color);
+            color: white;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .container {
+            padding: 20px;
+            max-width: 500px;
+            margin: auto;
+        }
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .product-img {
+            width: 100%;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 10px;
+        }
+        #login-btn {
+            background-color: var(--pi-gold);
+            color: white;
+        }
+        #pay-button {
+            background-color: var(--pi-color);
+            color: white;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+        .price {
+            font-size: 24px;
+            color: var(--pi-color);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">DIGITAL<span>PROPERTY</span></div>
-        <nav>
-            <div class="hamburger" id="hamburger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-            <ul class="nav-links" id="nav-links">
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Marketplace</a></li>
-                <li><a href="#">Portfolio</a></li>
-                <li><a href="#">Hubungi Kami</a></li>
-            </ul>
-        </nav>
+        <h1>Digital Pro Indo</h1>
+        <p>Marketplace Properti Digital</p>
     </header>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Masa Depan<br>Properti Digital</h1>
-            <p>Miliki aset premium eksklusif di Indonesia menggunakan Koin π.</p>
-            <button id="login-btn" class="btn-connect">Connect to Pi Wallet</button>
+    <div class="container">
+        <div class="card">
+            <p>Selamat datang di Ekosistem Pi</p>
+            <button id="login-btn">Hubungkan Pi Wallet</button>
         </div>
-        <div class="hero-3d-box">
-            <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=500&q=80" alt="Hero Property" style="max-width: 100%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
-        </div>
-    </section>
 
-    <section class="product-container">
-        <div class="mobile-gallery">
-            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&h=500" alt="Eksterior Villa">
-            <img src="https://images.unsplash.com/photo-1600607687940-47a04b629571?auto=format&fit=crop&w=400&h=500" alt="Interior Villa">
+        <div class="card">
+            <img src="aset/product.jpg" alt="Digital Item" class="product-img" onerror="this.src='https://via.placeholder.com/300x200?text=Digital+Pro+Indo'">
+            <h3>Item Digital Pro #123</h3>
+            <p>Akses premium ke aset digital eksklusif.</p>
+            <p class="price">π 0.005</p>
+            <button id="pay-button">Beli Sekarang</button>
         </div>
-        
-        <div class="product-info">
-            <span class="badge">Premium Listing</span>
-            <h2>Modern Smart Villa - Jakarta Selatan</h2>
-            <p class="description">Fasilitas lengkap dengan sistem smart home terintegrasi, kolam renang pribadi, dan akses strategis di pusat kota.</p>
-            <div class="price-box">
-                <span class="label">Harga Aset Digital:</span>
-                <span class="pi-price">π 0.005</span>
-            </div>
-            <button id="pay-button" class="btn-buy">Beli Sekarang</button>
-        </div>
-    </section>
+    </div>
 
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-about">
-                <h3>PT. DIGITAL PROPERTY INDONESIA</h3>
-                <p>Pelopor marketplace properti berbasis blockchain yang menghubungkan aset dunia nyata dengan ekosistem Pi Network.</p>
-            </div>
-            <div class="footer-links">
-                <h4>Navigasi Cepat</h4>
-                <ul style="list-style: none; padding: 0; line-height: 2;">
-                    <li><a href="#" style="color: #888; text-decoration: none;">Kebijakan Privasi</a></li>
-                    <li><a href="#" style="color: #888; text-decoration: none;">Syarat & Ketentuan</a></li>
-                    <li><a href="#" style="color: #888; text-decoration: none;">Bantuan</a></li>
-                </ul>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            &copy; 2026 PT. Digital Property Indonesia. All Rights Reserved.
-        </div>
-    </footer>
-
-    <script>
-        const hamburger = document.getElementById('hamburger');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburger.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            hamburger.querySelectorAll('span').forEach((s, i) => {
-                if(navLinks.classList.contains('active')) {
-                    if(i===0) s.style.transform = "rotate(45deg) translate(5px, 5px)";
-                    if(i===1) s.style.opacity = "0";
-                    if(i===2) s.style.transform = "rotate(-45deg) translate(7px, -7px)";
-                } else {
-                    s.style.transform = "none";
-                    s.style.opacity = "1";
-                }
-            });
-        });
-    </script>
-
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <script src="app.js"></script>
 </body>
 </html>

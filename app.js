@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Gagal inisialisasi SDK:", e);
     }
 
-    // --- 2. LOGIKA NAVIGASI (SPA) ---
+    // --- 2. LOGIKA NAVIGASI (SPA) REVISI ---
     const navItems = document.querySelectorAll('.nav-item');
     const pageHome = document.getElementById('page-home');
     const pageProfile = document.getElementById('page-profile');
@@ -18,37 +18,44 @@ document.addEventListener("DOMContentLoaded", async () => {
     const profileAddress = document.getElementById('profile-address');
 
     function switchPage(pageName) {
-        // Reset state aktif pada navigasi
+        const target = pageName.trim().toLowerCase();
+        console.log("Beralih ke halaman:", target);
+
+        // Reset semua state aktif
         navItems.forEach(item => item.classList.remove('active'));
 
-        if (pageName === 'profil') {
+        if (target === 'profil') {
             pageHome.style.display = 'none';
             pageProfile.style.display = 'block';
-            // Set menu Profil sebagai aktif
-            document.querySelector('.nav-item:last-child').classList.add('active');
             
-            // Isi data profil jika sudah login
+            // Set menu Profil sebagai aktif (Indeks ke-3)
+            if(navItems[3]) navItems[3].classList.add('active');
+            
+            // Update Data Profil
             if (currentUser) {
-                profileUsername.innerText = currentUser.username;
-                profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
+                if(profileUsername) profileUsername.innerText = currentUser.username;
+                if(profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
             } else {
-                profileUsername.innerText = "Belum Login";
-                profileAddress.innerText = "Silakan login di halaman beranda";
+                if(profileUsername) profileUsername.innerText = "Belum Login";
+                if(profileAddress) profileAddress.innerText = "Silakan login di halaman Beranda";
             }
-        } else {
+        } else if (target === 'beranda') {
             pageHome.style.display = 'block';
             pageProfile.style.display = 'none';
-            // Set menu Beranda sebagai aktif
-            document.querySelector('.nav-item:first-child').classList.add('active');
+            // Set menu Beranda sebagai aktif (Indeks ke-0)
+            if(navItems[0]) navItems[0].classList.add('active');
         }
     }
 
-    // Pasang Event Listener ke Bottom Nav
+    // Perbaikan Event Listener Navigasi (Mendeteksi klik meski kena icon)
     navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
+        item.addEventListener('click', function(e) {
             e.preventDefault();
-            const text = item.querySelector('.nav-text').innerText.toLowerCase();
-            switchPage(text);
+            // Mengambil teks dari span .nav-text meski yang diklik adalah icon-nya
+            const labelElement = this.querySelector('.nav-text');
+            if (labelElement) {
+                switchPage(labelElement.innerText);
+            }
         });
     });
 
@@ -64,9 +71,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     txid: payment.transaction.txid 
                 })
             });
-            console.log("Pembayaran tertunda berhasil diselesaikan.");
         } catch (err) { 
-            console.error("Gagal sinkronisasi pembayaran tertunda:", err); 
+            console.error("Gagal sinkronisasi pembayaran:", err); 
         }
     }
 
@@ -74,7 +80,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function authPi() {
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
-            loginBtn.innerText = "Membuka Pi Wallet...";
+            loginBtn.innerText = "Menghubungkan...";
             loginBtn.disabled = true;
         }
 
@@ -84,22 +90,21 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
             
             currentUser = auth.user;
-            console.log("Login sukses:", currentUser.username);
-
+            
             if (loginBtn) {
                 loginBtn.innerText = `User: ${currentUser.username} ✅`;
                 loginBtn.style.backgroundColor = "#10b981";
                 loginBtn.disabled = false;
             }
-            alert("Selamat Datang, " + currentUser.username);
+            alert("Halo " + currentUser.username + ", berhasil login!");
 
         } catch (err) {
-            console.error("Autentikasi gagal:", err);
+            console.error("Auth error:", err);
             if (loginBtn) {
                 loginBtn.innerText = "Login ke Pi Wallet";
                 loginBtn.disabled = false;
             }
-            alert("Gagal terhubung ke Pi Network.");
+            alert("Gagal Login. Pastikan buka di Pi Browser.");
         }
     }
 
@@ -136,11 +141,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 }
             });
         } catch (err) { 
-            console.error("CreatePayment error:", err); 
+            console.error("Payment error:", err); 
         }
     };
 
-    // Pasang Event ke tombol login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) loginBtn.onclick = authPi;
 });

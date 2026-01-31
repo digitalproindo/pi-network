@@ -2,8 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
 
-    // 1. Inisialisasi SDK
-    // sandbox: false digunakan karena Anda sudah di domain resmi vercel
+    // --- 1. INISIALISASI SDK ---
     try {
         await Pi.init({ version: "2.0", sandbox: false });
         console.log("Pi SDK Berhasil diinisialisasi");
@@ -11,7 +10,49 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Gagal inisialisasi SDK:", e);
     }
 
-    // 2. Fungsi Bersihkan Transaksi Menggantung (Pencegah Expired Error)
+    // --- 2. LOGIKA NAVIGASI (SPA) ---
+    const navItems = document.querySelectorAll('.nav-item');
+    const pageHome = document.getElementById('page-home');
+    const pageProfile = document.getElementById('page-profile');
+    const profileUsername = document.getElementById('profile-username');
+    const profileAddress = document.getElementById('profile-address');
+
+    function switchPage(pageName) {
+        // Reset state aktif pada navigasi
+        navItems.forEach(item => item.classList.remove('active'));
+
+        if (pageName === 'profil') {
+            pageHome.style.display = 'none';
+            pageProfile.style.display = 'block';
+            // Set menu Profil sebagai aktif
+            document.querySelector('.nav-item:last-child').classList.add('active');
+            
+            // Isi data profil jika sudah login
+            if (currentUser) {
+                profileUsername.innerText = currentUser.username;
+                profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
+            } else {
+                profileUsername.innerText = "Belum Login";
+                profileAddress.innerText = "Silakan login di halaman beranda";
+            }
+        } else {
+            pageHome.style.display = 'block';
+            pageProfile.style.display = 'none';
+            // Set menu Beranda sebagai aktif
+            document.querySelector('.nav-item:first-child').classList.add('active');
+        }
+    }
+
+    // Pasang Event Listener ke Bottom Nav
+    navItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const text = item.querySelector('.nav-text').innerText.toLowerCase();
+            switchPage(text);
+        });
+    });
+
+    // --- 3. FUNGSI CLEANUP PEMBAYARAN ---
     async function handleIncompletePayment(payment) {
         console.warn("Ditemukan pembayaran tertunda:", payment.identifier);
         try {
@@ -29,16 +70,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // 3. Fungsi Login Utama
+    // --- 4. FUNGSI LOGIN ---
     async function authPi() {
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "Membuka Pi Wallet...";
-            loginBtn.disabled = true; // Cegah klik ganda
+            loginBtn.disabled = true;
         }
 
         try {
-            // Meminta autentikasi
             const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
                 handleIncompletePayment(payment);
             });
@@ -46,7 +86,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             currentUser = auth.user;
             console.log("Login sukses:", currentUser.username);
 
-            // Update UI
             if (loginBtn) {
                 loginBtn.innerText = `User: ${currentUser.username} ✅`;
                 loginBtn.style.backgroundColor = "#10b981";
@@ -57,18 +96,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (err) {
             console.error("Autentikasi gagal:", err);
             if (loginBtn) {
-                loginBtn.innerText = "Login";
+                loginBtn.innerText = "Login ke Pi Wallet";
                 loginBtn.disabled = false;
             }
-            alert("Gagal terhubung. Pastikan domain sudah di-Submit di Portal Developer.");
+            alert("Gagal terhubung ke Pi Network.");
         }
     }
 
-    // 4. Fungsi Pembayaran Global
+    // --- 5. FUNGSI PEMBAYARAN (GLOBAL) ---
     window.handlePayment = async function(amount, productName) {
-        if (!currentUser) {
-            return alert("Silakan Login terlebih dahulu!");
-        }
+        if (!currentUser) return alert("Silakan Login terlebih dahulu!");
 
         try {
             await Pi.createPayment({
@@ -103,9 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // 5. Event Listener
+    // Pasang Event ke tombol login
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.onclick = authPi;
-    }
+    if (loginBtn) loginBtn.onclick = authPi;
 });

@@ -1,14 +1,19 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
 
-    // 1. Inisialisasi SDK dengan logging aktif untuk debugging
-    console.log("Memulai Inisialisasi Pi SDK...");
-    Pi.init({ version: "2.0", sandbox: true });
+    // 1. Inisialisasi SDK
+    // sandbox: false digunakan karena Anda sudah di domain resmi vercel
+    try {
+        await Pi.init({ version: "2.0", sandbox: false });
+        console.log("Pi SDK Berhasil diinisialisasi");
+    } catch (e) {
+        console.error("Gagal inisialisasi SDK:", e);
+    }
 
-    // 2. Fungsi Bersihkan Transaksi Menggantung (Pencegah Timeout)
+    // 2. Fungsi Bersihkan Transaksi Menggantung (Pencegah Expired Error)
     async function handleIncompletePayment(payment) {
-        console.warn("Ditemukan pembayaran menggantung, mencoba menyelesaikan...", payment.identifier);
+        console.warn("Ditemukan pembayaran tertunda:", payment.identifier);
         try {
             await fetch('/api/complete', {
                 method: 'POST',
@@ -18,45 +23,52 @@ document.addEventListener("DOMContentLoaded", () => {
                     txid: payment.transaction.txid 
                 })
             });
-            console.log("Sinkronisasi pembayaran tertunda berhasil.");
+            console.log("Pembayaran tertunda berhasil diselesaikan.");
         } catch (err) { 
             console.error("Gagal sinkronisasi pembayaran tertunda:", err); 
         }
     }
 
-    // 3. Fungsi Login dengan Feedback Visual
+    // 3. Fungsi Login Utama
     async function authPi() {
         const loginBtn = document.getElementById('login-btn');
-        if (loginBtn) loginBtn.innerText = "Menghubungkan...";
+        if (loginBtn) {
+            loginBtn.innerText = "Membuka Pi Wallet...";
+            loginBtn.disabled = true; // Cegah klik ganda
+        }
 
         try {
+            // Meminta autentikasi
             const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
                 handleIncompletePayment(payment);
             });
             
             currentUser = auth.user;
-            console.log("Login sukses sebagai:", currentUser.username);
+            console.log("Login sukses:", currentUser.username);
 
-            // Update UI setelah berhasil login
+            // Update UI
             if (loginBtn) {
                 loginBtn.innerText = `User: ${currentUser.username} ✅`;
-                loginBtn.style.backgroundColor = "#10b981"; // Hijau sukses
+                loginBtn.style.backgroundColor = "#10b981";
+                loginBtn.disabled = false;
             }
             alert("Selamat Datang, " + currentUser.username);
+
         } catch (err) {
             console.error("Autentikasi gagal:", err);
-            if (loginBtn) loginBtn.innerText = "Login";
-            alert("Gagal terhubung. Pastikan Anda membuka di Pi Browser dan domain sudah terverifikasi.");
+            if (loginBtn) {
+                loginBtn.innerText = "Login";
+                loginBtn.disabled = false;
+            }
+            alert("Gagal terhubung. Pastikan domain sudah di-Submit di Portal Developer.");
         }
     }
 
-    // 4. Fungsi Pembayaran Dinamis (Global agar bisa dipanggil dari HTML)
+    // 4. Fungsi Pembayaran Global
     window.handlePayment = async function(amount, productName) {
         if (!currentUser) {
-            return alert("Silakan hubungkan dompet (Login) terlebih dahulu!");
+            return alert("Silakan Login terlebih dahulu!");
         }
-
-        console.log(`Memulai pembayaran untuk: ${productName} senilai ${amount} Pi`);
 
         try {
             await Pi.createPayment({
@@ -65,7 +77,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 metadata: { productName: productName },
             }, {
                 onReadyForServerApproval: async (paymentId) => {
-                    console.log("Menunggu persetujuan server untuk ID:", paymentId);
                     const res = await fetch('/api/approve', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
@@ -74,32 +85,27 @@ document.addEventListener("DOMContentLoaded", () => {
                     return res.ok;
                 },
                 onReadyForServerCompletion: async (paymentId, txid) => {
-                    console.log("Blockchain sukses, menyelesaikan transaksi...");
                     const res = await fetch('/api/complete', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ paymentId, txid })
                     });
-                    if (res.ok) alert(`Sukses! Anda telah membeli ${productName}.`);
+                    if (res.ok) alert(`Sukses membeli ${productName}!`);
                 },
-                onCancel: (paymentId) => {
-                    console.log("Pembayaran dibatalkan:", paymentId);
-                },
+                onCancel: (paymentId) => console.log("Batal:", paymentId),
                 onError: (error, payment) => {
-                    console.error("Kesalahan pembayaran:", error.message);
                     if (payment) handleIncompletePayment(payment);
-                    alert("Gagal melakukan pembayaran: " + error.message);
+                    alert("Error: " + error.message);
                 }
             });
         } catch (err) { 
-            console.error("Gagal memanggil createPayment:", err); 
+            console.error("CreatePayment error:", err); 
         }
     };
 
-    // 5. Pastikan Event Listener terpasang dengan benar
+    // 5. Event Listener
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = authPi;
-        console.log("Event listener tombol login aktif.");
     }
 });

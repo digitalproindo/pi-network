@@ -10,48 +10,54 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Gagal inisialisasi SDK:", e);
     }
 
-    // --- 2. LOGIKA NAVIGASI (SPA) REVISI ---
+    // --- 2. LOGIKA UPDATE UI PROFIL ---
+    // Fungsi ini memastikan data user tampil di halaman profil
+    function updateProfileUI() {
+        const profileUsername = document.getElementById('profile-username');
+        const profileAddress = document.getElementById('profile-address');
+
+        if (currentUser) {
+            if (profileUsername) profileUsername.innerText = currentUser.username;
+            if (profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
+        } else {
+            if (profileUsername) profileUsername.innerText = "Belum Login";
+            if (profileAddress) profileAddress.innerText = "Silakan login di halaman Beranda";
+        }
+    }
+
+    // --- 3. LOGIKA NAVIGASI (SPA) ---
     const navItems = document.querySelectorAll('.nav-item');
     const pageHome = document.getElementById('page-home');
     const pageProfile = document.getElementById('page-profile');
-    const profileUsername = document.getElementById('profile-username');
-    const profileAddress = document.getElementById('profile-address');
 
     function switchPage(pageName) {
         const target = pageName.trim().toLowerCase();
-        console.log("Beralih ke halaman:", target);
-
-        // Reset semua state aktif
+        
+        // Reset state aktif menu navigasi
         navItems.forEach(item => item.classList.remove('active'));
 
         if (target === 'profil') {
             pageHome.style.display = 'none';
             pageProfile.style.display = 'block';
             
-            // Set menu Profil sebagai aktif (Indeks ke-3)
-            if(navItems[3]) navItems[3].classList.add('active');
+            // Tandai icon Profil sebagai aktif
+            if (navItems[3]) navItems[3].classList.add('active');
             
-            // Update Data Profil
-            if (currentUser) {
-                if(profileUsername) profileUsername.innerText = currentUser.username;
-                if(profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
-            } else {
-                if(profileUsername) profileUsername.innerText = "Belum Login";
-                if(profileAddress) profileAddress.innerText = "Silakan login di halaman Beranda";
-            }
-        } else if (target === 'beranda') {
+            // Tarik data user terbaru ke tampilan
+            updateProfileUI();
+        } else {
             pageHome.style.display = 'block';
             pageProfile.style.display = 'none';
-            // Set menu Beranda sebagai aktif (Indeks ke-0)
-            if(navItems[0]) navItems[0].classList.add('active');
+            
+            // Tandai icon Beranda sebagai aktif
+            if (navItems[0]) navItems[0].classList.add('active');
         }
     }
 
-    // Perbaikan Event Listener Navigasi (Mendeteksi klik meski kena icon)
+    // Listener klik untuk Navigasi Bawah
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
-            // Mengambil teks dari span .nav-text meski yang diklik adalah icon-nya
             const labelElement = this.querySelector('.nav-text');
             if (labelElement) {
                 switchPage(labelElement.innerText);
@@ -59,7 +65,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     });
 
-    // --- 3. FUNGSI CLEANUP PEMBAYARAN ---
+    // --- 4. FUNGSI CLEANUP PEMBAYARAN ---
     async function handleIncompletePayment(payment) {
         console.warn("Ditemukan pembayaran tertunda:", payment.identifier);
         try {
@@ -76,7 +82,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 4. FUNGSI LOGIN ---
+    // --- 5. FUNGSI LOGIN ---
     async function authPi() {
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
@@ -90,13 +96,17 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
             
             currentUser = auth.user;
+            console.log("Login Berhasil:", currentUser.username);
             
             if (loginBtn) {
                 loginBtn.innerText = `User: ${currentUser.username} ✅`;
                 loginBtn.style.backgroundColor = "#10b981";
                 loginBtn.disabled = false;
             }
-            alert("Halo " + currentUser.username + ", berhasil login!");
+
+            // Langsung siapkan data untuk halaman profil
+            updateProfileUI();
+            alert("Halo " + currentUser.username + ", data profil sudah siap!");
 
         } catch (err) {
             console.error("Auth error:", err);
@@ -104,11 +114,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 loginBtn.innerText = "Login ke Pi Wallet";
                 loginBtn.disabled = false;
             }
-            alert("Gagal Login. Pastikan buka di Pi Browser.");
+            alert("Gagal Login. Pastikan Anda berada di Pi Browser.");
         }
     }
 
-    // --- 5. FUNGSI PEMBAYARAN (GLOBAL) ---
+    // --- 6. FUNGSI PEMBAYARAN (GLOBAL) ---
     window.handlePayment = async function(amount, productName) {
         if (!currentUser) return alert("Silakan Login terlebih dahulu!");
 

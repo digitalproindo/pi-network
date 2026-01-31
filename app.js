@@ -2,53 +2,67 @@ const Pi = window.Pi;
 let currentUser = null;
 
 // Inisialisasi SDK v2.0
-// Tips: Gunakan sandbox: true jika Anda mengetes di browser desktop/Vercel luar Pi Browser
+// sandbox: true memungkinkan testing di browser biasa (Chrome/Vercel)
 Pi.init({ version: "2.0", sandbox: true });
 
 async function authPi() {
+    console.log("Mencoba menghubungkan ke Pi Network...");
     try {
-        // Autentikasi mencakup izin username, payments, dan wallet address
+        // Melakukan autentikasi user
         const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-            console.log("Ditemukan pembayaran tertunda:", payment);
-            // Secara otomatis mencoba menyelesaikan pembayaran yang menggantung
+            console.log("Ada pembayaran tertunda dari transaksi sebelumnya:", payment);
             handleIncompletePayment(payment);
         });
 
         currentUser = auth.user;
-        console.log("Login sukses sebagai:", currentUser.username);
+        console.log("Login sukses:", currentUser.username);
 
+        // Update UI setelah login berhasil
         const btn = document.getElementById('login-btn');
         if (btn) {
             btn.innerText = `Halo, ${currentUser.username} ✅`;
             btn.style.backgroundColor = "#28a745";
+            btn.style.color = "white";
         }
+        alert("Dompet terhubung: " + currentUser.username);
     } catch (err) {
         console.error("Autentikasi gagal:", err);
-        alert("Gagal terhubung ke Pi Network.");
+        alert("Gagal terhubung. Pastikan Anda membuka ini di Pi Browser.");
     }
 }
 
-// Fungsi khusus menangani pembayaran yang belum selesai (mencegah timeout di transaksi berikutnya)
+// Menyelesaikan pembayaran yang belum tuntas di sisi server
 async function handleIncompletePayment(payment) {
-    await fetch('/api/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
-    });
+    console.log("Menyelesaikan pembayaran tertunda...");
+    try {
+        await fetch('/api/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                paymentId: payment.identifier, 
+                txid: payment.transaction.txid 
+            })
+        });
+    } catch (err) {
+        console.error("Gagal sinkronisasi pembayaran tertunda:", err);
+    }
 }
 
 async function handlePayment() {
-    if (!currentUser) return alert("Silakan hubungkan dompet (Login) terlebih dahulu.");
+    if (!currentUser) {
+        return alert("Klik tombol 'Hubungkan Pi Wallet' terlebih dahulu!");
+    }
 
+    console.log("Memulai proses pembayaran...");
     try {
         await Pi.createPayment({
             amount: 0.005,
             memo: "Test Purchase - Digital Pro Indo",
             metadata: { productId: "item-123" },
         }, {
-            // Langkah 1: Server Anda menyetujui transaksi
+            // Tahap 1: Persetujuan Server (Approve)
             onReadyForServerApproval: async (paymentId) => {
-                console.log("Meminta persetujuan server (Approve)...");
+                console.log("Pembayaran dibuat. ID:", paymentId);
                 const response = await fetch('/api/approve', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -56,9 +70,9 @@ async function handlePayment() {
                 });
                 return response.ok;
             },
-            // Langkah 2: Server Anda mengonfirmasi transaksi selesai setelah user membayar
+            // Tahap 2: Penyelesaian Server (Complete)
             onReadyForServerCompletion: async (paymentId, txid) => {
-                console.log("Mengonfirmasi penyelesaian ke server (Complete)...");
+                console.log("User telah membayar. TXID:", txid);
                 const response = await fetch('/api/complete', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -66,30 +80,43 @@ async function handlePayment() {
                 });
                 
                 if (response.ok) {
-                    alert("TRANSAKSI BERHASIL!\nSaldo Testnet telah berpindah.");
+                    alert("PEMBAYARAN BERHASIL!\nTerima kasih telah berbelanja.");
+                } else {
+                    alert("Pembayaran terkirim tapi gagal verifikasi server.");
                 }
             },
             onCancel: (paymentId) => {
-                console.log("Pembayaran dibatalkan oleh pengguna.");
+                console.log("User membatalkan pembayaran ID:", paymentId);
             },
             onError: (error, payment) => {
-                console.error("Kesalahan Pembayaran:", error);
+                console.error("Payment Error:", error);
                 if (payment) {
                     handleIncompletePayment(payment);
                 }
-                alert("Terjadi kesalahan: " + error.message);
+                alert("Kesalahan transaksi: " + error.message);
             }
         });
     } catch (err) {
-        console.error("Gagal membuat pembayaran:", err);
+        console.error("Gagal memanggil Pi.createPayment:", err);
     }
 }
 
-// Event Listeners
+// Inisialisasi Event Listener setelah DOM siap
 document.addEventListener("DOMContentLoaded", () => {
     const loginBtn = document.getElementById('login-btn');
     const payBtn = document.getElementById('pay-button');
 
-    if (loginBtn) loginBtn.onclick = authPi;
-    if (payBtn) payBtn.onclick = handlePayment;
+    if (loginBtn) {
+        loginBtn.onclick = () => {
+            console.log("Tombol Login diklik.");
+            authPi();
+        };
+    }
+
+    if (payBtn) {
+        payBtn.onclick = () => {
+            console.log("Tombol Bayar diklik.");
+            handlePayment();
+        };
+    }
 });

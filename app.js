@@ -108,21 +108,57 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderProducts(filtered, 'search-results');
     };
 
-    // --- 5. LOGIKA AUTH ---
-    async function handleAuth() {
-        try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
-            currentUser = auth.user;
-            document.getElementById('profile-username').innerText = currentUser.username;
-            document.getElementById('profile-address').innerText = currentUser.uid;
-            document.getElementById('login-btn').innerText = "Logged In";
-        } catch (err) {
-            console.error(err);
-            alert("Gagal Login. Gunakan Pi Browser.");
+    // --- 5. FUNGSI AUTH (LOGIN & LOGOUT TOGGLE) ---
+async function handleAuth() {
+    const loginBtn = document.getElementById('login-btn');
+
+    // JIKA USER SUDAH LOGIN (Status: Logged In) -> MAKA JALANKAN PROSES LOGOUT
+    if (currentUser) {
+        const yakinLogout = confirm("Apakah Anda yakin ingin logout?");
+        if (yakinLogout) {
+            currentUser = null; // Hapus data user dari variabel
+            
+            // Kembalikan tampilan tombol ke posisi Login
+            loginBtn.innerText = "Login";
+            loginBtn.classList.remove('btn-logout-style'); // Hapus warna merah jika ada
+            
+            // Update UI Profil
+            document.getElementById('profile-username').innerText = "Belum Login";
+            document.getElementById('profile-address').innerText = "Silakan login untuk melihat detail akun.";
+            
+            alert("Anda telah logout.");
         }
+        return; // Berhenti di sini
     }
+
+    // JIKA USER BELUM LOGIN -> JALANKAN PROSES LOGIN PI
+    loginBtn.innerText = "Loading...";
+    loginBtn.disabled = true;
+
+    try {
+        const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
+            handleIncompletePayment(payment);
+        });
+        
+        currentUser = auth.user;
+        
+        // Ubah tombol menjadi "Logout" setelah berhasil login
+        loginBtn.innerText = "Logout";
+        loginBtn.disabled = false;
+        loginBtn.classList.add('btn-logout-style'); // Tambahkan class untuk warna merah
+
+        // Update UI Profil dengan data asli dari Pi Network
+        document.getElementById('profile-username').innerText = currentUser.username;
+        document.getElementById('profile-address').innerText = currentUser.uid;
+
+        alert("Selamat datang, " + currentUser.username + "!");
+    } catch (err) {
+        console.error(err);
+        loginBtn.innerText = "Login";
+        loginBtn.disabled = false;
+        alert("Gagal Login. Pastikan Anda berada di Pi Browser.");
+    }
+}
 
     // --- 6. SISTEM PEMBAYARAN (MAINNET) ---
     window.handlePayment = async function(amount, productName) {

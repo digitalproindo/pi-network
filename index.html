@@ -26,7 +26,6 @@
 
         .hidden { display: none !important; }
 
-        /* REVISI HEADER: Padding bawah ditambah agar teks tidak tertutup kartu */
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
@@ -52,9 +51,16 @@
             padding: 8px 16px; border-radius: 12px;
             font-weight: 700; font-size: 0.75rem;
             cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            /* Tambahan: Agar perubahan warna ke merah jadi halus */
+            transition: all 0.3s ease;
         }
 
-        /* REVISI KATEGORI: Margin disesuaikan agar pas di lengkungan header */
+        /* --- STYLE BARU: Tombol Logout --- */
+        .btn-logout-style {
+            background: var(--pi-red) !important;
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important;
+        }
+
         .category-scroll {
             display: flex; overflow-x: auto;
             padding: 15px 20px; gap: 12px;
@@ -79,7 +85,6 @@
             border-color: var(--pi-color);
         }
 
-        /* Grid Produk */
         .marketplace-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
@@ -105,7 +110,6 @@
             padding: 10px; font-weight: bold; font-size: 0.8rem; cursor: pointer;
         }
 
-        /* REVISI PROFILE: Margin dikurangi agar kartu tidak menimpa judul utama */
         #page-profile { 
             padding: 0 20px; 
             margin-top: -45px; 
@@ -134,7 +138,6 @@
         .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
         .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
@@ -150,7 +153,7 @@
 
     <header>
         <div class="auth-container">
-            <button id="login-btn" class="btn-auth">Logged In</button>
+            <button id="login-btn" class="btn-auth">Login</button>
         </div>
         <h1 style="margin:0; font-size: 1.8rem; letter-spacing: -0.5px;">Digital Pro Indo</h1>
         <p style="margin:8px 0 0 0; opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Premium Digital Marketplace</p>
@@ -164,8 +167,7 @@
             <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
             <div class="category-pill" onclick="filterCategory('Elektronik')">📱 Elektronik</div>
         </div>
-        <div id="main-grid" class="marketplace-grid">
-            </div>
+        <div id="main-grid" class="marketplace-grid"></div>
     </main>
 
     <main id="page-cari" class="hidden">
@@ -189,12 +191,12 @@
             <div class="avatar-border">
                 <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
             </div>
-            <h2 id="profile-username" class="profile-username">Ubay04</h2>
+            <h2 id="profile-username" class="profile-username">User</h2>
             <p style="color: var(--text-muted); font-size: 1rem; margin: 8px 0; font-weight: 600;">Member Digital Pro Indo</p>
             
             <div class="uid-box">
                 <strong>Wallet UID:</strong><br>
-                <span id="profile-address" style="font-family: monospace;">2cd888fe-537d-4e9a-9f90-c280c6b06610</span>
+                <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
             </div>
 
             <div class="status-row">

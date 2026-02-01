@@ -36,7 +36,71 @@ document.addEventListener("DOMContentLoaded", async () => {
             category: "Elektronik",
             images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"],
             desc: "Gadget premium dengan performa tinggi."
-        }
+        },
+        {
+        id: 'p5',
+        name: "Sofa Minimalis 2 Seater - Modern Grey",
+        price: 0.05,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"],
+        desc: "Sofa nyaman ukuran 150x80cm, cocok untuk ruang tamu kecil."
+    },
+    {
+        id: 'p6',
+        name: "Meja Makan Kayu Jati - Tipe Kolonial",
+        price: 0.08,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1577145946459-39a587ed522f?w=500&q=80"],
+        desc: "Meja makan kokoh ukuran 120x60cm dengan finishing natural."
+    },
+    {
+        id: 'p7',
+        name: "Lampu Gantung Industrial - Model Black Dome",
+        price: 0.015,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80"],
+        desc: "Lampu dekoratif plafon, diameter 30cm untuk kesan estetik."
+    },
+    {
+        id: 'p8',
+        name: "Rak Buku Kayu 5 Tingkat - Slim Design",
+        price: 0.03,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1594620302200-9a762244a156?w=500&q=80"],
+        desc: "Rak buku hemat ruang, tinggi 180cm lebar 40cm."
+    },
+    {
+        id: 'p9',
+        name: "Karpet Bulu Lembut 160x210 - Creamy White",
+        price: 0.012,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?w=500&q=80"],
+        desc: "Karpet lantai premium, sangat lembut dan mudah dibersihkan."
+    },
+    {
+        id: 'p10',
+        name: "Set Gorden Jendela - Model Smokering Minimalis",
+        price: 0.008,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"],
+        desc: "Gorden blackout ukuran 140x220cm, tersedia berbagai warna."
+    },
+    {
+        id: 'p11',
+        name: "Jam Dinding Kayu - Tipe Scandinavian",
+        price: 0.005,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=500&q=80"],
+        desc: "Jam dinding estetik diameter 35cm, mesin sweep movement (tanpa suara)."
+    },
+    {
+        id: 'p12',
+        name: "Tanaman Hias Artificial - Model Monstera Large",
+        price: 0.01,
+        category: "Rumah",
+        images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"],
+        desc: "Tanaman palsu mirip asli dengan pot keramik, tinggi 80cm."
+    }
     ];
 
     // --- 2. INISIALISASI SDK (MAINNET READY) ---

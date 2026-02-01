@@ -1,0 +1,32 @@
+[
+  {
+    "id": "p1",
+    "name": "E-Book: Mastering Pi Network v2.0",
+    "category": "E-Book",
+    "price": 0.005,
+    "images": [
+      "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400",
+      "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400",
+      "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?q=80&w=400",
+      "https://images.unsplash.com/photo-1516979187457-637abb4f9353?q=80&w=400"
+    ],
+    "rating": 4.9,
+    "sold": 1250,
+    "description": "Panduan terlengkap strategi ekosistem Pi Network 2026. Pelajari cara mengoptimalkan node dan keamanan wallet Anda."
+  },
+  {
+    "id": "p2",
+    "name": "Lisensi Asset Pro Digital Indo",
+    "category": "Software",
+    "price": 0.010,
+    "images": [
+      "https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg",
+      "https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=400",
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=400",
+      "https://images.unsplash.com/photo-1551288049-bbbda536339a?q=80&w=400"
+    ],
+    "rating": 4.8,
+    "sold": 850,
+    "description": "Software manajemen aset digital premium. Memudahkan Pioneer dalam mengelola portofolio aset secara aman dan otomatis."
+  }
+]

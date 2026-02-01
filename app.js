@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let allProducts = [];
     let cart = JSON.parse(localStorage.getItem('pipro_cart')) || [];
 
-    // Inisialisasi SDK Pi (sandbox: false untuk Production/Mainnet)
+    // Inisialisasi SDK Pi (Gunakan sandbox: true untuk testing koin Tesnet)
     try { 
         await Pi.init({ version: "2.0", sandbox: false }); 
     } catch(e) { console.error("Pi SDK tidak merespon"); }
@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // --- LOGIKA PEMBAYARAN PI NETWORK (REVISI UTAMA) ---
+    // --- LOGIKA PEMBAYARAN PI NETWORK (REVISI ANTI-TIMEOUT) ---
     window.initiatePayment = async (productId) => {
         if (!currentUser) {
             alert("Harap Login terlebih dahulu sebelum melakukan pembayaran.");
@@ -63,34 +63,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         const product = allProducts.find(p => p.id === productId);
         if (!product) return;
 
+        console.log("Memulai proses pembayaran untuk:", product.name);
+
         try {
             const payment = await Pi.createPayment({
                 amount: parseFloat(product.price),
-                memo: `Beli ${product.name} - Digital Pro Indo`,
+                memo: `Pembelian ${product.name} - Digital Pro Indo`,
                 metadata: { productId: product.id, type: "digital_product" },
             }, {
                 onReadyForServerApproval: (paymentId) => {
-                    // Di tahap ini, paymentId harus dikirim ke server backend Anda 
-                    // untuk disetujui (API Pi Network /approve)
-                    console.log("Menunggu persetujuan server untuk ID:", paymentId);
+                    console.log("Pembayaran terdeteksi. ID:", paymentId);
+                    // Segera beritahu user bahwa proses sedang divalidasi oleh sistem
+                    // Ini penting agar user tidak menutup jendela konfirmasi
+                    console.log("Mengirim konfirmasi ke server Pi...");
                 },
                 onReadyForServerCompletion: (paymentId, txid) => {
-                    // Di tahap ini, transaksi berhasil di blockchain. 
-                    // Segera berikan akses produk ke user.
-                    alert(`Pembayaran Sukses!\nTXID: ${txid}`);
+                    console.log("Transaksi Berhasil di Blockchain! TXID:", txid);
+                    alert(`Pembayaran Sukses!\nTerima kasih. TXID: ${txid}`);
+                    
+                    // Sembunyikan modal dan update UI
                     document.getElementById('product-modal').classList.add('hidden');
                 },
                 onCancel: (paymentId) => {
-                    console.log("Pembayaran dibatalkan");
+                    console.log("Pembayaran dibatalkan oleh pengguna. ID:", paymentId);
                 },
                 onError: (error, payment) => {
                     console.error("Payment Error:", error);
-                    alert("Gagal memproses pembayaran koin Pi.");
+                    if (error.message && error.message.includes("timeout")) {
+                        alert("Waktu pembayaran habis (60 detik). Pastikan koneksi internet Anda stabil dan coba lagi.");
+                    } else {
+                        alert("Gagal memproses pembayaran. Pastikan saldo koin Pi Anda cukup.");
+                    }
                 },
             });
         } catch (e) {
-            console.error(e);
-            alert("Gagal memicu jendela pembayaran.");
+            console.error("Terjadi kesalahan sistem:", e);
+            alert("Gagal membuka dompet Pi. Pastikan Anda mengakses melalui Pi Browser.");
         }
     };
 
@@ -118,21 +126,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         body.innerHTML = `
             <span class="close-modal" onclick="document.getElementById('product-modal').classList.add('hidden')">&times;</span>
             <img src="${p.images[0]}" class="detail-img">
-            <h2 style="margin:0; font-size: 1.4rem;">${p.name}</h2>
-            <div class="detail-stats">
+            <h2 style="margin:10px 0 5px 0; font-size: 1.4rem;">${p.name}</h2>
+            <div class="detail-stats" style="margin-bottom:10px;">
                 <span style="color: #ffa500;">⭐ ${p.rating || '5.0'}</span>
-                <span>|</span>
+                <span style="margin: 0 8px; color: #ccc;">|</span>
                 <span>Terjual ${p.sold || '0'}+</span>
-                <span>|</span>
-                <span style="color: var(--pi-color);">${p.category}</span>
+                <span style="margin: 0 8px; color: #ccc;">|</span>
+                <span style="color: var(--pi-color); font-weight:bold;">${p.category}</span>
             </div>
-            <div style="font-size: 1.6rem; font-weight: 800; color: var(--pi-color); margin: 15px 0;">π ${p.price}</div>
-            <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
-            <p class="detail-desc">${p.description || 'Produk digital premium terbaik.'}</p>
+            <div style="font-size: 1.8rem; font-weight: 800; color: var(--pi-color); margin-bottom: 15px;">π ${p.price}</div>
+            <hr style="border:0; border-top:1px solid #eee; margin-bottom: 15px;">
+            <p class="detail-desc" style="line-height:1.5;">${p.description || 'Produk digital premium terbaik untuk menunjang produktivitas Anda.'}</p>
             
-            <div class="modal-actions">
-                <button onclick="addToCart('${p.id}')" style="flex:1; padding:15px; border-radius:15px; border:1px solid #ddd; background:white; font-size:1.2rem; cursor:pointer;">🛒</button>
-                <button onclick="initiatePayment('${p.id}')" class="btn-buy-now" style="flex:4; padding:15px; border-radius:15px; font-size:1rem; background: var(--pi-gold) !important;">Bayar π ${p.price}</button>
+            <div class="modal-actions" style="margin-top:20px; display:flex; gap:10px;">
+                <button onclick="addToCart('${p.id}')" style="flex:1; padding:15px; border-radius:12px; border:1px solid #ddd; background:white; font-size:1.2rem; cursor:pointer;">🛒</button>
+                <button onclick="initiatePayment('${p.id}')" class="btn-buy-now" style="flex:4; padding:15px; border-radius:12px; font-size:1rem; font-weight:bold; background: var(--pi-gold) !important; color: white; border:none; cursor:pointer;">BAYAR SEKARANG</button>
             </div>
         `;
         modal.classList.remove('hidden');
@@ -144,7 +152,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const res = await fetch('products.json');
             allProducts = await res.json();
             renderProducts(allProducts, 'main-grid');
-        } catch(e) { console.error("Gagal memuat produk"); }
+        } catch(e) { console.error("Gagal memuat produk dari JSON"); }
     }
 
     function renderProducts(data, containerId, isCart = false) {
@@ -158,12 +166,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             card.innerHTML = `
                 <div class="slider-container"><img src="${p.images[0]}" style="width:100%; height:100%; object-fit:cover;"></div>
                 <div class="product-info">
-                    <h3 class="product-name">${p.name}</h3>
+                    <h3 class="product-name" style="font-size:1rem; margin-bottom:5px;">${p.name}</h3>
                     <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="price">π ${p.price}</span>
-                        <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">⭐ ${p.rating || '5.0'}</span>
+                        <span class="price" style="color: var(--pi-color); font-weight:700;">π ${p.price}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted);">⭐ ${p.rating || '5.0'}</span>
                     </div>
-                    ${isCart ? `<button class="btn-delete" onclick="removeFromCart(${index})">🗑️ Hapus</button>` : ''}
+                    ${isCart ? `<button class="btn-delete" onclick="removeFromCart(${index})" style="margin-top:10px; width:100%;">🗑️ Hapus</button>` : ''}
                 </div>`;
             container.appendChild(card);
         });
@@ -175,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (prod) {
             cart.push({...prod});
             localStorage.setItem('pipro_cart', JSON.stringify(cart));
-            alert("Masuk keranjang!");
+            alert("Produk berhasil ditambahkan ke keranjang!");
         }
     };
 

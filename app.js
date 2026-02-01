@@ -4,10 +4,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     let allProducts = [];
     let cart = JSON.parse(localStorage.getItem('pipro_cart')) || [];
 
-    // Inisialisasi SDK Pi (Gunakan sandbox: true untuk testing koin Tesnet)
+    // 1. Inisialisasi SDK
+    // sandbox: true untuk Tesnet, sandbox: false untuk Mainnet
     try { 
         await Pi.init({ version: "2.0", sandbox: false }); 
-    } catch(e) { console.error("Pi SDK tidak merespon"); }
+        console.log("Pi SDK Initialized");
+    } catch(e) { 
+        console.error("Pi SDK tidak merespon"); 
+    }
 
     const loginBtn = document.getElementById('login-btn');
 
@@ -17,14 +21,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             currentUser = null;
             alert("Berhasil Logout");
             updateAuthUI();
-            updateProfileUI();
         } else {
             try {
-                const auth = await Pi.authenticate(['username', 'payments'], (p) => {});
+                const auth = await Pi.authenticate(['username', 'payments'], (p) => {
+                    console.log("Auth callback: ", p);
+                });
                 currentUser = auth.user;
                 alert("Login Berhasil! Halo " + currentUser.username);
                 updateAuthUI();
-                updateProfileUI();
+                if(typeof updateProfileUI === 'function') updateProfileUI();
             } catch(e) {
                 alert("Login Gagal atau Dibatalkan");
             }
@@ -33,89 +38,59 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function updateAuthUI() {
         if (currentUser) {
-            loginBtn.innerText = "Logout";
-            loginBtn.classList.add('btn-logout-style');
+            loginBtn.innerText = "Logout (" + currentUser.username + ")";
+            loginBtn.style.background = "#ef4444"; // Merah untuk logout
         } else {
-            loginBtn.innerText = "Login";
-            loginBtn.classList.remove('btn-logout-style');
+            loginBtn.innerText = "Hubungkan Pi Wallet";
+            loginBtn.style.background = "var(--pi-gold)";
         }
     }
 
-    window.updateProfileUI = () => {
-        const userEl = document.getElementById('profile-username');
-        const addrEl = document.getElementById('profile-address');
-        if (currentUser) {
-            userEl.innerText = currentUser.username;
-            addrEl.innerText = currentUser.uid;
-        } else {
-            userEl.innerText = "Tamu";
-            addrEl.innerText = "Silakan login untuk melihat detail akun.";
-        }
-    };
-
-    // --- LOGIKA PEMBAYARAN PI NETWORK (REVISI ANTI-TIMEOUT) ---
-    window.initiatePayment = async (productId) => {
+    // --- LOGIKA PEMBAYARAN UTAMA (handlePayment) ---
+    // Fungsi ini dibuat global (window.) agar bisa dipanggil dari atribut onclick di HTML
+    window.handlePayment = async (amount, productName) => {
         if (!currentUser) {
-            alert("Harap Login terlebih dahulu sebelum melakukan pembayaran.");
+            alert("Silakan hubungkan Pi Wallet Anda terlebih dahulu.");
             return;
         }
 
-        const product = allProducts.find(p => p.id === productId);
-        if (!product) return;
-
-        console.log("Memulai proses pembayaran untuk:", product.name);
-
         try {
+            console.log(`Memulai pembayaran: ${productName} seharga ${amount}`);
+            
             const payment = await Pi.createPayment({
-                amount: parseFloat(product.price),
-                memo: `Pembelian ${product.name} - Digital Pro Indo`,
-                metadata: { productId: product.id, type: "digital_product" },
+                amount: parseFloat(amount),
+                memo: `Pembelian ${productName} - Digital Pro Indo`,
+                metadata: { productName: productName },
             }, {
                 onReadyForServerApproval: (paymentId) => {
-                    console.log("Pembayaran terdeteksi. ID:", paymentId);
-                    // Segera beritahu user bahwa proses sedang divalidasi oleh sistem
-                    // Ini penting agar user tidak menutup jendela konfirmasi
-                    console.log("Mengirim konfirmasi ke server Pi...");
+                    console.log("Payment Ready for Approval. ID:", paymentId);
+                    // Jika Anda memiliki server backend, kirim paymentId ke sana.
+                    // Untuk client-side saja, SDK akan menunggu proses blockchain selesai.
                 },
                 onReadyForServerCompletion: (paymentId, txid) => {
-                    console.log("Transaksi Berhasil di Blockchain! TXID:", txid);
-                    alert(`Pembayaran Sukses!\nTerima kasih. TXID: ${txid}`);
+                    console.log("Payment Completed. TXID:", txid);
+                    alert(`Pembayaran Berhasil!\nProduk: ${productName}\nTXID: ${txid}`);
                     
-                    // Sembunyikan modal dan update UI
-                    document.getElementById('product-modal').classList.add('hidden');
+                    // Sembunyikan modal jika sedang terbuka
+                    const modal = document.getElementById('product-modal');
+                    if(modal) modal.classList.add('hidden');
                 },
                 onCancel: (paymentId) => {
-                    console.log("Pembayaran dibatalkan oleh pengguna. ID:", paymentId);
+                    console.log("Pembayaran dibatalkan oleh pengguna.");
                 },
                 onError: (error, payment) => {
                     console.error("Payment Error:", error);
-                    if (error.message && error.message.includes("timeout")) {
-                        alert("Waktu pembayaran habis (60 detik). Pastikan koneksi internet Anda stabil dan coba lagi.");
-                    } else {
-                        alert("Gagal memproses pembayaran. Pastikan saldo koin Pi Anda cukup.");
-                    }
+                    alert("Gagal memproses transaksi. Pastikan saldo cukup dan koneksi stabil.");
                 },
             });
         } catch (e) {
-            console.error("Terjadi kesalahan sistem:", e);
-            alert("Gagal membuka dompet Pi. Pastikan Anda mengakses melalui Pi Browser.");
+            console.error("CreatePayment Exception:", e);
+            alert("Terjadi kesalahan teknis. Pastikan Anda berada di dalam Pi Browser.");
         }
     };
 
-    // --- LOGIKA NAVIGASI ---
-    window.switchPage = (pageId) => {
-        document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const target = document.getElementById(`page-${pageId}`);
-        if(target) target.classList.remove('hidden');
-        const navMap = { home: 0, cari: 1, keranjang: 2, profile: 3 };
-        const activeIdx = navMap[pageId];
-        if (activeIdx !== undefined) document.querySelectorAll('.nav-item')[activeIdx].classList.add('active');
-        if(pageId === 'keranjang') renderCart();
-        if(pageId === 'profile') updateProfileUI();
-    };
-
-    // --- MODAL DETAIL PRODUK ---
+    // --- INTEGRASI FITUR TAMBAHAN (KERANJANG & DETAIL) ---
+    
     window.openDetail = (id) => {
         const p = allProducts.find(prod => prod.id === id);
         if(!p) return;
@@ -125,81 +100,75 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         body.innerHTML = `
             <span class="close-modal" onclick="document.getElementById('product-modal').classList.add('hidden')">&times;</span>
-            <img src="${p.images[0]}" class="detail-img">
-            <h2 style="margin:10px 0 5px 0; font-size: 1.4rem;">${p.name}</h2>
-            <div class="detail-stats" style="margin-bottom:10px;">
-                <span style="color: #ffa500;">⭐ ${p.rating || '5.0'}</span>
-                <span style="margin: 0 8px; color: #ccc;">|</span>
-                <span>Terjual ${p.sold || '0'}+</span>
-                <span style="margin: 0 8px; color: #ccc;">|</span>
-                <span style="color: var(--pi-color); font-weight:bold;">${p.category}</span>
-            </div>
-            <div style="font-size: 1.8rem; font-weight: 800; color: var(--pi-color); margin-bottom: 15px;">π ${p.price}</div>
-            <hr style="border:0; border-top:1px solid #eee; margin-bottom: 15px;">
-            <p class="detail-desc" style="line-height:1.5;">${p.description || 'Produk digital premium terbaik untuk menunjang produktivitas Anda.'}</p>
-            
-            <div class="modal-actions" style="margin-top:20px; display:flex; gap:10px;">
-                <button onclick="addToCart('${p.id}')" style="flex:1; padding:15px; border-radius:12px; border:1px solid #ddd; background:white; font-size:1.2rem; cursor:pointer;">🛒</button>
-                <button onclick="initiatePayment('${p.id}')" class="btn-buy-now" style="flex:4; padding:15px; border-radius:12px; font-size:1rem; font-weight:bold; background: var(--pi-gold) !important; color: white; border:none; cursor:pointer;">BAYAR SEKARANG</button>
+            <img src="${p.images[0]}" style="width:100%; border-radius:15px; margin-bottom:15px;">
+            <h2>${p.name}</h2>
+            <p style="color:var(--text-muted)">${p.description || 'Digital Asset'}</p>
+            <div style="font-size: 1.5rem; font-weight: 800; color: var(--pi-color); margin: 15px 0;">π ${p.price}</div>
+            <div style="display:flex; gap:10px;">
+                <button onclick="addToCart('${p.id}')" style="flex:1; padding:12px; border-radius:10px; border:1px solid #ddd;">🛒</button>
+                <button onclick="handlePayment(${p.price}, '${p.name}')" style="flex:4; padding:12px; border-radius:10px; background:var(--pi-color); color:white; border:none; font-weight:bold;">BAYAR SEKARANG</button>
             </div>
         `;
         modal.classList.remove('hidden');
     };
 
-    // --- RENDER & DATA ---
+    // --- RENDER PRODUK DARI JSON ---
     async function loadData() {
         try {
             const res = await fetch('products.json');
             allProducts = await res.json();
             renderProducts(allProducts, 'main-grid');
-        } catch(e) { console.error("Gagal memuat produk dari JSON"); }
+        } catch(e) { 
+            console.log("Mode statis: Gunakan produk yang ada di HTML."); 
+        }
     }
 
     function renderProducts(data, containerId, isCart = false) {
         const container = document.getElementById(containerId);
         if(!container) return;
         container.innerHTML = '';
+
         data.forEach((p, index) => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.onclick = (e) => { if(!e.target.closest('button')) window.openDetail(p.id); };
             card.innerHTML = `
-                <div class="slider-container"><img src="${p.images[0]}" style="width:100%; height:100%; object-fit:cover;"></div>
+                <div class="image-container">
+                    <span class="category-tag">${p.category}</span>
+                    <img src="${p.images[0]}" class="product-img">
+                </div>
                 <div class="product-info">
-                    <h3 class="product-name" style="font-size:1rem; margin-bottom:5px;">${p.name}</h3>
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="price" style="color: var(--pi-color); font-weight:700;">π ${p.price}</span>
-                        <span style="font-size:0.75rem; color:var(--text-muted);">⭐ ${p.rating || '5.0'}</span>
+                    <h3 class="product-name">${p.name}</h3>
+                    <div class="price-row">
+                        <span class="price">π ${p.price}</span>
+                        <button class="btn-buy" onclick="handlePayment(${p.price}, '${p.name}')">Beli</button>
                     </div>
-                    ${isCart ? `<button class="btn-delete" onclick="removeFromCart(${index})" style="margin-top:10px; width:100%;">🗑️ Hapus</button>` : ''}
                 </div>`;
             container.appendChild(card);
         });
     }
 
-    // --- KERANJANG ---
+    // Navigasi & Keranjang
+    window.switchPage = (pageId) => {
+        document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
+        const target = document.getElementById(`page-${pageId}`);
+        if(target) target.classList.remove('hidden');
+        if(pageId === 'keranjang') renderCart();
+    };
+
     window.addToCart = (id) => {
         const prod = allProducts.find(p => p.id === id);
         if (prod) {
             cart.push({...prod});
             localStorage.setItem('pipro_cart', JSON.stringify(cart));
-            alert("Produk berhasil ditambahkan ke keranjang!");
+            alert("Masuk Keranjang");
         }
-    };
-
-    window.removeFromCart = (index) => {
-        cart.splice(index, 1);
-        localStorage.setItem('pipro_cart', JSON.stringify(cart));
-        renderCart();
     };
 
     function renderCart() {
         renderProducts(cart, 'cart-items', true);
-        const checkout = document.getElementById('checkout-container');
-        if(cart.length > 0) checkout.classList.remove('hidden');
-        else checkout.classList.add('hidden');
     }
 
     loadData();
-    updateAuthUI(); 
+    updateAuthUI();
 });

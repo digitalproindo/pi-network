@@ -8,6 +8,7 @@
         :root {
             --pi-color: #6d28d9;
             --pi-gold: #ffa500;
+            --pi-red: #ef4444; /* Warna untuk Logout */
             --text-main: #1e293b;
             --text-muted: #64748b;
             --bg-body: #f8fafc;
@@ -22,37 +23,54 @@
             padding-bottom: 90px;
         }
 
+        /* Header dengan posisi relatif untuk menampung tombol di pojok */
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
-            padding: 30px 20px 45px 20px;
+            padding: 40px 20px 50px 20px;
             text-align: center;
             border-bottom-left-radius: 30px;
             border-bottom-right-radius: 30px;
             box-shadow: 0 10px 25px rgba(109, 40, 217, 0.2);
+            position: relative;
         }
 
-        #login-section {
-            padding: 0 20px;
-            max-width: 600px;
-            margin: -25px auto 10px auto;
+        /* Tombol Auth di Pojok Kanan Atas */
+        .auth-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
         }
 
-        .btn-login {
-            width: 100%; background: var(--pi-gold); color: white; border: none;
-            padding: 15px; border-radius: 18px; font-weight: 700; font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3); cursor: pointer; transition: 0.3s;
+        .btn-auth {
+            background: var(--pi-gold);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: 0.3s;
         }
 
-        /* Styling Baru: Kategori Horizontal Scroll */
+        /* Style khusus saat tombol berubah jadi Logout */
+        .btn-logout-style {
+            background: var(--pi-red) !important;
+        }
+
+        /* Layout Kategori */
         .category-scroll {
             display: flex;
             overflow-x: auto;
             padding: 15px 20px;
             gap: 12px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
+            margin-top: -15px; /* Menempel sedikit ke header */
         }
-        .category-scroll::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+        .category-scroll::-webkit-scrollbar { display: none; }
 
         .category-pill {
             flex: 0 0 auto;
@@ -118,16 +136,16 @@
 <body>
 
     <header>
+        <div class="auth-container">
+            <button id="login-btn" class="btn-auth">Login</button>
+        </div>
+
         <h1 style="margin:0; font-size: 1.5rem;">Digital Pro Indo</h1>
         <p style="margin:5px 0 0 0; opacity: 0.8; font-size: 0.85rem;">Premium Digital Marketplace</p>
     </header>
 
     <div id="page-home">
-        <div id="login-section">
-            <button id="login-btn" class="btn-login">Login ke Pi Wallet</button>
-        </div>
-
-        <div class="category-scroll">
+        <div class="category-scroll" style="margin-top: 10px;">
             <div class="category-pill">🏠 Rumah</div>
             <div class="category-pill">🚗 Mobil</div>
             <div class="category-pill">🏍️ Motor</div>

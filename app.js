@@ -196,6 +196,39 @@ document.addEventListener("DOMContentLoaded", async () => {
         category: "Herbal",
         images: ["https://images.unsplash.com/photo-1590005354167-6da97870c91c?w=500&q=80"],
         desc: "Sari kurma pekat untuk meningkatkan stamina dan pemulihan tubuh."
+    },
+    {
+        id: 'v1',
+        name: "Sedan Sport Luxury - Tipe S1",
+        price: 5.5, // Contoh harga Pi yang lebih tinggi untuk otomotif
+        category: "Mobil",
+        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"],
+        desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof."
+    },
+    {
+        id: 'v2',
+        name: "Electric SUV Family - Eco Edition",
+        price: 4.8,
+        category: "Mobil",
+        images: ["https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500&q=80"],
+        desc: "Jarak tempuh 450km per charge, 7 Seater, Fitur Autopilot."
+    },
+    // Kategori Motor
+    {
+        id: 'm1',
+        name: "Motor Sport 250cc - Black Matte",
+        price: 1.2,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"],
+        desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern."
+    },
+    {
+        id: 'm2',
+        name: "Skuter Matic Retro - Classic White",
+        price: 0.65,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=500&q=80"],
+        desc: "Desain klasik elegan, Irit bahan bakar, Kapasitas bagasi luas."
     }
     ];
 

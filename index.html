@@ -26,7 +26,6 @@
 
         .hidden { display: none !important; }
 
-        /* REVISI HEADER: Padding bawah ditambah agar teks tidak tertutup kartu */
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
@@ -54,7 +53,8 @@
             cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
-        /* REVISI KATEGORI: Margin disesuaikan agar pas di lengkungan header */
+        .btn-logout-style { background: var(--pi-red) !important; }
+
         .category-scroll {
             display: flex; overflow-x: auto;
             padding: 15px 20px; gap: 12px;
@@ -79,7 +79,6 @@
             border-color: var(--pi-color);
         }
 
-        /* Grid Produk */
         .marketplace-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
@@ -92,9 +91,6 @@
         }
 
         .slider-container { width: 100%; height: 140px; overflow: hidden; position: relative; }
-        .slider-wrapper { display: flex; transition: 0.5s; height: 100%; }
-        .slider-wrapper img { min-width: 100%; object-fit: cover; }
-
         .product-info { padding: 12px; flex-grow: 1; }
         .product-name { font-size: 0.85rem; font-weight: 700; height: 34px; overflow: hidden; margin: 0 0 8px 0; }
         .price { font-weight: 800; color: var(--pi-color); font-size: 1.1rem; }
@@ -104,37 +100,24 @@
             color: white; border: none; flex: 1; border-radius: 10px;
             padding: 10px; font-weight: bold; font-size: 0.8rem; cursor: pointer;
         }
+        .btn-delete { background: var(--pi-red); color: white; border: none; padding: 8px; border-radius: 10px; width: 100%; font-size: 0.75rem; font-weight: bold; margin-top: 8px; cursor: pointer; }
 
-        /* REVISI PROFILE: Margin dikurangi agar kartu tidak menimpa judul utama */
-        #page-profile { 
-            padding: 0 20px; 
-            margin-top: -45px; 
-            position: relative;
-            z-index: 10;
-        }
+        #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
         .profile-card {
             background: white; border-radius: 35px; padding: 35px 20px;
             text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            border: 1px solid rgba(0,0,0,0.05);
         }
         .avatar-border {
             width: 120px; height: 120px; margin: 0 auto 20px;
             border: 5px solid #3b82f6; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; padding: 5px;
-            background: white;
+            display: flex; align-items: center; justify-content: center; padding: 5px; background: white;
         }
         .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
         .profile-username { color: var(--pi-color); font-size: 1.8rem; font-weight: 800; margin: 0; }
-        .uid-box { 
-            font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; 
-            padding: 15px; border-radius: 15px; word-break: break-all; margin: 25px 0;
-            line-height: 1.5; border: 1px solid #e2e8f0;
-        }
+        .uid-box { font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 15px; border-radius: 15px; word-break: break-all; margin: 25px 0; line-height: 1.5; }
         .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
         .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
@@ -158,20 +141,18 @@
 
     <main id="page-home">
         <div class="category-scroll">
-            <div class="category-pill active" onclick="filterCategory('all')">Semua</div>
-            <div class="category-pill" onclick="filterCategory('Rumah')">🏠 Rumah</div>
-            <div class="category-pill" onclick="filterCategory('Software')">💻 Software</div>
-            <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
-            <div class="category-pill" onclick="filterCategory('Elektronik')">📱 Elektronik</div>
+            <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
+            <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
+            <div class="category-pill" onclick="filterCategory('Software', this)">💻 Software</div>
+            <div class="category-pill" onclick="filterCategory('E-Book', this)">📚 E-Book</div>
+            <div class="category-pill" onclick="filterCategory('Elektronik', this)">📱 Elektronik</div>
         </div>
-        <div id="main-grid" class="marketplace-grid">
-            </div>
+        <div id="main-grid" class="marketplace-grid"></div>
     </main>
 
     <main id="page-cari" class="hidden">
         <div style="padding: 20px;">
-            <input type="text" id="search-input" placeholder="Cari produk digital..." 
-                   style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none; font-family:inherit;" onkeyup="searchProduct()">
+            <input type="text" id="search-input" placeholder="Cari produk digital..." style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none;" onkeyup="searchProduct()">
         </div>
         <div id="search-results" class="marketplace-grid"></div>
     </main>
@@ -191,34 +172,25 @@
             </div>
             <h2 id="profile-username" class="profile-username">Tamu</h2>
             <p style="color: var(--text-muted); font-size: 1rem; margin: 8px 0; font-weight: 600;">Member Digital Pro Indo</p>
-            
-            <div class="uid-box">
-                <strong>Wallet UID:</strong><br>
-                <span id="profile-address" style="font-family: monospace;">2cd888fe-537d-4e9a-9f90-c280c6b06610</span>
-            </div>
-
+            <div class="uid-box"><strong>Wallet UID:</strong><br><span id="profile-address">Belum Login</span></div>
             <div class="status-row">
-                <div class="badge-verified">
-                    Status: Verified <span style="font-size: 1.5rem;">✅</span>
-                </div>
-                <div style="font-size: 1.1rem; color: #1e293b;">
-                    Region: Indonesia <span style="font-size: 1.5rem;">🇮🇩</span>
-                </div>
+                <div class="badge-verified">Status: Verified <span style="font-size: 1.5rem;">✅</span></div>
+                <div style="font-size: 1.1rem; color: #1e293b;">Region: Indonesia <span style="font-size: 1.5rem;">🇮🇩</span></div>
             </div>
         </div>
     </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+        <div class="nav-item active" onclick="switchPage('home')">
             <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
         </div>
-        <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
+        <div class="nav-item" onclick="switchPage('cari')">
             <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
         </div>
-        <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+        <div class="nav-item" onclick="switchPage('keranjang')">
             <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
         </div>
-        <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+        <div class="nav-item" onclick="switchPage('profile')">
             <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
         </div>
     </nav>

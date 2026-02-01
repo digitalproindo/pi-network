@@ -69,10 +69,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Highlight navigasi aktif
         const navMap = { home: 0, cari: 1, keranjang: 2, profile: 3 };
         const activeIdx = navMap[pageId];
-        document.querySelectorAll('.nav-item')[activeIdx].classList.add('active');
+        if (activeIdx !== undefined) {
+            document.querySelectorAll('.nav-item')[activeIdx].classList.add('active');
+        }
 
         if(pageId === 'keranjang') renderCart();
-        if(pageId === 'profile') updateProfileUI(); // Panggil fungsi update saat profil diklik
+        if(pageId === 'profile') updateProfileUI();
+    };
+
+    // --- FUNGSI FILTER KATEGORI (DITAMBAHKAN) ---
+    window.filterCategory = (category) => {
+        // Update visual tombol filter
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.remove('active');
+            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) {
+                pill.classList.add('active');
+            }
+        });
+
+        // Filter data produk
+        if (category === 'all') {
+            renderProducts(allProducts, 'main-grid');
+        } else {
+            const filtered = allProducts.filter(p => p.category === category);
+            renderProducts(filtered, 'main-grid');
+        }
+    };
+
+    // --- FUNGSI PENCARIAN (DITAMBAHKAN) ---
+    window.searchProduct = () => {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
+        renderProducts(filtered, 'search-results');
     };
 
     // --- LOGIKA PRODUK & KERANJANG ---
@@ -88,6 +116,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         const container = document.getElementById(containerId);
         if(!container) return;
         container.innerHTML = '';
+
+        if(data.length === 0) {
+            container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">Produk tidak ditemukan.</p>`;
+            return;
+        }
 
         data.forEach((p, index) => {
             const card = document.createElement('div');
@@ -114,9 +147,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.addToCart = (id) => {
         const prod = allProducts.find(p => p.id === id);
-        cart.push(prod);
-        localStorage.setItem('pipro_cart', JSON.stringify(cart));
-        alert("Produk masuk keranjang!");
+        if (prod) {
+            cart.push({...prod});
+            localStorage.setItem('pipro_cart', JSON.stringify(cart));
+            alert("Produk masuk keranjang!");
+        }
     };
 
     window.removeFromCart = (index) => {
@@ -134,12 +169,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.checkoutWhatsApp = () => {
         if(cart.length === 0) return;
-        const nomorWA = "6281234567890"; // Ganti dengan nomor Anda
+        const nomorWA = "6282191851112"; // Ganti dengan nomor Anda
         let pesan = `Halo Admin, saya ingin memesan:\n\n`;
         let total = 0;
         cart.forEach((item, i) => {
             pesan += `${i+1}. ${item.name} - π ${item.price}\n`;
-            total += item.price;
+            total += parseFloat(item.price);
         });
         pesan += `\nTotal: π ${total.toFixed(4)}\n`;
         pesan += `Pembeli: ${currentUser ? currentUser.username : 'Tamu'}`;
@@ -147,5 +182,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     };
 
     loadData();
-    updateAuthUI(); // Pastikan tombol sesuai status saat awal load
+    updateAuthUI(); 
 });

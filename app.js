@@ -15,9 +15,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
         {
             id: 'p2',
-            name: "Asset License Pro Digital",
+            name: "COCO Probiotik",
             price: 0.010,
-            category: "Software",
+            category: "Herbal",
             images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"],
             desc: "Lisensi aset digital premium Digital Pro Indo."
         },
@@ -164,6 +164,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         category: "Elektronik",
         images: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80"],
         desc: "Suara jernih 360 derajat, baterai tahan 12 jam. Cocok untuk pesta outdoor."
+    },
+    {
+        id: 'hb1',
+        name: "Madu Hutan Murni - 500gr Premium",
+        price: 0.005,
+        category: "Herbal",
+        images: ["https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&q=80"],
+        desc: "Madu asli dari hutan tropis tanpa bahan pengawet. Kaya nutrisi dan antioksidan."
+    },
+    {
+        id: 'hb2',
+        name: "Teh Hijau Organik - Daun Pilihan",
+        price: 0.003,
+        category: "Herbal",
+        images: ["https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500&q=80"],
+        desc: "Teh hijau murni untuk detoksifikasi tubuh dan meningkatkan metabolisme."
+    },
+    {
+        id: 'hb3',
+        name: "Minyak Zaitun Extra Virgin - 250ml",
+        price: 0.008,
+        category: "Herbal",
+        images: ["https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&q=80"],
+        desc: "Minyak zaitun kualitas terbaik untuk kesehatan jantung dan kecantikan kulit."
+    },
+    {
+        id: 'hb4',
+        name: "Ekstrak Kurma Pro - Booster Energi",
+        price: 0.004,
+        category: "Herbal",
+        images: ["https://images.unsplash.com/photo-1590005354167-6da97870c91c?w=500&q=80"],
+        desc: "Sari kurma pekat untuk meningkatkan stamina dan pemulihan tubuh."
     }
     ];
 

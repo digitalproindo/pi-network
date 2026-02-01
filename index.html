@@ -164,25 +164,36 @@
             <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
             <div class="category-pill" onclick="filterCategory('Elektronik')">📱 Elektronik</div>
         </div>
-        <div id="main-grid" class="marketplace-grid">
+        <div class="marketplace-grid">
+            <div class="product-card">
+                <div class="image-container">
+                    <span class="category-tag">E-Book</span>
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400" class="product-img">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Mastering Pi Network</h3>
+                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="price">π 0.005</span>
+                        <button class="btn-buy" onclick="handlePayment(0.005, 'Mastering Pi')">Beli</button>
+                    </div>
+                </div>
             </div>
-    </main>
 
-    <main id="page-cari" class="hidden">
-        <div style="padding: 20px;">
-            <input type="text" id="search-input" placeholder="Cari produk digital..." 
-                   style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none; font-family:inherit;" onkeyup="searchProduct()">
+            <div class="product-card">
+                <div class="image-container">
+                    <span class="category-tag">Software</span>
+                    <img src="https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg" class="product-img">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Asset License Pro</h3>
+                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="price">π 0.010</span>
+                        <button class="btn-buy" onclick="handlePayment(0.010, 'Asset License')">Beli</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="search-results" class="marketplace-grid"></div>
-    </main>
-
-    <main id="page-keranjang" class="hidden">
-        <h3 style="padding: 20px 20px 10px; margin:0; font-weight: 800;">Keranjang Saya</h3>
-        <div id="cart-items" class="marketplace-grid"></div>
-        <div id="checkout-container" class="hidden" style="padding: 20px;">
-            <button class="btn-buy-now" style="width:100%; padding: 18px; border-radius: 15px;" onclick="checkoutWhatsApp()">Pesan via WhatsApp 📱</button>
-        </div>
-    </main>
+    </div>
 
     <main id="page-profile" class="hidden">
         <div class="profile-card">

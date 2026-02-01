@@ -8,7 +8,7 @@
         :root {
             --pi-color: #6d28d9;
             --pi-gold: #ffa500;
-            --pi-red: #ef4444; /* Warna untuk Logout */
+            --pi-red: #ef4444; 
             --text-main: #1e293b;
             --text-muted: #64748b;
             --bg-body: #f8fafc;
@@ -23,7 +23,6 @@
             padding-bottom: 90px;
         }
 
-        /* Header dengan posisi relatif untuk menampung tombol di pojok */
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
@@ -35,7 +34,6 @@
             position: relative;
         }
 
-        /* Tombol Auth di Pojok Kanan Atas */
         .auth-container {
             position: absolute;
             top: 15px;
@@ -56,19 +54,15 @@
             transition: 0.3s;
         }
 
-        /* Style khusus saat tombol berubah jadi Logout */
-        .btn-logout-style {
-            background: var(--pi-red) !important;
-        }
+        .btn-logout-style { background: var(--pi-red) !important; }
 
-        /* Layout Kategori */
         .category-scroll {
             display: flex;
             overflow-x: auto;
             padding: 15px 20px;
             gap: 12px;
             scrollbar-width: none;
-            margin-top: -15px; /* Menempel sedikit ke header */
+            margin-top: -15px; 
         }
         .category-scroll::-webkit-scrollbar { display: none; }
 
@@ -93,6 +87,7 @@
             background: white; border-radius: 20px; overflow: hidden;
             display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             border: 1px solid #f1f5f9;
+            cursor: pointer;
         }
 
         .image-container { position: relative; width: 100%; height: 130px; background: #f1f5f9; }
@@ -109,7 +104,38 @@
         .price { font-weight: 800; color: var(--pi-color); font-size: 1rem; }
         .btn-buy { background: var(--pi-color); color: white; border: none; padding: 7px 12px; border-radius: 10px; cursor: pointer; }
 
-        /* Profile Page */
+        /* --- MODAL DETAIL CSS --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); z-index: 2000;
+            display: none; align-items: flex-end;
+        }
+        .modal-content {
+            background: white; width: 100%; max-height: 85vh;
+            border-top-left-radius: 30px; border-top-right-radius: 30px;
+            padding: 25px; overflow-y: auto; position: relative;
+            animation: slideUp 0.3s ease-out;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.5rem; color: #94a3b8; cursor: pointer; }
+        .detail-img { width: 100%; border-radius: 20px; margin-bottom: 15px; aspect-ratio: 1/1; object-fit: cover; }
+        .detail-title { font-size: 1.3rem; font-weight: 800; margin: 0 0 10px 0; }
+        .detail-meta { display: flex; gap: 15px; margin-bottom: 15px; font-size: 0.85rem; color: var(--text-muted); }
+        .detail-price { font-size: 1.6rem; font-weight: 800; color: var(--pi-color); margin-bottom: 15px; }
+        .detail-desc { font-size: 0.9rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 25px; }
+        .modal-footer { display: flex; gap: 12px; position: sticky; bottom: 0; background: white; padding-top: 10px; }
+        
+        .btn-cart-outline {
+            flex: 1; padding: 15px; border-radius: 15px; border: 2px solid #e2e8f0;
+            background: white; font-size: 1.2rem; cursor: pointer;
+        }
+        .btn-buy-full {
+            flex: 4; padding: 15px; border-radius: 15px; border: none;
+            background: var(--pi-color); color: white; font-weight: 700; cursor: pointer;
+        }
+
+        /* Profile & Nav */
         #page-profile { padding: 20px; max-width: 600px; margin: 0 auto; }
         .profile-card {
             background: white; border-radius: 25px; padding: 30px 20px;
@@ -118,7 +144,6 @@
         .profile-avatar { font-size: 4rem; margin-bottom: 15px; background: #f5f3ff; width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 15px auto; }
         .uid-box { font-size: 0.7rem; color: var(--text-muted); background: #f1f5f9; padding: 12px; border-radius: 12px; word-break: break-all; margin-top: 15px; }
 
-        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
@@ -139,7 +164,6 @@
         <div class="auth-container">
             <button id="login-btn" class="btn-auth">Login</button>
         </div>
-
         <h1 style="margin:0; font-size: 1.5rem;">Digital Pro Indo</h1>
         <p style="margin:5px 0 0 0; opacity: 0.8; font-size: 0.85rem;">Premium Digital Marketplace</p>
     </header>
@@ -148,64 +172,19 @@
         <div class="category-scroll" style="margin-top: 10px;">
             <div class="category-pill">🏠 Rumah</div>
             <div class="category-pill">🚗 Mobil</div>
-            <div class="category-pill">🏍️ Motor</div>
-            <div class="category-pill">✨ Emas</div>
             <div class="category-pill">📱 Elektronik</div>
-            <div class="category-pill">👕 Fashion</div>
-            <div class="category-pill">💄 Kecantikan</div>
-            <div class="category-pill">🏥 Kesehatan</div>
-            <div class="category-pill">🏢 Property</div>
-            <div class="category-pill">🔧 Otomotif</div>
-            <div class="category-pill">👶 Ibu & Bayi</div>
-            <div class="category-pill">🛋️ Rumah Tangga</div>
-            <div class="category-pill">🍔 Makanan (F&B)</div>
-            <div class="category-pill">🎨 Hobi & Koleksi</div>
-            <div class="category-pill">⚽ Olahraga</div>
-            <div class="category-pill">🖋️ ATK</div>
             <div class="category-pill">⚡ Produk Digital</div>
         </div>
 
-        <div class="marketplace-grid">
-            <div class="product-card">
-                <div class="image-container">
-                    <span class="category-tag">E-Book</span>
-                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400" class="product-img">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">Mastering Pi Network</h3>
-                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="price">π 0.005</span>
-                        <button class="btn-buy" onclick="handlePayment(0.005, 'Mastering Pi')">Beli</button>
-                    </div>
-                </div>
+        <div class="marketplace-grid" id="product-list">
             </div>
-
-            <div class="product-card">
-                <div class="image-container">
-                    <span class="category-tag">Software</span>
-                    <img src="https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg" class="product-img">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">Asset License Pro</h3>
-                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="price">π 0.010</span>
-                        <button class="btn-buy" onclick="handlePayment(0.010, 'Asset License')">Beli</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <div id="page-profile" style="display: none;">
-        <div class="profile-card">
-            <div class="profile-avatar">👤</div>
-            <h2 id="profile-username" style="margin: 0; color: var(--pi-color);">Belum Login</h2>
-            <p style="color: var(--text-muted); font-size: 0.85rem;">Member Digital Pro Indo</p>
-            <div id="profile-address" class="uid-box">Silakan login untuk melihat detail akun.</div>
-            <div style="margin-top: 25px; text-align: left; font-size: 0.9rem; border-top: 1px solid #eee; padding-top: 20px;">
-                <p><strong>Status:</strong> <span style="color: #10b981;">Verified ✅</span></p>
-                <p><strong>Region:</strong> Indonesia 🇮🇩</p>
-            </div>
+    <div id="detail-modal" class="modal-overlay" onclick="if(event.target===this) closeDetail()">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeDetail()">&times;</span>
+            <div id="modal-inner">
+                </div>
         </div>
     </div>
 

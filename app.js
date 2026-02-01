@@ -1,204 +1,153 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
+    let allProducts = [];
+    let cart = JSON.parse(localStorage.getItem('pipro_cart')) || [];
 
-    // --- 1. INISIALISASI SDK ---
-    try {
-        await Pi.init({ version: "2.0", sandbox: false });
-        console.log("Pi SDK Berhasil diinisialisasi");
-    } catch (e) {
-        console.error("Gagal inisialisasi SDK:", e);
+    // Init SDK
+    try { await Pi.init({ version: "2.0", sandbox: false }); } catch(e) {}
+
+    // Load Products
+    async function loadData() {
+        try {
+            const res = await fetch('products.json');
+            allProducts = await res.json();
+            renderProducts(allProducts, 'main-grid');
+        } catch(e) { console.error("Gagal load JSON"); }
     }
 
-    // --- 2. LOGIKA UPDATE UI PROFIL ---
-    function updateProfileUI() {
-        const profileUsername = document.getElementById('profile-username');
-        const profileAddress = document.getElementById('profile-address');
-        const loginBtn = document.getElementById('login-btn');
+    function renderProducts(data, containerId, isCart = false) {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        container.innerHTML = '';
 
-        if (currentUser) {
-            if (profileUsername) profileUsername.innerText = currentUser.username;
-            if (profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
-            if (loginBtn) {
-                loginBtn.innerText = "Logout";
-                loginBtn.classList.add('btn-logout-style');
-            }
-        } else {
-            if (profileUsername) profileUsername.innerText = "Belum Login";
-            if (profileAddress) profileAddress.innerText = "Silakan login untuk melihat detail akun.";
-            if (loginBtn) {
-                loginBtn.innerText = "Login";
-                loginBtn.classList.remove('btn-logout-style');
-                loginBtn.disabled = false;
-            }
-        }
+        data.forEach((p, index) => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="slider-container" id="slider-${containerId}-${index}">
+                    <div class="slider-wrapper">
+                        ${p.images.map(img => `<img src="${img}">`).join('')}
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="price">π ${p.price}</span>
+                    <h3 class="product-name">${p.name}</h3>
+                    ${isCart ? 
+                        `<button class="btn-delete" onclick="removeFromCart(${index})">🗑️ Hapus</button>` :
+                        `<div class="action-buttons">
+                            <button class="btn-cart" onclick="addToCart('${p.id}')">🛒</button>
+                            <button class="btn-buy-now" onclick="handlePayment(${p.price}, '${p.name}')">Beli</button>
+                        </div>`
+                    }
+                </div>
+            `;
+            container.appendChild(card);
+            if(p.images.length > 1) initSlider(`slider-${containerId}-${index}`, p.images.length);
+        });
     }
 
-    // --- 3. LOGIKA NAVIGASI (SPA) ---
-    const navItems = document.querySelectorAll('.nav-item');
-    const pageHome = document.getElementById('page-home');
-    const pageCari = document.getElementById('page-cari');
-    const pageKeranjang = document.getElementById('page-keranjang');
-    const pageProfile = document.getElementById('page-profile');
+    function initSlider(id, total) {
+        let i = 0;
+        const el = document.querySelector(`#${id} .slider-wrapper`);
+        setInterval(() => {
+            i = (i + 1) % total;
+            if(el) el.style.transform = `translateX(-${i * 100}%)`;
+        }, 4000);
+    }
 
-    window.switchPage = function(pageName) {
-        const target = pageName.trim().toLowerCase();
+    // Navigation Fix
+    window.switchPage = (pageId) => {
+        document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         
-        // Reset active state di nav bar
-        navItems.forEach(item => item.classList.remove('active'));
-
-        // Sembunyikan semua halaman
-        [pageHome, pageCari, pageKeranjang, pageProfile].forEach(page => {
-            if (page) page.style.display = 'none';
-        });
-
-        // Tampilkan halaman target
-        if (target === 'profil') {
-            pageProfile.style.display = 'block';
-            navItems[3].classList.add('active');
-            updateProfileUI();
-        } else if (target === 'cari') {
-            pageCari.style.display = 'block';
-            navItems[1].classList.add('active');
-        } else if (target === 'keranjang') {
-            pageKeranjang.style.display = 'block';
-            navItems[2].classList.add('active');
-        } else {
-            pageHome.style.display = 'block';
-            navItems[0].classList.add('active');
-        }
-    };
-
-    // --- 4. FITUR FILTER & SEARCH ---
-
-    // Filter Berdasarkan Kategori
-    window.filterCategory = function(category) {
-        const products = document.querySelectorAll('.product-card');
-        products.forEach(product => {
-            const tag = product.querySelector('.category-tag').innerText.toLowerCase();
-            if (category === 'all' || tag === category.toLowerCase()) {
-                product.style.display = 'flex';
-            } else {
-                product.style.display = 'none';
-            }
-        });
-    };
-
-    // Pencarian Produk Real-time
-    window.searchProduct = function() {
-        const input = document.getElementById('search-input').value.toLowerCase();
-        const mainProducts = document.querySelectorAll('#main-grid .product-card');
-        const resultsContainer = document.getElementById('search-results');
+        const target = document.getElementById(`page-${pageId}`);
+        if(target) target.classList.remove('hidden');
         
-        // Bersihkan hasil sebelumnya
-        resultsContainer.innerHTML = '';
-        let found = false;
+        // Highlight active nav
+        const idx = {home:0, cari:1, keranjang:2, profile:3}[pageId];
+        document.querySelectorAll('.nav-item')[idx].classList.add('active');
 
-        mainProducts.forEach(product => {
-            const name = product.querySelector('.product-name').innerText.toLowerCase();
-            if (name.includes(input) && input !== '') {
-                const clone = product.cloneNode(true);
-                resultsContainer.appendChild(clone);
-                found = true;
+        if(pageId === 'keranjang') renderCart();
+        if(pageId === 'profile') updateProfile();
+    };
+
+    // Filter & Search
+    window.filterCategory = (cat) => {
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.remove('active');
+            if(pill.innerText.toLowerCase().includes(cat.toLowerCase()) || (cat === 'all' && pill.innerText === 'Semua')) {
+                pill.classList.add('active');
             }
         });
-
-        if (!found && input !== '') {
-            resultsContainer.innerHTML = '<p style="text-align:center; grid-column: span 2; color: #64748b;">Produk tidak ditemukan.</p>';
-        } else if (input === '') {
-            resultsContainer.innerHTML = '<p style="text-align:center; grid-column: span 2; color: #64748b;">Gunakan kotak di atas untuk mencari.</p>';
-        }
+        const filtered = cat === 'all' ? allProducts : allProducts.filter(p => p.category === cat);
+        renderProducts(filtered, 'main-grid');
     };
 
-    // --- 5. FUNGSI CLEANUP PEMBAYARAN ---
-    async function handleIncompletePayment(payment) {
-        try {
-            await fetch('/api/complete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    paymentId: payment.identifier, 
-                    txid: payment.transaction.txid 
-                })
-            });
-        } catch (err) { 
-            console.error("Gagal sinkronisasi pembayaran:", err); 
-        }
-    }
-
-    // --- 6. FUNGSI AUTH ---
-    async function handleAuth() {
-        const loginBtn = document.getElementById('login-btn');
-
-        if (currentUser) {
-            if (confirm("Apakah Anda ingin logout?")) {
-                currentUser = null;
-                updateProfileUI();
-                alert("Berhasil Logout.");
-            }
-            return;
-        }
-
-        if (loginBtn) {
-            loginBtn.innerText = "...";
-            loginBtn.disabled = true;
-        }
-
-        try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
-            
-            currentUser = auth.user;
-            updateProfileUI();
-            alert("Halo " + currentUser.username + ", selamat datang!");
-        } catch (err) {
-            console.error("Auth error:", err);
-            if (loginBtn) {
-                loginBtn.innerText = "Login";
-                loginBtn.disabled = false;
-            }
-            alert("Gagal Login. Pastikan buka di Pi Browser.");
-        }
-    }
-
-    // --- 7. FUNGSI PEMBAYARAN ---
-    window.handlePayment = async function(amount, productName) {
-        if (!currentUser) return alert("Silakan Login terlebih dahulu!");
-
-        try {
-            await Pi.createPayment({
-                amount: amount,
-                memo: `Beli ${productName} - Digital Pro Indo`,
-                metadata: { productName: productName },
-            }, {
-                onReadyForServerApproval: async (paymentId) => {
-                    const res = await fetch('/api/approve', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId })
-                    });
-                    return res.ok;
-                },
-                onReadyForServerCompletion: async (paymentId, txid) => {
-                    const res = await fetch('/api/complete', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId, txid })
-                    });
-                    if (res.ok) alert(`Sukses membeli ${productName}!`);
-                },
-                onCancel: (paymentId) => console.log("Batal:", paymentId),
-                onError: (error, payment) => {
-                    if (payment) handleIncompletePayment(payment);
-                    alert("Error: " + error.message);
-                }
-            });
-        } catch (err) { 
-            console.error("Payment error:", err); 
-        }
+    window.searchProduct = () => {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
+        renderProducts(filtered, 'search-results');
     };
 
+    // Cart Logic
+    window.addToCart = (id) => {
+        const prod = allProducts.find(p => p.id === id);
+        cart.push(prod);
+        localStorage.setItem('pipro_cart', JSON.stringify(cart));
+        alert("Ditambahkan ke keranjang!");
+    };
+
+    window.removeFromCart = (index) => {
+        cart.splice(index, 1);
+        localStorage.setItem('pipro_cart', JSON.stringify(cart));
+        renderCart();
+    };
+
+    function renderCart() {
+        renderProducts(cart, 'cart-items', true);
+        const checkout = document.getElementById('checkout-container');
+        if(cart.length > 0) checkout.classList.remove('hidden');
+        else checkout.classList.add('hidden');
+    }
+
+    // WhatsApp Checkout
+    window.checkoutWhatsApp = () => {
+        if(cart.length === 0) return;
+        const nomorWA = "6281234567890"; // GANTI DENGAN NOMOR ANDA
+        let pesan = `Halo Admin, saya ingin membeli:\n\n`;
+        let total = 0;
+        
+        cart.forEach((item, i) => {
+            pesan += `${i+1}. ${item.name} (π ${item.price})\n`;
+            total += item.price;
+        });
+        
+        pesan += `\nTotal Harga: π ${total.toFixed(4)}\n`;
+        pesan += `Username Pi: ${currentUser ? currentUser.username : 'Guest'}`;
+        
+        const url = `https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`;
+        window.open(url, '_blank');
+    };
+
+    // Auth Fix
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) loginBtn.onclick = handleAuth;
+    loginBtn.onclick = async () => {
+        try {
+            const auth = await Pi.authenticate(['username', 'payments'], (p) => {});
+            currentUser = auth.user;
+            updateProfile();
+            alert("Login Berhasil!");
+        } catch(e) { alert("Login Gagal"); }
+    };
+
+    function updateProfile() {
+        if(currentUser) {
+            document.getElementById('profile-username').innerText = currentUser.username;
+            document.getElementById('profile-address').innerText = currentUser.uid;
+            loginBtn.innerText = "Logged In";
+        }
+    }
+
+    loadData();
 });

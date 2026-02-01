@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Digital Pro Indo - Premium Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --pi-color: #6d28d9;
@@ -16,17 +17,19 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, system-ui, sans-serif;
+            font-family: 'Inter', sans-serif;
             margin: 0;
             background-color: var(--bg-body);
             color: var(--text-main);
             padding-bottom: 90px;
         }
 
+        .hidden { display: none !important; }
+
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
-            padding: 40px 20px 50px 20px;
+            padding: 40px 20px 60px 20px;
             text-align: center;
             border-bottom-left-radius: 30px;
             border-bottom-right-radius: 30px;
@@ -43,41 +46,37 @@
 
         .btn-auth {
             background: var(--pi-gold);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 0.75rem;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            color: white; border: none;
+            padding: 8px 16px; border-radius: 12px;
+            font-weight: 700; font-size: 0.75rem;
+            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
         }
 
         .btn-logout-style { background: var(--pi-red) !important; }
 
+        /* Kategori Scroll */
         .category-scroll {
-            display: flex;
-            overflow-x: auto;
-            padding: 15px 20px;
-            gap: 12px;
-            scrollbar-width: none;
-            margin-top: -15px;
+            display: flex; overflow-x: auto;
+            padding: 15px 20px; gap: 12px;
+            scrollbar-width: none; margin-top: -25px;
         }
         .category-scroll::-webkit-scrollbar { display: none; }
 
         .category-pill {
-            flex: 0 0 auto;
-            background: white;
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
-            white-space: nowrap;
-            cursor: pointer;
+            flex: 0 0 auto; background: white;
+            padding: 10px 18px; border-radius: 12px;
+            font-size: 0.75rem; font-weight: 600;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 2px solid transparent; cursor: pointer;
+            transition: 0.3s;
+        }
+        .category-pill.active {
+            background: var(--pi-color);
+            color: white;
+            border-color: var(--pi-color);
         }
 
+        /* Grid Produk */
         .marketplace-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
@@ -89,39 +88,64 @@
             border: 1px solid #f1f5f9;
         }
 
-        .image-container { position: relative; width: 100%; height: 130px; background: #f1f5f9; }
-        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .slider-container { width: 100%; height: 130px; overflow: hidden; position: relative; }
+        .slider-wrapper { display: flex; transition: 0.5s; height: 100%; }
+        .slider-wrapper img { min-width: 100%; object-fit: cover; }
+
         .category-tag {
-            position: absolute; top: 10px; left: 10px;
-            background: rgba(255,255,255,0.95);
-            padding: 4px 8px; border-radius: 8px;
+            position: absolute; top: 8px; left: 8px;
+            background: rgba(255,255,255,0.9); z-index: 2;
+            padding: 3px 7px; border-radius: 6px;
             font-size: 0.6rem; font-weight: 800; color: var(--pi-color);
         }
 
         .product-info { padding: 12px; flex-grow: 1; }
-        .product-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+        .product-name { font-size: 0.85rem; font-weight: 700; height: 34px; overflow: hidden; margin: 0 0 8px 0; }
         .price { font-weight: 800; color: var(--pi-color); font-size: 1rem; }
-        .btn-buy { background: var(--pi-color); color: white; border: none; padding: 7px 12px; border-radius: 10px; cursor: pointer; }
 
-        /* Search Input Style */
-        .search-container { padding: 20px; }
-        .search-bar {
-            width: 100%; padding: 12px 15px; border-radius: 15px;
-            border: 1px solid #ddd; box-sizing: border-box; font-size: 1rem;
+        .action-buttons { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-cart { background: #f1f5f9; border: none; padding: 8px; border-radius: 10px; cursor: pointer; }
+        .btn-buy-now { 
+            background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+            color: white; border: none; flex: 1; border-radius: 10px;
+            font-weight: bold; font-size: 0.75rem; cursor: pointer;
         }
+        .btn-delete { background: var(--pi-red); color: white; border: none; padding: 8px; border-radius: 10px; width: 100%; font-size: 0.75rem; font-weight: bold; margin-top: 8px; }
 
-        /* Navigasi Bawah */
+        /* REVISI PROFILE - SESUAI GAMBAR */
+        #page-profile { padding: 0 20px; margin-top: -40px; }
+        .profile-card {
+            background: white; border-radius: 30px; padding: 30px 20px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .avatar-border {
+            width: 110px; height: 110px; margin: 0 auto 15px;
+            border: 4px solid #3b82f6; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; padding: 5px;
+        }
+        .avatar-border img { width: 100%; height: 100%; border-radius: 50%; }
+        
+        .profile-username { color: var(--pi-color); font-size: 1.6rem; font-weight: 800; margin: 0; }
+        .uid-box { 
+            font-size: 0.7rem; color: var(--text-muted); background: #f1f5f9; 
+            padding: 15px; border-radius: 15px; word-break: break-all; margin: 20px 0;
+            line-height: 1.4;
+        }
+        .status-row { display: flex; flex-direction: column; gap: 10px; align-items: center; font-weight: 700; }
+        .badge-verified { color: #059669; display: flex; align-items: center; gap: 5px; }
+
+        /* Checkout WA Bar */
+        .checkout-bar { position: fixed; bottom: 85px; left: 0; right: 0; padding: 15px; background: white; border-top: 1px solid #eee; z-index: 99; }
+
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
-            justify-content: space-around; align-items: center;
-            padding: 12px 10px 25px 10px;
-            border-top: 1px solid #f1f5f9; z-index: 1000;
+            padding: 10px 0 25px 0; border-top: 1px solid #f1f5f9; z-index: 1000;
         }
-        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; flex: 1; cursor: pointer; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; }
         .nav-item.active { color: var(--pi-color); }
-        .nav-item.active .nav-icon-bg { background: #ede9fe; color: var(--pi-color); padding: 6px 16px; border-radius: 12px; margin-bottom: 4px; }
-        .nav-icon { font-size: 1.3rem; margin-bottom: 4px; }
+        .nav-icon { font-size: 1.4rem; margin-bottom: 2px; }
         .nav-text { font-size: 0.65rem; font-weight: 600; }
     </style>
 </head>
@@ -135,87 +159,68 @@
         <p style="margin:5px 0 0 0; opacity: 0.8; font-size: 0.85rem;">Premium Digital Marketplace</p>
     </header>
 
-    <div id="page-home">
+    <main id="page-home">
         <div class="category-scroll">
-            <div class="category-pill" onclick="filterCategory('all')" style="background: var(--pi-color); color: white;">Semua</div>
-            <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
-            <div class="category-pill" onclick="filterCategory('Software')">💻 Software</div>
+            <div class="category-pill active" onclick="filterCategory('all')">Semua</div>
             <div class="category-pill" onclick="filterCategory('Rumah')">🏠 Rumah</div>
-            <div class="category-pill" onclick="filterCategory('Mobil')">🚗 Mobil</div>
-            <div class="category-pill" onclick="filterCategory('Motor')">🏍️ Motor</div>
+            <div class="category-pill" onclick="filterCategory('Software')">💻 Software</div>
+            <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
+            <div class="category-pill" onclick="filterCategory('Elektronik')">📱 Elektronik</div>
+            <div class="category-pill" onclick="filterCategory('Fashion')">👕 Fashion</div>
         </div>
-
-        <div class="marketplace-grid" id="main-grid">
-            <div class="product-card">
-                <div class="image-container">
-                    <span class="category-tag">E-Book</span>
-                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400" class="product-img">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">Mastering Pi Network</h3>
-                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="price">π 0.005</span>
-                        <button class="btn-buy" onclick="handlePayment(0.005, 'Mastering Pi')">Beli</button>
-                    </div>
-                </div>
+        <div id="main-grid" class="marketplace-grid">
             </div>
+    </main>
 
-            <div class="product-card">
-                <div class="image-container">
-                    <span class="category-tag">Software</span>
-                    <img src="https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg" class="product-img">
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">Asset License Pro</h3>
-                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
-                        <span class="price">π 0.010</span>
-                        <button class="btn-buy" onclick="handlePayment(0.010, 'Asset License')">Beli</button>
-                    </div>
-                </div>
-            </div>
+    <main id="page-cari" class="hidden">
+        <div style="padding: 20px;">
+            <input type="text" id="search-input" placeholder="Cari produk digital..." 
+                   style="width:100%; padding:14px; border-radius:12px; border:1px solid #ddd; outline:none;" onkeyup="searchProduct()">
         </div>
-    </div>
+        <div id="search-results" class="marketplace-grid"></div>
+    </main>
 
-    <div id="page-cari" style="display: none;">
-        <div class="search-container">
-            <input type="text" class="search-bar" id="search-input" placeholder="Cari nama produk..." onkeyup="searchProduct()">
+    <main id="page-keranjang" class="hidden">
+        <h3 style="padding: 10px 20px; margin-bottom:0;">Keranjang Saya</h3>
+        <div id="cart-items" class="marketplace-grid"></div>
+        <div id="checkout-container" class="checkout-bar hidden">
+            <button class="btn-buy-now" style="padding: 15px;" onclick="checkoutWhatsApp()">Pesan via WhatsApp 📱</button>
         </div>
-        <div class="marketplace-grid" id="search-results">
-            <p style="text-align:center; grid-column: span 2; color: var(--text-muted);">Gunakan kotak di atas untuk mencari.</p>
-        </div>
-    </div>
+    </main>
 
-    <div id="page-keranjang" style="display: none; padding: 40px 20px; text-align: center;">
-        <div style="font-size: 4rem; margin-bottom: 20px;">🛒</div>
-        <h3>Keranjang Kosong</h3>
-        <p style="color: var(--text-muted);">Anda belum menambahkan produk apapun ke keranjang.</p>
-        <button class="btn-buy" style="margin-top: 20px; padding: 12px 30px;" onclick="switchPage('Beranda')">Mulai Belanja</button>
-    </div>
-
-    <div id="page-profile" style="display: none;">
+    <main id="page-profile" class="hidden">
         <div class="profile-card">
-            <div class="profile-avatar">👤</div>
-            <h2 id="profile-username" style="margin: 0; color: var(--pi-color);">Belum Login</h2>
-            <div id="profile-address" class="uid-box">Silakan login untuk melihat detail akun.</div>
+            <div class="avatar-border">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+            </div>
+            <h2 id="profile-username" class="profile-username">Tamu</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin: 5px 0;">Member Digital Pro Indo</p>
+            
+            <div class="uid-box">
+                Wallet UID: <span id="profile-address">Belum Login</span>
+            </div>
+
+            <div class="status-row">
+                <div class="badge-verified">
+                    Status: Verified <span>✅</span>
+                </div>
+                <div>Region: Indonesia 🇮🇩</div>
+            </div>
         </div>
-    </div>
+    </main>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('Beranda')">
-            <div class="nav-icon-bg">🏠</div>
-            <span class="nav-text">Beranda</span>
+        <div class="nav-item active" onclick="switchPage('home')">
+            <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
         </div>
-        <div class="nav-item" onclick="switchPage('Cari')">
-            <div class="nav-icon">🔍</div>
-            <span class="nav-text">Cari</span>
+        <div class="nav-item" onclick="switchPage('cari')">
+            <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
         </div>
-        <div class="nav-item" onclick="switchPage('Keranjang')">
-            <div class="nav-icon">🛒</div>
-            <span class="nav-text">Keranjang</span>
+        <div class="nav-item" onclick="switchPage('keranjang')">
+            <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
         </div>
-        <div class="nav-item" onclick="switchPage('Profil')">
-            <div class="nav-icon">👤</div>
-            <span class="nav-text">Profil</span>
+        <div class="nav-item" onclick="switchPage('profile')">
+            <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
         </div>
     </nav>
 

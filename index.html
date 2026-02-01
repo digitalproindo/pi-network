@@ -4,12 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Digital Pro Indo - Premium Marketplace</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --pi-color: #6d28d9;
             --pi-gold: #ffa500;
-            --pi-red: #ef4444;
             --text-main: #1e293b;
             --text-muted: #64748b;
             --bg-body: #f8fafc;
@@ -17,196 +15,216 @@
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, system-ui, sans-serif;
             margin: 0;
             background-color: var(--bg-body);
             color: var(--text-main);
-            padding-bottom: 100px;
+            padding-bottom: 90px;
         }
 
-        .hidden { display: none !important; }
-
+        /* Header Premium */
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
-            padding: 50px 20px 80px 20px; 
+            padding: 30px 20px 45px 20px;
             text-align: center;
-            border-bottom-left-radius: 35px;
-            border-bottom-right-radius: 35px;
+            border-bottom-left-radius: 30px;
+            border-bottom-right-radius: 30px;
             box-shadow: 0 10px 25px rgba(109, 40, 217, 0.2);
-            position: relative;
-            z-index: 1;
         }
 
-        .auth-container {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            z-index: 20;
+        #login-section {
+            padding: 0 20px;
+            max-width: 600px;
+            margin: -25px auto 10px auto;
         }
 
-        .btn-auth {
+        .btn-login {
+            width: 100%;
             background: var(--pi-gold);
-            color: white; border: none;
-            padding: 8px 16px; border-radius: 12px;
-            font-weight: 700; font-size: 0.75rem;
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-        }
-
-        .btn-logout-style { background: var(--pi-red) !important; }
-
-        .category-scroll {
-            display: flex; overflow-x: auto;
-            padding: 15px 20px; gap: 12px;
-            scrollbar-width: none; 
-            margin-top: -35px; 
-            position: relative;
-            z-index: 10;
-        }
-        .category-scroll::-webkit-scrollbar { display: none; }
-
-        .category-pill {
-            flex: 0 0 auto; background: white;
-            padding: 12px 20px; border-radius: 15px;
-            font-size: 0.8rem; font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            border: 1px solid #f1f5f9; cursor: pointer;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+            cursor: pointer;
             transition: 0.3s;
         }
-        .category-pill.active {
-            background: var(--pi-color);
-            color: white;
-            border-color: var(--pi-color);
-        }
 
+        /* Grid Layout & Cards */
         .marketplace-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
         }
 
         .product-card {
-            background: white; border-radius: 20px; overflow: hidden;
-            display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid #f1f5f9; cursor: pointer;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            border: 1px solid #f1f5f9;
         }
 
-        .slider-container { width: 100%; height: 140px; overflow: hidden; position: relative; }
+        .image-container { position: relative; width: 100%; height: 130px; background: #f1f5f9; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; }
+        .category-tag {
+            position: absolute; top: 10px; left: 10px;
+            background: rgba(255,255,255,0.95);
+            padding: 4px 8px; border-radius: 8px;
+            font-size: 0.6rem; font-weight: 800; color: var(--pi-color);
+        }
+
         .product-info { padding: 12px; flex-grow: 1; }
-        .product-name { font-size: 0.85rem; font-weight: 700; height: 34px; overflow: hidden; margin: 0 0 8px 0; }
-        .price { font-weight: 800; color: var(--pi-color); font-size: 1.1rem; }
+        .product-name { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
+        .price { font-weight: 800; color: var(--pi-color); font-size: 1rem; }
+        .btn-buy { background: var(--pi-color); color: white; border: none; padding: 7px 12px; border-radius: 10px; cursor: pointer; }
 
-        .btn-buy-now { 
-            background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
-            color: white; border: none; flex: 1; border-radius: 10px;
-            padding: 10px; font-weight: bold; font-size: 0.8rem; cursor: pointer;
+        /* Profile Page Styling */
+        #page-profile {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        .btn-delete { background: var(--pi-red); color: white; border: none; padding: 8px; border-radius: 10px; width: 100%; font-size: 0.75rem; font-weight: bold; margin-top: 8px; cursor: pointer; }
 
-        /* MODAL DETAIL STYLING */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.7); z-index: 2000; display: flex; align-items: flex-end;
+        .profile-card {
+            background: white;
+            border-radius: 25px;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
         }
-        .modal-content {
-            background: white; width: 100%; border-top-left-radius: 30px; border-top-right-radius: 30px;
-            padding: 25px; max-height: 85vh; overflow-y: auto; position: relative;
-            animation: slideUp 0.3s ease-out; box-sizing: border-box;
+
+        .profile-avatar {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            background: #f5f3ff;
+            width: 100px;
+            height: 100px;
+            line-height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 15px auto;
         }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; background: #eee; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10; }
-        .detail-img { width: 100%; height: 250px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; }
-        .detail-stats { display: flex; gap: 12px; margin: 10px 0; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
-        .detail-desc { line-height: 1.6; color: var(--text-main); font-size: 0.9rem; margin: 15px 0; white-space: pre-line; }
-        .modal-actions { display: flex; gap: 10px; margin-top: 20px; position: sticky; bottom: 0; background: white; padding-top: 10px; }
 
-        #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
-        .profile-card { background: white; border-radius: 35px; padding: 35px 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
-        .avatar-border { width: 120px; height: 120px; margin: 0 auto 20px; border: 5px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 5px; background: white; }
-        .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        .profile-username { color: var(--pi-color); font-size: 1.8rem; font-weight: 800; margin: 0; }
-        .uid-box { font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 15px; border-radius: 15px; word-break: break-all; margin: 25px 0; line-height: 1.5; }
-        .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
-        .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
+        .uid-box {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 12px;
+            word-break: break-all;
+            margin-top: 15px;
+        }
 
+        /* Bottom Navigation */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
-            padding: 12px 0 30px 0; border-top: 1px solid #f1f5f9; z-index: 1000;
+            justify-content: space-around; align-items: center;
+            padding: 12px 10px 25px 10px;
+            border-top: 1px solid #f1f5f9; z-index: 1000;
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; cursor: pointer; }
+
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center;
+            text-decoration: none; color: #94a3b8; flex: 1;
+        }
+
         .nav-item.active { color: var(--pi-color); }
-        .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
-        .nav-text { font-size: 0.7rem; font-weight: 700; }
+        .nav-item.active .nav-icon-bg {
+            background: #ede9fe; color: var(--pi-color);
+            padding: 6px 16px; border-radius: 12px; margin-bottom: 4px;
+        }
+
+        .nav-icon { font-size: 1.3rem; margin-bottom: 4px; }
+        .nav-text { font-size: 0.65rem; font-weight: 600; }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="auth-container">
-            <button id="login-btn" class="btn-auth">Login</button>
-        </div>
-        <h1 style="margin:0; font-size: 1.8rem; letter-spacing: -0.5px;">Digital Pro Indo</h1>
-        <p style="margin:8px 0 0 0; opacity: 0.9; font-size: 0.9rem; font-weight: 500;">Premium Digital Marketplace</p>
+        <h1 style="margin:0; font-size: 1.5rem;">Digital Pro Indo</h1>
+        <p style="margin:5px 0 0 0; opacity: 0.8; font-size: 0.85rem;">Premium Digital Marketplace</p>
     </header>
 
-    <main id="page-home">
-        <div class="category-scroll">
-            <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
-            <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
-            <div class="category-pill" onclick="filterCategory('Software', this)">💻 Software</div>
-            <div class="category-pill" onclick="filterCategory('E-Book', this)">📚 E-Book</div>
-            <div class="category-pill" onclick="filterCategory('Elektronik', this)">📱 Elektronik</div>
+    <div id="page-home">
+        <div id="login-section">
+            <button id="login-btn" class="btn-login">Login ke Pi Wallet</button>
         </div>
-        <div id="main-grid" class="marketplace-grid"></div>
-    </main>
 
-    <main id="page-cari" class="hidden">
-        <div style="padding: 20px;">
-            <input type="text" id="search-input" placeholder="Cari produk digital..." style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none;" onkeyup="searchProduct()">
+        <div class="marketplace-grid">
+            <div class="product-card">
+                <div class="image-container">
+                    <span class="category-tag">E-Book</span>
+                    <img src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400" class="product-img">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Mastering Pi Network</h3>
+                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="price">π 0.005</span>
+                        <button class="btn-buy" onclick="handlePayment(0.005, 'Mastering Pi')">Beli</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="image-container">
+                    <span class="category-tag">Software</span>
+                    <img src="https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg" class="product-img">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">Asset License Pro</h3>
+                    <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
+                        <span class="price">π 0.010</span>
+                        <button class="btn-buy" onclick="handlePayment(0.010, 'Asset License')">Beli</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div id="search-results" class="marketplace-grid"></div>
-    </main>
+    </div>
 
-    <main id="page-keranjang" class="hidden">
-        <h3 style="padding: 20px 20px 10px; margin:0; font-weight: 800;">Keranjang Saya</h3>
-        <div id="cart-items" class="marketplace-grid"></div>
-        <div id="checkout-container" class="hidden" style="padding: 20px;">
-            <button class="btn-buy-now" style="width:100%; padding: 18px; border-radius: 15px;" onclick="checkoutWhatsApp()">Pesan via WhatsApp 📱</button>
-        </div>
-    </main>
-
-    <main id="page-profile" class="hidden">
+    <div id="page-profile" style="display: none;">
         <div class="profile-card">
-            <div class="avatar-border">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+            <div class="profile-avatar">👤</div>
+            <h2 id="profile-username" style="margin: 0; color: var(--pi-color);">Belum Login</h2>
+            <p style="color: var(--text-muted); font-size: 0.85rem;">Member Digital Pro Indo</p>
+            
+            <div id="profile-address" class="uid-box">
+                Silakan login untuk melihat detail akun.
             </div>
-            <h2 id="profile-username" class="profile-username">Tamu</h2>
-            <p style="color: var(--text-muted); font-size: 1rem; margin: 8px 0; font-weight: 600;">Member Digital Pro Indo</p>
-            <div class="uid-box"><strong>Wallet UID:</strong><br><span id="profile-address">Belum Login</span></div>
-            <div class="status-row">
-                <div class="badge-verified">Status: Verified <span style="font-size: 1.5rem;">✅</span></div>
-                <div style="font-size: 1.1rem; color: #1e293b;">Region: Indonesia <span style="font-size: 1.5rem;">🇮🇩</span></div>
+
+            <div style="margin-top: 25px; text-align: left; font-size: 0.9rem; border-top: 1px solid #eee; padding-top: 20px;">
+                <p><strong>Status:</strong> <span style="color: #10b981;">Verified ✅</span></p>
+                <p><strong>Region:</strong> Indonesia 🇮🇩</p>
             </div>
         </div>
-    </main>
-
-    <div id="product-modal" class="modal hidden" onclick="if(event.target == this) this.classList.add('hidden')">
-        <div class="modal-content" id="modal-body"></div>
     </div>
 
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="switchPage('home')">
-            <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('cari')">
-            <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('keranjang')">
-            <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('profile')">
-            <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
-        </div>
+        <a href="#" class="nav-item active">
+            <div class="nav-icon-bg">🏠</div>
+            <span class="nav-text">Beranda</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">🔍</div>
+            <span class="nav-text">Cari</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">🛒</div>
+            <span class="nav-text">Keranjang</span>
+        </a>
+        <a href="#" class="nav-item">
+            <div class="nav-icon">👤</div>
+            <span class="nav-text">Profil</span>
+        </a>
     </nav>
 
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>

@@ -87,7 +87,7 @@
         .product-card {
             background: white; border-radius: 20px; overflow: hidden;
             display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid #f1f5f9;
+            border: 1px solid #f1f5f9; cursor: pointer;
         }
 
         .slider-container { width: 100%; height: 140px; overflow: hidden; position: relative; }
@@ -102,16 +102,26 @@
         }
         .btn-delete { background: var(--pi-red); color: white; border: none; padding: 8px; border-radius: 10px; width: 100%; font-size: 0.75rem; font-weight: bold; margin-top: 8px; cursor: pointer; }
 
+        /* MODAL DETAIL STYLING */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); z-index: 2000; display: flex; align-items: flex-end;
+        }
+        .modal-content {
+            background: white; width: 100%; border-top-left-radius: 30px; border-top-right-radius: 30px;
+            padding: 25px; max-height: 85vh; overflow-y: auto; position: relative;
+            animation: slideUp 0.3s ease-out; box-sizing: border-box;
+        }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; background: #eee; border-radius: 50%; width: 35px; height: 35px; display: flex; align-items: center; justify-content: center; z-index: 10; }
+        .detail-img { width: 100%; height: 250px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; }
+        .detail-stats { display: flex; gap: 12px; margin: 10px 0; font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+        .detail-desc { line-height: 1.6; color: var(--text-main); font-size: 0.9rem; margin: 15px 0; white-space: pre-line; }
+        .modal-actions { display: flex; gap: 10px; margin-top: 20px; position: sticky; bottom: 0; background: white; padding-top: 10px; }
+
         #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
-        .profile-card {
-            background: white; border-radius: 35px; padding: 35px 20px;
-            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-        .avatar-border {
-            width: 120px; height: 120px; margin: 0 auto 20px;
-            border: 5px solid #3b82f6; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; padding: 5px; background: white;
-        }
+        .profile-card { background: white; border-radius: 35px; padding: 35px 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
+        .avatar-border { width: 120px; height: 120px; margin: 0 auto 20px; border: 5px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 5px; background: white; }
         .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
         .profile-username { color: var(--pi-color); font-size: 1.8rem; font-weight: 800; margin: 0; }
         .uid-box { font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; padding: 15px; border-radius: 15px; word-break: break-all; margin: 25px 0; line-height: 1.5; }
@@ -179,6 +189,10 @@
             </div>
         </div>
     </main>
+
+    <div id="product-modal" class="modal hidden" onclick="if(event.target == this) this.classList.add('hidden')">
+        <div class="modal-content" id="modal-body"></div>
+    </div>
 
     <nav class="bottom-nav">
         <div class="nav-item active" onclick="switchPage('home')">

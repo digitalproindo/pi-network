@@ -14,13 +14,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- FUNGSI AUTH UTAMA (LOGIN/LOGOUT) ---
     loginBtn.onclick = async () => {
         if (currentUser) {
-            // LOGIKA LOGOUT
             currentUser = null;
             alert("Berhasil Logout");
             updateAuthUI();
             updateProfileUI();
         } else {
-            // LOGIKA LOGIN
             try {
                 const auth = await Pi.authenticate(['username', 'payments'], (p) => {});
                 currentUser = auth.user;
@@ -33,7 +31,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // Update Tampilan Tombol Auth
     function updateAuthUI() {
         if (currentUser) {
             loginBtn.innerText = "Logout";
@@ -44,11 +41,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // Update Tampilan Halaman Profil
     window.updateProfileUI = () => {
         const userEl = document.getElementById('profile-username');
         const addrEl = document.getElementById('profile-address');
-
         if (currentUser) {
             userEl.innerText = currentUser.username;
             addrEl.innerText = currentUser.uid;
@@ -66,7 +61,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const target = document.getElementById(`page-${pageId}`);
         if(target) target.classList.remove('hidden');
         
-        // Highlight navigasi aktif
         const navMap = { home: 0, cari: 1, keranjang: 2, profile: 3 };
         const activeIdx = navMap[pageId];
         if (activeIdx !== undefined) {
@@ -77,17 +71,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(pageId === 'profile') updateProfileUI();
     };
 
-    // --- FUNGSI FILTER KATEGORI (DITAMBAHKAN) ---
-    window.filterCategory = (category) => {
-        // Update visual tombol filter
-        document.querySelectorAll('.category-pill').forEach(pill => {
-            pill.classList.remove('active');
-            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) {
-                pill.classList.add('active');
-            }
-        });
+    // --- FUNGSI DETAIL PRODUK (MODAL) ---
+    window.openDetail = (id) => {
+        const p = allProducts.find(prod => prod.id === id);
+        if(!p) return;
 
-        // Filter data produk
+        const modal = document.getElementById('product-modal');
+        const body = document.getElementById('modal-body');
+
+        body.innerHTML = `
+            <span class="close-modal" onclick="document.getElementById('product-modal').classList.add('hidden')">&times;</span>
+            <img src="${p.images[0]}" class="detail-img">
+            <h2 style="margin:0; font-size: 1.4rem;">${p.name}</h2>
+            <div class="detail-stats">
+                <span style="color: #ffa500;">⭐ ${p.rating || '5.0'}</span>
+                <span>|</span>
+                <span>Terjual ${p.sold || '0'}+</span>
+                <span>|</span>
+                <span style="color: var(--pi-color);">${p.category}</span>
+            </div>
+            <div style="font-size: 1.6rem; font-weight: 800; color: var(--pi-color); margin: 15px 0;">π ${p.price}</div>
+            <hr style="border:0; border-top:1px solid #eee; margin: 15px 0;">
+            <h4 style="margin: 0 0 10px 0;">Deskripsi Produk</h4>
+            <p class="detail-desc">${p.description || 'Produk digital premium dengan kualitas terbaik untuk mendukung produktivitas Anda.'}</p>
+            
+            <div class="modal-actions">
+                <button onclick="addToCart('${p.id}')" style="flex:1; padding:15px; border-radius:15px; border:1px solid #ddd; background:white; font-size:1.2rem; cursor:pointer;">🛒</button>
+                <button onclick="addToCart('${p.id}'); switchPage('keranjang'); document.getElementById('product-modal').classList.add('hidden');" class="btn-buy-now" style="flex:4; padding:15px; border-radius:15px; font-size:1rem;">Beli Sekarang</button>
+            </div>
+        `;
+        modal.classList.remove('hidden');
+    };
+
+    // --- FILTER & SEARCH ---
+    window.filterCategory = (category, el) => {
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+        if(el) el.classList.add('active');
+
         if (category === 'all') {
             renderProducts(allProducts, 'main-grid');
         } else {
@@ -96,14 +116,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
-    // --- FUNGSI PENCARIAN (DITAMBAHKAN) ---
     window.searchProduct = () => {
         const query = document.getElementById('search-input').value.toLowerCase();
         const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
         renderProducts(filtered, 'search-results');
     };
 
-    // --- LOGIKA PRODUK & KERANJANG ---
+    // --- LOGIKA DATA & RENDER ---
     async function loadData() {
         try {
             const res = await fetch('products.json');
@@ -125,17 +144,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         data.forEach((p, index) => {
             const card = document.createElement('div');
             card.className = 'product-card';
+            // Klik kartu membuka detail (kecuali jika menekan tombol aksi)
+            card.onclick = (e) => {
+                if(!e.target.closest('button')) window.openDetail(p.id);
+            };
+
             card.innerHTML = `
                 <div class="slider-container">
                     <img src="${p.images[0]}" style="width:100%; height:100%; object-fit:cover;">
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${p.name}</h3>
-                    <span class="price">π ${p.price}</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                        <span class="price">π ${p.price}</span>
+                        <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">⭐ ${p.rating || '5.0'}</span>
+                    </div>
                     ${isCart ? 
                         `<button class="btn-delete" onclick="removeFromCart(${index})">🗑️ Hapus</button>` :
-                        `<div class="action-buttons">
-                            <button class="btn-cart" onclick="addToCart('${p.id}')">🛒</button>
+                        `<div class="action-buttons" style="display:flex; gap:5px;">
+                            <button onclick="addToCart('${p.id}')" style="padding:10px; border-radius:10px; border:1px solid #ddd; background:white; cursor:pointer;">🛒</button>
                             <button class="btn-buy-now" onclick="addToCart('${p.id}'); switchPage('keranjang');">Beli</button>
                         </div>`
                     }
@@ -169,7 +196,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.checkoutWhatsApp = () => {
         if(cart.length === 0) return;
-        const nomorWA = "6282191851112"; // Ganti dengan nomor Anda
+        const nomorWA = "6282191851112";
         let pesan = `Halo Admin, saya ingin memesan:\n\n`;
         let total = 0;
         cart.forEach((item, i) => {

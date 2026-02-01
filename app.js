@@ -1,176 +1,186 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
+    let allProducts = [];
+    let cart = JSON.parse(localStorage.getItem('pipro_cart')) || [];
 
-    // --- 1. INISIALISASI SDK ---
-    try {
-        await Pi.init({ version: "2.0", sandbox: false });
-        console.log("Pi SDK Berhasil diinisialisasi");
-    } catch (e) {
-        console.error("Gagal inisialisasi SDK:", e);
-    }
+    // Inisialisasi SDK Pi
+    try { 
+        await Pi.init({ version: "2.0", sandbox: false }); 
+    } catch(e) { console.error("Pi SDK tidak merespon"); }
 
-    // --- 2. LOGIKA UPDATE UI PROFIL ---
-    function updateProfileUI() {
-        const profileUsername = document.getElementById('profile-username');
-        const profileAddress = document.getElementById('profile-address');
-        const loginBtn = document.getElementById('login-btn');
+    const loginBtn = document.getElementById('login-btn');
 
+    // --- FUNGSI AUTH UTAMA (LOGIN/LOGOUT) ---
+    loginBtn.onclick = async () => {
         if (currentUser) {
-            // Tampilan saat Login
-            if (profileUsername) profileUsername.innerText = currentUser.username;
-            if (profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
-            
-            // Update Tombol di Header jadi Logout
-            if (loginBtn) {
-                loginBtn.innerText = "Logout";
-                loginBtn.classList.add('btn-logout-style');
-            }
+            // LOGIKA LOGOUT
+            currentUser = null;
+            alert("Berhasil Logout");
+            updateAuthUI();
+            updateProfileUI();
         } else {
-            // Tampilan saat Logout
-            if (profileUsername) profileUsername.innerText = "Belum Login";
-            if (profileAddress) profileAddress.innerText = "Silakan login untuk melihat detail akun.";
-            
-            // Update Tombol di Header jadi Login
-            if (loginBtn) {
-                loginBtn.innerText = "Login";
-                loginBtn.classList.remove('btn-logout-style');
-                loginBtn.disabled = false;
-            }
-        }
-    }
-
-    // --- 3. LOGIKA NAVIGASI (SPA) ---
-    const navItems = document.querySelectorAll('.nav-item');
-    const pageHome = document.getElementById('page-home');
-    const pageProfile = document.getElementById('page-profile');
-
-    function switchPage(pageName) {
-        const target = pageName.trim().toLowerCase();
-        
-        // Reset state aktif menu navigasi
-        navItems.forEach(item => item.classList.remove('active'));
-
-        if (target === 'profil') {
-            pageHome.style.display = 'none';
-            pageProfile.style.display = 'block';
-            if (navItems[3]) navItems[3].classList.add('active');
-            updateProfileUI();
-        } else if (target === 'beranda') {
-            pageHome.style.display = 'block';
-            pageProfile.style.display = 'none';
-            if (navItems[0]) navItems[0].classList.add('active');
-        }
-        // Tambahkan logika untuk 'cari' atau 'keranjang' di sini jika sudah ada halamannya
-    }
-
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            const labelElement = this.querySelector('.nav-text');
-            if (labelElement) {
-                switchPage(labelElement.innerText);
-            }
-        });
-    });
-
-    // --- 4. FUNGSI CLEANUP PEMBAYARAN ---
-    async function handleIncompletePayment(payment) {
-        console.warn("Ditemukan pembayaran tertunda:", payment.identifier);
-        try {
-            await fetch('/api/complete', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    paymentId: payment.identifier, 
-                    txid: payment.transaction.txid 
-                })
-            });
-        } catch (err) { 
-            console.error("Gagal sinkronisasi pembayaran:", err); 
-        }
-    }
-
-    // --- 5. FUNGSI AUTH (LOGIN & LOGOUT TOGGLE) ---
-    async function handleAuth() {
-        const loginBtn = document.getElementById('login-btn');
-
-        // JIKA SUDAH LOGIN -> JALANKAN LOGOUT
-        if (currentUser) {
-            const yakin = confirm("Apakah Anda ingin logout?");
-            if (yakin) {
-                currentUser = null;
+            // LOGIKA LOGIN
+            try {
+                const auth = await Pi.authenticate(['username', 'payments'], (p) => {});
+                currentUser = auth.user;
+                alert("Login Berhasil! Halo " + currentUser.username);
+                updateAuthUI();
                 updateProfileUI();
-                alert("Berhasil Logout.");
+            } catch(e) {
+                alert("Login Gagal atau Dibatalkan");
             }
-            return;
-        }
-
-        // JIKA BELUM LOGIN -> JALANKAN LOGIN
-        if (loginBtn) {
-            loginBtn.innerText = "...";
-            loginBtn.disabled = true;
-        }
-
-        try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
-            
-            currentUser = auth.user;
-            console.log("Login Berhasil:", currentUser.username);
-            
-            updateProfileUI();
-            alert("Halo " + currentUser.username + ", selamat datang!");
-
-        } catch (err) {
-            console.error("Auth error:", err);
-            if (loginBtn) {
-                loginBtn.innerText = "Login";
-                loginBtn.disabled = false;
-            }
-            alert("Gagal Login. Pastikan buka di Pi Browser.");
-        }
-    }
-
-    // --- 6. FUNGSI PEMBAYARAN ---
-    window.handlePayment = async function(amount, productName) {
-        if (!currentUser) return alert("Silakan Login terlebih dahulu!");
-
-        try {
-            await Pi.createPayment({
-                amount: amount,
-                memo: `Beli ${productName} - Digital Pro Indo`,
-                metadata: { productName: productName },
-            }, {
-                onReadyForServerApproval: async (paymentId) => {
-                    const res = await fetch('/api/approve', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId })
-                    });
-                    return res.ok;
-                },
-                onReadyForServerCompletion: async (paymentId, txid) => {
-                    const res = await fetch('/api/complete', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId, txid })
-                    });
-                    if (res.ok) alert(`Sukses membeli ${productName}!`);
-                },
-                onCancel: (paymentId) => console.log("Batal:", paymentId),
-                onError: (error, payment) => {
-                    if (payment) handleIncompletePayment(payment);
-                    alert("Error: " + error.message);
-                }
-            });
-        } catch (err) { 
-            console.error("Payment error:", err); 
         }
     };
 
-    // Binding tombol login ke fungsi handleAuth
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) loginBtn.onclick = handleAuth;
+    // Update Tampilan Tombol Auth
+    function updateAuthUI() {
+        if (currentUser) {
+            loginBtn.innerText = "Logout";
+            loginBtn.classList.add('btn-logout-style');
+        } else {
+            loginBtn.innerText = "Login";
+            loginBtn.classList.remove('btn-logout-style');
+        }
+    }
+
+    // Update Tampilan Halaman Profil
+    window.updateProfileUI = () => {
+        const userEl = document.getElementById('profile-username');
+        const addrEl = document.getElementById('profile-address');
+
+        if (currentUser) {
+            userEl.innerText = currentUser.username;
+            addrEl.innerText = currentUser.uid;
+        } else {
+            userEl.innerText = "Tamu";
+            addrEl.innerText = "Silakan login untuk melihat detail akun.";
+        }
+    };
+
+    // --- LOGIKA NAVIGASI ---
+    window.switchPage = (pageId) => {
+        document.querySelectorAll('main').forEach(m => m.classList.add('hidden'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        
+        const target = document.getElementById(`page-${pageId}`);
+        if(target) target.classList.remove('hidden');
+        
+        // Highlight navigasi aktif
+        const navMap = { home: 0, cari: 1, keranjang: 2, profile: 3 };
+        const activeIdx = navMap[pageId];
+        if (activeIdx !== undefined) {
+            document.querySelectorAll('.nav-item')[activeIdx].classList.add('active');
+        }
+
+        if(pageId === 'keranjang') renderCart();
+        if(pageId === 'profile') updateProfileUI();
+    };
+
+    // --- FUNGSI FILTER KATEGORI (DITAMBAHKAN) ---
+    window.filterCategory = (category) => {
+        // Update visual tombol filter
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.remove('active');
+            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) {
+                pill.classList.add('active');
+            }
+        });
+
+        // Filter data produk
+        if (category === 'all') {
+            renderProducts(allProducts, 'main-grid');
+        } else {
+            const filtered = allProducts.filter(p => p.category === category);
+            renderProducts(filtered, 'main-grid');
+        }
+    };
+
+    // --- FUNGSI PENCARIAN (DITAMBAHKAN) ---
+    window.searchProduct = () => {
+        const query = document.getElementById('search-input').value.toLowerCase();
+        const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query));
+        renderProducts(filtered, 'search-results');
+    };
+
+    // --- LOGIKA PRODUK & KERANJANG ---
+    async function loadData() {
+        try {
+            const res = await fetch('products.json');
+            allProducts = await res.json();
+            renderProducts(allProducts, 'main-grid');
+        } catch(e) { console.error("Gagal memuat produk"); }
+    }
+
+    function renderProducts(data, containerId, isCart = false) {
+        const container = document.getElementById(containerId);
+        if(!container) return;
+        container.innerHTML = '';
+
+        if(data.length === 0) {
+            container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; padding: 20px; color: var(--text-muted);">Produk tidak ditemukan.</p>`;
+            return;
+        }
+
+        data.forEach((p, index) => {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="slider-container">
+                    <img src="${p.images[0]}" style="width:100%; height:100%; object-fit:cover;">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name">${p.name}</h3>
+                    <span class="price">π ${p.price}</span>
+                    ${isCart ? 
+                        `<button class="btn-delete" onclick="removeFromCart(${index})">🗑️ Hapus</button>` :
+                        `<div class="action-buttons">
+                            <button class="btn-cart" onclick="addToCart('${p.id}')">🛒</button>
+                            <button class="btn-buy-now" onclick="addToCart('${p.id}'); switchPage('keranjang');">Beli</button>
+                        </div>`
+                    }
+                </div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    window.addToCart = (id) => {
+        const prod = allProducts.find(p => p.id === id);
+        if (prod) {
+            cart.push({...prod});
+            localStorage.setItem('pipro_cart', JSON.stringify(cart));
+            alert("Produk masuk keranjang!");
+        }
+    };
+
+    window.removeFromCart = (index) => {
+        cart.splice(index, 1);
+        localStorage.setItem('pipro_cart', JSON.stringify(cart));
+        renderCart();
+    };
+
+    function renderCart() {
+        renderProducts(cart, 'cart-items', true);
+        const checkout = document.getElementById('checkout-container');
+        if(cart.length > 0) checkout.classList.remove('hidden');
+        else checkout.classList.add('hidden');
+    }
+
+    window.checkoutWhatsApp = () => {
+        if(cart.length === 0) return;
+        const nomorWA = "6281234567890"; // Ganti dengan nomor Anda
+        let pesan = `Halo Admin, saya ingin memesan:\n\n`;
+        let total = 0;
+        cart.forEach((item, i) => {
+            pesan += `${i+1}. ${item.name} - π ${item.price}\n`;
+            total += parseFloat(item.price);
+        });
+        pesan += `\nTotal: π ${total.toFixed(4)}\n`;
+        pesan += `Pembeli: ${currentUser ? currentUser.username : 'Tamu'}`;
+        window.open(`https://wa.me/${nomorWA}?text=${encodeURIComponent(pesan)}`, '_blank');
+    };
+
+    loadData();
+    updateAuthUI(); 
 });

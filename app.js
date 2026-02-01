@@ -2,36 +2,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
 
-    // --- 0. DATA PRODUK (DATABASE) ---
-    const productsData = [
-        {
-            id: 'p1',
-            name: "Mastering Pi Network",
-            price: 0.005,
-            category: "E-Book",
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400",
-            rating: 4.9,
-            sold: "1.2k",
-            desc: "Panduan lengkap optimasi node dan strategi ekosistem Pi terbaru 2026 untuk memaksimalkan hasil mining Anda."
-        },
-        {
-            id: 'p2',
-            name: "Asset License Pro",
-            price: 0.010,
-            category: "Software",
-            image: "https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg",
-            rating: 4.8,
-            sold: "850",
-            desc: "Lisensi resmi aset digital premium eksklusif Digital Pro Indo untuk kebutuhan komersial dan pengembangan proyek."
-        }
-    ];
-
     // --- 1. INISIALISASI SDK ---
-    try {
-        await Pi.init({ version: "2.0", sandbox: false });
-        console.log("Pi SDK Berhasil diinisialisasi");
-    } catch (e) {
-        console.error("Gagal inisialisasi SDK:", e);
+    async function initPi() {
+        try {
+            // Menggunakan sandbox: true jika masih dalam tahap pengembangan
+            await Pi.init({ version: "2.0", sandbox: false });
+            console.log("Pi SDK Berhasil diinisialisasi");
+        } catch (e) {
+            console.error("Gagal inisialisasi SDK. Pastikan diakses via Pi Browser:", e);
+        }
     }
 
     // --- 2. LOGIKA UPDATE UI PROFIL ---
@@ -41,15 +20,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         const loginBtn = document.getElementById('login-btn');
 
         if (currentUser) {
+            // Tampilan saat Login
             if (profileUsername) profileUsername.innerText = currentUser.username;
             if (profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
+            
             if (loginBtn) {
                 loginBtn.innerText = "Logout";
                 loginBtn.classList.add('btn-logout-style');
+                loginBtn.disabled = false;
             }
         } else {
+            // Tampilan saat Logout
             if (profileUsername) profileUsername.innerText = "Belum Login";
             if (profileAddress) profileAddress.innerText = "Silakan login untuk melihat detail akun.";
+            
             if (loginBtn) {
                 loginBtn.innerText = "Login";
                 loginBtn.classList.remove('btn-logout-style');
@@ -65,16 +49,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function switchPage(pageName) {
         const target = pageName.trim().toLowerCase();
+        
+        // Reset state aktif menu navigasi
         navItems.forEach(item => item.classList.remove('active'));
 
         if (target === 'profil') {
-            pageHome.style.display = 'none';
-            pageProfile.style.display = 'block';
+            if (pageHome) pageHome.style.display = 'none';
+            if (pageProfile) pageProfile.style.display = 'block';
             if (navItems[3]) navItems[3].classList.add('active');
             updateProfileUI();
         } else if (target === 'beranda') {
-            pageHome.style.display = 'block';
-            pageProfile.style.display = 'none';
+            if (pageHome) pageHome.style.display = 'block';
+            if (pageProfile) pageProfile.style.display = 'none';
             if (navItems[0]) navItems[0].classList.add('active');
         }
     }
@@ -83,76 +69,35 @@ document.addEventListener("DOMContentLoaded", async () => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
             const labelElement = this.querySelector('.nav-text');
-            if (labelElement) switchPage(labelElement.innerText);
+            if (labelElement) {
+                switchPage(labelElement.innerText);
+            }
         });
     });
 
-    // --- 4. LOGIKA MODAL DETAIL PRODUK ---
-    window.openProductDetail = function(productId) {
-        const p = productsData.find(item => item.id === productId);
-        if(!p) return;
-
-        // Pastikan Anda sudah menambahkan struktur modal di index.html sebelumnya
-        const modal = document.getElementById('detail-modal'); // Ganti ID jika berbeda
-        const inner = document.getElementById('modal-inner');
-
-        if(modal && inner) {
-            inner.innerHTML = `
-                <img src="${p.image}" class="detail-img">
-                <h2 class="detail-title">${p.name}</h2>
-                <div class="detail-meta">
-                    <span style="color:var(--pi-gold)">⭐ ${p.rating}</span>
-                    <span>|</span>
-                    <span>Terjual ${p.sold}</span>
-                </div>
-                <div class="detail-price">π ${p.price}</div>
-                <p class="detail-desc">${p.desc}</p>
-                <div class="modal-footer">
-                    <button class="btn-cart-outline" onclick="alert('Masuk Keranjang!')">🛒</button>
-                    <button class="btn-buy-full" onclick="handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
-                </div>
-            `;
-            modal.style.display = 'flex';
-        }
-    };
-
-    window.closeDetail = function() {
-        const modal = document.getElementById('detail-modal');
-        if(modal) modal.style.display = 'none';
-    };
-
-    // --- 5. RENDER GRID PRODUK OTOMATIS ---
-    function renderProductGrid() {
-        const grid = document.querySelector('.marketplace-grid');
-        if(!grid) return;
-        
-        grid.innerHTML = ''; // Bersihkan grid
-        productsData.forEach(p => {
-            grid.innerHTML += `
-                <div class="product-card" onclick="openProductDetail('${p.id}')">
-                    <div class="image-container">
-                        <span class="category-tag">${p.category}</span>
-                        <img src="${p.image}" class="product-img">
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">${p.name}</h3>
-                        <div class="price-row" style="display:flex; justify-content:space-between; align-items:center;">
-                            <span class="price">π ${p.price}</span>
-                            <button class="btn-buy" onclick="event.stopPropagation(); openProductDetail('${p.id}')">Beli</button>
-                        </div>
-                    </div>
-                </div>
-            `;
-        });
-    }
-
-    // --- 6. FUNGSI CLEANUP & AUTH ---
+    // --- 4. FUNGSI CLEANUP PEMBAYARAN ---
     async function handleIncompletePayment(payment) {
         console.warn("Ditemukan pembayaran tertunda:", payment.identifier);
-        // Implementasi API backend Anda di sini
+        try {
+            await fetch('/api/complete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    paymentId: payment.identifier, 
+                    txid: payment.transaction.txid 
+                })
+            });
+            console.log("Pembayaran tertunda berhasil disinkronisasi.");
+        } catch (err) { 
+            console.error("Gagal sinkronisasi pembayaran:", err); 
+        }
     }
 
+    // --- 5. FUNGSI AUTH (LOGIN & LOGOUT TOGGLE) ---
     async function handleAuth() {
+        const loginBtn = document.getElementById('login-btn');
+
+        // JIKA SUDAH LOGIN -> JALANKAN LOGOUT
         if (currentUser) {
             if (confirm("Apakah Anda ingin logout?")) {
                 currentUser = null;
@@ -162,56 +107,91 @@ document.addEventListener("DOMContentLoaded", async () => {
             return;
         }
 
-        const loginBtn = document.getElementById('login-btn');
-        if (loginBtn) { loginBtn.innerText = "..."; loginBtn.disabled = true; }
+        // JIKA BELUM LOGIN -> JALANKAN LOGIN
+        if (loginBtn) {
+            loginBtn.innerText = "Memuat...";
+            loginBtn.disabled = true;
+        }
 
         try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
+            const scopes = ['username', 'payments', 'wallet_address'];
+            const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+            
             currentUser = auth.user;
+            console.log("Login Berhasil:", currentUser.username);
+            
             updateProfileUI();
-            alert("Halo " + currentUser.username + ", selamat datang!");
+            alert(`Halo ${currentUser.username}, selamat datang!`);
+
         } catch (err) {
             console.error("Auth error:", err);
-            updateProfileUI();
-            alert("Gagal Login. Pastikan buka di Pi Browser.");
+            alert("Gagal Login. Pastikan Anda membuka aplikasi melalui Pi Browser.");
+            updateProfileUI(); // Reset UI tombol
         }
     }
 
-    // --- 7. FUNGSI PEMBAYARAN UTAMA ---
+    // Callback khusus untuk Pi Authenticate
+    function onIncompletePaymentFound(payment) {
+        handleIncompletePayment(payment);
+    }
+
+    // --- 6. FUNGSI PEMBAYARAN ---
     window.handlePayment = async function(amount, productName) {
-        if (!currentUser) return alert("Silakan Login terlebih dahulu!");
+        if (!currentUser) {
+            alert("Silakan Login terlebih dahulu!");
+            return;
+        }
 
         try {
-            await Pi.createPayment({
+            const paymentData = {
                 amount: amount,
                 memo: `Beli ${productName} - Digital Pro Indo`,
                 metadata: { productName: productName },
-            }, {
+            };
+
+            const callbacks = {
                 onReadyForServerApproval: async (paymentId) => {
-                    console.log("Menunggu Approval Server...");
-                    // Simulasi atau fetch ke backend Anda
-                    return true; 
+                    console.log("Menunggu persetujuan server untuk ID:", paymentId);
+                    const res = await fetch('/api/approve', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId })
+                    });
+                    return res.ok;
                 },
                 onReadyForServerCompletion: async (paymentId, txid) => {
-                    alert(`Sukses membeli ${productName}!\nTXID: ${txid}`);
-                    closeDetail();
+                    console.log("Menyelesaikan pembayaran di server...");
+                    const res = await fetch('/api/complete', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ paymentId, txid })
+                    });
+                    if (res.ok) alert(`Sukses membeli ${productName}! Transaksi berhasil.`);
                 },
-                onCancel: (paymentId) => console.log("Batal:", paymentId),
+                onCancel: (paymentId) => {
+                    console.log("Pembayaran dibatalkan oleh pengguna:", paymentId);
+                },
                 onError: (error, payment) => {
+                    console.error("Payment Error:", error);
                     if (payment) handleIncompletePayment(payment);
-                    alert("Error: " + error.message);
+                    alert("Terjadi kesalahan saat pembayaran: " + error.message);
                 }
-            });
+            };
+
+            await Pi.createPayment(paymentData, callbacks);
         } catch (err) { 
-            console.error("Payment error:", err); 
+            console.error("Payment exception:", err); 
         }
     };
 
-    // Inisialisasi awal
+    // --- 7. EKSEKUSI AWAL ---
+    await initPi();
+    
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) loginBtn.onclick = handleAuth;
-    renderProductGrid();
+    if (loginBtn) {
+        loginBtn.addEventListener('click', handleAuth);
+    }
+
+    // Pastikan UI sesuai saat pertama kali dimuat
     updateProfileUI();
 });

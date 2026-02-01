@@ -100,6 +100,70 @@ document.addEventListener("DOMContentLoaded", async () => {
         category: "Rumah",
         images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"],
         desc: "Tanaman palsu mirip asli dengan pot keramik, tinggi 80cm."
+    },
+    {
+        id: 'e1',
+        name: "Smartphone Pi-Phone X - 256GB Platinum",
+        price: 0.15,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80"],
+        desc: "Layar AMOLED 6.7 inci, RAM 12GB, Baterai 5000mAh. Support Pi-App Ecosystem."
+    },
+    {
+        id: 'e2',
+        name: "Wireless Earbuds Pro - Noise Cancelling",
+        price: 0.02,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"],
+        desc: "Audio High-Fidelity, tahan air IPX5, daya tahan baterai hingga 24 jam."
+    },
+    {
+        id: 'e3',
+        name: "Smartwatch Ultra - Health & GPS Tracker",
+        price: 0.045,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1508685096489-7aac296839c8?w=500&q=80"],
+        desc: "Monitor detak jantung, oksigen darah, dan fitur pelacak olahraga profesional."
+    },
+    {
+        id: 'e4',
+        name: "Laptop Slim Pro 14 - M2 Chip 512GB SSD",
+        price: 0.25,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=500&q=80"],
+        desc: "Desain ultra tipis, layar Retina 2K, performa tinggi untuk editing video."
+    },
+    {
+        id: 'e5',
+        name: "Mechanical Keyboard RGB - Blue Switch",
+        price: 0.015,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=500&q=80"],
+        desc: "Keyboard gaming dengan 18 mode lampu RGB dan tombol sangat responsif."
+    },
+    {
+        id: 'e6',
+        name: "Action Camera 4K - Ultra HD Waterproof",
+        price: 0.035,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1526510747491-58f928ec870f?w=500&q=80"],
+        desc: "Rekam petualangan Anda dalam resolusi 4K 60fps. Termasuk casing anti air."
+    },
+    {
+        id: 'e7',
+        name: "Powerbank 20.000mAh - Fast Charging 22W",
+        price: 0.007,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1609091839311-d5364f512c58?w=500&q=80"],
+        desc: "Kapasitas jumbo, bisa cas 3 perangkat sekaligus. Desain elegan nan ringkas."
+    },
+    {
+        id: 'e8',
+        name: "Bluetooth Speaker Portable - Extra Bass",
+        price: 0.012,
+        category: "Elektronik",
+        images: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80"],
+        desc: "Suara jernih 360 derajat, baterai tahan 12 jam. Cocok untuk pesta outdoor."
     }
     ];
 

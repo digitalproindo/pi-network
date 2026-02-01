@@ -11,17 +11,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // --- 2. LOGIKA UPDATE UI PROFIL ---
-    // Fungsi ini memastikan data user tampil di halaman profil
     function updateProfileUI() {
         const profileUsername = document.getElementById('profile-username');
         const profileAddress = document.getElementById('profile-address');
+        const loginBtn = document.getElementById('login-btn');
 
         if (currentUser) {
+            // Tampilan saat Login
             if (profileUsername) profileUsername.innerText = currentUser.username;
             if (profileAddress) profileAddress.innerText = `Wallet UID: ${currentUser.uid}`;
+            
+            // Update Tombol di Header jadi Logout
+            if (loginBtn) {
+                loginBtn.innerText = "Logout";
+                loginBtn.classList.add('btn-logout-style');
+            }
         } else {
+            // Tampilan saat Logout
             if (profileUsername) profileUsername.innerText = "Belum Login";
-            if (profileAddress) profileAddress.innerText = "Silakan login di halaman Beranda";
+            if (profileAddress) profileAddress.innerText = "Silakan login untuk melihat detail akun.";
+            
+            // Update Tombol di Header jadi Login
+            if (loginBtn) {
+                loginBtn.innerText = "Login";
+                loginBtn.classList.remove('btn-logout-style');
+                loginBtn.disabled = false;
+            }
         }
     }
 
@@ -39,22 +54,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (target === 'profil') {
             pageHome.style.display = 'none';
             pageProfile.style.display = 'block';
-            
-            // Tandai icon Profil sebagai aktif
             if (navItems[3]) navItems[3].classList.add('active');
-            
-            // Tarik data user terbaru ke tampilan
             updateProfileUI();
-        } else {
+        } else if (target === 'beranda') {
             pageHome.style.display = 'block';
             pageProfile.style.display = 'none';
-            
-            // Tandai icon Beranda sebagai aktif
             if (navItems[0]) navItems[0].classList.add('active');
         }
+        // Tambahkan logika untuk 'cari' atau 'keranjang' di sini jika sudah ada halamannya
     }
 
-    // Listener klik untuk Navigasi Bawah
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -82,11 +91,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 5. FUNGSI LOGIN ---
-    async function authPi() {
+    // --- 5. FUNGSI AUTH (LOGIN & LOGOUT TOGGLE) ---
+    async function handleAuth() {
         const loginBtn = document.getElementById('login-btn');
+
+        // JIKA SUDAH LOGIN -> JALANKAN LOGOUT
+        if (currentUser) {
+            const yakin = confirm("Apakah Anda ingin logout?");
+            if (yakin) {
+                currentUser = null;
+                updateProfileUI();
+                alert("Berhasil Logout.");
+            }
+            return;
+        }
+
+        // JIKA BELUM LOGIN -> JALANKAN LOGIN
         if (loginBtn) {
-            loginBtn.innerText = "Menghubungkan...";
+            loginBtn.innerText = "...";
             loginBtn.disabled = true;
         }
 
@@ -98,27 +120,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             currentUser = auth.user;
             console.log("Login Berhasil:", currentUser.username);
             
-            if (loginBtn) {
-                loginBtn.innerText = `User: ${currentUser.username} ✅`;
-                loginBtn.style.backgroundColor = "#10b981";
-                loginBtn.disabled = false;
-            }
-
-            // Langsung siapkan data untuk halaman profil
             updateProfileUI();
-            alert("Halo " + currentUser.username + ", data profil sudah siap!");
+            alert("Halo " + currentUser.username + ", selamat datang!");
 
         } catch (err) {
             console.error("Auth error:", err);
             if (loginBtn) {
-                loginBtn.innerText = "Login ke Pi Wallet";
+                loginBtn.innerText = "Login";
                 loginBtn.disabled = false;
             }
-            alert("Gagal Login. Pastikan Anda berada di Pi Browser.");
+            alert("Gagal Login. Pastikan buka di Pi Browser.");
         }
     }
 
-    // --- 6. FUNGSI PEMBAYARAN (GLOBAL) ---
+    // --- 6. FUNGSI PEMBAYARAN ---
     window.handlePayment = async function(amount, productName) {
         if (!currentUser) return alert("Silakan Login terlebih dahulu!");
 
@@ -155,6 +170,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     };
 
+    // Binding tombol login ke fungsi handleAuth
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) loginBtn.onclick = authPi;
+    if (loginBtn) loginBtn.onclick = handleAuth;
 });

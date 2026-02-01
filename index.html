@@ -8,6 +8,7 @@
         :root {
             --pi-color: #6d28d9;
             --pi-gold: #ffa500;
+            --pi-red: #ef4444; /* Warna untuk Logout */
             --text-main: #1e293b;
             --text-muted: #64748b;
             --bg-body: #f8fafc;
@@ -22,54 +23,75 @@
             padding-bottom: 90px;
         }
 
-        /* Header Premium */
+        /* Header dengan posisi relatif untuk menampung tombol di pojok */
         header {
             background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%);
             color: white;
-            padding: 30px 20px 45px 20px;
+            padding: 40px 20px 50px 20px;
             text-align: center;
             border-bottom-left-radius: 30px;
             border-bottom-right-radius: 30px;
             box-shadow: 0 10px 25px rgba(109, 40, 217, 0.2);
+            position: relative;
         }
 
-        #login-section {
-            padding: 0 20px;
-            max-width: 600px;
-            margin: -25px auto 10px auto;
+        /* Tombol Auth di Pojok Kanan Atas */
+        .auth-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            z-index: 10;
         }
 
-        .btn-login {
-            width: 100%;
+        .btn-auth {
             background: var(--pi-gold);
             color: white;
             border: none;
-            padding: 15px;
-            border-radius: 18px;
+            padding: 8px 16px;
+            border-radius: 12px;
             font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(255, 165, 0, 0.3);
+            font-size: 0.75rem;
             cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             transition: 0.3s;
         }
 
-        /* Grid Layout & Cards */
+        /* Style khusus saat tombol berubah jadi Logout */
+        .btn-logout-style {
+            background: var(--pi-red) !important;
+        }
+
+        /* Layout Kategori */
+        .category-scroll {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px 20px;
+            gap: 12px;
+            scrollbar-width: none;
+            margin-top: -15px; /* Menempel sedikit ke header */
+        }
+        .category-scroll::-webkit-scrollbar { display: none; }
+
+        .category-pill {
+            flex: 0 0 auto;
+            background: white;
+            padding: 8px 16px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid #f1f5f9;
+            white-space: nowrap;
+        }
+
         .marketplace-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
         }
 
         .product-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+            background: white; border-radius: 20px; overflow: hidden;
+            display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             border: 1px solid #f1f5f9;
         }
 
@@ -87,44 +109,16 @@
         .price { font-weight: 800; color: var(--pi-color); font-size: 1rem; }
         .btn-buy { background: var(--pi-color); color: white; border: none; padding: 7px 12px; border-radius: 10px; cursor: pointer; }
 
-        /* Profile Page Styling */
-        #page-profile {
-            padding: 20px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
+        /* Profile Page */
+        #page-profile { padding: 20px; max-width: 600px; margin: 0 auto; }
         .profile-card {
-            background: white;
-            border-radius: 25px;
-            padding: 30px 20px;
-            text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            border: 1px solid #f1f5f9;
+            background: white; border-radius: 25px; padding: 30px 20px;
+            text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f1f5f9;
         }
+        .profile-avatar { font-size: 4rem; margin-bottom: 15px; background: #f5f3ff; width: 100px; height: 100px; line-height: 100px; border-radius: 50%; margin: 0 auto 15px auto; }
+        .uid-box { font-size: 0.7rem; color: var(--text-muted); background: #f1f5f9; padding: 12px; border-radius: 12px; word-break: break-all; margin-top: 15px; }
 
-        .profile-avatar {
-            font-size: 4rem;
-            margin-bottom: 15px;
-            background: #f5f3ff;
-            width: 100px;
-            height: 100px;
-            line-height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 15px auto;
-        }
-
-        .uid-box {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            background: #f1f5f9;
-            padding: 12px;
-            border-radius: 12px;
-            word-break: break-all;
-            margin-top: 15px;
-        }
-
-        /* Bottom Navigation */
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
@@ -132,18 +126,9 @@
             padding: 12px 10px 25px 10px;
             border-top: 1px solid #f1f5f9; z-index: 1000;
         }
-
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            text-decoration: none; color: #94a3b8; flex: 1;
-        }
-
+        .nav-item { display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; flex: 1; }
         .nav-item.active { color: var(--pi-color); }
-        .nav-item.active .nav-icon-bg {
-            background: #ede9fe; color: var(--pi-color);
-            padding: 6px 16px; border-radius: 12px; margin-bottom: 4px;
-        }
-
+        .nav-item.active .nav-icon-bg { background: #ede9fe; color: var(--pi-color); padding: 6px 16px; border-radius: 12px; margin-bottom: 4px; }
         .nav-icon { font-size: 1.3rem; margin-bottom: 4px; }
         .nav-text { font-size: 0.65rem; font-weight: 600; }
     </style>
@@ -151,13 +136,33 @@
 <body>
 
     <header>
+        <div class="auth-container">
+            <button id="login-btn" class="btn-auth">Login</button>
+        </div>
+
         <h1 style="margin:0; font-size: 1.5rem;">Digital Pro Indo</h1>
         <p style="margin:5px 0 0 0; opacity: 0.8; font-size: 0.85rem;">Premium Digital Marketplace</p>
     </header>
 
     <div id="page-home">
-        <div id="login-section">
-            <button id="login-btn" class="btn-login">Login ke Pi Wallet</button>
+        <div class="category-scroll" style="margin-top: 10px;">
+            <div class="category-pill">🏠 Rumah</div>
+            <div class="category-pill">🚗 Mobil</div>
+            <div class="category-pill">🏍️ Motor</div>
+            <div class="category-pill">✨ Emas</div>
+            <div class="category-pill">📱 Elektronik</div>
+            <div class="category-pill">👕 Fashion</div>
+            <div class="category-pill">💄 Kecantikan</div>
+            <div class="category-pill">🏥 Kesehatan</div>
+            <div class="category-pill">🏢 Property</div>
+            <div class="category-pill">🔧 Otomotif</div>
+            <div class="category-pill">👶 Ibu & Bayi</div>
+            <div class="category-pill">🛋️ Rumah Tangga</div>
+            <div class="category-pill">🍔 Makanan (F&B)</div>
+            <div class="category-pill">🎨 Hobi & Koleksi</div>
+            <div class="category-pill">⚽ Olahraga</div>
+            <div class="category-pill">🖋️ ATK</div>
+            <div class="category-pill">⚡ Produk Digital</div>
         </div>
 
         <div class="marketplace-grid">
@@ -196,11 +201,7 @@
             <div class="profile-avatar">👤</div>
             <h2 id="profile-username" style="margin: 0; color: var(--pi-color);">Belum Login</h2>
             <p style="color: var(--text-muted); font-size: 0.85rem;">Member Digital Pro Indo</p>
-            
-            <div id="profile-address" class="uid-box">
-                Silakan login untuk melihat detail akun.
-            </div>
-
+            <div id="profile-address" class="uid-box">Silakan login untuk melihat detail akun.</div>
             <div style="margin-top: 25px; text-align: left; font-size: 0.9rem; border-top: 1px solid #eee; padding-top: 20px;">
                 <p><strong>Status:</strong> <span style="color: #10b981;">Verified ✅</span></p>
                 <p><strong>Region:</strong> Indonesia 🇮🇩</p>

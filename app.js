@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentUser = null;
     let cart = [];
 
-    // --- 1. DATA PRODUK (DATABASE LENGKAP - TIDAK DIKURANGI) ---
+    // --- 1. DATA PRODUK (LENGKAP & TETAP) ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         { id: 'm2', name: "Skuter Matic Retro - Classic White", price: 0.65, category: "Motor", images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=500&q=80"], desc: "Desain klasik elegan, Irit bahan bakar." }
     ];
 
-    // --- 2. INISIALISASI SDK (MAINNET SESUAI ASLI) ---
+    // --- 2. INISIALISASI SDK ---
     async function initPi() {
         try {
             await Pi.init({ version: "2.0", sandbox: false });
@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 3. LOGIKA RENDER (TETAP STABIL DENGAN PENAMBAHAN ONCLICK DETAIL) ---
+    // --- 3. LOGIKA RENDER ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
@@ -74,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 4. FUNGSI DETAIL PRODUK (BARU & AMAN) ---
+    // --- 4. FUNGSI DETAIL PRODUK (UPDATE: TAMBAH KE KERANJANG) ---
     window.openProductDetail = function(productId) {
         const product = productsData.find(p => p.id === productId);
         if (!product) return;
@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div class="price" style="font-size:1.5rem; margin-bottom:15px;">π ${product.price}</div>
                 <p style="color:var(--text-muted); line-height:1.6;">${product.desc}</p>
                 <button class="btn-buy-now" style="width:100%; margin-top:20px; padding:15px;" onclick="handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
+                <button class="btn-secondary" style="width:100%; margin-top:10px; padding:15px; background:#6c757d; color:white; border:none; border-radius:8px;" onclick="addToCart('${product.id}')">Tambah ke Keranjang</button>
             </div>
         `;
         detailPage.classList.remove('hidden');
@@ -99,14 +100,52 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.getElementById('product-detail-page').classList.add('hidden');
     };
 
-    // --- 5. NAVIGASI & FILTER (TETAP) ---
+    // --- 5. LOGIKA KERANJANG ---
+    window.addToCart = function(productId) {
+        const product = productsData.find(p => p.id === productId);
+        if (product) {
+            cart.push(product);
+            alert(`${product.name} telah ditambahkan ke keranjang!`);
+            updateCartUI();
+        }
+    };
+
+    function updateCartUI() {
+        const cartGrid = document.getElementById('cart-items');
+        if (!cartGrid) return;
+
+        if (cart.length === 0) {
+            cartGrid.innerHTML = "<p style='text-align:center; padding:20px; color:gray;'>Keranjang Anda masih kosong.</p>";
+            return;
+        }
+
+        cartGrid.innerHTML = cart.map((item, index) => `
+            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:10px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                <img src="${item.images[0]}" style="width:65px; height:65px; border-radius:8px; object-fit:cover;">
+                <div style="flex-grow:1;">
+                    <h4 style="margin:0; font-size:0.95rem; color:#333;">${item.name}</h4>
+                    <span class="price" style="font-size:0.85rem; color:var(--pi-color); font-weight:bold;">π ${item.price}</span>
+                </div>
+                <button onclick="removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:8px; border-radius:6px; font-size:0.75rem;">Hapus</button>
+            </div>
+        `).join('');
+    }
+
+    window.removeFromCart = function(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+    };
+
+    // --- 6. NAVIGASI & FILTER ---
     window.switchPage = (pageId) => {
         const pages = ['page-home', 'page-cari', 'page-keranjang', 'page-profile'];
         pages.forEach(p => document.getElementById(p).classList.add('hidden'));
         document.getElementById(`page-${pageId}`).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(`nav-${pageId}`).classList.add('active');
+        
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
+        if(pageId === 'keranjang') updateCartUI();
     };
 
     window.filterCategory = (category) => {
@@ -126,7 +165,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderProducts(filtered, 'search-results');
     };
 
-    // --- 6. FUNGSI AUTH (TETAP ASLI) ---
+    // --- 7. FUNGSI AUTH ---
     async function handleAuth() {
         const loginBtn = document.getElementById('login-btn');
         if (currentUser) {
@@ -161,7 +200,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 7. SISTEM PEMBAYARAN (TETAP ASLI) ---
+    // --- 8. SISTEM PEMBAYARAN ---
     window.handlePayment = async function(amount, productName) {
         if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
         try {

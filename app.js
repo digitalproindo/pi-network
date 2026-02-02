@@ -2,11 +2,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
     let cart = [];
+    
+    // Objek untuk menyimpan data alamat pembeli
+    let userAddress = {
+        nama: "",
+        telepon: "",
+        alamatLengkap: ""
+    };
 
     // --- KONFIGURASI ---
-    const ADMIN_WA = "6282191851112"; // Ganti dengan nomor WhatsApp Anda
+    const ADMIN_WA = "6282191851112"; 
 
-    // --- 1. DATA PRODUK (LENGKAP - TETAP SESUAI SCRIPT ASLI ANDA) ---
+    // --- 1. DATA PRODUK ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -46,7 +53,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (e) { console.error("Gagal inisialisasi SDK:", e); }
     }
 
-    // --- 3. RENDER BERANDA ---
+    // --- 3. FORM ALAMAT PENGIRIMAN ---
+    window.showAddressForm = () => {
+        const overlay = document.createElement('div');
+        overlay.id = "address-overlay";
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; font-family:sans-serif;";
+        
+        overlay.innerHTML = `
+            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:400px; text-align:left; color:#333;">
+                <h3 style="margin-top:0; color:#6748d7;">Informasi Pengiriman</h3>
+                <p style="font-size:0.8rem; color:#666; margin-bottom:15px;">Mohon lengkapi data untuk pengiriman barang.</p>
+                
+                <label style="font-size:0.8rem; font-weight:bold;">Nama Penerima</label>
+                <input type="text" id="ship-name" style="width:100%; padding:10px; margin:5px 0 12px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" placeholder="Nama Lengkap" value="${userAddress.nama}">
+                
+                <label style="font-size:0.8rem; font-weight:bold;">Nomor HP (WhatsApp)</label>
+                <input type="number" id="ship-phone" style="width:100%; padding:10px; margin:5px 0 12px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" placeholder="Contoh: 0812..." value="${userAddress.telepon}">
+                
+                <label style="font-size:0.8rem; font-weight:bold;">Alamat Lengkap</label>
+                <textarea id="ship-address" style="width:100%; padding:10px; margin:5px 0 15px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box;" placeholder="Jalan, No Rumah, Kec, Kota/Kab, Kode Pos">${userAddress.alamatLengkap}</textarea>
+                
+                <button onclick="saveAddressData()" style="width:100%; background:#6748d7; color:white; border:none; padding:15px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Data Alamat</button>
+                <button onclick="document.getElementById('address-overlay').remove()" style="width:100%; background:none; border:none; color:#999; margin-top:10px; cursor:pointer; font-size:0.8rem;">Batal</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    };
+
+    window.saveAddressData = () => {
+        const n = document.getElementById('ship-name').value;
+        const t = document.getElementById('ship-phone').value;
+        const a = document.getElementById('ship-address').value;
+
+        if(!n || !t || !a) return alert("Mohon lengkapi semua kolom!");
+        
+        userAddress = { nama: n, telepon: t, alamatLengkap: a };
+        document.getElementById('address-overlay').remove();
+        alert("Alamat berhasil disimpan!");
+    };
+
+    // --- 4. RENDER BERANDA ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
@@ -69,9 +115,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 4. PEMBAYARAN & AUTH (REVISI FINAL: NO BLOCKED) ---
+    // --- 5. PEMBAYARAN ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
+        
+        // Cek apakah alamat sudah diisi
+        if (!userAddress.nama || !userAddress.alamatLengkap) {
+            alert("Anda belum mengisi alamat pengiriman!");
+            window.showAddressForm();
+            return;
+        }
+
         try {
             await Pi.createPayment({
                 amount: parseFloat(amount),
@@ -94,7 +148,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                     
                     if (res.ok) {
-                        // REVISI: Ganti Alert dengan UI Transparan yang memiliki tombol WhatsApp asli
                         showSuccessOverlay(amount, name, txid);
                         if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                     }
@@ -108,36 +161,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (err) { console.error(err); }
     };
 
-    // FUNGSI BARU UNTUK MENAMPILKAN TOMBOL WHATSAPP TANPA BLOKIR
     function showSuccessOverlay(amount, name, txid) {
         const overlay = document.createElement('div');
         overlay.id = "success-overlay";
         overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; text-align:center; color:white; font-family:sans-serif;";
         
-        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}. %0ATXID: ${txid}`;
+        // Pesan WA Lengkap dengan Data Pengiriman
+        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0A%0ATXID: ${txid}%0A%0ADATA PENGIRIMAN:%0ANama: ${userAddress.nama}%0AHP: ${userAddress.telepon}%0AAlamat: ${userAddress.alamatLengkap}`;
         const waUrl = `https://wa.me/${ADMIN_WA}?text=${pesan}`;
 
         overlay.innerHTML = `
             <div style="background:white; color:#333; padding:30px; border-radius:20px; width:100%; max-width:400px;">
                 <div style="font-size:50px; color:#27ae60; margin-bottom:15px;">✔</div>
                 <h2 style="margin:0 0 10px;">Pembayaran Berhasil!</h2>
-                <p style="font-size:0.9rem; color:#666; margin-bottom:25px;">Klik tombol di bawah untuk mengirim bukti pembayaran ke WhatsApp Admin agar pesanan segera diproses.</p>
-                
+                <p style="font-size:0.9rem; color:#666; margin-bottom:25px;">Klik tombol di bawah untuk mengirim bukti bayar & alamat ke WhatsApp Admin.</p>
                 <a href="${waUrl}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:10px; font-weight:bold; font-size:1rem; margin-bottom:15px;">Kirim ke WhatsApp</a>
-                
-                <button onclick="document.getElementById('success-overlay').remove()" style="background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer;">Nanti Saja (Kembali ke Aplikasi)</button>
+                <button onclick="document.getElementById('success-overlay').remove()" style="background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer;">Kembali ke Aplikasi</button>
             </div>
         `;
         document.body.appendChild(overlay);
     }
 
+    // --- 6. AUTH ---
     async function handleAuth() {
         const btn = document.getElementById('login-btn');
         if (currentUser) {
             if (confirm("Logout dari akun?")) {
                 currentUser = null;
                 btn.innerText = "Login";
-                btn.classList.remove('btn-logout-style');
                 document.getElementById('profile-username').innerText = "Belum Login";
                 alert("Logout berhasil.");
             }
@@ -150,21 +201,20 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
             currentUser = auth.user;
             btn.innerText = "Logout";
-            btn.classList.add('btn-logout-style');
             document.getElementById('profile-username').innerText = currentUser.username;
             alert("Selamat datang, " + currentUser.username + "!");
         } catch (err) {
             btn.innerText = "Login";
-            alert("Gagal Login. Pastikan Anda di Pi Browser.");
+            alert("Gagal Login.");
         }
     }
 
-    // --- 5. LOGIKA KERANJANG ---
+    // --- 7. KERANJANG ---
     window.addToCart = (productId) => {
         const product = productsData.find(p => p.id === productId);
         if (product) { 
             cart.push(product); 
-            alert(`${product.name} ditambah ke keranjang!`); 
+            alert(`${product.name} ditambah!`); 
             updateCartUI(); 
         }
     };
@@ -173,30 +223,30 @@ document.addEventListener("DOMContentLoaded", async () => {
         const cartGrid = document.getElementById('cart-items');
         if (!cartGrid) return;
         if (cart.length === 0) { 
-            cartGrid.innerHTML = "<p style='text-align:center; padding:40px; color:gray;'>Keranjang Anda kosong.</p>"; 
+            cartGrid.innerHTML = "<p style='text-align:center; padding:40px; color:gray;'>Keranjang Kosong.</p>"; 
             return; 
         }
 
         const total = cart.reduce((sum, item) => sum + item.price, 0).toFixed(4);
+        let html = `<div style="padding:10px;">`;
         
-        let html = `<div style="display:flex; flex-direction:column; gap:12px; padding:10px;">`;
+        // Tombol Alamat di Keranjang
+        html += `<button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:12px; border-radius:10px; margin-bottom:15px; font-weight:bold; cursor:pointer;">📍 ${userAddress.nama ? 'Ubah Alamat Kirim' : 'Isi Alamat Pengiriman'}</button>`;
+
         html += cart.map((item, index) => `
-            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-                <img src="${item.images[0]}" style="width:65px; height:65px; border-radius:8px; object-fit:cover;">
+            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
+                <img src="${item.images[0]}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
                 <div style="flex-grow:1;">
-                    <h4 style="margin:0; font-size:0.9rem;">${item.name}</h4>
-                    <span style="color:var(--pi-color); font-weight:bold;">π ${item.price}</span>
+                    <h4 style="margin:0; font-size:0.85rem;">${item.name}</h4>
+                    <span style="color:#6748d7; font-weight:bold;">π ${item.price}</span>
                 </div>
-                <button onclick="window.removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:8px 12px; border-radius:6px; font-size:0.75rem;">Hapus</button>
+                <button onclick="window.removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:5px 10px; border-radius:5px;">Hapus</button>
             </div>`).join('');
         
         html += `
-            <div style="margin-top:20px; padding:20px; background:#f8f9fa; border-radius:15px; border:1px solid #eee; text-align:center;">
-                <div style="font-size:1.1rem; font-weight:bold; margin-bottom:15px; display:flex; justify-content:space-between;">
-                    <span>Total:</span>
-                    <span style="color:var(--pi-color);">π ${total}</span>
-                </div>
-                <button class="btn-buy-now" style="width:100%; padding:16px; font-size:1rem;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Beli Sekarang (Checkout)</button>
+            <div style="margin-top:15px; padding:15px; background:#f8f9fa; border-radius:15px; text-align:center;">
+                <div style="font-weight:bold; margin-bottom:10px;">Total: π ${total}</div>
+                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout Sekarang</button>
             </div></div>`;
         
         cartGrid.innerHTML = html;
@@ -204,7 +254,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.removeFromCart = (index) => { cart.splice(index, 1); updateCartUI(); };
 
-    // --- 6. NAVIGASI, DETAIL, & FILTER ---
+    // --- 8. NAVIGASI & DETAIL ---
     window.switchPage = (pageId) => {
         ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
             const el = document.getElementById(p);
@@ -212,11 +262,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         const target = document.getElementById(`page-${pageId}`);
         if(target) target.classList.remove('hidden');
-        
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const nav = document.getElementById(`nav-${pageId}`);
-        if(nav) nav.classList.add('active');
-        
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
         if(pageId === 'keranjang') updateCartUI();
     };
@@ -225,60 +270,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         const product = productsData.find(p => p.id === productId);
         if (!product) return;
         const detailContent = document.getElementById('detail-content');
-        
-        const rating = "4.8/5.0";
-        const terjual = "500+ Terjual";
-        const ulasan = [
-            { user: "User123", teks: "Produk berkualitas! Pengiriman sangat cepat." },
-            { user: "PiLover", teks: "Suka sekali! Rasa enak dan segar sesuai deskripsi." }
-        ];
-
         detailContent.innerHTML = `
-            <img src="${product.images[0]}" style="width:100%; height:300px; object-fit:cover;">
+            <img src="${product.images[0]}" style="width:100%; height:250px; object-fit:cover;">
             <div style="padding:20px;">
-                <p style="color:var(--pi-color); font-weight:bold; font-size:0.8rem;">${product.category}</p>
-                <h2 style="margin:5px 0; font-size:1.4rem;">${product.name}</h2>
-                <div class="price" style="font-size:1.8rem; margin-bottom:10px; font-weight:800;">π ${product.price}</div>
-                
-                <p style="color:#666; line-height:1.6; margin-bottom:20px; font-size:0.95rem;">${product.desc}</p>
-                
-                <button class="btn-buy-now" style="width:100%; padding:15px; font-size:1rem; margin-bottom:10px;" 
-                        onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
-                
-                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;" 
-                        onclick="window.addToCart('${product.id}')">Tambah ke Keranjang</button>
-
-                <hr style="margin:25px 0; border:0; border-top:1px solid #eee;">
-
-                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; background:#f9f9f9; padding:12px; border-radius:10px;">
-                    <div>
-                        <span style="color:#f1c40f; font-size:1.1rem;">★</span> 
-                        <span style="font-weight:bold; font-size:0.95rem;">${rating}</span>
-                    </div>
-                    <div style="color:#888; border-left:1px solid #ddd; padding-left:15px; font-size:0.9rem;">
-                        ${terjual}
-                    </div>
-                </div>
-
-                <h4 style="margin-bottom:15px; font-size:1rem;">Ulasan Pembeli:</h4>
-                <div id="ulasan-container">
-                    ${ulasan.map(u => `
-                        <div style="background:#fff; border:1px solid #eee; padding:12px; border-radius:8px; margin-bottom:10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <p style="margin:0; font-size:0.8rem; font-weight:bold; color:var(--pi-color);">${u.user}</p>
-                            <p style="margin:5px 0 0; font-size:0.85rem; color:#444;">"${u.teks}"</p>
-                        </div>
-                    `).join('')}
-                </div>
+                <h2 style="margin:0;">${product.name}</h2>
+                <div style="font-size:1.5rem; color:#6748d7; font-weight:800; margin:10px 0;">π ${product.price}</div>
+                <p style="color:#666; font-size:0.9rem;">${product.desc}</p>
+                <button class="btn-buy-now" style="width:100%; padding:15px; margin-top:10px;" onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
+                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; margin-top:10px; font-weight:bold;" onclick="window.addToCart('${product.id}')">Tambah Keranjang</button>
             </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
-
-    window.filterCategory = (category) => {
-        const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
-        renderProducts(filtered, 'main-grid');
-    };
 
     async function handleIncompletePayment(payment) {
         await fetch('/api/complete', {
@@ -288,7 +292,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 7. BANNER SLIDER ---
+    // --- 9. BANNER ---
     const banners = [
         "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
         "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"
@@ -299,12 +303,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     function startBannerSlider() {
         if (bannerImg) {
             setInterval(() => {
-                bannerImg.style.opacity = 0.4; 
-                setTimeout(() => {
-                    currentBannerIndex = (currentBannerIndex + 1) % banners.length;
-                    bannerImg.src = banners[currentBannerIndex];
-                    bannerImg.style.opacity = 1; 
-                }, 400);
+                currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+                bannerImg.src = banners[currentBannerIndex];
             }, 4000);
         }
     }

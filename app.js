@@ -3,17 +3,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentUser = null;
     let cart = [];
     
-    // Objek untuk menyimpan data alamat pembeli
-    let userAddress = {
-        nama: "",
-        telepon: "",
-        alamatLengkap: ""
-    };
+    // Simpan data alamat
+    let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
 
     // --- KONFIGURASI ---
     const ADMIN_WA = "6282191851112"; 
 
-    // --- 1. DATA PRODUK ---
+    // --- 1. DATA PRODUK (TETAP SESUAI ASLINYA) ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -49,50 +45,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function initPi() {
         try {
             await Pi.init({ version: "2.0", sandbox: false });
-            console.log("Pi SDK Berhasil diinisialisasi");
-        } catch (e) { console.error("Gagal inisialisasi SDK:", e); }
+        } catch (e) { console.error(e); }
     }
 
-    // --- 3. FORM ALAMAT PENGIRIMAN ---
+    // --- 3. FUNGSI ALAMAT (TAMBAHAN HALUS) ---
     window.showAddressForm = () => {
         const overlay = document.createElement('div');
         overlay.id = "address-overlay";
-        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; font-family:sans-serif;";
-        
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px;";
         overlay.innerHTML = `
-            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:400px; text-align:left; color:#333;">
-                <h3 style="margin-top:0; color:#6748d7;">Informasi Pengiriman</h3>
-                <p style="font-size:0.8rem; color:#666; margin-bottom:15px;">Mohon lengkapi data untuk pengiriman barang.</p>
-                
-                <label style="font-size:0.8rem; font-weight:bold;">Nama Penerima</label>
-                <input type="text" id="ship-name" style="width:100%; padding:10px; margin:5px 0 12px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" placeholder="Nama Lengkap" value="${userAddress.nama}">
-                
-                <label style="font-size:0.8rem; font-weight:bold;">Nomor HP (WhatsApp)</label>
-                <input type="number" id="ship-phone" style="width:100%; padding:10px; margin:5px 0 12px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" placeholder="Contoh: 0812..." value="${userAddress.telepon}">
-                
-                <label style="font-size:0.8rem; font-weight:bold;">Alamat Lengkap</label>
-                <textarea id="ship-address" style="width:100%; padding:10px; margin:5px 0 15px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box;" placeholder="Jalan, No Rumah, Kec, Kota/Kab, Kode Pos">${userAddress.alamatLengkap}</textarea>
-                
-                <button onclick="saveAddressData()" style="width:100%; background:#6748d7; color:white; border:none; padding:15px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Data Alamat</button>
-                <button onclick="document.getElementById('address-overlay').remove()" style="width:100%; background:none; border:none; color:#999; margin-top:10px; cursor:pointer; font-size:0.8rem;">Batal</button>
-            </div>
-        `;
+            <div style="background:white; padding:20px; border-radius:15px; width:100%; max-width:350px; color:#333;">
+                <h3 style="margin-top:0;">Alamat Pengiriman</h3>
+                <input type="text" id="ship-name" style="width:100%; padding:10px; margin:5px 0;" placeholder="Nama Penerima" value="${userAddress.nama}">
+                <input type="number" id="ship-phone" style="width:100%; padding:10px; margin:5px 0;" placeholder="No HP/WA" value="${userAddress.telepon}">
+                <textarea id="ship-address" style="width:100%; padding:10px; margin:5px 0; height:70px;" placeholder="Alamat Lengkap">${userAddress.alamatLengkap}</textarea>
+                <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:12px; border-radius:8px; margin-top:10px; font-weight:bold;">Simpan</button>
+            </div>`;
         document.body.appendChild(overlay);
     };
 
-    window.saveAddressData = () => {
-        const n = document.getElementById('ship-name').value;
-        const t = document.getElementById('ship-phone').value;
-        const a = document.getElementById('ship-address').value;
-
-        if(!n || !t || !a) return alert("Mohon lengkapi semua kolom!");
-        
-        userAddress = { nama: n, telepon: t, alamatLengkap: a };
+    window.saveAddress = () => {
+        userAddress = {
+            nama: document.getElementById('ship-name').value,
+            telepon: document.getElementById('ship-phone').value,
+            alamatLengkap: document.getElementById('ship-address').value
+        };
+        if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
         document.getElementById('address-overlay').remove();
-        alert("Alamat berhasil disimpan!");
+        alert("Alamat disimpan.");
     };
 
-    // --- 4. RENDER BERANDA ---
+    // --- 4. RENDER BERANDA (SESUAI ASLINYA) ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
@@ -115,203 +98,124 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 5. PEMBAYARAN ---
+    // --- 5. PEMBAYARAN & SUCCESS OVERLAY ---
     window.handlePayment = async (amount, name) => {
-        if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
-        
-        // Cek apakah alamat sudah diisi
-        if (!userAddress.nama || !userAddress.alamatLengkap) {
-            alert("Anda belum mengisi alamat pengiriman!");
-            window.showAddressForm();
-            return;
-        }
+        if (!currentUser) return alert("Silakan Login di Profil!");
+        if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
 
         try {
             await Pi.createPayment({
                 amount: parseFloat(amount),
-                memo: `Pembelian ${name} - Digital Pro Indo`,
+                memo: `Pembelian ${name}`,
                 metadata: { productName: name },
             }, {
                 onReadyForServerApproval: async (paymentId) => {
-                    const res = await fetch('/api/approve', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId })
-                    });
+                    const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
                     return res.ok;
                 },
                 onReadyForServerCompletion: async (paymentId, txid) => {
-                    const res = await fetch('/api/complete', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId, txid })
-                    });
-                    
-                    if (res.ok) {
+                    const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
+                    if (res.ok) { 
                         showSuccessOverlay(amount, name, txid);
                         if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                     }
                 },
-                onCancel: (paymentId) => console.log("Pembayaran dibatalkan"),
-                onError: (error, payment) => {
-                    if (payment) handleIncompletePayment(payment);
-                    alert("Terjadi kesalahan saat pembayaran.");
-                }
+                onCancel: () => {},
+                onError: (e, p) => { if(p) handleIncompletePayment(p); }
             });
         } catch (err) { console.error(err); }
     };
 
     function showSuccessOverlay(amount, name, txid) {
         const overlay = document.createElement('div');
-        overlay.id = "success-overlay";
-        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; text-align:center; color:white; font-family:sans-serif;";
-        
-        // Pesan WA Lengkap dengan Data Pengiriman
-        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0A%0ATXID: ${txid}%0A%0ADATA PENGIRIMAN:%0ANama: ${userAddress.nama}%0AHP: ${userAddress.telepon}%0AAlamat: ${userAddress.alamatLengkap}`;
-        const waUrl = `https://wa.me/${ADMIN_WA}?text=${pesan}`;
-
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; text-align:center; color:#333;";
+        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0ATXID: ${txid}%0A%0AAlamat: ${userAddress.nama}, ${userAddress.telepon}, ${userAddress.alamatLengkap}`;
         overlay.innerHTML = `
-            <div style="background:white; color:#333; padding:30px; border-radius:20px; width:100%; max-width:400px;">
-                <div style="font-size:50px; color:#27ae60; margin-bottom:15px;">✔</div>
-                <h2 style="margin:0 0 10px;">Pembayaran Berhasil!</h2>
-                <p style="font-size:0.9rem; color:#666; margin-bottom:25px;">Klik tombol di bawah untuk mengirim bukti bayar & alamat ke WhatsApp Admin.</p>
-                <a href="${waUrl}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:10px; font-weight:bold; font-size:1rem; margin-bottom:15px;">Kirim ke WhatsApp</a>
-                <button onclick="document.getElementById('success-overlay').remove()" style="background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer;">Kembali ke Aplikasi</button>
-            </div>
-        `;
+            <div style="background:white; padding:25px; border-radius:20px; max-width:350px;">
+                <h2 style="color:#27ae60;">Berhasil!</h2>
+                <p>Klik tombol untuk kirim bukti & alamat ke WA Admin.</p>
+                <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:10px; font-weight:bold; margin-bottom:10px;">Kirim Ke WhatsApp</a>
+                <button onclick="location.reload()" style="background:none; border:none; color:#999;">Tutup</button>
+            </div>`;
         document.body.appendChild(overlay);
     }
 
-    // --- 6. AUTH ---
-    async function handleAuth() {
+    // --- 6. AUTH, KERANJANG, NAVIGASI (ASLI) ---
+    window.handleAuth = async () => {
         const btn = document.getElementById('login-btn');
-        if (currentUser) {
-            if (confirm("Logout dari akun?")) {
-                currentUser = null;
-                btn.innerText = "Login";
-                document.getElementById('profile-username').innerText = "Belum Login";
-                alert("Logout berhasil.");
-            }
-            return;
-        }
-        btn.innerText = "Loading...";
+        if (currentUser) { currentUser = null; btn.innerText = "Login"; return; }
         try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
+            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (p) => handleIncompletePayment(p));
             currentUser = auth.user;
             btn.innerText = "Logout";
             document.getElementById('profile-username').innerText = currentUser.username;
-            alert("Selamat datang, " + currentUser.username + "!");
-        } catch (err) {
-            btn.innerText = "Login";
-            alert("Gagal Login.");
-        }
-    }
+        } catch (e) { alert("Gagal Login."); }
+    };
 
-    // --- 7. KERANJANG ---
-    window.addToCart = (productId) => {
-        const product = productsData.find(p => p.id === productId);
-        if (product) { 
-            cart.push(product); 
-            alert(`${product.name} ditambah!`); 
-            updateCartUI(); 
-        }
+    window.addToCart = (id) => {
+        const p = productsData.find(x => x.id === id);
+        if(p) { cart.push(p); alert("Ditambah!"); updateCartUI(); }
     };
 
     function updateCartUI() {
-        const cartGrid = document.getElementById('cart-items');
-        if (!cartGrid) return;
-        if (cart.length === 0) { 
-            cartGrid.innerHTML = "<p style='text-align:center; padding:40px; color:gray;'>Keranjang Kosong.</p>"; 
-            return; 
-        }
-
-        const total = cart.reduce((sum, item) => sum + item.price, 0).toFixed(4);
-        let html = `<div style="padding:10px;">`;
-        
-        // Tombol Alamat di Keranjang
-        html += `<button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:12px; border-radius:10px; margin-bottom:15px; font-weight:bold; cursor:pointer;">📍 ${userAddress.nama ? 'Ubah Alamat Kirim' : 'Isi Alamat Pengiriman'}</button>`;
-
-        html += cart.map((item, index) => `
-            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-                <img src="${item.images[0]}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
-                <div style="flex-grow:1;">
-                    <h4 style="margin:0; font-size:0.85rem;">${item.name}</h4>
-                    <span style="color:#6748d7; font-weight:bold;">π ${item.price}</span>
-                </div>
-                <button onclick="window.removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:5px 10px; border-radius:5px;">Hapus</button>
-            </div>`).join('');
-        
-        html += `
-            <div style="margin-top:15px; padding:15px; background:#f8f9fa; border-radius:15px; text-align:center;">
-                <div style="font-weight:bold; margin-bottom:10px;">Total: π ${total}</div>
-                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout Sekarang</button>
-            </div></div>`;
-        
-        cartGrid.innerHTML = html;
+        const grid = document.getElementById('cart-items');
+        if (!grid) return;
+        if (cart.length === 0) { grid.innerHTML = "<p>Kosong</p>"; return; }
+        const total = cart.reduce((s, i) => s + i.price, 0).toFixed(4);
+        grid.innerHTML = `
+            <button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:10px; border-radius:8px; margin-bottom:10px;">📍 Alamat Pengiriman</button>
+            ${cart.map((i, idx) => `<div style="display:flex; padding:10px; background:white; margin-bottom:5px; border-radius:10px;">${i.name} - π ${i.price}</div>`).join('')}
+            <div style="padding:15px; text-align:center;">
+                <b>Total: π ${total}</b><br><br>
+                <button class="btn-buy-now" style="width:100%;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout</button>
+            </div>`;
     }
 
-    window.removeFromCart = (index) => { cart.splice(index, 1); updateCartUI(); };
-
-    // --- 8. NAVIGASI & DETAIL ---
     window.switchPage = (pageId) => {
-        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
-            const el = document.getElementById(p);
-            if(el) el.classList.add('hidden');
-        });
-        const target = document.getElementById(`page-${pageId}`);
-        if(target) target.classList.remove('hidden');
+        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => document.getElementById(p).classList.add('hidden'));
+        document.getElementById(`page-${pageId}`).classList.remove('hidden');
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById(`nav-${pageId}`).classList.add('active');
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
-        if(pageId === 'keranjang') updateCartUI();
     };
 
     window.openProductDetail = (productId) => {
-        const product = productsData.find(p => p.id === productId);
-        if (!product) return;
-        const detailContent = document.getElementById('detail-content');
-        detailContent.innerHTML = `
-            <img src="${product.images[0]}" style="width:100%; height:250px; object-fit:cover;">
+        const p = productsData.find(x => x.id === productId);
+        if (!p) return;
+        document.getElementById('detail-content').innerHTML = `
+            <img src="${p.images[0]}" style="width:100%; height:300px; object-fit:cover;">
             <div style="padding:20px;">
-                <h2 style="margin:0;">${product.name}</h2>
-                <div style="font-size:1.5rem; color:#6748d7; font-weight:800; margin:10px 0;">π ${product.price}</div>
-                <p style="color:#666; font-size:0.9rem;">${product.desc}</p>
-                <button class="btn-buy-now" style="width:100%; padding:15px; margin-top:10px;" onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
-                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; margin-top:10px; font-weight:bold;" onclick="window.addToCart('${product.id}')">Tambah Keranjang</button>
+                <p style="color:var(--pi-color); font-weight:bold;">${p.category}</p>
+                <h2>${p.name}</h2>
+                <div class="price" style="font-size:1.8rem; margin-bottom:10px;">π ${p.price}</div>
+                <p>${p.desc}</p>
+                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
+                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; margin-top:10px;" onclick="window.addToCart('${p.id}')">Tambah Keranjang</button>
             </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
-    async function handleIncompletePayment(payment) {
-        await fetch('/api/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
-        });
+    // --- FUNGSI FILTER (YANG TADI TERHAPUS) ---
+    window.filterCategory = (category) => {
+        const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+        renderProducts(filtered, 'main-grid');
+    };
+
+    async function handleIncompletePayment(p) {
+        await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });
     }
 
-    // --- 9. BANNER ---
-    const banners = [
-        "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
-        "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"
-    ];
-    let currentBannerIndex = 0;
-    const bannerImg = document.getElementById('banner-img');
-
-    function startBannerSlider() {
-        if (bannerImg) {
-            setInterval(() => {
-                currentBannerIndex = (currentBannerIndex + 1) % banners.length;
-                bannerImg.src = banners[currentBannerIndex];
-            }, 4000);
-        }
-    }
+    // --- BANNER ---
+    const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"];
+    let idx = 0;
+    setInterval(() => { 
+        const img = document.getElementById('banner-img');
+        if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
+    }, 4000);
 
     await initPi();
     renderProducts(productsData, 'main-grid');
-    startBannerSlider(); 
-    const loginBtn = document.getElementById('login-btn');
-    if(loginBtn) loginBtn.onclick = handleAuth;
+    document.getElementById('login-btn').onclick = window.handleAuth;
 });

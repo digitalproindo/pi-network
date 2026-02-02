@@ -82,34 +82,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 3. LOGIKA RENDER PRODUK (UPDATED) ---
-    function renderProducts(data, targetGridId) {
-        const grid = document.getElementById(targetGridId);
-        if (!grid) return;
-        grid.innerHTML = "";
+    // --- 3. LOGIKA RENDER PRODUK (REVISI TOMBOL BELI) ---
+function renderProducts(data, targetGridId) {
+    const grid = document.getElementById(targetGridId);
+    if (!grid) return;
+    grid.innerHTML = "";
 
-        data.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div onclick="openProductDetail('${p.id}')">
-                    <div class="slider-container">
-                        <div class="slider-wrapper">
-                            <img src="${p.images[0]}" alt="${p.name}">
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">${p.name}</h3>
-                        <span class="price">π ${p.price}</span>
+    data.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div onclick="openProductDetail('${p.id}')">
+                <div class="slider-container">
+                    <div class="slider-wrapper">
+                        <img src="${p.images[0]}" alt="${p.name}">
                     </div>
                 </div>
-                <div style="padding: 0 12px 12px;">
-                    <button class="btn-buy-now" style="width:100%" onclick="addToCart('${p.id}')">Beli</button>
+                <div class="product-info">
+                    <h3 class="product-name">${p.name}</h3>
+                    <span class="price">π ${p.price}</span>
                 </div>
-            `;
-            grid.appendChild(card);
-        });
-    }
+            </div>
+            <div style="padding: 0 12px 12px;">
+                <button class="btn-buy-now" style="width:100%" onclick="handlePayment(${p.price}, '${p.name}')">Beli</button>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
 
     // --- 4. FUNGSI DETAIL PRODUK ---
     window.openProductDetail = function(productId) {

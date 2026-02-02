@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentUser = null;
     let cart = [];
 
-    // --- 1. DATA PRODUK (TIDAK BERUBAH) ---
+    // --- 1. DATA PRODUK (LENGKAP) ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -35,208 +35,133 @@ document.addEventListener("DOMContentLoaded", async () => {
         { id: 'm2', name: "Skuter Matic Retro - Classic White", price: 0.65, category: "Motor", images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?w=500&q=80"], desc: "Desain klasik elegan, Irit bahan bakar." }
     ];
 
-    // --- 2. INISIALISASI SDK ---
+    // --- 2. INISIALISASI ---
     async function initPi() {
         try {
             await Pi.init({ version: "2.0", sandbox: false });
-            console.log("Pi SDK Berhasil diinisialisasi");
-        } catch (e) {
-            console.error("Gagal inisialisasi SDK:", e);
-        }
+        } catch (e) { console.error(e); }
     }
 
-    // --- 3. LOGIKA RENDER ---
+    // --- 3. RENDER PRODUK ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
         grid.innerHTML = "";
-
         data.forEach(p => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
                 <div onclick="openProductDetail('${p.id}')">
-                    <div class="slider-container">
-                        <div class="slider-wrapper">
-                            <img src="${p.images[0]}" alt="${p.name}">
-                        </div>
-                    </div>
+                    <img src="${p.images[0]}" style="width:100%; height:150px; object-fit:cover; border-radius:10px;">
                     <div class="product-info">
-                        <h3 class="product-name">${p.name}</h3>
+                        <h3 class="product-name" style="font-size:0.9rem; margin:8px 0;">${p.name}</h3>
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <span class="price">π ${p.price}</span>
                             <button class="btn-buy-now" onclick="event.stopPropagation(); handlePayment(${p.price}, '${p.name}')">Beli</button>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
             grid.appendChild(card);
         });
     }
 
-    // --- 4. DETAIL PRODUK ---
-    window.openProductDetail = function(productId) {
+    // --- 4. DETAIL & KERANJANG ---
+    window.openProductDetail = (productId) => {
         const product = productsData.find(p => p.id === productId);
         if (!product) return;
-
-        const detailPage = document.getElementById('product-detail-page');
         const detailContent = document.getElementById('detail-content');
-        
         detailContent.innerHTML = `
             <img src="${product.images[0]}" style="width:100%; height:300px; object-fit:cover;">
             <div style="padding:20px;">
-                <p style="color:var(--pi-color); font-weight:800; font-size:0.8rem;">${product.category}</p>
-                <h2 style="margin:10px 0;">${product.name}</h2>
-                <div class="price" style="font-size:1.5rem; margin-bottom:15px;">π ${product.price}</div>
-                <p style="color:var(--text-muted); line-height:1.6;">${product.desc}</p>
+                <p style="color:var(--pi-color); font-weight:bold;">${product.category}</p>
+                <h2>${product.name}</h2>
+                <div class="price" style="font-size:1.5rem;">π ${product.price}</div>
+                <p style="margin-top:15px; color:#666;">${product.desc}</p>
                 <button class="btn-buy-now" style="width:100%; margin-top:20px; padding:15px;" onclick="handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
-                <button class="btn-secondary" style="width:100%; margin-top:10px; padding:15px; background:#6c757d; color:white; border:none; border-radius:8px;" onclick="addToCart('${product.id}')">Tambah ke Keranjang</button>
-            </div>
-        `;
-        detailPage.classList.remove('hidden');
+                <button style="width:100%; margin-top:10px; padding:15px; background:#6c757d; color:white; border:none; border-radius:8px;" onclick="addToCart('${product.id}')">Tambah ke Keranjang</button>
+            </div>`;
+        document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
-    window.closeProductDetail = () => {
-        document.getElementById('product-detail-page').classList.add('hidden');
-    };
+    window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
-    // --- 5. LOGIKA KERANJANG (UPDATE: TOTAL OTOMATIS) ---
-    window.addToCart = function(productId) {
+    window.addToCart = (productId) => {
         const product = productsData.find(p => p.id === productId);
-        if (product) {
-            cart.push(product);
-            alert(`${product.name} dimasukkan ke keranjang!`);
-            updateCartUI();
-        }
+        if (product) { cart.push(product); alert("Ditambahkan ke keranjang!"); updateCartUI(); }
     };
 
     function updateCartUI() {
         const cartGrid = document.getElementById('cart-items');
         if (!cartGrid) return;
+        if (cart.length === 0) { cartGrid.innerHTML = "<p style='text-align:center; padding:20px;'>Keranjang kosong.</p>"; return; }
 
-        if (cart.length === 0) {
-            cartGrid.innerHTML = "<p style='text-align:center; padding:20px; color:gray;'>Keranjang kosong.</p>";
-            return;
-        }
-
-        // Hitung total harga
-        const totalPrice = cart.reduce((sum, item) => sum + item.price, 0).toFixed(4);
-
-        let html = cart.map((item, index) => `
-            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:10px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
-                <img src="${item.images[0]}" style="width:65px; height:65px; border-radius:8px; object-fit:cover;">
+        const total = cart.reduce((sum, i) => sum + i.price, 0).toFixed(4);
+        // Tampilan list ke bawah (display block/flex-column)
+        let html = `<div style="display:flex; flex-direction:column; gap:15px; padding:10px;">`;
+        html += cart.map((item, index) => `
+            <div style="display:flex; align-items:center; gap:15px; background:white; padding:12px; border-radius:12px; box-shadow:0 2px 5px rgba(0,0,0,0.1);">
+                <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:8px; object-fit:cover;">
                 <div style="flex-grow:1;">
-                    <h4 style="margin:0; font-size:0.95rem;">${item.name}</h4>
-                    <span class="price" style="font-size:0.85rem;">π ${item.price}</span>
+                    <h4 style="margin:0; font-size:0.9rem;">${item.name}</h4>
+                    <span style="color:var(--pi-color); font-weight:bold;">π ${item.price}</span>
                 </div>
-                <button onclick="removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:8px; border-radius:6px; font-size:0.75rem;">Hapus</button>
-            </div>
-        `).join('');
-
-        // Tambahkan bagian Total dan tombol Beli Semua di paling bawah
+                <button onclick="removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:8px 12px; border-radius:6px;">Hapus</button>
+            </div>`).join('');
+        
         html += `
-            <div style="margin-top:20px; padding:15px; background:#f8f9fa; border-radius:12px; border:1px solid #eee;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:15px; font-weight:bold;">
-                    <span>Total Pembayaran:</span>
-                    <span style="color:var(--pi-color);">π ${totalPrice}</span>
-                </div>
-                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="handlePayment(${totalPrice}, 'Total Keranjang')">Beli Sekarang (Checkout)</button>
-            </div>
-        `;
-
+            <div style="margin-top:20px; padding:15px; background:#eee; border-radius:12px; text-align:center;">
+                <div style="font-weight:bold; margin-bottom:10px;">Total: π ${total}</div>
+                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="handlePayment(${total}, 'Total Keranjang')">Beli Sekarang (Checkout)</button>
+            </div></div>`;
         cartGrid.innerHTML = html;
     }
 
-    window.removeFromCart = function(index) {
-        cart.splice(index, 1);
-        updateCartUI();
-    };
+    window.removeFromCart = (index) => { cart.splice(index, 1); updateCartUI(); };
 
-    // --- 6. NAVIGASI ---
+    // --- 5. NAVIGASI & FILTER (DIPERBAIKI) ---
     window.switchPage = (pageId) => {
-        const pages = ['page-home', 'page-cari', 'page-keranjang', 'page-profile'];
-        pages.forEach(p => document.getElementById(p).classList.add('hidden'));
+        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => document.getElementById(p).classList.add('hidden'));
         document.getElementById(`page-${pageId}`).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById(`nav-${pageId}`).classList.add('active');
-        
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
         if(pageId === 'keranjang') updateCartUI();
     };
 
-    // --- 7. AUTH & PEMBAYARAN (TETAP) ---
-    async function handleAuth() {
-        const loginBtn = document.getElementById('login-btn');
-        if (currentUser) {
-            if (confirm("Logout?")) {
-                currentUser = null;
-                loginBtn.innerText = "Login";
-                loginBtn.classList.remove('btn-logout-style');
-                alert("Logout berhasil.");
-            }
-            return;
-        }
-        loginBtn.innerText = "Loading...";
-        try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
-            currentUser = auth.user;
-            loginBtn.innerText = "Logout";
-            loginBtn.classList.add('btn-logout-style');
-            document.getElementById('profile-username').innerText = currentUser.username;
-            document.getElementById('profile-address').innerText = currentUser.uid;
-        } catch (err) {
-            loginBtn.innerText = "Login";
-            alert("Gagal Login.");
-        }
-    }
-
-    window.handlePayment = async function(amount, productName) {
-        if (!currentUser) return alert("Silakan Login di menu Profil!");
-        try {
-            await Pi.createPayment({
-                amount: parseFloat(amount),
-                memo: `Bayar ${productName} - Digital Pro Indo`,
-                metadata: { productName: productName },
-            }, {
-                onReadyForServerApproval: async (paymentId) => {
-                    const res = await fetch('/api/approve', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId })
-                    });
-                    return res.ok;
-                },
-                onReadyForServerCompletion: async (paymentId, txid) => {
-                    const res = await fetch('/api/complete', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ paymentId, txid })
-                    });
-                    if (res.ok) {
-                        alert(`Sukses membeli ${productName}!`);
-                        if(productName === 'Total Keranjang') { cart = []; updateCartUI(); }
-                    }
-                },
-                onCancel: (paymentId) => console.log("Batal"),
-                onError: (error, payment) => {
-                    if (payment) handleIncompletePayment(payment);
-                    alert("Gagal bayar.");
-                }
-            });
-        } catch (err) { console.error(err); }
+    window.filterCategory = (category) => {
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.remove('active');
+            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) pill.classList.add('active');
+        });
+        const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+        renderProducts(filtered, 'main-grid');
     };
 
-    async function handleIncompletePayment(payment) {
-        await fetch('/api/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
-        });
+    // --- 6. AUTH & PAYMENT ---
+    async function handleAuth() {
+        const btn = document.getElementById('login-btn');
+        if (currentUser) { currentUser = null; btn.innerText = "Login"; return; }
+        try {
+            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {});
+            currentUser = auth.user;
+            btn.innerText = "Logout";
+            document.getElementById('profile-username').innerText = currentUser.username;
+        } catch (e) { alert("Gagal Login"); }
     }
 
-    // --- STARTUP ---
+    window.handlePayment = async (amount, name) => {
+        if (!currentUser) return alert("Silakan Login!");
+        try {
+            await Pi.createPayment({ amount: parseFloat(amount), memo: `Bayar ${name}`, metadata: { name } }, {
+                onReadyForServerApproval: (id) => fetch('/api/approve', { method: 'POST', body: JSON.stringify({ id }) }),
+                onReadyForServerCompletion: (id, txid) => { 
+                    alert("Sukses!"); 
+                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); } 
+                }
+            });
+        } catch (e) { console.error(e); }
+    };
+
     await initPi();
     renderProducts(productsData, 'main-grid');
     document.getElementById('login-btn').onclick = handleAuth;

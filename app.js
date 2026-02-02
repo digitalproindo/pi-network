@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
-    let cart = [];
+    let isPiReady = false;
 
     // --- 1. DATA PRODUK ---
     const productsData = [
@@ -9,23 +9,24 @@ document.addEventListener("DOMContentLoaded", async () => {
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Minuman probiotik alami untuk kesehatan." },
         { id: 'p3', name: "Smart Home System Pro", price: 0.500, category: "Rumah", images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"], desc: "Paket instalasi smart home IoT." },
         { id: 'p4', name: "Premium Smartphone X", price: 1.200, category: "Elektronik", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"], desc: "Gadget flagship performa tinggi." },
-        { id: 'p5', name: "Sofa Minimalis", price: 0.05, category: "Rumah", images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"], desc: "Sofa nyaman modern." },
-        { id: 'hb4', name: "Ekstrak Kurma Pro", price: 0.004, category: "Herbal", images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"], desc: "Sari kurma pekat booster energi." },
         { id: 'v1', name: "Sedan Sport Luxury", price: 5.5, category: "Mobil", images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], desc: "Mobil mewah performa tinggi." },
         { id: 'm1', name: "Motor Sport 250cc", price: 1.2, category: "Motor", images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"], desc: "Desain aerodinamis modern." }
     ];
 
-    // --- 2. INISIALISASI SDK (DIPERKUAT) ---
+    // --- 2. INISIALISASI SDK ---
     async function initPi() {
         try {
+            // Gunakan sandbox: true untuk koin Testnet
             await Pi.init({ version: "2.0", sandbox: true });
-            console.log("Pi SDK Berhasil diinisialisasi");
+            isPiReady = true;
+            console.log("Pi SDK Ready.");
         } catch (e) {
-            console.error("Gagal inisialisasi SDK:", e);
+            console.error("SDK Init Error:", e);
+            alert("Gagal memuat SDK Pi. Harap gunakan Pi Browser.");
         }
     }
 
-    // --- 3. LOGIKA RENDER ---
+    // --- 3. RENDER PRODUK ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
@@ -35,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             card.className = 'product-card';
             card.innerHTML = `
                 <div onclick="openProductDetail('${p.id}')">
-                    <div class="slider-container"><div class="slider-wrapper"><img src="${p.images[0]}" alt="${p.name}"></div></div>
+                    <div class="slider-container"><img src="${p.images[0]}" alt="${p.name}"></div>
                     <div class="product-info"><h3 class="product-name">${p.name}</h3><span class="price">π ${p.price}</span></div>
                 </div>
                 <div style="padding: 0 12px 12px;"><button class="btn-buy-now" style="width:100%" onclick="handlePayment(${p.price}, '${p.name}')">Beli</button></div>
@@ -44,28 +45,40 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 4. FUNGSI AUTH (SOLUSI STUCK LOADING) ---
+    // --- 4. LOGIN (ANTI STUCK) ---
     window.handleAuth = async function() {
         const loginBtn = document.getElementById('login-btn');
+
+        if (!isPiReady) {
+            alert("Sistem Pi sedang memuat, silakan coba lagi dalam 3 detik...");
+            return;
+        }
+
         if (currentUser) {
-            if (confirm("Logout?")) {
+            if (confirm("Logout dari akun " + currentUser.username + "?")) {
                 currentUser = null;
                 loginBtn.innerText = "Login";
                 loginBtn.classList.remove('btn-logout-style');
                 document.getElementById('profile-username').innerText = "Belum Login";
-                document.getElementById('profile-address').innerText = "Belum Terhubung";
+                document.getElementById('profile-address').innerText = "Silakan login di Pi Browser.";
             }
             return;
         }
 
         try {
-            loginBtn.innerText = "Loading...";
+            loginBtn.innerText = "Connecting...";
             loginBtn.disabled = true;
 
-            // Membungkus autentikasi agar tidak stuck
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                console.log("Payment incomplete:", payment);
-            }).catch(e => { throw e; });
+            // Timeout 15 detik agar tidak stuck selamanya jika jaringan buruk
+            const authPromise = Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
+                console.log("Incomplete payment detected:", payment);
+            });
+
+            const timeoutPromise = new Promise((_, reject) => 
+                setTimeout(() => reject(new Error("Request Timeout")), 15000)
+            );
+
+            const auth = await Promise.race([authPromise, timeoutPromise]);
 
             currentUser = auth.user;
             loginBtn.innerText = "Logout";
@@ -74,18 +87,18 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             document.getElementById('profile-username').innerText = currentUser.username;
             document.getElementById('profile-address').innerText = currentUser.uid;
-            alert("Selamat datang, " + currentUser.username);
+            alert("Halo, " + currentUser.username + "!");
 
         } catch (err) {
             console.error("Auth Error:", err);
-            alert("Login Gagal: Pastikan Pi Browser sudah update.");
+            alert("Gagal Terhubung: " + (err.message === "Request Timeout" ? "Koneksi lambat, coba lagi." : "Pastikan Anda login di Pi Browser."));
             loginBtn.innerText = "Login";
             loginBtn.disabled = false;
         }
     };
 
-    // --- 5. FUNGSI GLOBAL LAINNYA ---
-    window.openProductDetail = function(productId) {
+    // --- 5. FUNGSI GLOBAL ---
+    window.openProductDetail = (productId) => {
         const product = productsData.find(p => p.id === productId);
         if (!product) return;
         document.getElementById('detail-content').innerHTML = `
@@ -102,36 +115,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
     window.filterCategory = (category) => {
-        console.log("Filtering category:", category);
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');
-        
-        // Update UI Pill
-        document.querySelectorAll('.category-pill').forEach(pill => {
-            pill.classList.toggle('active', pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua'));
-        });
     };
 
     window.handlePayment = async (amount, name) => {
-        if (!currentUser) return alert("Silakan Login di Profil!");
+        if (!currentUser) return alert("Silakan Login terlebih dahulu!");
         try {
             await Pi.createPayment({ amount, memo: `Beli ${name}`, metadata: { name } }, {
                 onReadyForServerApproval: () => true,
-                onReadyForServerCompletion: (id, txid) => alert("Sukses! TXID: " + txid),
-                onCancel: () => console.log("Batal"),
-                onError: (e) => alert("Error: " + e.message)
+                onReadyForServerCompletion: (id, txid) => alert("Berhasil! TXID: " + txid),
+                onCancel: () => console.log("User cancel"),
+                onError: (e) => alert("Gagal: " + e.message)
             });
-        } catch (e) { alert("Pembayaran gagal."); }
+        } catch (e) { alert("Pembayaran error."); }
     };
 
     window.switchPage = (pageId) => {
         const pages = ['page-home', 'page-cari', 'page-keranjang', 'page-profile'];
         pages.forEach(p => document.getElementById(p).classList.toggle('hidden', p !== `page-${pageId}`));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.id === `nav-${pageId}`));
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
     };
 
-    // --- 6. STARTUP ---
+    // --- STARTUP ---
     await initPi();
     renderProducts(productsData, 'main-grid');
     document.getElementById('login-btn').onclick = window.handleAuth;

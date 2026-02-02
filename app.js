@@ -3,10 +3,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentUser = null;
     let cart = [];
 
-    // GANTI NOMOR WHATSAPP ADMIN DI SINI
-    const ADMIN_WA = "628XXXXXXXXXX"; 
+    // --- KONFIGURASI ---
+    const ADMIN_WA = "628XXXXXXXXXX"; // Ganti dengan nomor WhatsApp Anda
 
-    // --- 1. DATA PRODUK (LENGKAP) ---
+    // --- 1. DATA PRODUK (LENGKAP - TETAP SEPERTI ASLI ANDA) ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 4. PEMBAYARAN & AUTH ---
+    // --- 4. PEMBAYARAN & AUTH (BAGIAN KRUSIAL REVISI) ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
         try {
@@ -93,15 +93,22 @@ document.addEventListener("DOMContentLoaded", async () => {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ paymentId, txid })
                     });
+                    
                     if (res.ok) {
-                        // REVISI BAGIAN INI AGAR TIDAK ERROR ERR_BLOCKED
-                        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.\nTXID: ${txid}`;
-                        const waLink = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
+                        // REVISI: Jangan gunakan window.location.href langsung di sini.
+                        // Pi Browser memblokir pengalihan otomatis setelah popup bayar ditutup.
+                        // Gunakan setTimeout agar popup Pi benar-benar tertutup dulu sebelum memicu interaksi baru.
                         
-                        // Menampilkan konfirmasi agar perpindahan link dipicu klik user
-                        if(confirm(`Pembayaran Sukses!\n\nKlik OK untuk konfirmasi ke WhatsApp Admin.`)) {
-                            window.location.href = waLink;
-                        }
+                        setTimeout(() => {
+                            const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.\nTXID: ${txid}`;
+                            const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
+                            
+                            // Gunakan alert konfirmasi agar user melakukan "klik" manual.
+                            // Browser hanya mengizinkan navigasi luar jika dipicu oleh aksi manual (User Action).
+                            if(confirm(`Pembayaran Berhasil!\n\nKlik OK untuk mengirim detail ke WhatsApp Admin.`)) {
+                                window.open(waUrl, "_blank");
+                            }
+                        }, 500);
 
                         if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                     }

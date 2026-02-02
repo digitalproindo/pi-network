@@ -199,7 +199,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!product) return;
         const detailContent = document.getElementById('detail-content');
         
-        // Data Statis untuk Simulasi Market
         const rating = "4.8/5.0";
         const terjual = "500+ Terjual";
         const ulasan = [
@@ -266,9 +265,31 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
+    // --- 7. LOGIKA AUTO-SLIDER BANNER ---
+    const banners = [
+        "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
+        "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"
+    ];
+    let currentBannerIndex = 0;
+    const bannerImg = document.getElementById('banner-img');
+
+    function startBannerSlider() {
+        if (bannerImg) {
+            setInterval(() => {
+                bannerImg.style.opacity = 0.4; // Transisi keluar
+                setTimeout(() => {
+                    currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+                    bannerImg.src = banners[currentBannerIndex];
+                    bannerImg.style.opacity = 1; // Transisi masuk
+                }, 400);
+            }, 4000); // Ganti banner setiap 4 detik
+        }
+    }
+
     // --- STARTUP ---
     await initPi();
     renderProducts(productsData, 'main-grid');
+    startBannerSlider(); // Jalankan slider saat startup
     const loginBtn = document.getElementById('login-btn');
     if(loginBtn) loginBtn.onclick = handleAuth;
 });

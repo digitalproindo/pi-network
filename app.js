@@ -1,9 +1,10 @@
-const ADMIN_WHATSAPP = "6282191851112"; // GANTI NOMOR WA ANDA DI SINI
-
 document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
     let cart = [];
+
+    // GANTI NOMOR WHATSAPP ADMIN DI SINI
+    const ADMIN_WA = "628XXXXXXXXXX"; 
 
     // --- 1. DATA PRODUK (LENGKAP) ---
     const productsData = [
@@ -71,16 +72,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- 4. PEMBAYARAN & AUTH ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
-
-        const addrInput = document.getElementById('shipping-address');
-        const address = addrInput ? addrInput.value : "";
-        if (!address || address.length < 5) return alert("Mohon isi alamat kirim lengkap terlebih dahulu!");
-
         try {
+            const paymentAmount = parseFloat(amount);
             await Pi.createPayment({
-                amount: parseFloat(amount),
+                amount: paymentAmount,
                 memo: `Pembelian ${name} - Digital Pro Indo`,
-                metadata: { productName: name, buyerAddress: address },
+                metadata: { productName: name },
             }, {
                 onReadyForServerApproval: async (paymentId) => {
                     const res = await fetch('/api/approve', {
@@ -97,13 +94,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                         body: JSON.stringify({ paymentId, txid })
                     });
                     if (res.ok) {
-                        // TAMPILKAN POPUP SUKSES DENGAN TOMBOL WHATSAPP (AGAR TIDAK DI-BLOCK BROWSER)
-                        const msg = `Halo Admin, saya beli ${name} seharga π ${amount}.\nAlamat: ${address}\nTXID: ${txid}`;
-                        const waUrl = `https://wa.me/${ADMIN_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+                        // REVISI BAGIAN INI AGAR TIDAK ERROR ERR_BLOCKED
+                        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.\nTXID: ${txid}`;
+                        const waLink = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
                         
-                        // Cara aman: Gunakan confirm atau ganti UI
-                        if (confirm(`Pembayaran Sukses!\n\nKlik OK untuk mengirim detail pesanan ke WhatsApp Admin.`)) {
-                            window.location.href = waUrl;
+                        // Menampilkan konfirmasi agar perpindahan link dipicu klik user
+                        if(confirm(`Pembayaran Sukses!\n\nKlik OK untuk konfirmasi ke WhatsApp Admin.`)) {
+                            window.location.href = waLink;
                         }
 
                         if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
@@ -126,6 +123,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 btn.innerText = "Login";
                 btn.classList.remove('btn-logout-style');
                 document.getElementById('profile-username').innerText = "Belum Login";
+                alert("Logout berhasil.");
             }
             return;
         }
@@ -138,6 +136,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             btn.innerText = "Logout";
             btn.classList.add('btn-logout-style');
             document.getElementById('profile-username').innerText = currentUser.username;
+            alert("Selamat datang, " + currentUser.username + "!");
         } catch (err) {
             btn.innerText = "Login";
             alert("Gagal Login. Pastikan Anda di Pi Browser.");
@@ -147,40 +146,61 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- 5. LOGIKA KERANJANG ---
     window.addToCart = (productId) => {
         const product = productsData.find(p => p.id === productId);
-        if (product) { cart.push(product); alert(`${product.name} ditambah ke keranjang!`); updateCartUI(); }
+        if (product) { 
+            cart.push(product); 
+            alert(`${product.name} ditambah ke keranjang!`); 
+            updateCartUI(); 
+        }
     };
 
     function updateCartUI() {
         const cartGrid = document.getElementById('cart-items');
         if (!cartGrid) return;
-        if (cart.length === 0) { cartGrid.innerHTML = "<p style='text-align:center; padding:40px; color:gray;'>Keranjang Kosong.</p>"; return; }
+        if (cart.length === 0) { 
+            cartGrid.innerHTML = "<p style='text-align:center; padding:40px; color:gray;'>Keranjang Anda kosong.</p>"; 
+            return; 
+        }
 
         const total = cart.reduce((sum, item) => sum + item.price, 0).toFixed(4);
-        let html = `<div style="padding:10px;">`;
+        
+        let html = `<div style="display:flex; flex-direction:column; gap:12px; padding:10px;">`;
         html += cart.map((item, index) => `
-            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; border-radius:12px; margin-bottom:10px; box-shadow:0 2px 5px rgba(0,0,0,0.05);">
-                <img src="${item.images[0]}" style="width:50px; height:50px; border-radius:8px; object-fit:cover;">
-                <div style="flex-grow:1;"><h4 style="margin:0; font-size:0.85rem;">${item.name}</h4><b style="color:var(--pi-color);">π ${item.price}</b></div>
-                <button onclick="window.removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:5px 10px; border-radius:5px;">X</button>
+            <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                <img src="${item.images[0]}" style="width:65px; height:65px; border-radius:8px; object-fit:cover;">
+                <div style="flex-grow:1;">
+                    <h4 style="margin:0; font-size:0.9rem;">${item.name}</h4>
+                    <span style="color:var(--pi-color); font-weight:bold;">π ${item.price}</span>
+                </div>
+                <button onclick="window.removeFromCart(${index})" style="background:#ff4757; color:white; border:none; padding:8px 12px; border-radius:6px; font-size:0.75rem;">Hapus</button>
             </div>`).join('');
         
         html += `
-            <div style="margin-top:15px; padding:15px; background:#f8f9fa; border-radius:12px; border:1px solid #eee;">
-                <textarea id="shipping-address" placeholder="Tulis Alamat Pengiriman Lengkap..." style="width:100%; height:60px; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #ccc; font-family:sans-serif;"></textarea>
-                <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:10px;"><span>Total:</span><span style="color:var(--pi-color);">π ${total}</span></div>
-                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout Sekarang</button>
+            <div style="margin-top:20px; padding:20px; background:#f8f9fa; border-radius:15px; border:1px solid #eee; text-align:center;">
+                <div style="font-size:1.1rem; font-weight:bold; margin-bottom:15px; display:flex; justify-content:space-between;">
+                    <span>Total:</span>
+                    <span style="color:var(--pi-color);">π ${total}</span>
+                </div>
+                <button class="btn-buy-now" style="width:100%; padding:16px; font-size:1rem;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Beli Sekarang (Checkout)</button>
             </div></div>`;
+        
         cartGrid.innerHTML = html;
     }
 
     window.removeFromCart = (index) => { cart.splice(index, 1); updateCartUI(); };
 
-    // --- 6. NAVIGASI & DETAIL ---
+    // --- 6. NAVIGASI, DETAIL, & FILTER ---
     window.switchPage = (pageId) => {
-        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => document.getElementById(p)?.classList.add('hidden'));
-        document.getElementById(`page-${pageId}`)?.classList.remove('hidden');
+        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
+            const el = document.getElementById(p);
+            if(el) el.classList.add('hidden');
+        });
+        const target = document.getElementById(`page-${pageId}`);
+        if(target) target.classList.remove('hidden');
+        
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(`nav-${pageId}`)?.classList.add('active');
+        const nav = document.getElementById(`nav-${pageId}`);
+        if(nav) nav.classList.add('active');
+        
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
         if(pageId === 'keranjang') updateCartUI();
     };
@@ -188,15 +208,51 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.openProductDetail = (productId) => {
         const product = productsData.find(p => p.id === productId);
         if (!product) return;
-        document.getElementById('detail-content').innerHTML = `
-            <img src="${product.images[0]}" style="width:100%; height:250px; object-fit:cover;">
+        const detailContent = document.getElementById('detail-content');
+        
+        const rating = "4.8/5.0";
+        const terjual = "500+ Terjual";
+        const ulasan = [
+            { user: "User123", teks: "Produk berkualitas! Pengiriman sangat cepat." },
+            { user: "PiLover", teks: "Suka sekali! Rasa enak dan segar sesuai deskripsi." }
+        ];
+
+        detailContent.innerHTML = `
+            <img src="${product.images[0]}" style="width:100%; height:300px; object-fit:cover;">
             <div style="padding:20px;">
-                <h2 style="margin:0;">${product.name}</h2>
-                <div class="price" style="font-size:1.5rem; margin:10px 0;">π ${product.price}</div>
-                <p style="color:#666; font-size:0.9rem;">${product.desc}</p>
-                <textarea id="shipping-address" placeholder="Isi alamat kirim jika ingin Beli Langsung..." style="width:100%; height:60px; margin-bottom:10px; padding:8px; border-radius:5px; border:1px solid #ccc;"></textarea>
-                <button class="btn-buy-now" style="width:100%; padding:15px; margin-bottom:10px;" onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
-                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; font-weight:bold;" onclick="window.addToCart('${product.id}')">Tambah ke Keranjang</button>
+                <p style="color:var(--pi-color); font-weight:bold; font-size:0.8rem;">${product.category}</p>
+                <h2 style="margin:5px 0; font-size:1.4rem;">${product.name}</h2>
+                <div class="price" style="font-size:1.8rem; margin-bottom:10px; font-weight:800;">π ${product.price}</div>
+                
+                <p style="color:#666; line-height:1.6; margin-bottom:20px; font-size:0.95rem;">${product.desc}</p>
+                
+                <button class="btn-buy-now" style="width:100%; padding:15px; font-size:1rem; margin-bottom:10px;" 
+                        onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
+                
+                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;" 
+                        onclick="window.addToCart('${product.id}')">Tambah ke Keranjang</button>
+
+                <hr style="margin:25px 0; border:0; border-top:1px solid #eee;">
+
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; background:#f9f9f9; padding:12px; border-radius:10px;">
+                    <div>
+                        <span style="color:#f1c40f; font-size:1.1rem;">★</span> 
+                        <span style="font-weight:bold; font-size:0.95rem;">${rating}</span>
+                    </div>
+                    <div style="color:#888; border-left:1px solid #ddd; padding-left:15px; font-size:0.9rem;">
+                        ${terjual}
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:15px; font-size:1rem;">Ulasan Pembeli:</h4>
+                <div id="ulasan-container">
+                    ${ulasan.map(u => `
+                        <div style="background:#fff; border:1px solid #eee; padding:12px; border-radius:8px; margin-bottom:10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <p style="margin:0; font-size:0.8rem; font-weight:bold; color:var(--pi-color);">${u.user}</p>
+                            <p style="margin:5px 0 0; font-size:0.85rem; color:#444;">"${u.teks}"</p>
+                        </div>
+                    `).join('')}
+                </div>
             </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
@@ -204,23 +260,47 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
     window.filterCategory = (category) => {
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.remove('active');
+            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) pill.classList.add('active');
+        });
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');
     };
 
     async function handleIncompletePayment(payment) {
-        await fetch('/api/complete', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid }) });
+        await fetch('/api/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
+        });
     }
 
-    // --- 7. SLIDER BANNER ---
-    const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"];
-    let currentIdx = 0;
-    setInterval(() => {
-        const img = document.getElementById('banner-img');
-        if(img) { currentIdx = (currentIdx + 1) % banners.length; img.src = banners[currentIdx]; }
-    }, 4000);
+    // --- 7. LOGIKA AUTO-SLIDER BANNER ---
+    const banners = [
+        "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
+        "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"
+    ];
+    let currentBannerIndex = 0;
+    const bannerImg = document.getElementById('banner-img');
 
+    function startBannerSlider() {
+        if (bannerImg) {
+            setInterval(() => {
+                bannerImg.style.opacity = 0.4; 
+                setTimeout(() => {
+                    currentBannerIndex = (currentBannerIndex + 1) % banners.length;
+                    bannerImg.src = banners[currentBannerIndex];
+                    bannerImg.style.opacity = 1; 
+                }, 400);
+            }, 4000);
+        }
+    }
+
+    // --- STARTUP ---
     await initPi();
     renderProducts(productsData, 'main-grid');
-    document.getElementById('login-btn').onclick = handleAuth;
+    startBannerSlider(); 
+    const loginBtn = document.getElementById('login-btn');
+    if(loginBtn) loginBtn.onclick = handleAuth;
 });

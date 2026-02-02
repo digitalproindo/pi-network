@@ -194,7 +194,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         name: "Ekstrak Kurma Pro - Booster Energi",
         price: 0.004,
         category: "Herbal",
-        images: ["https://images.unsplash.com/photo-1590005354167-6da97870c91c?w=500&q=80"],
+        images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"],
         desc: "Sari kurma pekat untuk meningkatkan stamina dan pemulihan tubuh."
     },
     {

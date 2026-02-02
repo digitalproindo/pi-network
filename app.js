@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let cart = [];
 
     // --- KONFIGURASI ---
-    const ADMIN_WA = "628XXXXXXXXXX"; // Ganti dengan nomor WhatsApp Anda
+    const ADMIN_WA = "6282191851112"; // Ganti dengan nomor WhatsApp Anda
 
     // --- 1. DATA PRODUK (LENGKAP - TETAP SESUAI SCRIPT ASLI ANDA) ---
     const productsData = [

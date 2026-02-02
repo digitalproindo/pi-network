@@ -196,33 +196,43 @@ function renderProducts(data, targetGridId) {
         renderProducts(filtered, 'search-results');
     };
 
-    // --- 6. AUTH & PEMBAYARAN ---
-    window.handleAuth = async () => {
-        const loginBtn = document.getElementById('login-btn');
-        if (currentUser) {
-            if (confirm("Logout?")) {
-                currentUser = null;
-                loginBtn.innerText = "Login";
-                loginBtn.classList.remove('btn-logout-style');
-                document.getElementById('profile-username').innerText = "Belum Login";
-                document.getElementById('profile-address').innerText = "Belum Terhubung";
-            }
-            return;
-        }
+    // --- 6. SISTEM PEMBAYARAN (PASTIKAN MENGGUNAKAN window.) ---
+window.handlePayment = async function(amount, productName) {
+    if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
 
-        try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                handleIncompletePayment(payment);
-            });
-            currentUser = auth.user;
-            loginBtn.innerText = "Logout";
-            loginBtn.classList.add('btn-logout-style');
-            document.getElementById('profile-username').innerText = currentUser.username;
-            document.getElementById('profile-address').innerText = currentUser.uid;
-        } catch (err) {
-            alert("Gunakan Pi Browser untuk Login");
-        }
-    };
+    // Pastikan sandbox: true di initPi untuk Testnet
+    console.log("Memulai pembayaran untuk:", productName, "Harga:", amount);
+
+    try {
+        const payment = await Pi.createPayment({
+            amount: amount,
+            memo: `Pembelian ${productName} - Digital Pro Indo`,
+            metadata: { productName: productName },
+        }, {
+            onReadyForServerApproval: async (paymentId) => {
+                console.log("Menunggu persetujuan server untuk ID:", paymentId);
+                // Untuk sementara saat testing tanpa backend, Anda bisa menggunakan simulasi
+                // Namun idealnya ini memanggil API backend Anda
+                return true; 
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+                console.log("Pembayaran selesai! TXID:", txid);
+                alert(`Sukses! ${productName} berhasil dibeli.\nTXID: ${txid}`);
+                return true;
+            },
+            onCancel: (paymentId) => {
+                console.log("Pembayaran dibatalkan oleh user.");
+            },
+            onError: (error, payment) => {
+                console.error("Payment error:", error);
+                alert("Gagal membayar: " + error.message);
+            }
+        });
+    } catch (err) {
+        console.error("Payment error fatal:", err);
+        alert("Terjadi kesalahan teknis saat memproses pembayaran.");
+    }
+};
 
     // Inisialisasi awal
     await initPi();

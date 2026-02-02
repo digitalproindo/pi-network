@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- KONFIGURASI ---
     const ADMIN_WA = "6282191851112"; 
 
-    // --- 1. DATA PRODUK (TETAP SESUAI ASLINYA) ---
+    // --- 1. DATA PRODUK ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (e) { console.error(e); }
     }
 
-    // --- 3. FUNGSI ALAMAT (TAMBAHAN HALUS) ---
+    // --- 3. FUNGSI ALAMAT ---
     window.showAddressForm = () => {
         const overlay = document.createElement('div');
         overlay.id = "address-overlay";
@@ -75,7 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Alamat disimpan.");
     };
 
-    // --- 4. RENDER BERANDA (SESUAI ASLINYA) ---
+    // --- 4. RENDER BERANDA ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.body.appendChild(overlay);
     }
 
-    // --- 6. AUTH, KERANJANG, NAVIGASI (ASLI) ---
+    // --- 6. AUTH, KERANJANG, NAVIGASI ---
     window.handleAuth = async () => {
         const btn = document.getElementById('login-btn');
         if (currentUser) { currentUser = null; btn.innerText = "Login"; return; }
@@ -179,25 +179,62 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
     };
 
+    // --- 7. DETAIL PRODUK (VERSI REVISI FINAL) ---
     window.openProductDetail = (productId) => {
         const p = productsData.find(x => x.id === productId);
         if (!p) return;
+        
+        // Data pendukung ulasan
+        const rating = "4.8/5.0";
+        const terjual = "500+ Terjual";
+        const ulasan = [
+            { user: "User123", teks: "Produk berkualitas! Pengiriman sangat cepat." },
+            { user: "PiLover", teks: "Suka sekali! Sesuai deskripsi." }
+        ];
+
         document.getElementById('detail-content').innerHTML = `
             <img src="${p.images[0]}" style="width:100%; height:300px; object-fit:cover;">
             <div style="padding:20px;">
-                <p style="color:var(--pi-color); font-weight:bold;">${p.category}</p>
-                <h2>${p.name}</h2>
-                <div class="price" style="font-size:1.8rem; margin-bottom:10px;">π ${p.price}</div>
-                <p>${p.desc}</p>
-                <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
-                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; margin-top:10px;" onclick="window.addToCart('${p.id}')">Tambah Keranjang</button>
+                <p style="color:var(--pi-color); font-weight:bold; font-size:0.8rem;">${p.category}</p>
+                <h2 style="margin:5px 0; font-size:1.4rem;">${p.name}</h2>
+                <div class="price" style="font-size:1.8rem; margin-bottom:10px; font-weight:800;">π ${p.price}</div>
+                
+                <p style="color:#666; line-height:1.6; margin-bottom:20px; font-size:0.95rem;">${p.desc}</p>
+                
+                <button class="btn-buy-now" style="width:100%; padding:15px; font-size:1rem; margin-bottom:10px;" 
+                        onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
+                
+                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;" 
+                        onclick="window.addToCart('${p.id}')">Tambah ke Keranjang</button>
+
+                <hr style="margin:25px 0; border:0; border-top:1px solid #eee;">
+
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; background:#f9f9f9; padding:12px; border-radius:10px;">
+                    <div>
+                        <span style="color:#f1c40f; font-size:1.1rem;">★</span> 
+                        <span style="font-weight:bold; font-size:0.95rem;">${rating}</span>
+                    </div>
+                    <div style="color:#888; border-left:1px solid #ddd; padding-left:15px; font-size:0.9rem;">
+                        ${terjual}
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:15px; font-size:1rem;">Ulasan Pembeli:</h4>
+                <div id="ulasan-container">
+                    ${ulasan.map(u => `
+                        <div style="background:#fff; border:1px solid #eee; padding:12px; border-radius:8px; margin-bottom:10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <p style="margin:0; font-size:0.8rem; font-weight:bold; color:var(--pi-color);">${u.user}</p>
+                            <p style="margin:5px 0 0; font-size:0.85rem; color:#444;">"${u.teks}"</p>
+                        </div>
+                    `).join('')}
+                </div>
             </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
-    // --- FUNGSI FILTER (YANG TADI TERHAPUS) ---
+    // --- 8. FUNGSI FILTER ---
     window.filterCategory = (category) => {
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');

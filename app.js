@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         { id: 'e7', name: "Powerbank 20.000mAh - Fast Charging 22W", price: 0.007, category: "Elektronik", images: ["https://images.unsplash.com/photo-1609091839311-d5364f512c58?w=500&q=80"], desc: "Kapasitas jumbo, bisa cas 3 perangkat sekaligus." },
         { id: 'e8', name: "Bluetooth Speaker Portable - Extra Bass", price: 0.012, category: "Elektronik", images: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&q=80"], desc: "Suara jernih 360 derajat, baterai tahan 12 jam." },
         { id: 'hb1', name: "Madu Hutan Murni - 500gr Premium", price: 0.005, category: "Herbal", images: ["https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500&q=80"], desc: "Madu asli dari hutan tropis tanpa bahan pengawet." },
-        { id: 'hb2', name: "Teh Hijau Organik - Daun Pilihan", price: 0.003, category: "Herbal", images: ["https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500&q=80"], desc: "Teh hijau murni untuk detoksifikasi tubuh." },
+        { id: 'hb2', name: "Teh Hijau Organik - Daun Pilihan", price: 0.003, category: "Herbal", images: ["https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=500&get=80"], desc: "Teh hijau murni untuk detoksifikasi tubuh." },
         { id: 'hb3', name: "Minyak Zaitun Extra Virgin - 250ml", price: 0.008, category: "Herbal", images: ["https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=500&q=80"], desc: "Minyak zaitun kualitas terbaik untuk kesehatan jantung." },
         { id: 'hb4', name: "Ekstrak Kurma Pro - Booster Energi", price: 0.004, category: "Herbal", images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"], desc: "Sari kurma pekat untuk meningkatkan stamina." },
         { id: 'v1', name: "Sedan Sport Luxury - Tipe S1", price: 5.5, category: "Mobil", images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof." },
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 4. PEMBAYARAN & AUTH (DIPERBAIKI) ---
+    // --- 4. PEMBAYARAN & AUTH ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
         try {
@@ -132,7 +132,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- 5. LOGIKA KERANJANG (VERTIKAL & FIX CHECKOUT) ---
+    // --- 5. LOGIKA KERANJANG ---
     window.addToCart = (productId) => {
         const product = productsData.find(p => p.id === productId);
         if (product) { 
@@ -177,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.removeFromCart = (index) => { cart.splice(index, 1); updateCartUI(); };
 
-    // --- 6. NAVIGASI, DETAIL, & FILTER ---
+    // --- 6. NAVIGASI, DETAIL (REVISI BARU), & FILTER ---
     window.switchPage = (pageId) => {
         ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
             const el = document.getElementById(p);
@@ -198,15 +198,51 @@ document.addEventListener("DOMContentLoaded", async () => {
         const product = productsData.find(p => p.id === productId);
         if (!product) return;
         const detailContent = document.getElementById('detail-content');
+        
+        // Data Statis untuk Simulasi Market
+        const rating = "4.8/5.0";
+        const terjual = "500+ Terjual";
+        const ulasan = [
+            { user: "User123", teks: "Produk berkualitas! Pengiriman sangat cepat." },
+            { user: "PiLover", teks: "Suka sekali! Rasa enak dan segar sesuai deskripsi." }
+        ];
+
         detailContent.innerHTML = `
             <img src="${product.images[0]}" style="width:100%; height:300px; object-fit:cover;">
             <div style="padding:20px;">
                 <p style="color:var(--pi-color); font-weight:bold; font-size:0.8rem;">${product.category}</p>
-                <h2 style="margin:10px 0;">${product.name}</h2>
-                <div class="price" style="font-size:1.5rem; margin-bottom:15px;">π ${product.price}</div>
-                <p style="color:#666; line-height:1.6;">${product.desc}</p>
-                <button class="btn-buy-now" style="width:100%; margin-top:20px; padding:15px;" onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
-                <button style="width:100%; margin-top:10px; padding:15px; background:#6c757d; color:white; border:none; border-radius:8px;" onclick="window.addToCart('${product.id}')">Tambah ke Keranjang</button>
+                <h2 style="margin:5px 0; font-size:1.4rem;">${product.name}</h2>
+                <div class="price" style="font-size:1.8rem; margin-bottom:10px; font-weight:800;">π ${product.price}</div>
+                
+                <p style="color:#666; line-height:1.6; margin-bottom:20px; font-size:0.95rem;">${product.desc}</p>
+                
+                <button class="btn-buy-now" style="width:100%; padding:15px; font-size:1rem; margin-bottom:10px;" 
+                        onclick="window.handlePayment(${product.price}, '${product.name}')">Beli Sekarang</button>
+                
+                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; font-size:1rem; font-weight:bold; cursor:pointer;" 
+                        onclick="window.addToCart('${product.id}')">Tambah ke Keranjang</button>
+
+                <hr style="margin:25px 0; border:0; border-top:1px solid #eee;">
+
+                <div style="display:flex; align-items:center; gap:15px; margin-bottom:20px; background:#f9f9f9; padding:12px; border-radius:10px;">
+                    <div>
+                        <span style="color:#f1c40f; font-size:1.1rem;">★</span> 
+                        <span style="font-weight:bold; font-size:0.95rem;">${rating}</span>
+                    </div>
+                    <div style="color:#888; border-left:1px solid #ddd; padding-left:15px; font-size:0.9rem;">
+                        ${terjual}
+                    </div>
+                </div>
+
+                <h4 style="margin-bottom:15px; font-size:1rem;">Ulasan Pembeli:</h4>
+                <div id="ulasan-container">
+                    ${ulasan.map(u => `
+                        <div style="background:#fff; border:1px solid #eee; padding:12px; border-radius:8px; margin-bottom:10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <p style="margin:0; font-size:0.8rem; font-weight:bold; color:var(--pi-color);">${u.user}</p>
+                            <p style="margin:5px 0 0; font-size:0.85rem; color:#444;">"${u.teks}"</p>
+                        </div>
+                    `).join('')}
+                </div>
             </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };

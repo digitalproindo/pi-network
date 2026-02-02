@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- KONFIGURASI ---
     const ADMIN_WA = "628XXXXXXXXXX"; // Ganti dengan nomor WhatsApp Anda
 
-    // --- 1. DATA PRODUK (LENGKAP - TETAP SEPERTI ASLI ANDA) ---
+    // --- 1. DATA PRODUK (LENGKAP - TETAP SESUAI SCRIPT ASLI ANDA) ---
     const productsData = [
         { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
@@ -69,13 +69,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 4. PEMBAYARAN & AUTH (BAGIAN KRUSIAL REVISI) ---
+    // --- 4. PEMBAYARAN & AUTH (REVISI FINAL: NO BLOCKED) ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
         try {
-            const paymentAmount = parseFloat(amount);
             await Pi.createPayment({
-                amount: paymentAmount,
+                amount: parseFloat(amount),
                 memo: `Pembelian ${name} - Digital Pro Indo`,
                 metadata: { productName: name },
             }, {
@@ -95,21 +94,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     });
                     
                     if (res.ok) {
-                        // REVISI: Jangan gunakan window.location.href langsung di sini.
-                        // Pi Browser memblokir pengalihan otomatis setelah popup bayar ditutup.
-                        // Gunakan setTimeout agar popup Pi benar-benar tertutup dulu sebelum memicu interaksi baru.
-                        
-                        setTimeout(() => {
-                            const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.\nTXID: ${txid}`;
-                            const waUrl = `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesan)}`;
-                            
-                            // Gunakan alert konfirmasi agar user melakukan "klik" manual.
-                            // Browser hanya mengizinkan navigasi luar jika dipicu oleh aksi manual (User Action).
-                            if(confirm(`Pembayaran Berhasil!\n\nKlik OK untuk mengirim detail ke WhatsApp Admin.`)) {
-                                window.open(waUrl, "_blank");
-                            }
-                        }, 500);
-
+                        // REVISI: Ganti Alert dengan UI Transparan yang memiliki tombol WhatsApp asli
+                        showSuccessOverlay(amount, name, txid);
                         if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                     }
                 },
@@ -121,6 +107,29 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         } catch (err) { console.error(err); }
     };
+
+    // FUNGSI BARU UNTUK MENAMPILKAN TOMBOL WHATSAPP TANPA BLOKIR
+    function showSuccessOverlay(amount, name, txid) {
+        const overlay = document.createElement('div');
+        overlay.id = "success-overlay";
+        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; text-align:center; color:white; font-family:sans-serif;";
+        
+        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}. %0ATXID: ${txid}`;
+        const waUrl = `https://wa.me/${ADMIN_WA}?text=${pesan}`;
+
+        overlay.innerHTML = `
+            <div style="background:white; color:#333; padding:30px; border-radius:20px; width:100%; max-width:400px;">
+                <div style="font-size:50px; color:#27ae60; margin-bottom:15px;">✔</div>
+                <h2 style="margin:0 0 10px;">Pembayaran Berhasil!</h2>
+                <p style="font-size:0.9rem; color:#666; margin-bottom:25px;">Klik tombol di bawah untuk mengirim bukti pembayaran ke WhatsApp Admin agar pesanan segera diproses.</p>
+                
+                <a href="${waUrl}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:10px; font-weight:bold; font-size:1rem; margin-bottom:15px;">Kirim ke WhatsApp</a>
+                
+                <button onclick="document.getElementById('success-overlay').remove()" style="background:none; border:none; color:#999; font-size:0.8rem; cursor:pointer;">Nanti Saja (Kembali ke Aplikasi)</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+    }
 
     async function handleAuth() {
         const btn = document.getElementById('login-btn');
@@ -267,10 +276,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
     window.filterCategory = (category) => {
-        document.querySelectorAll('.category-pill').forEach(pill => {
-            pill.classList.remove('active');
-            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) pill.classList.add('active');
-        });
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');
     };
@@ -283,7 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 7. LOGIKA AUTO-SLIDER BANNER ---
+    // --- 7. BANNER SLIDER ---
     const banners = [
         "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
         "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"
@@ -304,7 +309,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 
-    // --- STARTUP ---
     await initPi();
     renderProducts(productsData, 'main-grid');
     startBannerSlider(); 

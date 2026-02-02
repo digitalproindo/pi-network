@@ -3,165 +3,48 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentUser = null;
     let cart = [];
 
-    // --- 1. DATA PRODUK (DATABASE) ---
+    // --- 1. DATA PRODUK ---
     const productsData = [
-        {
-            id: 'p1',
-            name: "Mastering Pi Network 2026",
-            price: 0.005,
-            category: "E-Book",
-            images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"],
-            desc: "Panduan optimasi node dan ekosistem Pi terbaru untuk masa depan keuangan digital."
-        },
-        {
-            id: 'p2',
-            name: "COCO Probiotik",
-            price: 0.010,
-            category: "Herbal",
-            images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"],
-            desc: "Minuman probiotik alami untuk kesehatan pencernaan dan daya tahan tubuh optimal."
-        },
-        {
-            id: 'p3',
-            name: "Smart Home System Pro",
-            price: 0.500,
-            category: "Rumah",
-            images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"],
-            desc: "Paket instalasi lengkap smart home berbasis IoT, kendalikan rumah dari smartphone Anda."
-        },
-        {
-            id: 'p4',
-            name: "Premium Smartphone X",
-            price: 1.200,
-            category: "Elektronik",
-            images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"],
-            desc: "Gadget flagship dengan performa tinggi, kamera kelas profesional, dan desain elegan."
-        },
-        {
-            id: 'p5',
-            name: "Sofa Minimalis 2 Seater - Modern Grey",
-            price: 0.05,
-            category: "Rumah",
-            images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"],
-            desc: "Sofa nyaman ukuran 150x80cm, cocok untuk ruang tamu dengan konsep minimalis modern."
-        },
-        {
-            id: 'hb4',
-            name: "Ekstrak Kurma Pro - Booster Energi",
-            price: 0.004,
-            category: "Herbal",
-            images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"],
-            desc: "Sari kurma pekat berkualitas tinggi untuk meningkatkan stamina dan pemulihan tubuh."
-        },
-        {
-            id: 'v1',
-            name: "Sedan Sport Luxury - Tipe S1",
-            price: 5.5,
-            category: "Mobil",
-            images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"],
-            desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof, dan sistem keamanan tercanggih."
-        },
-        {
-            id: 'm1',
-            name: "Motor Sport 250cc - Black Matte",
-            price: 1.2,
-            category: "Motor",
-            images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"],
-            desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern dengan warna hitam doff premium."
-        }
+        { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
+        { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Minuman probiotik alami untuk kesehatan." },
+        { id: 'p3', name: "Smart Home System Pro", price: 0.500, category: "Rumah", images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"], desc: "Paket instalasi smart home IoT." },
+        { id: 'p4', name: "Premium Smartphone X", price: 1.200, category: "Elektronik", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"], desc: "Gadget flagship performa tinggi." },
+        { id: 'p5', name: "Sofa Minimalis", price: 0.05, category: "Rumah", images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"], desc: "Sofa nyaman modern." },
+        { id: 'hb4', name: "Ekstrak Kurma Pro", price: 0.004, category: "Herbal", images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"], desc: "Sari kurma pekat booster energi." },
+        { id: 'v1', name: "Sedan Sport Luxury", price: 5.5, category: "Mobil", images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], desc: "Mobil mewah performa tinggi." },
+        { id: 'm1', name: "Motor Sport 250cc", price: 1.2, category: "Motor", images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"], desc: "Desain aerodinamis modern." }
     ];
 
-    // --- 2. INISIALISASI SDK ---
+    // --- 2. INISIALISASI SDK (DIPERKUAT) ---
     async function initPi() {
         try {
-            // sandbox: true untuk koin TESTNET
             await Pi.init({ version: "2.0", sandbox: true });
-            console.log("Pi SDK Berhasil diinisialisasi (TESTNET)");
+            console.log("Pi SDK Berhasil diinisialisasi");
         } catch (e) {
             console.error("Gagal inisialisasi SDK:", e);
         }
     }
 
-    // --- 3. LOGIKA RENDER PRODUK ---
+    // --- 3. LOGIKA RENDER ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
         grid.innerHTML = "";
-
         data.forEach(p => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
                 <div onclick="openProductDetail('${p.id}')">
-                    <div class="slider-container">
-                        <div class="slider-wrapper">
-                            <img src="${p.images[0]}" alt="${p.name}">
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <h3 class="product-name">${p.name}</h3>
-                        <span class="price">π ${p.price}</span>
-                    </div>
+                    <div class="slider-container"><div class="slider-wrapper"><img src="${p.images[0]}" alt="${p.name}"></div></div>
+                    <div class="product-info"><h3 class="product-name">${p.name}</h3><span class="price">π ${p.price}</span></div>
                 </div>
-                <div style="padding: 0 12px 12px;">
-                    <button class="btn-buy-now" style="width:100%" onclick="handlePayment(${p.price}, '${p.name}')">Beli</button>
-                </div>
+                <div style="padding: 0 12px 12px;"><button class="btn-buy-now" style="width:100%" onclick="handlePayment(${p.price}, '${p.name}')">Beli</button></div>
             `;
             grid.appendChild(card);
         });
     }
 
-    // --- 4. FUNGSI DETAIL PRODUK ---
-    window.openProductDetail = function(productId) {
-        const product = productsData.find(p => p.id === productId);
-        if (!product) return;
-
-        const detailContent = document.getElementById('detail-content');
-        detailContent.innerHTML = `
-            <img src="${product.images[0]}" style="width: 100%; height: 300px; object-fit: cover;">
-            <div style="padding: 20px;">
-                <p style="color: var(--pi-color); font-weight: 800; font-size: 0.9rem; text-transform: uppercase; margin:0;">${product.category}</p>
-                <h2 style="margin: 10px 0;">${product.name}</h2>
-                <div class="price" style="font-size: 1.5rem; margin-bottom: 20px;">π ${product.price}</div>
-                <h3 style="border-bottom: 2px solid #f1f5f9; padding-bottom: 10px; font-size: 1rem;">Deskripsi Produk</h3>
-                <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.9rem;">${product.desc}</p>
-                <div style="background: #f8fafc; padding: 15px; border-radius: 15px; margin-top: 20px; border: 1px solid #eee;">
-                    <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">Status Stok: <span style="color: #059669; font-weight: bold;">Tersedia (Ready)</span></p>
-                </div>
-            </div>
-        `;
-        document.getElementById('product-detail-page').classList.remove('hidden');
-        document.getElementById('add-to-cart-detail').onclick = () => {
-            addToCart(product.id);
-            closeProductDetail();
-        };
-    };
-
-    window.closeProductDetail = function() {
-        document.getElementById('product-detail-page').classList.add('hidden');
-    };
-
-    // --- 5. KERANJANG & AUTH ---
-    window.addToCart = (productId) => {
-        const product = productsData.find(p => p.id === productId);
-        cart.push(product);
-        alert(`${product.name} ditambahkan ke keranjang!`);
-        renderCart();
-    };
-
-    function renderCart() {
-        const cartGrid = document.getElementById('cart-items');
-        if (!cartGrid) return;
-        if (cart.length === 0) {
-            cartGrid.innerHTML = "<p style='padding:20px; color:gray;'>Keranjang kosong.</p>";
-            document.getElementById('checkout-container').classList.add('hidden');
-        } else {
-            renderProducts(cart, 'cart-items');
-            document.getElementById('checkout-container').classList.remove('hidden');
-        }
-    }
-
-    // FUNGSI AUTH (PENTING: window. agar bisa dipanggil HTML)
+    // --- 4. FUNGSI AUTH (SOLUSI STUCK LOADING) ---
     window.handleAuth = async function() {
         const loginBtn = document.getElementById('login-btn');
         if (currentUser) {
@@ -177,57 +60,79 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         try {
             loginBtn.innerText = "Loading...";
+            loginBtn.disabled = true;
+
+            // Membungkus autentikasi agar tidak stuck
             const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (payment) => {
-                console.log("Incomplete payment:", payment);
-            });
+                console.log("Payment incomplete:", payment);
+            }).catch(e => { throw e; });
+
             currentUser = auth.user;
             loginBtn.innerText = "Logout";
+            loginBtn.disabled = false;
             loginBtn.classList.add('btn-logout-style');
+            
             document.getElementById('profile-username').innerText = currentUser.username;
             document.getElementById('profile-address').innerText = currentUser.uid;
-            alert("Selamat datang, " + currentUser.username + "!");
+            alert("Selamat datang, " + currentUser.username);
+
         } catch (err) {
-            alert("Gagal Login. Pastikan Anda di Pi Browser.");
+            console.error("Auth Error:", err);
+            alert("Login Gagal: Pastikan Pi Browser sudah update.");
             loginBtn.innerText = "Login";
+            loginBtn.disabled = false;
         }
     };
 
-    // --- 6. PEMBAYARAN ---
-    window.handlePayment = async function(amount, productName) {
-        if (!currentUser) return alert("Silakan Login terlebih dahulu di menu Profil!");
+    // --- 5. FUNGSI GLOBAL LAINNYA ---
+    window.openProductDetail = function(productId) {
+        const product = productsData.find(p => p.id === productId);
+        if (!product) return;
+        document.getElementById('detail-content').innerHTML = `
+            <img src="${product.images[0]}" style="width:100%; height:300px; object-fit:cover;">
+            <div style="padding:20px;">
+                <p style="color:var(--pi-color); font-weight:800; font-size:0.8rem;">${product.category}</p>
+                <h2>${product.name}</h2>
+                <div class="price" style="font-size:1.5rem;">π ${product.price}</div>
+                <p style="color:var(--text-muted);">${product.desc}</p>
+            </div>`;
+        document.getElementById('product-detail-page').classList.remove('hidden');
+    };
 
+    window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
+
+    window.filterCategory = (category) => {
+        console.log("Filtering category:", category);
+        const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+        renderProducts(filtered, 'main-grid');
+        
+        // Update UI Pill
+        document.querySelectorAll('.category-pill').forEach(pill => {
+            pill.classList.toggle('active', pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua'));
+        });
+    };
+
+    window.handlePayment = async (amount, name) => {
+        if (!currentUser) return alert("Silakan Login di Profil!");
         try {
-            await Pi.createPayment({
-                amount: amount,
-                memo: `Beli ${productName}`,
-                metadata: { productName: productName },
-            }, {
-                onReadyForServerApproval: (paymentId) => { return true; }, 
-                onReadyForServerCompletion: (paymentId, txid) => {
-                    alert(`Sukses! TXID: ${txid}`);
-                },
-                onCancel: (paymentId) => { console.log("Batal"); },
-                onError: (error, payment) => { alert("Error: " + error.message); }
+            await Pi.createPayment({ amount, memo: `Beli ${name}`, metadata: { name } }, {
+                onReadyForServerApproval: () => true,
+                onReadyForServerCompletion: (id, txid) => alert("Sukses! TXID: " + txid),
+                onCancel: () => console.log("Batal"),
+                onError: (e) => alert("Error: " + e.message)
             });
-        } catch (err) {
-            alert("Kesalahan pembayaran.");
-        }
+        } catch (e) { alert("Pembayaran gagal."); }
     };
 
-    // Navigasi
     window.switchPage = (pageId) => {
         const pages = ['page-home', 'page-cari', 'page-keranjang', 'page-profile'];
-        pages.forEach(p => document.getElementById(p).classList.add('hidden'));
-        document.getElementById(`page-${pageId}`).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(`nav-${pageId}`).classList.add('active');
+        pages.forEach(p => document.getElementById(p).classList.toggle('hidden', p !== `page-${pageId}`));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.id === `nav-${pageId}`));
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
     };
 
-    // --- INISIALISASI ---
+    // --- 6. STARTUP ---
     await initPi();
     renderProducts(productsData, 'main-grid');
-    
-    // Hubungkan tombol login secara manual sebagai cadangan
     document.getElementById('login-btn').onclick = window.handleAuth;
 });

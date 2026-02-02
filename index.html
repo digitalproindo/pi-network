@@ -95,10 +95,6 @@
             cursor: pointer;
         }
 
-        .slider-container { width: 100%; height: 140px; overflow: hidden; position: relative; }
-        .slider-wrapper { display: flex; transition: 0.5s; height: 100%; }
-        .slider-wrapper img { min-width: 100%; object-fit: cover; }
-
         .product-info { padding: 12px; flex-grow: 1; }
         .product-name { font-size: 0.85rem; font-weight: 700; height: 34px; overflow: hidden; margin: 0 0 8px 0; }
         .price { font-weight: 800; color: var(--pi-color); font-size: 1.1rem; }
@@ -146,16 +142,6 @@
         .nav-item.active { color: var(--pi-color); }
         .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
         .nav-text { font-size: 0.7rem; font-weight: 700; }
-
-        /* Style Tambahan Detail Produk */
-        #detail-content img {
-            width: 100%;
-            max-height: 350px;
-            object-fit: cover;
-        }
-        .detail-info-box {
-            padding: 20px;
-        }
     </style>
 </head>
 <body>
@@ -184,17 +170,14 @@
     <main id="page-cari" class="hidden">
         <div style="padding: 20px;">
             <input type="text" id="search-input" placeholder="Cari produk..." 
-                   style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none; font-family:inherit;" onkeyup="searchProduct()">
+                   style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none; font-family:inherit;">
         </div>
         <div id="search-results" class="marketplace-grid"></div>
     </main>
 
     <main id="page-keranjang" class="hidden">
         <h3 style="padding: 20px 20px 10px; margin:0; font-weight: 800;">Keranjang Saya</h3>
-        <div id="cart-items" class="marketplace-grid"></div>
-        <div id="checkout-container" class="hidden" style="padding: 20px;">
-            <button class="btn-buy-now" style="width:100%; padding: 18px; border-radius: 15px;" onclick="checkoutWhatsApp()">Pesan via WhatsApp 📱</button>
-        </div>
+        <div id="cart-items"></div>
     </main>
 
     <main id="page-profile" class="hidden">
@@ -217,19 +200,13 @@
 
     <div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
         <div style="position: sticky; top: 0; padding: 20px; display: flex; align-items: center; background: white; z-index: 10; border-bottom: 1px solid #f1f5f9;">
-            <button onclick="closeProductDetail()" style="background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 8px;">
-                <span>←</span> Kembali
+            <button onclick="closeProductDetail()" style="background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer;">
+                ← Kembali
             </button>
         </div>
         
         <div id="detail-content">
             </div>
-        
-        <div style="padding: 20px; border-top: 1px solid #eee; margin-top: 20px; background: white; position: sticky; bottom: 0;">
-            <button id="add-to-cart-detail" class="btn-buy-now" style="width: 100%; padding: 18px; font-size: 1rem; border-radius: 15px;">
-                Tambah ke Keranjang
-            </button>
-        </div>
     </div>
 
     <nav class="bottom-nav">

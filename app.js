@@ -48,19 +48,42 @@ document.addEventListener("DOMContentLoaded", async () => {
         } catch (e) { console.error(e); }
     }
 
-    // --- 3. FUNGSI ALAMAT ---
+    // --- REVISI FORM ALAMAT DENGAN TOMBOL (X) ---
     window.showAddressForm = () => {
         const overlay = document.createElement('div');
         overlay.id = "address-overlay";
-        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px;";
+        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
+        
         overlay.innerHTML = `
-            <div style="background:white; padding:20px; border-radius:15px; width:100%; max-width:350px; color:#333;">
-                <h3 style="margin-top:0;">Alamat Pengiriman</h3>
-                <input type="text" id="ship-name" style="width:100%; padding:10px; margin:5px 0;" placeholder="Nama Penerima" value="${userAddress.nama}">
-                <input type="number" id="ship-phone" style="width:100%; padding:10px; margin:5px 0;" placeholder="No HP/WA" value="${userAddress.telepon}">
-                <textarea id="ship-address" style="width:100%; padding:10px; margin:5px 0; height:70px;" placeholder="Alamat Lengkap">${userAddress.alamatLengkap}</textarea>
-                <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:12px; border-radius:8px; margin-top:10px; font-weight:bold;">Simpan</button>
-            </div>`;
+            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease; position:relative;">
+                
+                <div onclick="document.getElementById('address-overlay').remove()" 
+                     style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666; font-family:Arial, sans-serif;">
+                     ✕
+                </div>
+
+                <h3 style="margin-top:0; margin-bottom:20px; text-align:center; font-family:sans-serif;">Alamat Pengiriman</h3>
+                
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label>
+                    <input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" placeholder="Masukkan nama" value="${userAddress.nama}">
+                </div>
+
+                <div style="margin-bottom:12px;">
+                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label>
+                    <input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" placeholder="Contoh: 0812..." value="${userAddress.telepon}">
+                </div>
+
+                <div style="margin-bottom:20px;">
+                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label>
+                    <textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; font-family:sans-serif; resize:none;" placeholder="Nama jalan, RT/RW, Kecamatan">${userAddress.alamatLengkap}</textarea>
+                </div>
+
+                <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; font-size:1rem; cursor:pointer;">Simpan Alamat</button>
+            </div>
+            <style>
+                @keyframes fadeIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+            </style>`;
         document.body.appendChild(overlay);
     };
 

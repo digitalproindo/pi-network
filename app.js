@@ -75,13 +75,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         card.className = 'product-card';
         card.innerHTML = `
             <div class="image-container" onclick="openProductDetail('${p.id}')">
-                <span class="discount-badge">-15%</span>
-                <img src="${p.images[0]}" alt="${p.name}">
-                <div class="xtra-label">
-                    <span class="xtra-text">XTRA</span>
-                    <span class="ongkir-text">Gratis Ongkir+</span>
-                </div>
-            </div>
+        <span class="discount-badge">-15%</span>
+        <img src="${p.images[0]}" alt="${p.name}">
+        <div class="xtra-label">
+            <span class="xtra-text">XTRA</span>
+            <span class="ongkir-text">Gratis Ongkir+</span>
+        </div>
+    </div>
             <div class="product-info">
                 <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
                 <div class="price">${p.price.toString().replace('.', ',')} π</div>

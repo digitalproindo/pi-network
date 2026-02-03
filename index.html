@@ -26,17 +26,17 @@
 
         .hidden { display: none !important; }
 
-        /* --- HEADER PREMIUM DENGAN LOGO --- */
+        /* --- HEADER --- */
         header {
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
             color: white;
-            padding: 40px 20px 80px 20px; 
+            padding: 40px 20px 60px 20px; 
             text-align: left;
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
             box-shadow: 0 10px 30px rgba(26, 0, 51, 0.4);
             position: relative;
-            z-index: 1;
+            z-index: 20;
             display: flex;
             align-items: center;
             gap: 15px;
@@ -53,42 +53,61 @@
             border: 2px solid #d4af37;
         }
 
-        .header-text-container {
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* --- AUTH CONTAINER & BUTTON (REVISED) --- */
         .auth-container {
             position: absolute;
-            top: 15px; /* Sedikit lebih ke atas */
-            right: 15px; /* Sedikit lebih ke pojok */
-            z-index: 20;
+            top: 15px;
+            right: 15px;
+            z-index: 30;
         }
 
         .btn-auth {
             background: linear-gradient(to right, #d4af37, #f1c40f);
             color: #1a0033; border: none;
-            padding: 5px 12px; /* Ukuran padding dikecilkan */
-            border-radius: 8px; /* Sudut radius disesuaikan */
+            padding: 5px 12px;
+            border-radius: 8px;
             font-weight: 800; 
-            font-size: 0.65rem; /* Font dikecilkan dari 0.75 ke 0.65 */
-            cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-            text-transform: uppercase; /* Menambah kesan clean */
+            font-size: 0.65rem;
+            cursor: pointer;
+            text-transform: uppercase;
         }
 
-        .btn-logout-style {
-            background: var(--pi-red) !important;
-            color: white !important;
-            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.3) !important;
+        /* --- RUNNING TEXT (Posisi Baru: Di Atas Banner) --- */
+        .info-ticker {
+            background: #fff;
+            margin: 15px 20px 10px 20px; /* Jarak bawah dikecilkan agar dekat banner */
+            padding: 8px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #eee;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            position: relative;
+            z-index: 10;
         }
 
+        /* --- BANNER --- */
+        .banner-wrapper {
+            padding: 0 20px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .banner-container {
+            width: 100%;
+            height: 140px;
+            background: #ddd;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border: 1px solid #eee;
+        }
+
+        /* --- CATEGORY --- */
         .category-scroll {
             display: flex; overflow-x: auto;
-            padding: 15px 20px; gap: 12px;
+            padding: 10px 20px 20px; gap: 12px;
             scrollbar-width: none; 
-            margin-top: -35px; 
             position: relative;
             z-index: 10;
         }
@@ -96,9 +115,9 @@
 
         .category-pill {
             flex: 0 0 auto; background: white;
-            padding: 12px 20px; border-radius: 15px;
+            padding: 10px 18px; border-radius: 12px;
             font-size: 0.8rem; font-weight: 700;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
             border: 1px solid #f1f5f9; cursor: pointer;
             transition: 0.3s;
         }
@@ -108,6 +127,7 @@
             border-color: var(--pi-color);
         }
 
+        /* --- GRID PRODUK --- */
         .marketplace-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
             gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
@@ -117,71 +137,28 @@
             background: white; border-radius: 20px; overflow: hidden;
             display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
             border: 1px solid #f1f5f9;
-            cursor: pointer;
         }
 
-        .product-info { padding: 12px; flex-grow: 1; }
+        .product-info { padding: 12px; }
         .product-name { font-size: 0.85rem; font-weight: 700; height: 34px; overflow: hidden; margin: 0 0 8px 0; }
         .price { font-weight: 800; color: var(--pi-color); font-size: 1.1rem; }
 
         .btn-buy-now { 
             background: linear-gradient(135deg, #4a148c 0%, #1a0033 100%);
-            color: white; border: none; flex: 1; border-radius: 10px;
-            padding: 10px; font-weight: bold; font-size: 0.8rem; cursor: pointer;
+            color: white; border: none; width: 100%; border-radius: 10px;
+            padding: 8px; font-weight: bold; font-size: 0.8rem; cursor: pointer;
+            margin-top: 8px;
         }
 
+        /* --- FLOATING WA --- */
         .whatsapp-float {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            width: 55px;
-            height: 55px;
-            background-color: #25d366;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
-            z-index: 1500;
-            transition: all 0.3s ease;
+            position: fixed; bottom: 100px; right: 20px;
+            width: 55px; height: 55px; background-color: #25d366;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
         }
-        .whatsapp-float img { width: 32px; height: 32px; }
-        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
-        @keyframes pulse-wa {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.6); }
-            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-        .whatsapp-float { animation: pulse-wa 2s infinite; }
 
-        #page-profile { 
-            padding: 0 20px; 
-            margin-top: -45px; 
-            position: relative;
-            z-index: 10;
-        }
-        .profile-card {
-            background: white; border-radius: 35px; padding: 35px 20px;
-            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-        .avatar-border {
-            width: 120px; height: 120px; margin: 0 auto 20px;
-            border: 5px solid #3b82f6; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; padding: 5px;
-            background: white;
-        }
-        .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-        
-        .profile-username { color: var(--pi-color); font-size: 1.8rem; font-weight: 800; margin: 0; }
-        .uid-box { 
-            font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; 
-            padding: 15px; border-radius: 15px; word-break: break-all; margin: 25px 0;
-            line-height: 1.5; border: 1px solid #e2e8f0;
-        }
-        .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
-        .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
-
+        /* --- NAV --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
@@ -189,7 +166,7 @@
         }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; cursor: pointer; }
         .nav-item.active { color: var(--pi-color); }
-        .nav-icon { font-size: 1.5rem; margin-bottom: 2px; }
+        .nav-icon { font-size: 1.5rem; }
         .nav-text { font-size: 0.7rem; font-weight: 700; }
     </style>
 </head>
@@ -199,28 +176,26 @@
         <div class="auth-container">
             <button id="login-btn" class="btn-auth">Login</button>
         </div>
-        
         <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo">
-        
         <div class="header-text-container">
-            <h1 style="margin:0; font-size: 1.4rem; letter-spacing: -0.5px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">DIGITAL PRO <span style="color: #d4af37;">INDO</span></h1>
-            <p style="margin:2px 0 0 0; opacity: 0.9; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Premium Marketplace</p>
+            <h1 style="margin:0; font-size: 1.4rem; font-weight: 800;">DIGITAL PRO <span style="color: #d4af37;">INDO</span></h1>
+            <p style="margin:2px 0 0 0; opacity: 0.9; font-size: 0.7rem; font-weight: 600; text-transform: uppercase;">Premium Marketplace</p>
         </div>
     </header>
 
-    <div class="banner-container" style="padding: 15px 10px 0 10px; margin-top: -30px; position: relative; z-index: 15;">
-        <div style="width: 100%; height: 120px; background: #ddd; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15); border: 2px solid rgba(255,255,255,0.2);">
-            <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" 
-                 style="width: 100%; height: 100%; object-fit: cover;" 
-                 id="banner-img">
-        </div>
-    </div>
-
-    <div style="background: #fff; margin: 15px 20px; padding: 8px 15px; border-radius: 10px; display: flex; align-items: center; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+    <div class="info-ticker">
         <span style="background: var(--pi-red); color: white; padding: 2px 8px; border-radius: 5px; font-size: 0.65rem; font-weight: 800; margin-right: 10px;">INFO</span>
         <marquee style="font-size: 0.8rem; font-weight: 600; color: #444;">
             Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium. Pengiriman ke seluruh Indonesia aman dan terpercaya!
         </marquee>
+    </div>
+
+    <div class="banner-wrapper">
+        <div class="banner-container">
+            <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" 
+                 style="width: 100%; height: 100%; object-fit: cover;" 
+                 id="banner-img">
+        </div>
     </div>
 
     <main id="page-home">
@@ -250,36 +225,19 @@
     </main>
 
     <main id="page-profile" class="hidden">
-        <div class="profile-card" style="margin-top: 60px;">
-            <div class="avatar-border">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+        <div class="profile-card" style="margin: 20px; margin-top: 40px; background: white; border-radius: 30px; padding: 30px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+            <div style="width: 100px; height: 100px; border: 4px solid var(--pi-color); border-radius: 50%; margin: 0 auto 20px; overflow: hidden;">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width: 100%;">
             </div>
             <h2 id="profile-username" class="profile-username">User</h2>
-            <p style="color: var(--text-muted); font-size: 1rem; margin: 8px 0; font-weight: 600;">Member Digital Pro Indo</p>
-            <div class="uid-box">
-                <strong>Wallet UID:</strong><br>
-                <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
-            </div>
-            <div class="status-row">
-                <div class="badge-verified">Status: Verified <span>✅</span></div>
-                <div style="font-size: 1.1rem; color: #1e293b;">Region: Indonesia <span>🇮🇩</span></div>
+            <div class="uid-box" style="font-size: 0.7rem; background: #f8fafc; padding: 10px; border-radius: 10px; margin: 20px 0; word-break: break-all;">
+                <span id="profile-address">Belum Terhubung</span>
             </div>
         </div>
     </main>
 
-    <div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
-        <div style="position: sticky; top: 0; padding: 20px; display: flex; align-items: center; background: white; z-index: 10; border-bottom: 1px solid #f1f5f9;">
-            <button onclick="closeProductDetail()" style="background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold; cursor: pointer;">
-                ← Kembali
-            </button>
-        </div>
-        <div id="detail-content"></div>
-    </div>
-
-    <a href="https://wa.me/6282191851112?text=Halo%20Admin%20Digital%20Pro%20Indo..." 
-       class="whatsapp-float" 
-       target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp Support">
+    <a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">
     </a>
 
     <nav class="bottom-nav">

@@ -14,6 +14,7 @@
             --text-muted: #64748b;
             --bg-body: #f8fafc;
             --nav-bg: #ffffff;
+            --xtra-cyan: #00bfa5;
         }
 
         body {
@@ -30,7 +31,7 @@
         header {
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
             color: white;
-            padding: 40px 20px 60px 20px; /* Padding bawah dikurangi agar tidak terlalu jauh ke bawah */
+            padding: 40px 20px 80px 20px; 
             text-align: left;
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
@@ -43,7 +44,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
         }
 
         .brand-logo {
@@ -53,13 +54,12 @@
             object-fit: cover; border: 2px solid #d4af37;
         }
 
-        /* RUNNING TEXT DI BAWAH LOGO */
         .header-ticker {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(5px);
             border-radius: 10px;
             padding: 5px 10px;
-            margin-top: 5px;
+            margin-top: 10px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -74,16 +74,16 @@
             cursor: pointer; text-transform: uppercase;
         }
 
-        /* --- BANNER (DINAIKKAN TEPAT DI BAWAH TICKER) --- */
+        /* --- BANNER --- */
         .banner-container {
-            padding: 0 10px;
-            margin-top: -15px; /* Menaikkan banner agar pas di bawah running text header */
+            padding: 15px 10px 0 10px;
+            margin-top: -35px; 
             position: relative;
             z-index: 15;
         }
 
         .banner-box {
-            width: 100%; height: 130px; /* Sedikit lebih tinggi agar proporsional */
+            width: 100%; height: 120px;
             background: #ddd; border-radius: 20px;
             overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             border: 2px solid rgba(255,255,255,0.2);
@@ -110,29 +110,83 @@
             background: var(--pi-color); color: white; border-color: var(--pi-color);
         }
 
-        /* --- PRODUCT GRID --- */
+        /* --- PRODUCT GRID (SESUAI GAMBAR) --- */
         .marketplace-grid {
             display: grid; grid-template-columns: repeat(2, 1fr);
-            gap: 15px; padding: 10px 20px; max-width: 600px; margin: 0 auto;
+            gap: 12px; padding: 10px 12px; max-width: 600px; margin: 0 auto;
         }
 
         .product-card {
-            background: white; border-radius: 20px; overflow: hidden;
-            display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-            border: 1px solid #f1f5f9;
+            background: white; border-radius: 12px; overflow: hidden;
+            display: flex; flex-direction: column; 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid #f0f0f0;
+            position: relative;
         }
 
-        .product-info { padding: 12px; }
-        .product-name { font-size: 0.85rem; font-weight: 700; height: 34px; overflow: hidden; margin: 0 0 8px 0; }
-        .price { font-weight: 800; color: var(--pi-color); font-size: 1.1rem; }
+        /* Badge Diskon Pojok Kanan Atas */
+        .discount-tag {
+            position: absolute; top: 8px; right: 8px;
+            background: #ff4d4f; color: white;
+            font-size: 0.65rem; font-weight: 800;
+            padding: 2px 6px; border-radius: 4px; z-index: 2;
+        }
+
+        .product-image-wrapper {
+            position: relative; width: 100%; height: 150px;
+            background: #fff;
+        }
+
+        .product-card img {
+            width: 100%; height: 100%; object-fit: contain; padding: 10px;
+        }
+
+        /* Badge XTRA Gratis Ongkir (Cyan) */
+        .xtra-badge {
+            position: absolute; bottom: 0; left: 0;
+            background: var(--xtra-cyan); color: white;
+            font-size: 0.6rem; font-weight: 800;
+            padding: 4px 8px; border-top-right-radius: 8px;
+            line-height: 1;
+        }
+
+        .product-info { padding: 10px; display: flex; flex-direction: column; gap: 4px; }
+        
+        .product-name { 
+            font-size: 0.85rem; font-weight: 500; color: #333;
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            overflow: hidden; height: 34px; line-height: 1.2; margin: 0;
+        }
+
+        .price { 
+            font-weight: 800; color: #a82444; font-size: 1.1rem; 
+            display: flex; align-items: center; gap: 4px; margin-top: 2px;
+        }
+
+        /* Label Gratis Ongkir Hijau */
+        .free-shipping-label {
+            display: inline-flex; align-items: center; gap: 3px;
+            background: #e6f7ff; color: #00bfa5;
+            font-size: 0.65rem; font-weight: 700;
+            padding: 2px 6px; border-radius: 4px; width: fit-content;
+        }
+
+        /* Baris Rating dan Tombol */
+        .card-footer {
+            display: flex; justify-content: space-between;
+            align-items: center; margin-top: 5px;
+        }
+
+        .rating-sold { font-size: 0.7rem; color: #666; display: flex; align-items: center; gap: 3px; }
+        .star-icon { color: #ffc107; }
 
         .btn-buy-now { 
-            background: linear-gradient(135deg, #4a148c 0%, #1a0033 100%);
-            color: white; border: none; width: 100%; border-radius: 10px;
-            padding: 10px; font-weight: bold; font-size: 0.8rem;
+            background: #9c27b0; color: white; border: none; 
+            padding: 6px 15px; border-radius: 20px;
+            font-weight: 700; font-size: 0.75rem; cursor: pointer;
         }
 
-        /* --- PROFILE PAGE STYLES --- */
+        /* --- PROFILE --- */
         #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
         .profile-card {
             background: white; border-radius: 35px; padding: 35px 20px;
@@ -155,7 +209,7 @@
         .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
         .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
 
-        /* --- NAV & OTHER --- */
+        /* --- NAVIGATION --- */
         .whatsapp-float {
             position: fixed; bottom: 100px; right: 20px;
             width: 55px; height: 55px; background-color: #25d366;

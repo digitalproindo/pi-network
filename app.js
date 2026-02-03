@@ -185,22 +185,50 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 7. DETAIL PRODUK ---
     window.openProductDetail = (productId) => {
-        const p = productsData.find(x => x.id === productId);
-        if (!p) return;
-        document.getElementById('detail-content').innerHTML = `
-            <img src="${p.images[0]}" style="width:100%; height:300px; object-fit:cover;">
-            <div style="padding:20px;">
-                <p style="color:#6748d7; font-weight:bold;">${p.category}</p>
-                <h2>${p.name}</h2>
-                <div class="price" style="font-size:1.8rem; margin-bottom:10px;">π ${p.price}</div>
-                <p style="color:#666; line-height:1.6;">${p.desc}</p>
-                <button class="btn-buy-now" style="width:100%; padding:15px; margin-bottom:10px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
-                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;" onclick="window.addToCart('${p.id}')">Tambah ke Keranjang</button>
-            </div>`;
-        document.getElementById('product-detail-page').classList.remove('hidden');
-    };
-
-    window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
+    
+    // Scroll ke atas otomatis saat dibuka
+    document.getElementById('product-detail-page').scrollTop = 0;
+    
+    document.getElementById('detail-content').innerHTML = `
+        <div class="detail-header-nav">
+            <button onclick="closeProductDetail()" class="btn-back-detail">← KEMBALI</button>
+        </div>
+        
+        <div class="detail-image-box">
+            <img src="${p.images[0]}" alt="${p.name}">
+        </div>
+        
+        <div class="detail-info-card">
+            <span class="detail-category">${p.category}</span>
+            <h2 class="detail-title">${p.name}</h2>
+            
+            <div class="detail-stats">
+                <span>⭐ 4.9 (120 Ulasan)</span>
+                <span>|</span>
+                <span>Terjual 1.5rb+</span>
+            </div>
+            
+            <div class="detail-price">π ${p.price.toString().replace('.', ',')}</div>
+            
+            <div class="detail-section-title">Deskripsi Produk</div>
+            <p class="detail-desc">${p.desc}</p>
+            
+            <div class="detail-section-title">Ulasan Pembeli (5)</div>
+            <div style="font-size: 0.8rem; color: #777; margin-bottom: 100px;">
+                <p><b>Budi Santoso:</b> Barangnya mantap, pengiriman cepat!</p>
+                <p><b>Siti Aminah:</b> Sesuai deskripsi, terima kasih seller.</p>
+            </div>
+        </div>
+        
+        <div class="action-bar-fixed">
+            <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer;">+ Keranjang</button>
+            <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: bold; cursor: pointer;">Beli Sekarang</button>
+        </div>
+    `;
+    document.getElementById('product-detail-page').classList.remove('hidden');
+};
 
     // --- 8. FILTER & LAIN-LAIN ---
     window.filterCategory = (category, element) => {

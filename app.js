@@ -151,7 +151,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function showSuccessOverlay(amount, name, txid) {
         const overlay = document.createElement('div');
-        // Menggunakan Flexbox untuk memastikan posisi tepat di tengah layar
         overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
         
         const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0ATXID: ${txid}%0A%0AAlamat: ${userAddress.nama}, ${userAddress.telepon}, ${userAddress.alamatLengkap}`;
@@ -224,12 +223,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
     };
 
-    // --- 7. DETAIL PRODUK (VERSI REVISI FINAL) ---
+    // --- 7. DETAIL PRODUK ---
     window.openProductDetail = (productId) => {
         const p = productsData.find(x => x.id === productId);
         if (!p) return;
         
-        // Data pendukung ulasan
         const rating = "4.8/5.0";
         const terjual = "500+ Terjual";
         const ulasan = [
@@ -279,8 +277,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
-    // --- 8. FUNGSI FILTER ---
+    // --- 8. FUNGSI FILTER (REVISI PERUBAHAN WARNA AKTIF) ---
     window.filterCategory = (category) => {
+        // Logika Perubahan Warna Tombol
+        const pills = document.querySelectorAll('.category-pill');
+        pills.forEach(pill => {
+            pill.classList.remove('active');
+            // Cek apakah teks tombol mengandung nama kategori atau jika itu 'all'
+            if ((category === 'all' && pill.innerText.includes('Semua')) || 
+                (pill.innerText.includes(category))) {
+                pill.classList.add('active');
+            }
+        });
+
+        // Logika Filter Produk
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');
     };

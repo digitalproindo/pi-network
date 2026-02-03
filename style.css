@@ -1,96 +1,112 @@
-/* --- ROOT VARIABLES --- */
 :root {
-    --pi-color: #6748d7;
-    --pi-gold: #D4AF37;
-    --bg-light: #f8f9fa;
-    --text-dark: #333;
-    --shadow: 0 4px 15px rgba(0,0,0,0.08);
+    --pi-purple: #6748d7;
+    --pi-light-purple: #9b59b6;
+    --discount-red: #ff4d4d;
+    --xtra-teal: #00bfa5;
 }
 
-body {
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    background-color: var(--bg-light);
-    margin: 0;
-    padding: 0;
-    color: var(--text-dark);
-}
-
-/* --- TOMBOL LOGIN / CONNECT WALLET --- */
-.btn-connect {
-    display: inline-block;
-    background: var(--pi-color);
-    color: white;
-    padding: 12px 30px;
-    border-radius: 50px;
-    font-weight: bold;
-    border: 2px solid #fff;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 0 15px rgba(103, 65, 217, 0.4);
-}
-
-.btn-connect:hover {
-    background: var(--pi-gold);
-    color: #000;
-    transform: translateY(-2px);
-}
-
-/* --- LAYOUT PRODUK (GRID) --- */
+/* Container Grid */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 Kolom untuk HP */
-    gap: 15px;
-    padding: 15px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding: 12px;
+    background: #f4f4f4;
 }
 
-/* --- KARTU PRODUK (ESTETIK) --- */
+/* Card Utama */
 .product-card {
     background: white;
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
-    box-shadow: var(--shadow);
-    transition: transform 0.2s;
+    position: relative;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
 }
 
-.product-card:active {
-    transform: scale(0.98);
-}
-
+/* Container Gambar & Badge */
 .image-container {
+    position: relative;
     width: 100%;
-    height: 150px; /* Tinggi seragam */
-    overflow: hidden;
-    background: #eee;
+    height: 170px;
+    background: #fff;
 }
 
 .image-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain; /* Agar gambar tidak terpotong */
+    padding: 10px;
 }
 
+.badge-discount {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: var(--discount-red);
+    color: white;
+    padding: 4px 8px;
+    border-bottom-left-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.label-xtra {
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    background: var(--xtra-teal);
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 8px;
+    font-weight: bold;
+    line-height: 1;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+/* Informasi Produk */
 .product-info {
-    padding: 12px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
 }
 
 .product-name {
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: #444;
-    height: 2.4em; /* Tinggi tetap untuk 2 baris teks */
-    line-height: 1.2em;
+    font-size: 0.9rem;
+    color: #333;
+    margin: 0 0 6px 0;
+    font-weight: 500;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
+    height: 2.4em;
 }
 
+.price {
+    color: #a32a2a; /* Warna merah marun sesuai gambar */
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.shipping-tag {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 0.75rem;
+    color: #00bfa5;
+    background: #e0f2f1;
+    width: fit-content;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+}
+
+/* Bagian Bawah (Rating & Tombol) */
 .product-meta {
     display: flex;
     justify-content: space-between;
@@ -98,61 +114,23 @@ body {
     margin-top: auto;
 }
 
-.price {
-    color: var(--pi-color);
-    font-weight: 800;
-    font-size: 0.95rem;
+.rating {
+    font-size: 0.7rem;
+    color: #666;
 }
 
-/* --- TOMBOL BELI DI KARTU --- */
-.btn-buy-now {
-    background: var(--pi-color);
+.star {
+    color: #ffc107;
+    font-size: 0.8rem;
+}
+
+.btn-beli-simple {
+    background: var(--pi-purple);
     color: white;
     border: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    font-size: 0.75rem;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.8rem;
     font-weight: bold;
     cursor: pointer;
-}
-
-/* --- CATEGORY PILLS (SCROLLABLE) --- */
-.category-container {
-    display: flex;
-    overflow-x: auto;
-    padding: 10px 15px;
-    gap: 10px;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-}
-
-.category-container::-webkit-scrollbar {
-    display: none; /* Sembunyikan scrollbar */
-}
-
-.category-pill {
-    padding: 8px 18px;
-    background: #eee;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    cursor: pointer;
-    border: none;
-    transition: 0.3s;
-}
-
-.category-pill.active {
-    background: var(--pi-color);
-    color: white;
-}
-
-/* --- UTILS --- */
-.hidden {
-    display: none !important;
-}
-
-/* Untuk Tampilan Tablet/Desktop */
-@media (min-width: 768px) {
-    .product-grid {
-        grid-template-columns: repeat(4, 1fr);
-    }
 }

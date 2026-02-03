@@ -43,7 +43,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px; /* Memberi ruang untuk running text di bawahnya */
+            margin-bottom: 15px;
         }
 
         .brand-logo {
@@ -53,7 +53,7 @@
             object-fit: cover; border: 2px solid #d4af37;
         }
 
-        /* --- RUNNING TEXT DI BAWAH LOGO --- */
+        /* RUNNING TEXT DI BAWAH LOGO */
         .header-ticker {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(5px);
@@ -104,6 +104,7 @@
             font-size: 0.8rem; font-weight: 700;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
             border: 1px solid #f1f5f9; cursor: pointer;
+            transition: 0.3s;
         }
         .category-pill.active {
             background: var(--pi-color); color: white; border-color: var(--pi-color);
@@ -131,19 +132,47 @@
             padding: 10px; font-weight: bold; font-size: 0.8rem;
         }
 
+        /* --- PROFILE PAGE STYLES (ASLI) --- */
+        #page-profile { 
+            padding: 0 20px; 
+            margin-top: -45px; 
+            position: relative;
+            z-index: 10;
+        }
+        .profile-card {
+            background: white; border-radius: 35px; padding: 35px 20px;
+            text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .avatar-border {
+            width: 120px; height: 120px; margin: 0 auto 20px;
+            border: 5px solid #3b82f6; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; padding: 5px;
+            background: white;
+        }
+        .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .profile-username { color: var(--pi-color); font-size: 1.8rem; font-weight: 800; margin: 0; }
+        .uid-box { 
+            font-size: 0.75rem; color: var(--text-muted); background: #f1f5f9; 
+            padding: 15px; border-radius: 15px; word-break: break-all; margin: 25px 0;
+            line-height: 1.5; border: 1px solid #e2e8f0;
+        }
+        .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
+        .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
+
+        /* --- OTHER --- */
         .whatsapp-float {
             position: fixed; bottom: 100px; right: 20px;
             width: 55px; height: 55px; background-color: #25d366;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
         }
-
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; right: 0;
             background: var(--nav-bg); display: flex;
             padding: 12px 0 30px 0; border-top: 1px solid #f1f5f9; z-index: 1000;
         }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #94a3b8; cursor: pointer; }
         .nav-item.active { color: var(--pi-color); }
         .nav-icon { font-size: 1.5rem; }
         .nav-text { font-size: 0.7rem; font-weight: 700; }
@@ -155,7 +184,6 @@
         <div class="auth-container">
             <button id="login-btn" class="btn-auth">Login</button>
         </div>
-        
         <div class="header-content">
             <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo">
             <div class="header-text-container">
@@ -163,9 +191,8 @@
                 <p style="margin:2px 0 0 0; opacity: 0.9; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Premium Marketplace</p>
             </div>
         </div>
-
         <div class="header-ticker">
-            <marquee style="font-size: 0.75rem; font-weight: 600; color: #fff; vertical-align: middle;">
+            <marquee style="font-size: 0.75rem; font-weight: 600; color: #fff;">
                 Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium. Pengiriman ke seluruh Indonesia aman dan terpercaya!
             </marquee>
         </div>
@@ -174,8 +201,7 @@
     <div class="banner-container">
         <div class="banner-box">
             <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" 
-                 style="width: 100%; height: 100%; object-fit: cover;" 
-                 id="banner-img">
+                 style="width: 100%; height: 100%; object-fit: cover;" id="banner-img">
         </div>
     </div>
 
@@ -194,24 +220,41 @@
 
     <main id="page-cari" class="hidden">
         <div style="padding: 20px;">
-            <input type="text" id="search-input" placeholder="Cari produk..." style="width:100%; padding:15px; border-radius:12px; border:1px solid #ddd;">
+            <input type="text" id="search-input" placeholder="Cari produk premium..." 
+                   style="width:100%; padding:16px; border-radius:15px; border:2px solid #eee; outline:none; font-family:inherit;">
         </div>
         <div id="search-results" class="marketplace-grid"></div>
     </main>
 
     <main id="page-keranjang" class="hidden">
-        <h3 style="padding: 20px; margin:0;">Keranjang Saya</h3>
+        <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>
         <div id="cart-items"></div>
     </main>
 
     <main id="page-profile" class="hidden">
-        <div class="profile-card" style="margin: 20px; background: white; border-radius: 25px; padding: 30px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05);">
-            <h2 id="profile-username">User</h2>
-            <div class="uid-box" style="word-break: break-all; font-size: 0.7rem; background: #f1f5f9; padding: 10px; border-radius: 10px; margin-top: 15px;">
-                <span id="profile-address">Belum Terhubung</span>
+        <div class="profile-card" style="margin-top: 60px;">
+            <div class="avatar-border">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+            </div>
+            <h2 id="profile-username" class="profile-username">User</h2>
+            <p style="color: var(--text-muted); font-size: 1rem; margin: 8px 0; font-weight: 600;">Member Digital Pro Indo</p>
+            <div class="uid-box">
+                <strong>Wallet UID:</strong><br>
+                <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
+            </div>
+            <div class="status-row">
+                <div class="badge-verified">Status: Verified <span>✅</span></div>
+                <div style="font-size: 1.1rem; color: #1e293b;">Region: Indonesia <span>🇮🇩</span></div>
             </div>
         </div>
     </main>
+
+    <div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
+        <div style="position: sticky; top: 0; padding: 20px; display: flex; align-items: center; background: white; z-index: 10; border-bottom: 1px solid #f1f5f9;">
+            <button onclick="closeProductDetail()" style="background: #f1f5f9; border: none; padding: 10px 15px; border-radius: 12px; font-weight: bold;">← Kembali</button>
+        </div>
+        <div id="detail-content"></div>
+    </div>
 
     <a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">

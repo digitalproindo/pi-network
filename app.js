@@ -197,10 +197,10 @@ const productsData = [
     },
     { 
         id: 'hb4', 
-        name: "Ekstrak Kurma Pro - Booster Energi", 
+        name: "Probiotik 10 Kunyit", 
         price: 0.00006, 
         category: "Herbal", 
-        images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"], 
+        images: ["https://i.ibb.co.com/4nRdtBpb/IMG-20260203-WA0005.jpg"], 
         desc: "Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic, Immune support,High Antioksidant,Improved Digestion,Naturally Energizing.",
         rating: 5.0,
         sold: 1200,

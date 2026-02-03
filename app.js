@@ -284,8 +284,9 @@ productsData.forEach(p => {
     if (!grid) return;
     grid.innerHTML = "";
     data.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'product-card';
+        const displayPrice = p.price < 0.001 ? p.price.toFixed(5) : p.price.toString().replace('.', ',');
+            const card = document.createElement('div');
+            card.className = 'product-card';
         card.innerHTML = `
             <div class="image-container" onclick="openProductDetail('${p.id}')">
         <span class="discount-badge">-15%</span>

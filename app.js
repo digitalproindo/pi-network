@@ -67,26 +67,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // --- 4. RENDER BERANDA ---
     function renderProducts(data, targetGridId) {
-        const grid = document.getElementById(targetGridId);
-        if (!grid) return;
-        grid.innerHTML = "";
-        data.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="image-container" onclick="openProductDetail('${p.id}')">
-                    <img src="${p.images[0]}" alt="${p.name}">
+    const grid = document.getElementById(targetGridId);
+    if (!grid) return;
+    grid.innerHTML = "";
+    data.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="image-container" onclick="openProductDetail('${p.id}')">
+                <span class="discount-badge">-15%</span>
+                <img src="${p.images[0]}" alt="${p.name}">
+                <div class="xtra-label">
+                    <span class="xtra-text">XTRA</span>
+                    <span class="ongkir-text">Gratis Ongkir+</span>
                 </div>
-                <div class="product-info">
-                    <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-                    <div class="product-meta">
-                        <span class="price">π ${p.price}</span>
-                        <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
+                <div class="price">${p.price.toString().replace('.', ',')} π</div>
+                <div class="free-ship-tag">
+                    <img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir
+                </div>
+                <div class="card-bottom">
+                    <div class="rating-text">
+                        <span class="star">★</span> 4.9 | 1.5rb+ terjual
                     </div>
-                </div>`;
-            grid.appendChild(card);
-        });
-    }
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
+}
 
     // --- 5. PEMBAYARAN ---
     window.handlePayment = async (amount, name) => {

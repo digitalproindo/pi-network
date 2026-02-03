@@ -74,22 +74,27 @@ document.addEventListener("DOMContentLoaded", async () => {
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-            <div class="image-container" onclick="openProductDetail('${p.id}')">
+            <div class="image-wrapper">
                 <span class="badge-discount">-15%</span>
-                <img src="${p.images[0]}" alt="${p.name}">
-                <div class="label-xtra">XTRA <br> <span>Gratis Ongkir+</span></div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-                <div class="price"> ${p.price.toString().replace('.', ',')} π</div>
-                <div class="shipping-tag">
-                    <img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="14"> Gratis ongkir
-                </div>
-                <div class="product-meta">
-                    <div class="rating">
-                        <span class="star">★</span> 4.9 | 1500+ terjual
+                <img src="${p.images[0]}" alt="${p.name}" class="main-img">
+                <div class="label-xtra-container">
+                    <div class="label-xtra-box">
+                        <span class="xtra-text">XTRA</span>
+                        <span class="ongkir-text">Gratis Ongkir+</span>
                     </div>
-                    <button class="btn-beli-simple" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                </div>
+            </div>
+            <div class="product-info-content">
+                <h3 class="product-name-title">${p.name}</h3>
+                <div class="price-value">${p.price.toString().replace('.', ',')} π</div>
+                <div class="shipping-info">
+                    <img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir
+                </div>
+                <div class="product-footer">
+                    <div class="stats">
+                        <span class="star-icon">★</span> 4.9 | 1500+ terjual
+                    </div>
+                    <button class="btn-beli-action" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
                 </div>
             </div>`;
         grid.appendChild(card);

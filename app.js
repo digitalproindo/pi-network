@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     async function initPi() {
         try {
             await Pi.init({ version: "2.0", sandbox: false });
-        } catch (e) { console.error(e); }
+        } catch (e) { console.error("Pi Init Error:", e); }
     }
 
     // --- 3. ALAMAT ---
@@ -41,24 +41,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         const overlay = document.createElement('div');
         overlay.id = "address-overlay";
         overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
-        
         overlay.innerHTML = `
-            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeIn 0.3s ease; position:relative;">
-                <div onclick="document.getElementById('address-overlay').remove()" 
-                     style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666; font-family:Arial, sans-serif;">✕</div>
+            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position:relative;">
+                <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
                 <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
-                <div style="margin-bottom:12px;">
-                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label>
-                    <input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}">
-                </div>
-                <div style="margin-bottom:12px;">
-                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label>
-                    <input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}">
-                </div>
-                <div style="margin-bottom:20px;">
-                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label>
-                    <textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea>
-                </div>
+                <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
+                <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}"></div>
+                <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea></div>
                 <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
             </div>`;
         document.body.appendChild(overlay);
@@ -75,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Alamat disimpan.");
     };
 
-    // --- 4. RENDER BERANDA (REVISI SINKRON DENGAN INDEX.HTML) ---
+    // --- 4. RENDER BERANDA ---
     function renderProducts(data, targetGridId) {
         const grid = document.getElementById(targetGridId);
         if (!grid) return;
@@ -83,11 +72,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         data.forEach(p => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            
-            // Logika diskon acak untuk tampilan premium
             const disc = Math.floor(Math.random() * 10) + 5;
             const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : "https://via.placeholder.com/300";
-
             card.innerHTML = `
                 <div class="discount-badge">-${disc}%</div>
                 <div class="image-container" onclick="openProductDetail('${p.id}')">
@@ -97,13 +83,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div class="product-info">
                     <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
                     <div class="price">π ${p.price}</div>
-                    <div class="free-ship-tag">
-                        <span>🚚</span> Gratis ongkir
-                    </div>
+                    <div class="free-ship-tag"><span>🚚</span> Gratis ongkir</div>
                     <div class="card-bottom">
-                        <div class="rating-text">
-                            <span class="star">★</span> 4.9 | 1rb+ terjual
-                        </div>
+                        <div class="rating-text"><span class="star">★</span> 4.9 | 1rb+ terjual</div>
                         <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
                     </div>
                 </div>`;
@@ -111,11 +93,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // --- 5. PEMBAYARAN & SUCCESS OVERLAY ---
+    // --- 5. PEMBAYARAN ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login di Profil!");
         if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
-
         try {
             await Pi.createPayment({
                 amount: parseFloat(amount),
@@ -143,29 +124,41 @@ document.addEventListener("DOMContentLoaded", async () => {
         const overlay = document.createElement('div');
         overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
         const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0ATXID: ${txid}%0A%0AAlamat: ${userAddress.nama}, ${userAddress.telepon}, ${userAddress.alamatLengkap}`;
-        
         overlay.innerHTML = `
-            <div style="background:white; padding:30px; border-radius:25px; max-width:350px; width:100%; text-align:center; color:#333; animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-                <div style="font-size: 50px; margin-bottom: 10px;">✅</div>
-                <h2 style="color:#27ae60; margin-top:0;">Berhasil!</h2>
-                <p style="font-size: 0.95rem; color:#666; line-height:1.5; margin-bottom:25px;">Pembayaran diterima. Klik tombol di bawah untuk kirim bukti ke WhatsApp Admin.</p>
-                <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold; margin-bottom:15px;">Kirim Ke WhatsApp</a>
-                <button onclick="location.reload()" style="background:none; border:none; color:#999; cursor:pointer; text-decoration:underline;">Tutup</button>
+            <div style="background:white; padding:30px; border-radius:25px; max-width:350px; width:100%; text-align:center;">
+                <div style="font-size: 50px;">✅</div>
+                <h2 style="color:#27ae60;">Berhasil!</h2>
+                <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold;">Kirim Ke WhatsApp</a>
+                <button onclick="location.reload()" style="background:none; border:none; color:#999; margin-top:15px; cursor:pointer;">Tutup</button>
             </div>`;
         document.body.appendChild(overlay);
     }
 
-    // --- 6. AUTH & KERANJANG ---
+    // --- 6. AUTH (FIX LOGIN BUTTON) ---
     window.handleAuth = async () => {
+        console.log("Login button clicked...");
         const btn = document.getElementById('login-btn');
-        if (currentUser) { currentUser = null; btn.innerText = "Login"; return; }
+        const userDisplay = document.getElementById('profile-username');
+        const addrDisplay = document.getElementById('profile-address');
+
+        if (currentUser) { 
+            currentUser = null; 
+            if(btn) btn.innerText = "Login"; 
+            if(userDisplay) userDisplay.innerText = "Guest";
+            return; 
+        }
+
         try {
             const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (p) => handleIncompletePayment(p));
             currentUser = auth.user;
-            btn.innerText = "Logout";
-            document.getElementById('profile-username').innerText = currentUser.username;
-            document.getElementById('profile-address').innerText = currentUser.uid || "Connected";
-        } catch (e) { alert("Gagal Login."); }
+            if(btn) btn.innerText = "Logout";
+            if(userDisplay) userDisplay.innerText = currentUser.username;
+            if(addrDisplay) addrDisplay.innerText = "Connected";
+            alert("Login Berhasil: " + currentUser.username);
+        } catch (e) { 
+            console.error("Auth Error:", e);
+            alert("Gagal Login. Pastikan Anda membuka di Pi Browser."); 
+        }
     };
 
     window.addToCart = (id) => {
@@ -181,11 +174,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         grid.innerHTML = `
             <div style="padding:15px;">
                 <button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:12px; border-radius:8px; margin-bottom:15px;">📍 Atur Alamat Pengiriman</button>
-                ${cart.map((i) => `<div style="display:flex; justify-content:space-between; padding:12px; background:white; margin-bottom:8px; border-radius:10px; border:1px solid #eee;"><span>${i.name}</span><b>π ${i.price}</b></div>`).join('')}
-                <div style="margin-top:20px; padding:15px; background:#f8fafc; border-radius:15px; text-align:center;">
-                    <span style="font-size:0.9rem; color:#64748b;">Total Pembayaran:</span><br>
-                    <b style="font-size:1.5rem; color:var(--pi-color);">π ${total}</b><br><br>
-                    <button class="btn-buy-now" style="width:100%; padding:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout Sekarang</button>
+                ${cart.map((i) => `<div style="display:flex; justify-content:space-between; padding:12px; background:white; margin-bottom:8px; border-radius:10px;"><span>${i.name}</span><b>π ${i.price}</b></div>`).join('')}
+                <div style="text-align:center; padding:15px; background:#f8fafc; border-radius:15px;">
+                    <b>Total: π ${total}</b><br><br>
+                    <button class="btn-buy-now" style="width:100%;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout</button>
                 </div>
             </div>`;
     }
@@ -195,9 +187,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             const el = document.getElementById(p);
             if(el) el.classList.add('hidden');
         });
-        document.getElementById(`page-${pageId}`).classList.remove('hidden');
+        const target = document.getElementById(`page-${pageId}`);
+        if(target) target.classList.remove('hidden');
+        
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(`nav-${pageId}`).classList.add('active');
+        const navItem = document.getElementById(`nav-${pageId}`);
+        if(navItem) navItem.classList.add('active');
+
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
     };
 
@@ -205,38 +201,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.openProductDetail = (productId) => {
         const p = productsData.find(x => x.id === productId);
         if (!p) return;
-        document.getElementById('detail-content').innerHTML = `
-            <img src="${p.images[0]}" style="width:100%; height:350px; object-fit:contain; background:#fff;">
-            <div style="padding:20px;">
-                <p style="color:var(--pi-color); font-weight:bold; font-size:0.85rem; text-transform:uppercase;">${p.category}</p>
-                <h2 style="margin:5px 0 15px 0; font-size:1.4rem; line-height:1.2;">${p.name}</h2>
-                <div class="price" style="font-size:2rem; margin-bottom:20px; color:#a82444;">π ${p.price}</div>
-                <div style="background:#f1f5f9; padding:15px; border-radius:12px; margin-bottom:25px;">
-                    <h4 style="margin:0 0 5px 0; font-size:0.9rem;">Deskripsi Produk</h4>
-                    <p style="color:#475569; line-height:1.6; margin:0; font-size:0.9rem;">${p.desc}</p>
-                </div>
-                <button class="btn-buy-now" style="width:100%; padding:18px; font-size:1rem; margin-bottom:12px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
-                <button style="width:100%; padding:18px; background:#f39c12; color:white; border:none; border-radius:12px; font-size:1rem; font-weight:bold; cursor:pointer;" onclick="window.addToCart('${p.id}')">Tambah ke Keranjang</button>
-            </div>`;
+        const detailContent = document.getElementById('detail-content');
+        if(detailContent) {
+            detailContent.innerHTML = `
+                <img src="${p.images[0]}" style="width:100%; height:350px; object-fit:contain; background:#fff;">
+                <div style="padding:20px;">
+                    <p style="color:#6748d7; font-weight:bold; font-size:0.85rem;">${p.category}</p>
+                    <h2 style="margin:5px 0;">${p.name}</h2>
+                    <div class="price" style="font-size:2rem; margin-bottom:20px;">π ${p.price}</div>
+                    <p style="color:#475569; line-height:1.6;">${p.desc}</p>
+                    <button class="btn-buy-now" style="width:100%; padding:18px; margin-bottom:12px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
+                    <button style="width:100%; padding:18px; background:#f39c12; color:white; border:none; border-radius:12px; font-weight:bold;" onclick="window.addToCart('${p.id}')">Tambah ke Keranjang</button>
+                </div>`;
+        }
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
-    // --- 8. FILTER & BANNER ---
-    window.filterCategory = (category) => {
+    // --- 8. FILTER (FIX WARNA) ---
+    window.filterCategory = (category, element) => {
+        // Hapus class active dari semua pill kategori
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+        
+        // Tambahkan ke element yang diklik
+        if(element) element.classList.add('active');
+
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');
-        document.querySelectorAll('.category-pill').forEach(pill => {
-            pill.classList.remove('active');
-            if(pill.innerText.includes(category) || (category === 'all' && pill.innerText === 'Semua')) pill.classList.add('active');
-        });
     };
 
     async function handleIncompletePayment(p) {
         await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });
     }
 
+    // --- BANNER ---
     const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"];
     let idx = 0;
     setInterval(() => { 
@@ -244,7 +243,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
+    // --- INITIAL RUN ---
     await initPi();
     renderProducts(productsData, 'main-grid');
-    document.getElementById('login-btn').onclick = window.handleAuth;
+
+    // Pastikan tombol login terpasang event listenernya
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = window.handleAuth;
+    }
 });

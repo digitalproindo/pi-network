@@ -74,14 +74,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             const card = document.createElement('div');
             card.className = 'product-card';
             card.innerHTML = `
-                <div onclick="openProductDetail('${p.id}')">
-                    <img src="${p.images[0]}" style="width:100%; height:150px; object-fit:cover; border-radius:10px;">
-                    <div class="product-info">
-                        <h3 class="product-name" style="font-size:0.9rem; margin:8px 0;">${p.name}</h3>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span class="price">π ${p.price}</span>
-                            <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
-                        </div>
+                <div class="image-container" onclick="openProductDetail('${p.id}')">
+                    <img src="${p.images[0]}" alt="${p.name}">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
+                    <div class="product-meta">
+                        <span class="price">π ${p.price}</span>
+                        <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
                     </div>
                 </div>`;
             grid.appendChild(card);

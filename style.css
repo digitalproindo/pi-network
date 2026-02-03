@@ -1,20 +1,158 @@
-/* Pastikan tombol Connect Wallet mencolok */
+/* --- ROOT VARIABLES --- */
+:root {
+    --pi-color: #6748d7;
+    --pi-gold: #D4AF37;
+    --bg-light: #f8f9fa;
+    --text-dark: #333;
+    --shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+body {
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-light);
+    margin: 0;
+    padding: 0;
+    color: var(--text-dark);
+}
+
+/* --- TOMBOL LOGIN / CONNECT WALLET --- */
 .btn-connect {
     display: inline-block;
-    background: #6741d9; /* Warna ungu Pi */
+    background: var(--pi-color);
     color: white;
-    padding: 15px 40px;
+    padding: 12px 30px;
     border-radius: 50px;
     font-weight: bold;
     border: 2px solid #fff;
     cursor: pointer;
-    margin-top: 20px;
-    z-index: 999;
-    position: relative;
-    box-shadow: 0 0 15px rgba(103, 65, 217, 0.5);
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(103, 65, 217, 0.4);
 }
 
 .btn-connect:hover {
-    background: #D4AF37; /* Berubah jadi emas saat disentuh */
+    background: var(--pi-gold);
     color: #000;
+    transform: translateY(-2px);
+}
+
+/* --- LAYOUT PRODUK (GRID) --- */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 Kolom untuk HP */
+    gap: 15px;
+    padding: 15px;
+}
+
+/* --- KARTU PRODUK (ESTETIK) --- */
+.product-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:active {
+    transform: scale(0.98);
+}
+
+.image-container {
+    width: 100%;
+    height: 150px; /* Tinggi seragam */
+    overflow: hidden;
+    background: #eee;
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.product-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #444;
+    height: 2.4em; /* Tinggi tetap untuk 2 baris teks */
+    line-height: 1.2em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.product-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.price {
+    color: var(--pi-color);
+    font-weight: 800;
+    font-size: 0.95rem;
+}
+
+/* --- TOMBOL BELI DI KARTU --- */
+.btn-buy-now {
+    background: var(--pi-color);
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* --- CATEGORY PILLS (SCROLLABLE) --- */
+.category-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 15px;
+    gap: 10px;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+}
+
+.category-container::-webkit-scrollbar {
+    display: none; /* Sembunyikan scrollbar */
+}
+
+.category-pill {
+    padding: 8px 18px;
+    background: #eee;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border: none;
+    transition: 0.3s;
+}
+
+.category-pill.active {
+    background: var(--pi-color);
+    color: white;
+}
+
+/* --- UTILS --- */
+.hidden {
+    display: none !important;
+}
+
+/* Untuk Tampilan Tablet/Desktop */
+@media (min-width: 768px) {
+    .product-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }

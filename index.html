@@ -30,7 +30,7 @@
         header {
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
             color: white;
-            padding: 40px 20px 80px 20px; 
+            padding: 40px 20px 60px 20px; /* Padding bawah dikurangi agar tidak terlalu jauh ke bawah */
             text-align: left;
             border-bottom-left-radius: 35px;
             border-bottom-right-radius: 35px;
@@ -43,7 +43,7 @@
             display: flex;
             align-items: center;
             gap: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .brand-logo {
@@ -59,7 +59,7 @@
             backdrop-filter: blur(5px);
             border-radius: 10px;
             padding: 5px 10px;
-            margin-top: 10px;
+            margin-top: 5px;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
@@ -74,16 +74,16 @@
             cursor: pointer; text-transform: uppercase;
         }
 
-        /* --- BANNER (POSISI ASAL) --- */
+        /* --- BANNER (DINAIKKAN TEPAT DI BAWAH TICKER) --- */
         .banner-container {
-            padding: 15px 10px 0 10px;
-            margin-top: -35px; 
+            padding: 0 10px;
+            margin-top: -15px; /* Menaikkan banner agar pas di bawah running text header */
             position: relative;
             z-index: 15;
         }
 
         .banner-box {
-            width: 100%; height: 120px;
+            width: 100%; height: 130px; /* Sedikit lebih tinggi agar proporsional */
             background: #ddd; border-radius: 20px;
             overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             border: 2px solid rgba(255,255,255,0.2);
@@ -132,13 +132,8 @@
             padding: 10px; font-weight: bold; font-size: 0.8rem;
         }
 
-        /* --- PROFILE PAGE STYLES (ASLI) --- */
-        #page-profile { 
-            padding: 0 20px; 
-            margin-top: -45px; 
-            position: relative;
-            z-index: 10;
-        }
+        /* --- PROFILE PAGE STYLES --- */
+        #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
         .profile-card {
             background: white; border-radius: 35px; padding: 35px 20px;
             text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -160,7 +155,7 @@
         .status-row { display: flex; flex-direction: column; gap: 12px; align-items: center; font-weight: 700; }
         .badge-verified { color: #059669; display: flex; align-items: center; gap: 8px; font-size: 1.1rem; }
 
-        /* --- OTHER --- */
+        /* --- NAV & OTHER --- */
         .whatsapp-float {
             position: fixed; bottom: 100px; right: 20px;
             width: 55px; height: 55px; background-color: #25d366;

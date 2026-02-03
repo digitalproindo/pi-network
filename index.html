@@ -85,52 +85,64 @@
             gap: 12px; padding: 10px 15px;
         }
 
-        /* --- KARTU PRODUK PREMIUM (TOTAL FIX) --- */
+       /* --- FIX TOTAL BAGIAN ATAS KARTU --- */
 .product-card {
-    background: white; 
-    border-radius: 12px; 
-    overflow: hidden;
-    display: flex; 
-    flex-direction: column; 
+    background: white;
+    border-radius: 12px;
+    overflow: hidden; /* Kunci agar gambar yang mentok tidak keluar dari lengkungan kartu */
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    border: 1px solid #edf2f7; 
-    position: relative;
-    transition: transform 0.2s;
+    border: 1px solid #edf2f7;
+    margin: 0; 
 }
 
-/* Container Gambar: Full Width, Tanpa Sisa Putih */
 .image-container {
-    position: relative; 
-    width: 100%; 
-    height: 170px; /* Tinggi seragam agar rapi */
-    background: #fff;
+    position: relative;
+    width: 100%;
+    height: 180px; /* Sesuaikan tinggi ini */
+    margin: 0;
+    padding: 0;
+    background: #f8f9fa; /* Warna dasar jika gambar lambat dimuat */
     overflow: hidden;
-    margin: 0; /* Pastikan tidak ada margin */
-    padding: 0; /* Pastikan tidak ada padding */
+    display: block;
 }
 
 .image-container img {
-    width: 100%; 
-    height: 100%; 
-    object-fit: cover; /* Mengisi seluruh kotak tanpa sisa putih */
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Menjamin gambar penuh tanpa sisa putih di atas/samping */
     display: block;
-    border: none;
+    border: 0;
+    vertical-align: middle;
 }
 
-/* Label XTRA: Nempel di Dasar Gambar Tanpa Jarak */
-.xtra-label {
-    position: absolute; 
-    bottom: 0; 
-    left: 0;
-    background: var(--xtra-cyan); 
+/* Badge Diskon di Pojok Kanan Atas - Dibuat Lebih Rapi */
+.discount-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: #ff4d4f; /* Merah kontras */
     color: white;
-    padding: 4px 10px; 
-    border-top-right-radius: 10px;
-    z-index: 5; 
-    display: flex; 
-    flex-direction: column; 
-    line-height: 1;
-    font-family: sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-bottom-left-radius: 10px;
+    z-index: 10;
+    box-shadow: -1px 1px 4px rgba(0,0,0,0.1);
+}
+
+/* Label XTRA di Pojok Kiri Bawah Gambar */
+.xtra-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: #00bfa5;
+    color: white;
+    padding: 2px 8px;
+    border-top-right-radius: 8px;
+    z-index: 10;
+    line-height: 1.2;
 }
 .xtra-text { font-size: 0.65rem; font-weight: 900; letter-spacing: 0.5px; }
 .ongkir-text { font-size: 0.55rem; font-weight: 600; }

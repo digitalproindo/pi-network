@@ -9,183 +9,74 @@
         :root {
             --pi-color: #4a148c; 
             --pi-gold: #d4af37;
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --bg-body: #f1f5f9;
+            --bg-body: #f4f4f4;
             --xtra-cyan: #00bfa5;
             --discount-red: #ff4d4f;
             --btn-purple: #9c27b0;
         }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            margin: 0;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            padding-bottom: 100px;
-        }
-
+        body { font-family: 'Inter', sans-serif; margin: 0; background: var(--bg-body); padding-bottom: 80px; }
         .hidden { display: none !important; }
 
-        /* --- HEADER --- */
         header {
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
-            color: white;
-            padding: 40px 20px 70px 20px;
-            border-bottom-left-radius: 30px;
-            border-bottom-right-radius: 30px;
-            position: relative;
+            color: white; padding: 25px 20px 50px; border-bottom-left-radius: 25px; border-bottom-right-radius: 25px;
         }
 
-        .brand-logo {
-            width: 55px; height: 55px;
-            border-radius: 50%; background: #fff;
-            border: 2px solid var(--pi-gold);
-            object-fit: cover;
-        }
-
-        .auth-container { position: absolute; top: 15px; right: 15px; }
-        .btn-auth {
-            background: var(--pi-gold);
-            color: #1a0033; border: none; padding: 6px 15px;
-            border-radius: 8px; font-weight: 800; cursor: pointer;
+        /* --- RUNNING TEXT --- */
+        .marquee-container {
+            background: #fff; color: var(--pi-color); padding: 5px 0;
+            font-size: 0.75rem; font-weight: bold; border-bottom: 1px solid #eee;
         }
 
         /* --- BANNER --- */
-        .banner-container {
-            padding: 0 15px;
-            margin-top: -30px;
-        }
-        .banner-box {
-            width: 100%; height: 130px;
-            background: #fff; border-radius: 15px;
-            overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
+        .banner-container { padding: 0 15px; margin-top: -25px; }
+        .banner-box { width: 100%; height: 140px; background: #fff; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
 
         /* --- CATEGORY --- */
-        .category-scroll {
-            display: flex; overflow-x: auto;
-            padding: 15px; gap: 10px;
-            scrollbar-width: none;
-        }
-        .category-pill {
-            flex: 0 0 auto; background: white;
-            padding: 8px 18px; border-radius: 20px;
-            font-size: 0.85rem; font-weight: 600;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            cursor: pointer;
-        }
+        .category-scroll { display: flex; overflow-x: auto; padding: 15px; gap: 10px; scrollbar-width: none; }
+        .category-pill { flex: 0 0 auto; background: white; padding: 8px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
         .category-pill.active { background: var(--pi-color); color: white; }
 
-        /* --- PRODUCT GRID (MARKETPLACE STYLE) --- */
-        .marketplace-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            padding: 10px;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 12px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .discount-badge {
-            position: absolute; top: 0; right: 0;
-            background: var(--discount-red); color: white;
-            font-size: 0.7rem; font-weight: bold;
-            padding: 3px 7px; border-bottom-left-radius: 10px;
-            z-index: 5;
-        }
-
-        .image-container {
-            width: 100%;
-            padding-top: 100%; /* Rasio 1:1 */
-            position: relative;
-            background: #fff;
-        }
-
-        .image-container img {
-            position: absolute; top: 0; left: 0;
-            width: 100%; height: 100%;
-            object-fit: contain; /* Gambar utuh sesuai script awal */
-            padding: 10px;
-        }
-
-        .xtra-label {
-            position: absolute; bottom: 5px; left: 0;
-            background: var(--xtra-cyan); color: white;
-            font-size: 0.55rem; font-weight: 800;
-            padding: 2px 6px; border-top-right-radius: 5px;
-            border-bottom-right-radius: 5px;
-        }
-
-        .product-info { padding: 10px; flex-grow: 1; display: flex; flex-direction: column; }
+        /* --- PRODUCT CARD (MATCHING YOUR PREVIOUS STYLE) --- */
+        .marketplace-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; padding: 10px; }
+        .product-card { background: white; border-radius: 12px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
         
-        .product-name {
-            font-size: 0.85rem; font-weight: 500; color: #333;
-            margin: 0 0 5px 0; line-height: 1.2;
-            height: 2.4em; overflow: hidden;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
-        }
+        .discount-badge { position: absolute; top: 0; right: 0; background: var(--discount-red); color: white; font-size: 0.7rem; padding: 3px 7px; border-bottom-left-radius: 10px; z-index: 5; }
+        
+        .image-container { width: 100%; padding-top: 100%; position: relative; background: #fff; }
+        .image-container img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; padding: 5px; }
+        
+        .xtra-label { position: absolute; bottom: 5px; left: 0; background: var(--xtra-cyan); color: white; font-size: 0.55rem; font-weight: 800; padding: 2px 6px; border-top-right-radius: 5px; }
 
-        .price { font-weight: 800; color: #a82444; font-size: 1.1rem; margin-bottom: 5px; }
-
-        .free-ship-tag {
-            background: #e0f2f1; color: #00897b;
-            font-size: 0.65rem; font-weight: 700;
-            padding: 2px 5px; border-radius: 4px; width: fit-content;
-            margin-bottom: 8px;
-        }
-
-        .card-bottom {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-top: auto;
-        }
-
+        .product-info { padding: 10px; flex-grow: 1; }
+        .product-name { font-size: 0.8rem; margin: 0 0 5px; height: 2.4em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .price { font-weight: 800; color: #a82444; font-size: 1rem; }
+        
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; }
         .rating-text { font-size: 0.65rem; color: #777; }
-        .star { color: #ffc107; font-size: 0.75rem; }
+        .btn-buy-now { background: var(--btn-purple); color: white; border: none; padding: 4px 12px; border-radius: 12px; font-size: 0.7rem; font-weight: bold; }
 
-        .btn-buy-now {
-            background: var(--btn-purple); color: white;
-            border: none; padding: 5px 12px; border-radius: 15px;
-            font-weight: 700; font-size: 0.75rem; cursor: pointer;
-        }
-
-        /* --- NAVIGATION --- */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0;
-            background: white; display: flex; padding: 10px 0 25px 0;
-            border-top: 1px solid #eee; z-index: 1000;
-        }
-        .nav-item { flex: 1; text-align: center; color: #94a3b8; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
-        .nav-item.active { color: var(--pi-color); }
-        .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
-
-        /* Floating WA */
-        .whatsapp-float {
-            position: fixed; bottom: 90px; right: 20px;
-            width: 50px; height: 50px; background: #25d366;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2); z-index: 999;
-        }
+        /* --- BOTTOM NAV --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; padding: 10px 0 20px; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { flex: 1; text-align: center; color: #94a3b8; font-size: 0.7rem; cursor: pointer; }
+        .nav-item.active { color: var(--pi-color); font-weight: bold; }
+        .nav-icon { font-size: 1.3rem; display: block; }
     </style>
 </head>
 <body>
 
+    <div class="marquee-container">
+        <marquee>Selamat Datang di Digital Pro Indo - Marketplace Pi Network Terpercaya 2026 - Transaksi Aman & Cepat!</marquee>
+    </div>
+
     <header>
-        <div class="auth-container"><button id="login-btn" class="btn-auth">Login</button></div>
-        <div style="display: flex; align-items: center; gap: 12px;">
-            <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo">
-            <div>
-                <h1 style="margin:0; font-size: 1.3rem;">DIGITAL PRO <span style="color:var(--pi-gold)">INDO</span></h1>
-                <p style="margin:0; font-size: 0.65rem; opacity: 0.8; letter-spacing: 1px;">PREMIUM MARKETPLACE</p>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" style="width:45px; border-radius:50%; background:#fff;">
+                <h1 style="margin:0; font-size: 1.1rem;">DIGITAL PRO INDO</h1>
             </div>
+            <button id="login-btn" style="background:var(--pi-gold); border:none; padding:5px 12px; border-radius:5px; font-weight:bold;">Login</button>
         </div>
     </header>
 
@@ -202,51 +93,31 @@
             <div class="category-pill" onclick="filterCategory('Mobil')">🚗 Mobil</div>
             <div class="category-pill" onclick="filterCategory('Motor')">🏍️ Motor</div>
             <div class="category-pill" onclick="filterCategory('Herbal')">🍃 Herbal</div>
-            <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
         </div>
         <div id="main-grid" class="marketplace-grid"></div>
     </main>
 
-    <main id="page-cari" class="hidden" style="padding: 20px;">
-        <input type="text" id="search-input" placeholder="Cari produk..." style="width:100%; padding:15px; border-radius:10px; border:1px solid #ddd;">
-        <div id="search-results" class="marketplace-grid" style="margin-top:20px;"></div>
-    </main>
-
-    <main id="page-keranjang" class="hidden">
-        <h3 style="padding: 20px; margin: 0;">Keranjang Belanja</h3>
+    <main id="page-keranjang" class="hidden" style="padding:20px;">
+        <h3>Keranjang Anda</h3>
         <div id="cart-items"></div>
     </main>
 
-    <main id="page-profile" class="hidden" style="padding: 20px; text-align: center;">
-        <div style="background: white; padding: 30px; border-radius: 20px; margin-top: 20px;">
-            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" style="width:80px; margin-bottom:15px;">
-            <h2 id="profile-username" style="margin:0;">User</h2>
-            <p id="profile-address" style="font-size: 0.7rem; color: #888; word-break: break-all; margin-top: 10px;">Wallet belum terhubung</p>
+    <main id="page-profile" class="hidden" style="padding:40px 20px; text-align:center;">
+        <div style="background:white; padding:20px; border-radius:15px;">
+            <h2 id="profile-username">Guest</h2>
+            <p id="profile-address" style="font-size:0.7rem; color:#888;">Wallet Not Connected</p>
         </div>
     </main>
 
     <div id="product-detail-page" class="hidden" style="position:fixed; top:0; left:0; width:100%; height:100%; background:white; z-index:2000; overflow-y:auto;">
-        <button onclick="closeProductDetail()" style="position:absolute; top:20px; left:20px; padding:10px; z-index:10; border-radius:50%; border:none; background:rgba(0,0,0,0.1)">✕</button>
         <div id="detail-content"></div>
+        <button onclick="closeProductDetail()" style="position:fixed; top:20px; left:20px; background:rgba(0,0,0,0.5); color:white; border:none; width:35px; height:35px; border-radius:50%;">✕</button>
     </div>
 
-    <a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="25">
-    </a>
-
     <nav class="bottom-nav">
-        <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
-            <span class="nav-icon">🏠</span>Beranda
-        </div>
-        <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
-            <span class="nav-icon">🔍</span>Cari
-        </div>
-        <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
-            <span class="nav-icon">🛒</span>Keranjang
-        </div>
-        <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
-            <span class="nav-icon">👤</span>Profil
-        </div>
+        <div class="nav-item active" id="nav-home" onclick="switchPage('home')"><span class="nav-icon">🏠</span>Home</div>
+        <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')"><span class="nav-icon">🛒</span>Cart</div>
+        <div class="nav-item" id="nav-profile" onclick="switchPage('profile')"><span class="nav-icon">👤</span>Profile</div>
     </nav>
 
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>

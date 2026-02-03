@@ -98,27 +98,43 @@ document.addEventListener("DOMContentLoaded", async () => {
         alert("Alamat disimpan.");
     };
 
-    // --- 4. RENDER BERANDA ---
     function renderProducts(data, targetGridId) {
-        const grid = document.getElementById(targetGridId);
-        if (!grid) return;
-        grid.innerHTML = "";
-        data.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div onclick="openProductDetail('${p.id}')">
-                    <img src="${p.images[0]}" style="width:100%; height:150px; object-fit:cover; border-radius:10px;">
-                    <div class="product-info">
-                        <h3 class="product-name" style="font-size:0.9rem; margin:8px 0;">${p.name}</h3>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span class="price">π ${p.price}</span>
-                            <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
-                        </div>
+    const grid = document.getElementById(targetGridId);
+    if (!grid) return;
+    grid.innerHTML = "";
+    data.forEach(p => {
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        // Simulasi data diskon & terjual (Anda bisa menyesuaikan ini nanti)
+        const disc = p.price > 0.1 ? "-20%" : "-15%";
+        const terjual = Math.floor(Math.random() * 500) + 1000;
+
+        card.innerHTML = `
+            <div class="discount-badge">${disc}</div>
+            <div class="image-container" onclick="openProductDetail('${p.id}')">
+                <img src="${p.images[0]}" alt="${p.name}">
+                <div class="xtra-label">XTRA Gratis Ongkir+</div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
+                <div class="price-container">
+                    <span class="price">${p.price.toFixed(4).replace(/\.?0+$/, '')}</span>
+                    <span class="pi-symbol">π</span>
+                </div>
+                <div class="free-ship-container">
+                    <img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" class="free-ship-icon">
+                    <span class="free-ship-text">Gratis ongkir</span>
+                </div>
+                <div class="card-bottom">
+                    <div class="rating-sold">
+                        <span class="star">★</span> 4.9 | ${terjual}+ terjual
                     </div>
-                </div>`;
-            grid.appendChild(card);
-        });
+                    <button class="btn-buy-now" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
+}
     }
 
     // --- 5. PEMBAYARAN & SUCCESS OVERLAY ---

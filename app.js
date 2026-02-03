@@ -151,15 +151,37 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     function showSuccessOverlay(amount, name, txid) {
         const overlay = document.createElement('div');
-        overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; text-align:center; color:#333;";
+        // Menggunakan Flexbox untuk memastikan posisi tepat di tengah layar
+        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
+        
         const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0ATXID: ${txid}%0A%0AAlamat: ${userAddress.nama}, ${userAddress.telepon}, ${userAddress.alamatLengkap}`;
+        
         overlay.innerHTML = `
-            <div style="background:white; padding:25px; border-radius:20px; max-width:350px;">
-                <h2 style="color:#27ae60;">Berhasil!</h2>
-                <p>Klik tombol untuk kirim bukti & alamat ke WA Admin.</p>
-                <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:10px; font-weight:bold; margin-bottom:10px;">Kirim Ke WhatsApp</a>
-                <button onclick="location.reload()" style="background:none; border:none; color:#999;">Tutup</button>
-            </div>`;
+            <div style="background:white; padding:30px; border-radius:25px; max-width:350px; width:100%; text-align:center; color:#333; box-shadow: 0 15px 35px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                
+                <div style="font-size: 50px; margin-bottom: 10px;">✅</div>
+                <h2 style="color:#27ae60; margin-top:0; font-family:sans-serif;">Berhasil!</h2>
+                
+                <p style="font-size: 0.95rem; color:#666; line-height:1.5; margin-bottom:25px;">
+                    Pembayaran Anda telah diterima. Klik tombol di bawah untuk kirim bukti & alamat ke WhatsApp Admin.
+                </p>
+                
+                <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" 
+                   style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold; font-size:1.1rem; margin-bottom:15px; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);">
+                   Kirim Ke WhatsApp
+                </a>
+                
+                <button onclick="location.reload()" 
+                        style="background:none; border:none; color:#999; font-size:0.9rem; cursor:pointer; text-decoration:underline;">
+                        Tutup
+                </button>
+            </div>
+            <style>
+                @keyframes popIn { 
+                    from { opacity: 0; transform: scale(0.8); } 
+                    to { opacity: 1; transform: scale(1); } 
+                }
+            </style>`;
         document.body.appendChild(overlay);
     }
 

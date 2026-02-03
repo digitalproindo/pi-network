@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            /* Warna ungu disesuaikan dengan tone logo digital Anda */
             --pi-color: #4a148c; 
             --pi-gold: #d4af37;
             --pi-red: #ef4444;
@@ -29,7 +28,6 @@
 
         /* --- HEADER PREMIUM DENGAN LOGO --- */
         header {
-            /* Gradien ungu gelap ke ungu sirkuit sesuai logo */
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
             color: white;
             padding: 40px 20px 80px 20px; 
@@ -50,7 +48,7 @@
             border-radius: 50%;
             background: #fff;
             padding: 2px;
-            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); /* Efek glow emas */
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
             object-fit: cover;
             border: 2px solid #d4af37;
         }
@@ -60,20 +58,24 @@
             flex-direction: column;
         }
 
+        /* --- AUTH CONTAINER & BUTTON (REVISED) --- */
         .auth-container {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 15px; /* Sedikit lebih ke atas */
+            right: 15px; /* Sedikit lebih ke pojok */
             z-index: 20;
         }
 
         .btn-auth {
             background: linear-gradient(to right, #d4af37, #f1c40f);
             color: #1a0033; border: none;
-            padding: 8px 16px; border-radius: 12px;
-            font-weight: 800; font-size: 0.75rem;
+            padding: 5px 12px; /* Ukuran padding dikecilkan */
+            border-radius: 8px; /* Sudut radius disesuaikan */
+            font-weight: 800; 
+            font-size: 0.65rem; /* Font dikecilkan dari 0.75 ke 0.65 */
             cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
+            text-transform: uppercase; /* Menambah kesan clean */
         }
 
         .btn-logout-style {

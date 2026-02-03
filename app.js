@@ -9,40 +9,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- KONFIGURASI ---
     const ADMIN_WA = "6282191851112"; 
 
-    // --- 1. DATA PRODUK ---
+    // --- 1. DATA PRODUK (FULL VERSION) ---
     const productsData = [
-        { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=500"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
+        { id: 'p1', name: "Mastering Pi Network 2026", price: 0.005, category: "E-Book", images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], desc: "Panduan optimasi node dan ekosistem Pi terbaru." },
         { id: 'p2', name: "COCO Probiotik", price: 0.010, category: "Herbal", images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], desc: "Lisensi aset digital premium Digital Pro Indo." },
-        { id: 'p3', name: "Smart Home System Pro", price: 0.500, category: "Rumah", images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=500"], desc: "Paket instalasi smart home berbasis IoT." },
-        { id: 'p4', name: "Premium Smartphone X", price: 1.200, category: "Elektronik", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=500"], desc: "Gadget premium dengan performa tinggi." },
-        { id: 'p5', name: "Sofa Minimalis 2 Seater", price: 0.05, category: "Rumah", images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"], desc: "Sofa nyaman ukuran 150x80cm, cocok untuk ruang tamu kecil." },
-        { id: 'p6', name: "Meja Makan Kayu Jati", price: 0.08, category: "Rumah", images: ["https://images.unsplash.com/photo-1577145946459-39a587ed522f?w=500&q=80"], desc: "Meja makan kokoh ukuran 120x60cm dengan finishing natural." },
-        { id: 'p7', name: "Lampu Gantung Industrial", price: 0.015, category: "Rumah", images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80"], desc: "Lampu dekoratif plafon, diameter 30cm untuk kesan estetik." },
-        { id: 'p8', name: "Rak Buku Kayu 5 Tingkat", price: 0.03, category: "Rumah", images: ["https://images.unsplash.com/photo-1594620302200-9a762244a156?w=500&q=80"], desc: "Rak buku hemat ruang, tinggi 180cm lebar 40cm." },
-        { id: 'p9', name: "Karpet Bulu Lembut 160x210", price: 0.012, category: "Rumah", images: ["https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?w=500&q=80"], desc: "Karpet lantai premium, sangat lembut dan mudah dibersihkan." },
-        { id: 'p10', name: "Set Gorden Jendela", price: 0.008, category: "Rumah", images: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"], desc: "Gorden blackout ukuran 140x220cm, tersedia berbagai warna." },
-        { id: 'p11', name: "Jam Dinding Kayu", price: 0.005, category: "Rumah", images: ["https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=500&q=80"], desc: "Jam dinding estetik diameter 35cm, mesin sweep movement." },
-        { id: 'p12', name: "Tanaman Hias Artificial", price: 0.01, category: "Rumah", images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"], desc: "Tanaman palsu mirip asli dengan pot keramik, tinggi 80cm." },
-        { id: 'e1', name: "Smartphone Pi-Phone X", price: 0.15, category: "Elektronik", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80"], desc: "Layar AMOLED 6.7 inci, RAM 12GB, Baterai 5000mAh." },
-        { id: 'hb4', name: "Ekstrak Kurma Pro", price: 0.004, category: "Herbal", images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"], desc: "Sari kurma pekat untuk meningkatkan stamina." },
-        { id: 'v1', name: "Sedan Sport Luxury", price: 5.5, category: "Mobil", images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof." },
-        { id: 'm1', name: "Motor Sport 250cc", price: 1.2, category: "Motor", images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"], desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern." }
+        { id: 'p3', name: "Smart Home System Pro", price: 0.500, category: "Rumah", images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"], desc: "Paket instalasi smart home berbasis IoT." },
+        { id: 'p4', name: "Premium Smartphone X", price: 1.200, category: "Elektronik", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"], desc: "Gadget premium dengan performa tinggi." },
+        { id: 'p5', name: "Sofa Minimalis 2 Seater - Modern Grey", price: 0.05, category: "Rumah", images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"], desc: "Sofa nyaman ukuran 150x80cm, cocok untuk ruang tamu kecil." },
+        { id: 'p6', name: "Meja Makan Kayu Jati - Tipe Kolonial", price: 0.08, category: "Rumah", images: ["https://images.unsplash.com/photo-1577145946459-39a587ed522f?w=500&q=80"], desc: "Meja makan kokoh ukuran 120x60cm dengan finishing natural." },
+        { id: 'p7', name: "Lampu Gantung Industrial - Model Black Dome", price: 0.015, category: "Rumah", images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80"], desc: "Lampu dekoratif plafon, diameter 30cm untuk kesan estetik." },
+        { id: 'p8', name: "Rak Buku Kayu 5 Tingkat - Slim Design", price: 0.03, category: "Rumah", images: ["https://images.unsplash.com/photo-1594620302200-9a762244a156?w=500&q=80"], desc: "Rak buku hemat ruang, tinggi 180cm lebar 40cm." },
+        { id: 'p9', name: "Karpet Bulu Lembut 160x210 - Creamy White", price: 0.012, category: "Rumah", images: ["https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?w=500&q=80"], desc: "Karpet lantai premium, sangat lembut dan mudah dibersihkan." },
+        { id: 'p10', name: "Set Gorden Jendela - Model Smokering Minimalis", price: 0.008, category: "Rumah", images: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"], desc: "Gorden blackout ukuran 140x220cm, tersedia berbagai warna." },
+        { id: 'p11', name: "Jam Dinding Kayu - Tipe Scandinavian", price: 0.005, category: "Rumah", images: ["https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=500&q=80"], desc: "Jam dinding estetik diameter 35cm, mesin sweep movement." },
+        { id: 'p12', name: "Tanaman Hias Artificial - Model Monstera Large", price: 0.01, category: "Rumah", images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"], desc: "Tanaman palsu mirip asli dengan pot keramik, tinggi 80cm." },
+        { id: 'e1', name: "Smartphone Pi-Phone X - 256GB Platinum", price: 0.15, category: "Elektronik", images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80"], desc: "Layar AMOLED 6.7 inci, RAM 12GB, Baterai 5000mAh." },
+        { id: 'e2', name: "Wireless Earbuds Pro - Noise Cancelling", price: 0.02, category: "Elektronik", images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"], desc: "Audio High-Fidelity, tahan air IPX5." },
+        { id: 'hb4', name: "Ekstrak Kurma Pro - Booster Energi", price: 0.004, category: "Herbal", images: ["https://i.ibb.co.com/C5dj5y6j/IMG-20251130-WA0028.jpg"], desc: "Sari kurma pekat untuk meningkatkan stamina." },
+        { id: 'v1', name: "Sedan Sport Luxury - Tipe S1", price: 5.5, category: "Mobil", images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof." },
+        { id: 'm1', name: "Motor Sport 250cc - Black Matte", price: 1.2, category: "Motor", images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"], desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern." }
     ];
 
     // --- 2. INISIALISASI ---
     async function initPi() {
         try {
             await Pi.init({ version: "2.0", sandbox: false });
-        } catch (e) { console.error("Pi Init Error:", e); }
+        } catch (e) { console.error("Init Error:", e); }
     }
 
-    // --- 3. ALAMAT ---
+    // --- 3. FORM ALAMAT ---
     window.showAddressForm = () => {
         const overlay = document.createElement('div');
         overlay.id = "address-overlay";
         overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
         overlay.innerHTML = `
-            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; box-shadow: 0 10px 25px rgba(0,0,0,0.2); position:relative;">
+            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative;">
                 <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
                 <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
                 <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
@@ -72,21 +73,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         data.forEach(p => {
             const card = document.createElement('div');
             card.className = 'product-card';
-            const disc = Math.floor(Math.random() * 10) + 5;
-            const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : "https://via.placeholder.com/300";
             card.innerHTML = `
-                <div class="discount-badge">-${disc}%</div>
-                <div class="image-container" onclick="openProductDetail('${p.id}')">
-                    <img src="${imgUrl}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300?text=Image+Error'">
-                    <div class="xtra-label">XTRA Gratis Ongkir+</div>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-                    <div class="price">π ${p.price}</div>
-                    <div class="free-ship-tag"><span>🚚</span> Gratis ongkir</div>
-                    <div class="card-bottom">
-                        <div class="rating-text"><span class="star">★</span> 4.9 | 1rb+ terjual</div>
-                        <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                <div onclick="openProductDetail('${p.id}')">
+                    <img src="${p.images[0]}" style="width:100%; height:150px; object-fit:cover; border-radius:10px;">
+                    <div class="product-info">
+                        <h3 class="product-name" style="font-size:0.9rem; margin:8px 0;">${p.name}</h3>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="price">π ${p.price}</span>
+                            <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                        </div>
                     </div>
                 </div>`;
             grid.appendChild(card);
@@ -128,57 +123,41 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div style="background:white; padding:30px; border-radius:25px; max-width:350px; width:100%; text-align:center;">
                 <div style="font-size: 50px;">✅</div>
                 <h2 style="color:#27ae60;">Berhasil!</h2>
+                <p>Pembayaran diterima. Klik tombol di bawah untuk kirim bukti ke WhatsApp.</p>
                 <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold;">Kirim Ke WhatsApp</a>
-                <button onclick="location.reload()" style="background:none; border:none; color:#999; margin-top:15px; cursor:pointer;">Tutup</button>
+                <button onclick="location.reload()" style="background:none; border:none; color:#999; margin-top:10px; cursor:pointer; text-decoration:underline;">Tutup</button>
             </div>`;
         document.body.appendChild(overlay);
     }
 
-    // --- 6. AUTH (FIX LOGIN BUTTON) ---
+    // --- 6. AUTH, KERANJANG, NAVIGASI ---
     window.handleAuth = async () => {
-        console.log("Login button clicked...");
         const btn = document.getElementById('login-btn');
-        const userDisplay = document.getElementById('profile-username');
-        const addrDisplay = document.getElementById('profile-address');
-
-        if (currentUser) { 
-            currentUser = null; 
-            if(btn) btn.innerText = "Login"; 
-            if(userDisplay) userDisplay.innerText = "Guest";
-            return; 
-        }
-
+        if (currentUser) { currentUser = null; btn.innerText = "Login"; return; }
         try {
             const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (p) => handleIncompletePayment(p));
             currentUser = auth.user;
-            if(btn) btn.innerText = "Logout";
-            if(userDisplay) userDisplay.innerText = currentUser.username;
-            if(addrDisplay) addrDisplay.innerText = "Connected";
-            alert("Login Berhasil: " + currentUser.username);
-        } catch (e) { 
-            console.error("Auth Error:", e);
-            alert("Gagal Login. Pastikan Anda membuka di Pi Browser."); 
-        }
+            btn.innerText = "Logout";
+            document.getElementById('profile-username').innerText = currentUser.username;
+        } catch (e) { alert("Gagal Login."); console.error(e); }
     };
 
     window.addToCart = (id) => {
         const p = productsData.find(x => x.id === id);
-        if(p) { cart.push(p); alert("Berhasil ditambah ke keranjang!"); updateCartUI(); }
+        if(p) { cart.push(p); alert("Ditambah ke keranjang!"); updateCartUI(); }
     };
 
     function updateCartUI() {
         const grid = document.getElementById('cart-items');
         if (!grid) return;
-        if (cart.length === 0) { grid.innerHTML = "<p style='padding:20px; text-align:center;'>Keranjang Anda kosong</p>"; return; }
+        if (cart.length === 0) { grid.innerHTML = "<p style='text-align:center;'>Keranjang Kosong</p>"; return; }
         const total = cart.reduce((s, i) => s + i.price, 0).toFixed(4);
         grid.innerHTML = `
-            <div style="padding:15px;">
-                <button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:12px; border-radius:8px; margin-bottom:15px;">📍 Atur Alamat Pengiriman</button>
-                ${cart.map((i) => `<div style="display:flex; justify-content:space-between; padding:12px; background:white; margin-bottom:8px; border-radius:10px;"><span>${i.name}</span><b>π ${i.price}</b></div>`).join('')}
-                <div style="text-align:center; padding:15px; background:#f8fafc; border-radius:15px;">
-                    <b>Total: π ${total}</b><br><br>
-                    <button class="btn-buy-now" style="width:100%;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout</button>
-                </div>
+            <button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:10px; border-radius:8px; margin-bottom:10px;">📍 Alamat Pengiriman</button>
+            ${cart.map((i) => `<div style="display:flex; justify-content:space-between; padding:10px; background:white; margin-bottom:5px; border-radius:10px;"><span>${i.name}</span><b>π ${i.price}</b></div>`).join('')}
+            <div style="padding:15px; text-align:center;">
+                <b>Total: π ${total}</b><br><br>
+                <button class="btn-buy-now" style="width:100%;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout</button>
             </div>`;
     }
 
@@ -187,13 +166,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             const el = document.getElementById(p);
             if(el) el.classList.add('hidden');
         });
-        const target = document.getElementById(`page-${pageId}`);
-        if(target) target.classList.remove('hidden');
-        
+        document.getElementById(`page-${pageId}`).classList.remove('hidden');
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        const navItem = document.getElementById(`nav-${pageId}`);
-        if(navItem) navItem.classList.add('active');
-
+        document.getElementById(`nav-${pageId}`).classList.add('active');
         if(pageId === 'home') renderProducts(productsData, 'main-grid');
     };
 
@@ -201,41 +176,34 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.openProductDetail = (productId) => {
         const p = productsData.find(x => x.id === productId);
         if (!p) return;
-        const detailContent = document.getElementById('detail-content');
-        if(detailContent) {
-            detailContent.innerHTML = `
-                <img src="${p.images[0]}" style="width:100%; height:350px; object-fit:contain; background:#fff;">
-                <div style="padding:20px;">
-                    <p style="color:#6748d7; font-weight:bold; font-size:0.85rem;">${p.category}</p>
-                    <h2 style="margin:5px 0;">${p.name}</h2>
-                    <div class="price" style="font-size:2rem; margin-bottom:20px;">π ${p.price}</div>
-                    <p style="color:#475569; line-height:1.6;">${p.desc}</p>
-                    <button class="btn-buy-now" style="width:100%; padding:18px; margin-bottom:12px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
-                    <button style="width:100%; padding:18px; background:#f39c12; color:white; border:none; border-radius:12px; font-weight:bold;" onclick="window.addToCart('${p.id}')">Tambah ke Keranjang</button>
-                </div>`;
-        }
+        document.getElementById('detail-content').innerHTML = `
+            <img src="${p.images[0]}" style="width:100%; height:300px; object-fit:cover;">
+            <div style="padding:20px;">
+                <p style="color:#6748d7; font-weight:bold;">${p.category}</p>
+                <h2>${p.name}</h2>
+                <div class="price" style="font-size:1.8rem; margin-bottom:10px;">π ${p.price}</div>
+                <p style="color:#666; line-height:1.6;">${p.desc}</p>
+                <button class="btn-buy-now" style="width:100%; padding:15px; margin-bottom:10px;" onclick="window.handlePayment(${p.price}, '${p.name}')">Beli Sekarang</button>
+                <button style="width:100%; padding:15px; background:#f39c12; color:white; border:none; border-radius:8px; width:100%; font-weight:bold; cursor:pointer;" onclick="window.addToCart('${p.id}')">Tambah ke Keranjang</button>
+            </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
     window.closeProductDetail = () => document.getElementById('product-detail-page').classList.add('hidden');
 
-    // --- 8. FILTER (FIX WARNA) ---
+    // --- 8. FILTER & LAIN-LAIN ---
     window.filterCategory = (category, element) => {
-        // Hapus class active dari semua pill kategori
-        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
-        
-        // Tambahkan ke element yang diklik
-        if(element) element.classList.add('active');
-
         const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
         renderProducts(filtered, 'main-grid');
+        // Update warna pill
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+        if(element) element.classList.add('active');
     };
 
     async function handleIncompletePayment(p) {
         await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });
     }
 
-    // --- BANNER ---
     const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"];
     let idx = 0;
     setInterval(() => { 
@@ -243,11 +211,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // --- INITIAL RUN ---
+    // --- EKSEKUSI ---
     await initPi();
     renderProducts(productsData, 'main-grid');
-
-    // Pastikan tombol login terpasang event listenernya
+    
+    // Pastikan tombol login terpasang event kliknya secara eksplisit
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;

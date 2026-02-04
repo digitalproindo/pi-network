@@ -397,27 +397,32 @@ productsData.forEach(p => {
         if (!p) return;
         
         document.getElementById('product-detail-page').scrollTop = 0;
-        // Memaksa tampilan 5 digit desimal di halaman detail
         const displayPriceDetail = p.price.toFixed(5);
         
         document.getElementById('detail-content').innerHTML = `
-            <div style="position: sticky; top: 0; padding: 15px; background: white; border-bottom: 1px solid #eee; z-index: 10;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                    <span>←</span> KEMBALI
+            <div style="position: sticky; top: 0; padding: 15px; background: white; border-bottom: 1px solid #eee; z-index: 100; display: flex; align-items: center;">
+                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                    <span style="font-size: 1.2rem;">←</span> KEMBALI
                 </button>
             </div>
-            <div style="width: 100%; background: white; height: 320px; display: flex; align-items: center; justify-content: center;"><img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: contain;"></div>
-            <div style="padding: 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -20px; position: relative;">
+
+            <div style="width: 100%; background: white; height: 320px; display: flex; align-items: center; justify-content: center;">
+                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: contain;">
+            </div>
+            
+            <div style="padding: 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -20px; position: relative; min-height: 400px;">
                 <span style="color: #00bfa5; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">${p.category}</span>
                 <h2 style="margin: 10px 0; font-size: 1.5rem; font-weight: 800; color: #1a1a1a;">${p.name}</h2>
                 <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 0.9rem; color: #666;">
                     <span>⭐ <b>${p.rating}</b></span><span>|</span><span>Terjual <b>${p.sold}+</b></span>
                 </div>
-                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin-bottom: 25px;">π ${displayPriceDetail}</div>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin-bottom: 25px;">π ${displayPriceDetail}</div>
+                
                 <div style="font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">Deskripsi Produk</div>
                 <p style="font-size: 0.95rem; color: #4a5568; line-height: 1.7; margin-bottom: 30px; text-align: justify;">${p.desc}</p>
+                
                 <div style="font-weight: 800; margin-bottom: 15px;">Ulasan Pembeli</div>
-                <div style="margin-bottom: 100px;">
+                <div style="margin-bottom: 120px;">
                     ${p.reviews.map(rev => `
                         <div style="padding: 12px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; border: 1px solid #edf2f7;">
                             <div style="font-weight: 700; color: #4a148c;">@${rev.user}</div>
@@ -425,7 +430,8 @@ productsData.forEach(p => {
                         </div>`).join('')}
                 </div>
             </div>
-            <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px 30px 20px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 100;">
+
+            <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px 30px 20px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 101;">
                 <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
                 <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
             </div>`;

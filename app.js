@@ -286,32 +286,22 @@ function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
-    
-    // Jika data kosong (kategori tidak ada isi), beri pesan agar tidak blank
-    if (data.length === 0) {
-        grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 50px; color: #666;">Produk tidak ditemukan dalam kategori ini.</div>`;
-        return;
-    }
-
     data.forEach(p => {
-        // Mencegah error jika price tidak ada
-        const priceNum = p.price || 0;
-        const displayPrice = priceNum.toFixed(5);
-        
-        // Logika Diskon
-        const discountHTML = (p.discount && p.discount > 0) 
+        const displayPrice = p.price.toFixed(5); 
+
+        // LOGIKA DISKON: 
+        // Jika p.discount ada dan lebih besar dari 0, maka tampilkan badge.
+        // Jika tidak ada (seperti produk e-book), maka kosongkan.
+        const discountBadge = (p.discount && p.discount > 0) 
             ? `<span class="discount-badge">-${p.discount}%</span>` 
             : '';
-
-        // Pastikan ada gambar, jika tidak gunakan placeholder
-        const imgUrl = (p.images && p.images[0]) ? p.images[0] : 'https://via.placeholder.com/300?text=No+Image';
 
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
             <div class="image-container" onclick="openProductDetail('${p.id}')">
-                ${discountHTML} 
-                <img src="${imgUrl}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;">
+                ${discountBadge} 
+                <img src="${p.images[0]}" alt="${p.name}">
                 <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
             </div>
             <div class="product-info">
@@ -319,8 +309,8 @@ function renderProducts(data, targetGridId) {
                 <div class="price">${displayPrice} π</div>
                 <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
                 <div class="card-bottom">
-                    <div class="rating-text"><span class="star">★</span> ${p.rating || '5.0'} | ${p.sold || '0'} terjual</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">Beli</button>
+                    <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
                 </div>
             </div>`;
         grid.appendChild(card);

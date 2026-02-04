@@ -286,22 +286,26 @@ function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
+    
     data.forEach(p => {
-        const displayPrice = p.price.toFixed(5); 
-
-        // LOGIKA DISKON: 
-        // Jika p.discount ada dan lebih besar dari 0, maka tampilkan badge.
-        // Jika tidak ada (seperti produk e-book), maka kosongkan.
+        const displayPrice = p.price.toFixed(5);
+        
+        // Logika Diskon Dinamis (Warna Ungu Aktif)
         const discountBadge = (p.discount && p.discount > 0) 
             ? `<span class="discount-badge">-${p.discount}%</span>` 
             : '';
+
+        // Gambar Cadangan jika link error
+        const productImage = (p.images && p.images.length > 0) 
+            ? p.images[0] 
+            : 'https://via.placeholder.com/300?text=No+Image';
 
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
             <div class="image-container" onclick="openProductDetail('${p.id}')">
                 ${discountBadge} 
-                <img src="${p.images[0]}" alt="${p.name}">
+                <img src="${productImage}" alt="${p.name}" onerror="this.src='https://via.placeholder.com/300?text=Image+Error'">
                 <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
             </div>
             <div class="product-info">

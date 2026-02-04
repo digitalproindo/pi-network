@@ -80,11 +80,11 @@ const productsData = [
     },
     { 
         id: 'p6', 
-        name: "Meja Makan Kayu Jati - Tipe Kolonial", 
+        name: "Nabidz Dessert ", 
         price: 0.08, 
-        category: "Rumah", 
+        category: "Herbal", 
         images: ["https://images.unsplash.com/photo-1577145946459-39a587ed522f?w=500&q=80"], 
-        desc: "Meja makan kokoh ukuran 120x60cm dengan finishing natural. Terbuat dari kayu jati asli Jepara.",
+        desc: "Nabidz Dessert bahan baku buah anggur merah yang di fermentasi esterifikasi biokimia resep pribadi dan di padu dengan proses istihalah microbiome dan asam organik akan meningkatkan kualitas pencernaan dimana sistem imun 90% pada pencernaan.",
         rating: 4.9,
         sold: 21,
         reviews: [

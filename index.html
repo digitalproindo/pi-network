@@ -204,6 +204,14 @@
             background-color: #25d366; border-radius: 50%; display: flex; 
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
         }
+
+        #search-input:focus {
+        border-color: var(--pi-color) !important;
+        box-shadow: 0 0 0 2px rgba(74, 20, 140, 0.1);
+        outline: none; /* Menghilangkan garis biru bawaan browser */
+        transition: 0.3s; /* Agar perubahan warna terasa halus */
+    }
+</style>
     </style>
 </head>
 <body>

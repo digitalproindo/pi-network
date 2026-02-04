@@ -391,15 +391,40 @@ function renderProducts(data, targetGridId) {
     }
 
     window.switchPage = (pageId) => {
-        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
-            const el = document.getElementById(p);
-            if(el) el.classList.add('hidden');
-        });
-        document.getElementById(`page-${pageId}`).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(`nav-${pageId}`).classList.add('active');
-        if(pageId === 'home') renderProducts(productsData, 'main-grid');
-    };
+    // 1. Sembunyikan semua halaman
+    ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
+        const el = document.getElementById(p);
+        if(el) el.classList.add('hidden');
+    });
+
+    // 2. Tampilkan halaman yang dipilih
+    const activePage = document.getElementById(`page-${pageId}`);
+    if(activePage) activePage.classList.remove('hidden');
+
+    // 3. Update navigasi bawah agar ikon yang aktif berubah warna
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const activeNav = document.getElementById(`nav-${pageId}`);
+    if(activeNav) activeNav.classList.add('active');
+
+    // 4. Logika Khusus tiap Halaman
+    if(pageId === 'home') {
+        renderProducts(productsData, 'main-grid');
+    }
+
+    // TAMBAHKAN INI: Logika saat membuka halaman Cari
+    if(pageId === 'cari') {
+        const sInput = document.getElementById('search-input');
+        const sResult = document.getElementById('search-results');
+        
+        if(sInput) sInput.value = ""; // Reset kolom ketik jadi kosong
+        if(sResult) {
+            sResult.innerHTML = `
+                <p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 20px; font-size: 0.85rem;">
+                    🔍 Cari emas, gadget, atau produk premium lainnya...
+                </p>`;
+        }
+    }
+};
 
     // --- 7. DETAIL PRODUK ---
     
@@ -486,6 +511,28 @@ window.filterCategory = (category, element) => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
+
+    // --- 9. LOGIKA PENCARIAN ---
+// --- LOGIKA PENCARIAN (INPUT DETECTION) ---
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase();
+        const filtered = productsData.filter(p => 
+            p.name.toLowerCase().includes(keyword) || 
+            p.category.toLowerCase().includes(keyword)
+        );
+
+        const sResult = document.getElementById('search-results');
+        if (keyword === "") {
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+        } else if (filtered.length > 0) {
+            renderProducts(filtered, 'search-results');
+        } else {
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
+        }
+    });
+}
 
     // --- EKSEKUSI ---
     await initPi();

@@ -454,14 +454,27 @@ function renderProducts(data, targetGridId) {
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
-    // --- 8. FILTER & LAIN-LAIN ---
-    window.filterCategory = (category, element) => {
-        const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+   // --- 8. FILTER & LAIN-LAIN ---
+window.filterCategory = (category, element) => {
+    // 1. Filter data
+    const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+    
+    // 2. Tampilkan hasil (pastikan menggunakan window. jika renderProducts ada di lingkup global)
+    if (window.renderProducts) {
+        window.renderProducts(filtered, 'main-grid');
+    } else {
         renderProducts(filtered, 'main-grid');
-        // Update warna pill
-        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
-        if(element) element.classList.add('active');
-    };
+    }
+
+    // 3. Update warna pill (Hanya mengubah yang sudah ada di HTML)
+    const allPills = document.querySelectorAll('.category-pill');
+    allPills.forEach(pill => pill.classList.remove('active'));
+    
+    // Jika element (this) dikirim dari HTML, tambahkan class active (warna ungu)
+    if (element) {
+        element.classList.add('active');
+    }
+};
 
     async function handleIncompletePayment(p) {
         await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });

@@ -224,9 +224,9 @@ const productsData = [
     { 
         id: 'm1', 
         name: "Motor Sport 250cc - Black Matte", 
-        price: 1.2, 
+        price: 0.002, 
         category: "Motor", 
-        images: ["https://images.unsplash.com/photo-1558981403-c5f91cbba527?w=500&q=80"], 
+        images: ["https://i.ibb.co.com/spcrbbKT/Motor-250cc-Terbaik.jpg"], 
         desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern. Cocok untuk penggunaan dalam kota maupun touring.",
         rating: 4.8,
         sold: 12,

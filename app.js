@@ -83,7 +83,8 @@ const productsData = [
     { 
         id: 'p6', 
         name: "Nabidz Dessert ", 
-        price: 0.00012, 
+        price: 0.00012,
+        discount: 20,
         category: "Herbal", 
         images: ["https://i.ibb.co.com/qMCm0C7q/IMG-20260203-WA0004.jpg"], 
         desc: "Nabidz Dessert bahan baku buah anggur merah yang di fermentasi esterifikasi biokimia resep pribadi dan di padu dengan proses istihalah microbiome dan asam organik akan meningkatkan kualitas pencernaan dimana sistem imun 90% pada pencernaan.",

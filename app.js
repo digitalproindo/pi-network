@@ -290,7 +290,7 @@ productsData.forEach(p => {
             card.className = 'product-card';
             card.innerHTML = `
                 <div class="image-container" onclick="openProductDetail('${p.id}')">
-                    <span class="discount-badge">-15%</span>
+                    <span class="discount-badge">-10%</span>
                     <img src="${p.images[0]}" alt="${p.name}">
                     <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
                 </div>

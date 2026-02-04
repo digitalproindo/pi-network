@@ -455,30 +455,12 @@ function renderProducts(data, targetGridId) {
     };
 
     // --- 8. FILTER & LAIN-LAIN ---
-    window.filterCategory = (category) => {
-    // 1. Jalankan Filter Produk
-    const filtered = category === 'all' 
-        ? productsData 
-        : productsData.filter(p => p.category === category);
-    
-    renderProducts(filtered, 'main-grid');
-
-    // 2. Logika Perubahan Warna Tombol (Pills)
-    // Hapus class 'active' dari SEMUA tombol kategori
-    const allPills = document.querySelectorAll('.category-pill');
-    allPills.forEach(pill => pill.classList.remove('active'));
-
-    // Cari tombol yang diklik berdasarkan teksnya dan tambahkan class 'active'
-    allPills.forEach(pill => {
-        const pillText = pill.innerText.toLowerCase();
-        // Cek apakah itu tombol 'Semua' atau kategori spesifik
-        if (category === 'all' && pillText.includes('semua')) {
-            pill.classList.add('active');
-        } else if (pillText.includes(category.toLowerCase())) {
-            pill.classList.add('active');
-        }
-    });
-};
+    window.filterCategory = (category, element) => {
+        const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+        renderProducts(filtered, 'main-grid');
+        // Update warna pill
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+        if(element) element.classList.add('active');
     };
 
     async function handleIncompletePayment(p) {

@@ -15,7 +15,7 @@ const productsData = [
         id: 'p1', 
         name: "Mastering Pi Network 2026", 
         price: 0.005,
-        discount: 10 
+        discount: 10, 
         category: "E-Book", 
         images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], 
         desc: "Panduan optimasi node dan ekosistem Pi terbaru. Pelajari strategi staking dan keamanan wallet untuk masa depan Pi Network.",

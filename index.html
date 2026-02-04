@@ -277,14 +277,18 @@
     </a>
 
     <nav class="bottom-nav">
-        <div class="category-scroll">
-    <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
-    <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
-    <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
-    <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
-    <div class="category-pill" onclick="filterCategory('Herbal', this)">🍃 Herbal</div>
-    <div class="category-pill" onclick="filterCategory('E-Book', this)">📚 E-Book</div>
-</div>
+        <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+            <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
+        </div>
+        <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
+            <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
+        </div>
+        <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+            <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
+        </div>
+        <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+            <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
+        </div>
     </nav>
 
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>

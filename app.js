@@ -14,7 +14,8 @@ const productsData = [
     { 
         id: 'p1', 
         name: "Mastering Pi Network 2026", 
-        price: 0.005, 
+        price: 0.005,
+        discount: 10, // Diskon 10% 
         category: "E-Book", 
         images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], 
         desc: "Panduan optimasi node dan ekosistem Pi terbaru. Pelajari strategi staking dan keamanan wallet untuk masa depan Pi Network.",
@@ -290,7 +291,7 @@ productsData.forEach(p => {
             card.className = 'product-card';
             card.innerHTML = `
                 <div class="image-container" onclick="openProductDetail('${p.id}')">
-                    <span class="discount-badge">-10%</span>
+                    <span class="discount-badge"></span>
                     <img src="${p.images[0]}" alt="${p.name}">
                     <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
                 </div>

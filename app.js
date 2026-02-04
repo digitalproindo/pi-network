@@ -28,7 +28,8 @@ const productsData = [
     { 
         id: 'p2', 
         name: "COCO Probiotik", 
-        price: 0.00006, 
+        price: 0.00006,
+        discount: 5, // Ini akan tampil -5% 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], 
         desc: "Super food Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic, Immune support,High Antioksidant,Improved Digestion,Naturally Energizing.",

@@ -413,7 +413,7 @@ productsData.forEach(p => {
             </div>
 
             <div style="width: 100%; background: white; height: 320px; display: flex; align-items: center; justify-content: center;">
-                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: contain;">
+                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">
             </div>
             
             <div style="padding: 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -20px; position: relative; min-height: 400px;">

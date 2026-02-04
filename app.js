@@ -392,6 +392,12 @@ productsData.forEach(p => {
     };
 
     // --- 7. DETAIL PRODUK ---
+    
+    // Fungsi untuk menutup halaman detail (Harus ada agar tombol hijau berfungsi)
+    window.closeProductDetail = () => {
+        document.getElementById('product-detail-page').classList.add('hidden');
+    };
+
     window.openProductDetail = (productId) => {
         const p = productsData.find(x => x.id === productId);
         if (!p) return;
@@ -401,7 +407,7 @@ productsData.forEach(p => {
         
         document.getElementById('detail-content').innerHTML = `
             <div style="position: sticky; top: 0; padding: 15px; background: white; border-bottom: 1px solid #eee; z-index: 100; display: flex; align-items: center;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 20px; border-radius: 20px; font-weight: bold; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
                     <span style="font-size: 1.2rem;">←</span> KEMBALI
                 </button>
             </div>

@@ -393,9 +393,9 @@ productsData.forEach(p => {
 
     // --- 7. DETAIL PRODUK ---
     
-    // Fungsi untuk menutup halaman detail (Harus ada agar tombol hijau berfungsi)
     window.closeProductDetail = () => {
-        document.getElementById('product-detail-page').classList.add('hidden');
+        // Menggunakan class active untuk memicu animasi turun
+        document.getElementById('product-detail-page').classList.remove('active');
     };
 
     window.openProductDetail = (productId) => {
@@ -406,9 +406,9 @@ productsData.forEach(p => {
         const displayPriceDetail = p.price.toFixed(5);
         
         document.getElementById('detail-content').innerHTML = `
-            <div style="position: sticky; top: 0; padding: 15px; background: white; border-bottom: 1px solid #eee; z-index: 100; display: flex; align-items: center;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <span style="font-size: 1.2rem;">←</span> KEMBALI
+            <div style="position: sticky; top: 0; padding: 12px 15px; background: white; border-bottom: 1px solid #eee; z-index: 100;">
+                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 6px 14px; border-radius: 15px; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.1);">
+                    <span style="font-size: 1rem;">←</span> KEMBALI
                 </button>
             </div>
 
@@ -417,30 +417,34 @@ productsData.forEach(p => {
             </div>
             
             <div style="padding: 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -20px; position: relative; min-height: 400px;">
-                <span style="color: #00bfa5; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">${p.category}</span>
-                <h2 style="margin: 10px 0; font-size: 1.5rem; font-weight: 800; color: #1a1a1a;">${p.name}</h2>
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 0.9rem; color: #666;">
+                <span style="color: #00bfa5; font-size: 0.7rem; font-weight: 800; text-transform: uppercase;">${p.category}</span>
+                <h2 style="margin: 8px 0; font-size: 1.4rem; font-weight: 800; color: #1a1a1a;">${p.name}</h2>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; font-size: 0.85rem; color: #666;">
                     <span>⭐ <b>${p.rating}</b></span><span>|</span><span>Terjual <b>${p.sold}+</b></span>
                 </div>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin-bottom: 25px;">π ${displayPriceDetail}</div>
+                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin-bottom: 20px;">π ${displayPriceDetail}</div>
                 
-                <div style="font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">Deskripsi Produk</div>
-                <p style="font-size: 0.95rem; color: #4a5568; line-height: 1.7; margin-bottom: 30px; text-align: justify;">${p.desc}</p>
+                <div style="font-weight: 800; margin-bottom: 8px; border-bottom: 2px solid #f1f5f9; padding-bottom: 5px;">Deskripsi Produk</div>
+                <p style="font-size: 0.9rem; color: #4a5568; line-height: 1.6; margin-bottom: 25px; text-align: justify;">${p.desc}</p>
                 
                 <div style="font-weight: 800; margin-bottom: 15px;">Ulasan Pembeli</div>
                 <div style="margin-bottom: 120px;">
                     ${p.reviews.map(rev => `
-                        <div style="padding: 12px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; border: 1px solid #edf2f7;">
-                            <div style="font-weight: 700; color: #4a148c;">@${rev.user}</div>
-                            <div style="font-size: 0.85rem;">${rev.comment}</div>
+                        <div style="padding: 10px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; border: 1px solid #edf2f7;">
+                            <div style="font-weight: 700; color: #4a148c; font-size: 0.85rem;">@${rev.user}</div>
+                            <div style="font-size: 0.8rem;">${rev.comment}</div>
                         </div>`).join('')}
                 </div>
             </div>
 
             <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px 30px 20px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 101;">
-                <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
-                <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
+                <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.9rem;">+ Keranjang</button>
+                <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 0.9rem;">Beli Sekarang</button>
             </div>`;
+        
+        // Memicu animasi slide up
+        document.getElementById('product-detail-page').classList.add('active');
+    };
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 

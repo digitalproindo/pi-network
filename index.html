@@ -100,18 +100,18 @@
 .image-container {
     position: relative;
     width: 100%;
-    height: 180px; /* Sesuaikan tinggi ini */
+    height: 200px; /* Atur tinggi sesuai keinginan */
+    background: #f8f9fa;
+    overflow: hidden; /* Memotong bagian gambar yang berlebih */
     margin: 0;
     padding: 0;
-    background: #f8f9fa; /* Warna dasar jika gambar lambat dimuat */
-    overflow: hidden;
-    display: block;
 }
 
 .image-container img {
     width: 100%;
     height: 100%;
-    object-fit: cover; /* Ini yang membuat rata kanan-kiri */
+    object-fit: cover; /* INI KUNCINYA: Gambar akan rata kanan-kiri & atas-bawah */
+    object-position: center;
     display: block;
 }
 

@@ -14,8 +14,7 @@ const productsData = [
     { 
         id: 'p1', 
         name: "Mastering Pi Network 2026", 
-        price: 0.005,
-        discount: 10, // Diskon 10% 
+        price: 0.005, 
         category: "E-Book", 
         images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], 
         desc: "Panduan optimasi node dan ekosistem Pi terbaru. Pelajari strategi staking dan keamanan wallet untuk masa depan Pi Network.",
@@ -285,32 +284,28 @@ productsData.forEach(p => {
         if (!grid) return;
         grid.innerHTML = "";
         data.forEach(p => {
-    const displayPrice = p.price.toFixed(5);
-    
-    // Logika: Jika diskon > 0, tampilkan badge. Jika 0, sembunyikan.
-    const discountBadge = p.discount > 0 
-        ? `<span class="discount-badge">-${p.discount}%</span>` 
-        : '';
-
-    const card = document.createElement('div');
-    card.className = 'product-card';
-    card.innerHTML = `
-        <div class="image-container" onclick="openProductDetail('${p.id}')">
-            ${discountBadge} 
-            <img src="${p.images[0]}" alt="${p.name}">
-            <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
-        </div>
-        <div class="product-info">
-            <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-            <div class="price">${displayPrice} π</div>
-            <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
-            <div class="card-bottom">
-                <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
-                <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
-            </div>
-        </div>`;
-    grid.appendChild(card);
-});
+            // Memaksa tampilan 5 digit desimal untuk semua produk
+            const displayPrice = p.price.toFixed(5); 
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="image-container" onclick="openProductDetail('${p.id}')">
+                    <span class="discount-badge">-15%</span>
+                    <img src="${p.images[0]}" alt="${p.name}">
+                    <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
+                </div>
+                <div class="product-info">
+                    <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
+                    <div class="price">${displayPrice} π</div>
+                    <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
+                    <div class="card-bottom">
+                        <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
+                        <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                    </div>
+                </div>`;
+            grid.appendChild(card);
+        });
+    }
 
     // --- 5. PEMBAYARAN ---
     window.handlePayment = async (amount, name) => {

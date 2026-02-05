@@ -29,6 +29,31 @@
 
         .hidden { display: none !important; }
 
+        /* Membuat container pencarian rapi di tengah */
+#page-cari div {
+    display: flex;
+    justify-content: center; /* Memastikan isi di dalamnya center */
+    padding: 20px;
+}
+
+/* Mengatur lebar input pencarian agar tidak mentok */
+#search-input {
+    width: 90%; /* Memberikan ruang di kiri dan kanan */
+    max-width: 500px; /* Batas maksimal lebar agar tidak terlalu panjang di tablet */
+    margin: 0 auto; /* Memastikan posisi di tengah */
+    padding: 14px;
+    border-radius: 12px;
+    border: 1px solid #ddd;
+    outline: none;
+    display: block; /* Agar margin auto bekerja */
+}
+
+/* Efek fokus yang sudah kita buat sebelumnya */
+#search-input:focus {
+    border-color: var(--pi-color) !important;
+    box-shadow: 0 0 0 2px rgba(74, 20, 140, 0.1);
+}
+
         /* --- HEADER PREMIUM (BACK TO OLD STYLE) --- */
         header {
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
@@ -256,11 +281,11 @@
     </main>
 
     <main id="page-cari" class="hidden">
-        <div style="padding: 20px;">
-            <input type="text" id="search-input" placeholder="Cari produk premium..." style="width:100%; padding:14px; border-radius:12px; border:1px solid #ddd; outline:none;">
-        </div>
-        <div id="search-results" class="marketplace-grid"></div>
-    </main>
+    <div style="display: flex; justify-content: center; padding: 20px;">
+        <input type="text" id="search-input" placeholder="Cari produk premium..." />
+    </div>
+    <div id="search-results" class="marketplace-grid"></div>
+</main>
 
     <main id="page-keranjang" class="hidden">
         <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>

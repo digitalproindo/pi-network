@@ -535,30 +535,35 @@ window.filterCategory = (category, element) => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // --- 9. LOGIKA PENCARIAN ---
-// --- LOGIKA PENCARIAN (INPUT DETECTION) ---
+  // --- 9. LOGIKA PENCARIAN ---
 const searchInput = document.getElementById('search-input');
+const searchResultsGrid = document.getElementById('search-results');
+
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
+        
+        // Filter produk berdasarkan nama atau kategori yang mengandung keyword
         const filtered = productsData.filter(p => 
             p.name.toLowerCase().includes(keyword) || 
             p.category.toLowerCase().includes(keyword)
         );
 
-        const sResult = document.getElementById('search-results');
+        // Jika keyword kosong, kosongkan hasil atau tampilkan semua (opsional)
         if (keyword === "") {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+            searchResultsGrid.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Ketik nama produk yang ingin dicari...</p>`;
         } else if (filtered.length > 0) {
-            renderProducts(filtered, 'search-results');
+            // Gunakan fungsi render yang sudah ada
+            window.renderProducts(filtered, 'search-results');
         } else {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
+            // Jika tidak ditemukan
+            searchResultsGrid.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
     });
 }
 
 
-    // Fungsi khusus untuk merapikan tampilan profil
+   // Fungsi khusus untuk merapikan tampilan profil
 // --- FUNGSI UPDATE UI PROFIL DENGAN LOGOUT ---
 function updateProfileUI() {
     const profileInfo = document.getElementById('profile-info');

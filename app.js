@@ -470,24 +470,39 @@ window.updateCartUI = () => {
 };
 
     window.switchPage = (pageId) => {
-    // Sembunyikan semua halaman
+    // 1. Sembunyikan semua halaman
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
-        if (el) el.classList.add('hidden');
+        if(el) el.classList.add('hidden');
     });
 
-    // Tampilkan halaman aktif
+    // 2. Tampilkan halaman yang dipilih
     const activePage = document.getElementById(`page-${pageId}`);
-    if (activePage) activePage.classList.remove('hidden');
+    if(activePage) activePage.classList.remove('hidden');
 
-    // Update status navigasi bawah (Navbar)
+    // 3. Update navigasi bawah agar ikon yang aktif berubah warna
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
-    if (activeNav) activeNav.classList.add('active');
+    if(activeNav) activeNav.classList.add('active');
 
-    // Logika khusus saat membuka halaman tertentu
-    if (pageId === 'home') renderProducts(productsData, 'main-grid');
-    if (pageId === 'keranjang') window.updateCartUI();
+    // 4. Logika Khusus tiap Halaman
+    if(pageId === 'home') {
+        renderProducts(productsData, 'main-grid');
+    }
+
+    // TAMBAHKAN INI: Logika saat membuka halaman Cari
+    if(pageId === 'cari') {
+        const sInput = document.getElementById('search-input');
+        const sResult = document.getElementById('search-results');
+        
+        if(sInput) sInput.value = ""; // Reset kolom ketik jadi kosong
+        if(sResult) {
+            sResult.innerHTML = `
+                <p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 20px; font-size: 0.85rem;">
+                    🔍 Cari emas, gadget, atau produk premium lainnya...
+                </p>`;
+        }
+    }
 };
 
     // --- 7. DETAIL PRODUK ---

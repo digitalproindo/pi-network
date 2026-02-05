@@ -403,34 +403,33 @@ function renderProducts(data, targetGridId) {
     }
 
     // --- 6. AUTH, KERANJANG, NAVIGASI ---
-    window.handleAuth = async () => {
-        const btn = document.getElementById('login-btn');
-        if (currentUser) { currentUser = null; btn.innerText = "Login"; return; }
-        try {
-            const auth = await Pi.authenticate(['username', 'payments', 'wallet_address'], (p) => handleIncompletePayment(p));
-            currentUser = auth.user;
-            btn.innerText = "Logout";
-            document.getElementById('profile-username').innerText = currentUser.username;
-        } catch (e) { alert("Gagal Login."); console.error(e); }
-    };
-
-    window.removeFromCart = (index) => {
-    // Hapus 1 item berdasarkan urutan (index)
-    cart.splice(index, 1);
-    // Update tampilan keranjang kembali
-    updateCartUI();
+    window.addToCart = (id) => {
+    const p = productsData.find(x => x.id === id);
+    if(p) { 
+        cart.push(p); 
+        alert("✅ Berhasil ditambah ke keranjang!"); 
+        window.updateCartUI(); // Refresh tampilan keranjang
+    }
 };
 
-    function updateCartUI() {
+// 2. Fungsi Hapus Produk dari Keranjang (Fitur Baru)
+window.removeFromCart = (index) => {
+    cart.splice(index, 1); // Menghapus item berdasarkan urutan (index)
+    window.updateCartUI(); // Refresh tampilan setelah dihapus
+};
+
+// 3. Fungsi Update Tampilan Keranjang (Polesan Profesional)
+window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
     
+    // Jika Keranjang Kosong
     if (cart.length === 0) {
         grid.innerHTML = `
-            <div style="text-align:center; padding:50px 20px;">
-                <div style="font-size:60px; margin-bottom:10px;">🛒</div>
-                <p style="color:#94a3b8; font-weight:600;">Keranjang Anda masih kosong</p>
-                <button onclick="switchPage('home')" style="background:var(--pi-color); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:700; margin-top:10px;">Mulai Belanja</button>
+            <div style="text-align:center; padding:60px 20px;">
+                <div style="font-size:60px; margin-bottom:15px;">🛒</div>
+                <p style="color:#94a3b8; font-weight:600; font-size:1rem;">Keranjang Anda masih kosong</p>
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:12px 25px; border-radius:25px; font-weight:700; margin-top:15px; cursor:pointer; box-shadow: 0 4px 12px rgba(103,72,215,0.3);">Mulai Belanja</button>
             </div>`;
         return;
     }
@@ -439,48 +438,50 @@ function renderProducts(data, targetGridId) {
 
     grid.innerHTML = `
         <div style="padding: 15px;">
-            <div onclick="window.showAddressForm()" style="background: white; padding: 15px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border: 1px dashed #4a148c; cursor: pointer;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span>📍</span>
-                    <div style="text-align: left;">
-                        <div style="font-size: 0.75rem; color: #64748b;">Alamat Pengiriman:</div>
-                        <div style="font-size: 0.85rem; font-weight: 700; color: #1a0033;">
-                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Atur Alamat Sekarang'}
+            <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
+                <div style="display:flex; align-items:center; gap:12px; text-align:left;">
+                    <span style="font-size:1.2rem;">📍</span>
+                    <div>
+                        <div style="font-size:0.7rem; color:#6748d7; font-weight:bold; text-transform:uppercase;">Alamat Pengiriman</div>
+                        <div style="font-size:0.85rem; font-weight:700; color:#1a1a1a;">
+                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
                         </div>
                     </div>
                 </div>
-                <span style="color: #4a148c; font-weight: bold;">></span>
+                <span style="color:#6748d7; font-weight:bold;">></span>
             </div>
 
             <div id="cart-list">
                 ${cart.map((item, index) => `
-                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:15px; position:relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
-                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:10px; object-fit:cover;">
+                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;">
+                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
+                        
                         <div style="flex:1; text-align:left;">
-                            <div style="font-size:0.85rem; font-weight:700; color:#1e293b; margin-bottom:4px; padding-right:25px;">${item.name}</div>
-                            <div style="font-size:0.9rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
+                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3;">${item.name}</div>
+                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
                         </div>
-                        <div onclick="removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:25px; height:25px; background:#fee2e2; color:#ef4444; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:12px;">✕</div>
+
+                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px; border: 1px solid #ffccc7; transition: 0.2s;">✕</div>
                     </div>
                 `).join('')}
             </div>
 
-            <div style="background:white; padding:20px; border-radius:20px; margin-top:20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);">
+            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#64748b;">
                     <span>Subtotal (${cart.length} Produk)</span>
                     <span>π ${total}</span>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1rem; font-weight:800; color:#1a0033; border-top:1px solid #f1f5f9; padding-top:10px;">
-                    <span>Total Pembayaran</span>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; color:#1a1a1a; border-top:2px solid #f8fafc; padding-top:15px;">
+                    <span>Total Tagihan</span>
                     <span style="color:#b71c1c;">π ${total}</span>
                 </div>
-                <button class="btn-buy-now" style="width:100%; padding:15px; font-size:1rem; border-radius:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">
+                <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; box-shadow: 0 6px 15px rgba(103,72,215,0.3);" onclick="window.handlePayment(${total}, 'Total Keranjang')">
                     CHECKOUT SEKARANG 🚀
                 </button>
             </div>
         </div>
     `;
-}
+};
 
     window.switchPage = (pageId) => {
     // 1. Sembunyikan semua halaman

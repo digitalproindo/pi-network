@@ -536,6 +536,7 @@ window.filterCategory = (category, element) => {
     }, 4000);
 
     // --- 9. LOGIKA PENCARIAN ---
+// --- 9. LOGIKA PENCARIAN ---
 // --- PERBAIKAN LOGIKA PENCARIAN (GRID FIX) ---
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
@@ -570,6 +571,7 @@ if (searchInput) {
         }
     });
 }
+
 
     // --- FUNGSI LOGIN FIX ---
     window.handleAuth = async () => {

@@ -559,9 +559,12 @@ if (searchInput) {
 
 
     // Fungsi khusus untuk merapikan tampilan profil
+// --- FUNGSI UPDATE UI PROFIL DENGAN LOGOUT ---
 function updateProfileUI() {
     const profileInfo = document.getElementById('profile-info');
-    if (profileInfo && currentUser) {
+    if (!profileInfo) return;
+
+    if (currentUser) {
         profileInfo.innerHTML = `
             <div style="text-align:center; padding:20px; font-family:'Inter', sans-serif;">
                 <div style="width:80px; height:80px; background:linear-gradient(135deg, #6748d7, #4a148c); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:2rem; font-weight:bold; box-shadow: 0 10px 20px rgba(103,72,215,0.2);">
@@ -569,19 +572,41 @@ function updateProfileUI() {
                 </div>
                 
                 <h3 style="margin:0; color:#1a1a1a; font-size:1.2rem; font-weight:800;">@${currentUser.username}</h3>
-                
                 <div style="display:inline-block; background:#e8f5e9; color:#2e7d32; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; margin-top:8px;">
                     ✓ Akun Terverifikasi
                 </div>
 
-                <hr style="border:0; border-top:1px solid #f1f5f9; margin:20px 0;">
+                <div style="margin-top:25px; display:flex; flex-direction:column; gap:12px;">
+                    <button onclick="window.showAddressForm()" style="width:100%; background:white; color:#6748d7; border:2px solid #6748d7; padding:14px; border-radius:15px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <span>📍</span> ${userAddress.nama ? 'Ubah Alamat' : 'Lengkapi Alamat'}
+                    </button>
 
-                <button onclick="window.showAddressForm()" style="width:100%; background:white; color:#6748d7; border:2px solid #6748d7; padding:12px; border-radius:15px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                    <span>📍</span> ${userAddress.nama ? 'Ubah Alamat' : 'Lengkapi Alamat'}
+                    <button onclick="window.handleLogout()" style="width:100%; background:#fff1f0; color:#ff4d4f; border:1px solid #ffccc7; padding:14px; border-radius:15px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+                        <span>🚪</span> Keluar Akun
+                    </button>
+                </div>
+            </div>`;
+    } else {
+        // Tampilan jika user BELUM login atau SUDAH logout
+        profileInfo.innerHTML = `
+            <div style="text-align:center; padding:40px 20px;">
+                <div style="font-size:50px; margin-bottom:15px; opacity:0.3;">👤</div>
+                <p style="color:#64748b; margin-bottom:20px;">Silakan masuk untuk melihat profil Anda</p>
+                <button id="login-btn" onclick="window.handleAuth()" style="background:#6748d7; color:white; border:none; padding:15px 40px; border-radius:15px; font-weight:800; cursor:pointer; box-shadow: 0 6px 15px rgba(103,72,215,0.3);">
+                    LOGIN DENGAN PI
                 </button>
             </div>`;
     }
 }
+
+// --- FUNGSI LOGOUT ---
+window.handleLogout = () => {
+    if (confirm("Apakah Anda yakin ingin keluar?")) {
+        currentUser = null; // Menghapus data user di memori
+        updateProfileUI(); // Memperbarui tampilan profil kembali ke tombol Login
+        alert("Anda telah keluar.");
+    }
+};
 
     // --- EKSEKUSI ---
     await initPi();

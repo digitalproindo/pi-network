@@ -236,6 +236,27 @@ const productsData = [
         reviews: [
             { user: "RiderPi", comment: "Tarikan enteng, tampilannya gahar banget." }
         ]
+    },
+    { 
+        id: 'm1', 
+        name: "Motor Sport 250cc - Black Matte", 
+        price: 0.002, 
+        category: "Motor", 
+        images: ["https://i.ibb.co.com/Fkp8tHJH/58942-kawasaki-ninja-h2r-model-kit-motosiklet-112-39198-1.jpg"], 
+        desc: "KAWASAKI NINJA H2R (Model 2026)
+Status: Motor produksi massal terkencang di dunia (Khusus sirkuit/Track Only).
+Harga: Rp1,1 Miliar - Rp1,5 Miliar.
+Mesin: 998cc, 4-Silinder Segaris, dengan teknologi Supercharger.
+Tenaga: 310 HP (Mencapai 326 HP dengan Ram Air).
+Top Speed: ±400 km/jam.
+Material: Bodi Full Carbon Fiber & Rangka Trellis Hijau Khas Kawasaki.
+Aerodinamika: Dilengkapi sayap karbon (winglets) untuk stabilitas di kecepatan tinggi.
+Kaki-kaki: Rem Brembo Stylema, Suspensi Öhlins TTX36, dan ban slick balap.",
+        rating: 4.8,
+        sold: 12,
+        reviews: [
+            { user: "RiderPi", comment: "Tarikan enteng, tampilannya gahar banget." }
+        ]
     }
 ];
 

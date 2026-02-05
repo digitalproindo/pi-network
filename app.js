@@ -628,12 +628,20 @@ if (searchInput) {
 }
 
     // --- EKSEKUSI ---
-    await initPi();
+    try {
+        await initPi();
+        console.log("Pi SDK siap.");
+    } catch (err) {
+        console.error("Gagal init Pi:", err);
+    }
+
+    // Render produk awal
     renderProducts(productsData, 'main-grid');
     
-    // Pastikan tombol login terpasang event kliknya secara eksplisit
+    // Paksa pasang event listener ke tombol login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
+        console.log("Event listener login telah dipasang.");
     }
-});
+}); // Penutup akhir DOMContentLoaded

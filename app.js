@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // --- KONFIGURASI ---
     const ADMIN_WA = "6281906066757"; 
 
-    // --- 1. DATA PRODUK (FULL VERSION DENGAN RATING & ULASAN) ---
+    // --- 1. DATA PRODUK (SESUAI SCRIPT ASLI ANDA) ---
 const productsData = [
     { 
         id: 'p1', 
@@ -30,7 +30,7 @@ const productsData = [
         id: 'p2', 
         name: "COCO Pro Kunyit", 
         price: 0.00006,
-        discount: 5, // Ini akan tampil -5% 
+        discount: 5, 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], 
         desc: "Super food Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic, Immune support,High Antioksidant,Improved Digestion,Naturally Energizing.",
@@ -238,8 +238,8 @@ const productsData = [
         ]
     },
     { 
-        id: 'm1', 
-        name: "Motor Sport 250cc - Black Matte", 
+        id: 'm1_alt', 
+        name: "Motor Sport 250cc - Kawasaki Ninja H2R", 
         price: 0.002, 
         category: "Motor", 
         images: ["https://i.ibb.co.com/Fkp8tHJH/58942-kawasaki-ninja-h2r-model-kit-motosiklet-112-39198-1.jpg"], 
@@ -294,17 +294,13 @@ productsData.forEach(p => {
         alert("Alamat disimpan.");
     };
 
-    // --- 4. RENDER BERANDA (VERSI PERBAIKAN DISKON) ---
+    // --- 4. RENDER BERANDA ---
 function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
     data.forEach(p => {
         const displayPrice = p.price.toFixed(5); 
-
-        // LOGIKA DISKON: 
-        // Jika p.discount ada dan lebih besar dari 0, maka tampilkan badge.
-        // Jika tidak ada (seperti produk e-book), maka kosongkan.
         const discountBadge = (p.discount && p.discount > 0) 
             ? `<span class="discount-badge">-${p.discount}%</span>` 
             : '';
@@ -361,7 +357,6 @@ function renderProducts(data, targetGridId) {
         const overlay = document.createElement('div');
         overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
         
-        // POLASAN PESAN OTOMATIS OPSI 1 (ELEGANT & PROFESSIONAL)
         const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK* %0A` +
                               `*PT. DIGITAL PRO INDO*%0A` +
                               `_______________________________%0A%0A` +
@@ -384,20 +379,10 @@ function renderProducts(data, targetGridId) {
                     <span style="font-size: 45px;">✅</span>
                 </div>
                 <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
-                <p style="color:#64748b; font-size:0.95rem; line-height:1.6; margin: 15px 0 25px;">Koin Pi Anda telah berhasil terverifikasi di Blockchain. Silakan klik tombol di bawah untuk mengirim data pesanan ke Admin.</p>
-                
-                <div style="background:#f1f5f9; padding:15px; border-radius:15px; text-align:left; margin-bottom:25px; font-size:0.85rem; border-left: 4px solid #4a148c;">
-                    <div style="margin-bottom:5px;"><strong>📦 Item:</strong> ${name}</div>
-                    <div style="margin-bottom:5px;"><strong>💰 Total:</strong> ${amount} π</div>
-                    <div style="font-size:0.75rem; color:#94a3b8; word-break:break-all;"><strong>🔗 TXID:</strong> ${txid.substring(0,20)}...</div>
-                </div>
-
-                <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; box-shadow:0 10px 20px rgba(37,211,102,0.3); transition: transform 0.2s;">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="24" style="filter: brightness(0) invert(1);">
+                <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; margin-top:20px;">
                     KIRIM DATA KE WHATSAPP
                 </a>
-                
-                <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; text-decoration:none; font-size:0.85rem; font-weight:600;">Kembali ke Beranda</button>
+                <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
             </div>`;
         document.body.appendChild(overlay);
     }
@@ -408,120 +393,57 @@ function renderProducts(data, targetGridId) {
     if(p) { 
         cart.push(p); 
         alert("✅ Berhasil ditambah ke keranjang!"); 
-        window.updateCartUI(); // Refresh tampilan keranjang
+        window.updateCartUI(); 
     }
 };
 
-// 2. Fungsi Hapus Produk dari Keranjang (Fitur Baru)
 window.removeFromCart = (index) => {
-    cart.splice(index, 1); // Menghapus item berdasarkan urutan (index)
-    window.updateCartUI(); // Refresh tampilan setelah dihapus
+    cart.splice(index, 1); 
+    window.updateCartUI(); 
 };
 
-// 3. Fungsi Update Tampilan Keranjang (Polesan Profesional)
 window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
-    
-    // Jika Keranjang Kosong
     if (cart.length === 0) {
-        grid.innerHTML = `
-            <div style="text-align:center; padding:60px 20px;">
-                <div style="font-size:60px; margin-bottom:15px;">🛒</div>
-                <p style="color:#94a3b8; font-weight:600; font-size:1rem;">Keranjang Anda masih kosong</p>
-                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:12px 25px; border-radius:25px; font-weight:700; margin-top:15px; cursor:pointer; box-shadow: 0 4px 12px rgba(103,72,215,0.3);">Mulai Belanja</button>
-            </div>`;
+        grid.innerHTML = `<div style="text-align:center; padding:60px 20px;">🛒 Keranjang Anda masih kosong</div>`;
         return;
     }
-
     const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
-
     grid.innerHTML = `
         <div style="padding: 15px;">
-            <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
-                <div style="display:flex; align-items:center; gap:12px; text-align:left;">
-                    <span style="font-size:1.2rem;">📍</span>
-                    <div>
-                        <div style="font-size:0.7rem; color:#6748d7; font-weight:bold; text-transform:uppercase;">Alamat Pengiriman</div>
-                        <div style="font-size:0.85rem; font-weight:700; color:#1a1a1a;">
-                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
-                        </div>
+            ${cart.map((item, index) => `
+                <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; border: 1px solid #f1f5f9;">
+                    <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
+                    <div style="flex:1; text-align:left;">
+                        <div style="font-size:0.85rem; font-weight:700;">${item.name}</div>
+                        <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
                     </div>
+                    <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; color:red; cursor:pointer;">✕</div>
+                </div>`).join('')}
+            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
+                <div style="display:flex; justify-content:space-between; font-weight:800;">
+                    <span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span>
                 </div>
-                <span style="color:#6748d7; font-weight:bold;">></span>
+                <button class="btn-buy-now" style="width:100%; margin-top:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG</button>
             </div>
-
-            <div id="cart-list">
-                ${cart.map((item, index) => `
-                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;">
-                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
-                        
-                        <div style="flex:1; text-align:left;">
-                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3;">${item.name}</div>
-                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
-                        </div>
-
-                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px; border: 1px solid #ffccc7; transition: 0.2s;">✕</div>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#64748b;">
-                    <span>Subtotal (${cart.length} Produk)</span>
-                    <span>π ${total}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; color:#1a1a1a; border-top:2px solid #f8fafc; padding-top:15px;">
-                    <span>Total Tagihan</span>
-                    <span style="color:#b71c1c;">π ${total}</span>
-                </div>
-                <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; box-shadow: 0 6px 15px rgba(103,72,215,0.3);" onclick="window.handlePayment(${total}, 'Total Keranjang')">
-                    CHECKOUT SEKARANG 🚀
-                </button>
-            </div>
-        </div>
-    `;
+        </div>`;
 };
 
     window.switchPage = (pageId) => {
-    // 1. Sembunyikan semua halaman
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
         if(el) el.classList.add('hidden');
     });
-
-    // 2. Tampilkan halaman yang dipilih
     const activePage = document.getElementById(`page-${pageId}`);
     if(activePage) activePage.classList.remove('hidden');
-
-    // 3. Update navigasi bawah agar ikon yang aktif berubah warna
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
     if(activeNav) activeNav.classList.add('active');
-
-    // 4. Logika Khusus tiap Halaman
-    if(pageId === 'home') {
-        renderProducts(productsData, 'main-grid');
-    }
-
-    // TAMBAHKAN INI: Logika saat membuka halaman Cari
-    if(pageId === 'cari') {
-        const sInput = document.getElementById('search-input');
-        const sResult = document.getElementById('search-results');
-        
-        if(sInput) sInput.value = ""; // Reset kolom ketik jadi kosong
-        if(sResult) {
-            sResult.innerHTML = `
-                <p style="grid-column: span 2; text-align: center; color: #64748b; padding: 40px 20px; font-size: 0.85rem;">
-                    🔍 Cari emas, gadget, atau produk premium lainnya...
-                </p>`;
-        }
-    }
+    if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
 
     // --- 7. DETAIL PRODUK ---
-    
-    // Fungsi untuk menutup halaman detail (Harus ada agar tombol hijau berfungsi)
     window.closeProductDetail = () => {
         document.getElementById('product-detail-page').classList.add('hidden');
     };
@@ -529,67 +451,28 @@ window.updateCartUI = () => {
     window.openProductDetail = (productId) => {
         const p = productsData.find(x => x.id === productId);
         if (!p) return;
-        
         document.getElementById('product-detail-page').scrollTop = 0;
-        const displayPriceDetail = p.price.toFixed(5);
-        
         document.getElementById('detail-content').innerHTML = `
-            <div style="position: sticky; top: 0; padding: 15px; background: white; border-bottom: 1px solid #eee; z-index: 100; display: flex; align-items: center;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; display: flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                    <span style="font-size: 1.2rem;">←</span> KEMBALI
-                </button>
-            </div>
-
-            <div style="width: 100%; background: white; height: 320px; display: flex; align-items: center; justify-content: center;">
-                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">
-            </div>
-            
-            <div style="padding: 20px; background: white; border-radius: 25px 25px 0 0; margin-top: -20px; position: relative; min-height: 400px;">
-                <span style="color: #00bfa5; font-size: 0.75rem; font-weight: 800; text-transform: uppercase;">${p.category}</span>
-                <h2 style="margin: 10px 0; font-size: 1.5rem; font-weight: 800; color: #1a1a1a;">${p.name}</h2>
-                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px; font-size: 0.9rem; color: #666;">
-                    <span>⭐ <b>${p.rating}</b></span><span>|</span><span>Terjual <b>${p.sold}+</b></span>
+            <div style="padding: 15px; background: white;">
+                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; cursor: pointer;">← KEMBALI</button>
+                <img src="${p.images[0]}" style="width: 100%; margin: 15px 0; border-radius:15px;">
+                <h2 style="margin: 0;">${p.name}</h2>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c;">π ${p.price.toFixed(5)}</div>
+                <p style="line-height: 1.7;">${p.desc}</p>
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
                 </div>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin-bottom: 25px;">π ${displayPriceDetail}</div>
-                
-                <div style="font-weight: 800; margin-bottom: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px;">Deskripsi Produk</div>
-                <p style="font-size: 0.95rem; color: #4a5568; line-height: 1.7; margin-bottom: 30px; text-align: justify;">${p.desc}</p>
-                
-                <div style="font-weight: 800; margin-bottom: 15px;">Ulasan Pembeli</div>
-                <div style="margin-bottom: 120px;">
-                    ${p.reviews.map(rev => `
-                        <div style="padding: 12px; background: #f8f9fa; border-radius: 12px; margin-bottom: 10px; border: 1px solid #edf2f7;">
-                            <div style="font-weight: 700; color: #4a148c;">@${rev.user}</div>
-                            <div style="font-size: 0.85rem;">${rev.comment}</div>
-                        </div>`).join('')}
-                </div>
-            </div>
-
-            <div style="position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px 20px 30px 20px; display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; box-shadow: 0 -5px 20px rgba(0,0,0,0.1); z-index: 101;">
-                <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
-                <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
             </div>`;
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
    // --- 8. FILTER & LAIN-LAIN ---
 window.filterCategory = (category, element) => {
-    // 1. Filter data
     const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
-    
-    // 2. Tampilkan hasil (pastikan menggunakan window. jika renderProducts ada di lingkup global)
-    if (window.renderProducts) {
-        window.renderProducts(filtered, 'main-grid');
-    } else {
-        renderProducts(filtered, 'main-grid');
-    }
-
-    // 3. Update warna pill (Hanya mengubah yang sudah ada di HTML)
-    const allPills = document.querySelectorAll('.category-pill');
-    allPills.forEach(pill => pill.classList.remove('active'));
-    
-    // Jika element (this) dikirim dari HTML, tambahkan class active (warna ungu)
+    renderProducts(filtered, 'main-grid');
     if (element) {
+        document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
         element.classList.add('active');
     }
 };
@@ -606,16 +489,11 @@ window.filterCategory = (category, element) => {
     }, 4000);
 
     // --- 9. LOGIKA PENCARIAN ---
-// --- LOGIKA PENCARIAN (INPUT DETECTION) ---
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
-        const filtered = productsData.filter(p => 
-            p.name.toLowerCase().includes(keyword) || 
-            p.category.toLowerCase().includes(keyword)
-        );
-
+        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
         const sResult = document.getElementById('search-results');
         if (keyword === "") {
             sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
@@ -627,11 +505,30 @@ if (searchInput) {
     });
 }
 
+    // --- FUNGSI LOGIN FIX ---
+    window.handleAuth = async () => {
+        try {
+            const scopes = ['username', 'payments'];
+            const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+            currentUser = auth.user;
+            
+            const profileInfo = document.getElementById('profile-info');
+            if (profileInfo) {
+                profileInfo.innerHTML = `
+                    <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
+                        <h3>@${currentUser.username}</h3>
+                        <p style="color:green;">✓ Terverifikasi</p>
+                        <button onclick="window.showAddressForm()" style="background:#6748d7; color:white; border:none; padding:10px; border-radius:8px;">Atur Alamat</button>
+                    </div>`;
+            }
+            alert("Login Berhasil!");
+        } catch (err) { console.error(err); alert("Gagal Login."); }
+    };
+
     // --- EKSEKUSI ---
     await initPi();
     renderProducts(productsData, 'main-grid');
     
-    // Pastikan tombol login terpasang event kliknya secara eksplisit
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;

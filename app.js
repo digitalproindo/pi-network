@@ -547,13 +547,38 @@ if (searchInput) {
     });
 }
 
-    // --- EKSEKUSI ---
-    await initPi();
-    renderProducts(productsData, 'main-grid');
-    
-    // Pastikan tombol login terpasang event kliknya secara eksplisit
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.onclick = window.handleAuth;
+    // --- EKSEKUSI (REVISED DENGAN LOADING SPINNER) ---
+    async function startApp() {
+        try {
+            // 1. Inisialisasi Pi SDK
+            await initPi();
+            
+            // 2. Render Produk Awal
+            renderProducts(productsData, 'main-grid');
+            
+            // 3. Pasang Event Login
+            const loginBtn = document.getElementById('login-btn');
+            if (loginBtn) {
+                loginBtn.onclick = window.handleAuth;
+            }
+
+            // 4. HILANGKAN LOADING SCREEN
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                if (loader) {
+                    loader.classList.add('fade-out');
+                    console.log("Aplikasi siap!");
+                }
+            }, 1500); // 1.5 detik agar animasi spinner terlihat premium
+
+        } catch (err) {
+            console.error("Gagal memulai aplikasi:", err);
+            // Tetap hilangkan loading jika terjadi error agar user tidak stuck
+            const loader = document.getElementById('loading-screen');
+            if (loader) loader.classList.add('fade-out');
+        }
     }
+
+    // Jalankan fungsi startApp
+    startApp();
 });

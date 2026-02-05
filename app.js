@@ -28,7 +28,7 @@ const productsData = [
     },
     { 
         id: 'p2', 
-        name: "COCO Pro Kuunyit", 
+        name: "COCO Pro Kunyit", 
         price: 0.00006,
         discount: 5, // Ini akan tampil -5% 
         category: "Herbal", 
@@ -518,7 +518,7 @@ window.filterCategory = (category, element) => {
         await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });
     }
 
-    const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", "https://i.ibb.co.com/LXmKBMst/ORANG-PERTAMA-20260202-161721-0000.png"];
+    const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"];
     let idx = 0;
     setInterval(() => { 
         const img = document.getElementById('banner-img');

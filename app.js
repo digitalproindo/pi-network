@@ -469,42 +469,75 @@ window.updateCartUI = () => {
     `;
 };
 
-    window.switchPage = (pageId) => {
+    // --- 6. NAVIGASI HALAMAN ---
+window.switchPage = (pageId) => {
+    // Sembunyikan semua halaman
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
-        if(el) el.classList.add('hidden');
+        if (el) el.classList.add('hidden');
     });
+
+    // Tampilkan halaman aktif
     const activePage = document.getElementById(`page-${pageId}`);
-    if(activePage) activePage.classList.remove('hidden');
+    if (activePage) activePage.classList.remove('hidden');
+
+    // Update status navigasi bawah (Navbar)
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
-    if(activeNav) activeNav.classList.add('active');
-    if(pageId === 'home') renderProducts(productsData, 'main-grid');
+    if (activeNav) activeNav.classList.add('active');
+
+    // Logika khusus saat membuka halaman tertentu
+    if (pageId === 'home') renderProducts(productsData, 'main-grid');
+    if (pageId === 'keranjang') window.updateCartUI();
 };
 
-    // --- 7. DETAIL PRODUK ---
-    window.closeProductDetail = () => {
-        document.getElementById('product-detail-page').classList.add('hidden');
-    };
+// --- 7. DETAIL PRODUK ---
+window.closeProductDetail = () => {
+    const detailPage = document.getElementById('product-detail-page');
+    if (detailPage) detailPage.classList.add('hidden');
+};
 
-    window.openProductDetail = (productId) => {
-        const p = productsData.find(x => x.id === productId);
-        if (!p) return;
-        document.getElementById('product-detail-page').scrollTop = 0;
-        document.getElementById('detail-content').innerHTML = `
-            <div style="padding: 15px; background: white;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; cursor: pointer;">← KEMBALI</button>
-                <img src="${p.images[0]}" style="width: 100%; margin: 15px 0; border-radius:15px;">
-                <h2 style="margin: 0;">${p.name}</h2>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c;">π ${p.price.toFixed(5)}</div>
-                <p style="line-height: 1.7;">${p.desc}</p>
-                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
+window.openProductDetail = (productId) => {
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
+
+    const detailPage = document.getElementById('product-detail-page');
+    const detailContent = document.getElementById('detail-content');
+
+    if (detailPage && detailContent) {
+        detailPage.scrollTop = 0;
+        detailContent.innerHTML = `
+            <div style="padding: 20px; background: white; min-height: 100vh; font-family: 'Inter', sans-serif;">
+                <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                    <button onclick="closeProductDetail()" style="border: none; background: #f1f5f9; color: #4a148c; width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center;">←</button>
+                    <span style="margin-left: 15px; font-weight: 700; color: #1e293b;">Detail Produk</span>
+                </div>
+
+                <img src="${p.images[0]}" style="width: 100%; aspect-ratio: 1/1; object-fit: cover; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+
+                <div style="margin-top: 20px;">
+                    <h2 style="margin: 0; font-size: 1.4rem; color: #1a1a1a; line-height: 1.4;">${p.name}</h2>
+                    <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
+                    
+                    <div style="padding: 15px; background: #f8fafc; border-radius: 15px; margin-top: 15px;">
+                        <h4 style="margin: 0 0 8px 0; color: #475569; font-size: 0.9rem;">Deskripsi Produk</h4>
+                        <p style="line-height: 1.6; color: #334155; font-size: 0.95rem; margin: 0;">${p.desc}</p>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top: 35px; position: sticky; bottom: 20px;">
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #6748d7; border: 2px solid #6748d7; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">
+                        + Keranjang
+                    </button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: linear-gradient(135deg, #6748d7, #4a148c); color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 8px 15px rgba(103,72,215,0.3);">
+                        Beli Sekarang
+                    </button>
                 </div>
             </div>`;
-        document.getElementById('product-detail-page').classList.remove('hidden');
-    };
+        
+        detailPage.classList.remove('hidden');
+    }
+};
 
    // --- 8. FILTER & LAIN-LAIN ---
 window.filterCategory = (category, element) => {

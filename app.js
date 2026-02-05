@@ -403,42 +403,33 @@ function renderProducts(data, targetGridId) {
     }
 
     // --- 6. AUTH, KERANJANG, NAVIGASI ---
-    w// ========================================================
-// REVISI LOGIKA KERANJANG (STABIL & PREMIUM)
-// ========================================================
-
-// 1. Fungsi Tambah ke Keranjang
-window.addToCart = (id) => {
-    // Pastikan productsData tersedia di scope global
+    window.addToCart = (id) => {
     const p = productsData.find(x => x.id === id);
     if(p) { 
         cart.push(p); 
         alert("✅ Berhasil ditambah ke keranjang!"); 
-        // Otomatis update UI jika user sedang di halaman keranjang
-        window.updateCartUI(); 
+        window.updateCartUI(); // Refresh tampilan keranjang
     }
 };
 
-// 2. Fungsi Hapus Produk dari Keranjang
+// 2. Fungsi Hapus Produk dari Keranjang (Fitur Baru)
 window.removeFromCart = (index) => {
-    if (confirm("Hapus item ini dari keranjang?")) {
-        cart.splice(index, 1); 
-        window.updateCartUI(); 
-    }
+    cart.splice(index, 1); // Menghapus item berdasarkan urutan (index)
+    window.updateCartUI(); // Refresh tampilan setelah dihapus
 };
 
-// 3. Fungsi Update Tampilan Keranjang (UI Re-vamp)
+// 3. Fungsi Update Tampilan Keranjang (Polesan Profesional)
 window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
     
-    // Validasi jika keranjang kosong
-    if (!cart || cart.length === 0) {
+    // Jika Keranjang Kosong
+    if (cart.length === 0) {
         grid.innerHTML = `
             <div style="text-align:center; padding:60px 20px;">
                 <div style="font-size:60px; margin-bottom:15px;">🛒</div>
                 <p style="color:#94a3b8; font-weight:600; font-size:1rem;">Keranjang Anda masih kosong</p>
-                <button onclick="window.switchPage('home')" style="background:#6748d7; color:white; border:none; padding:12px 25px; border-radius:25px; font-weight:700; margin-top:15px; cursor:pointer; box-shadow: 0 4px 12px rgba(103,72,215,0.3);">Mulai Belanja</button>
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:12px 25px; border-radius:25px; font-weight:700; margin-top:15px; cursor:pointer; box-shadow: 0 4px 12px rgba(103,72,215,0.3);">Mulai Belanja</button>
             </div>`;
         return;
     }
@@ -453,7 +444,7 @@ window.updateCartUI = () => {
                     <div>
                         <div style="font-size:0.7rem; color:#6748d7; font-weight:bold; text-transform:uppercase;">Alamat Pengiriman</div>
                         <div style="font-size:0.85rem; font-weight:700; color:#1a1a1a;">
-                            ${(userAddress && userAddress.nama) ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
+                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
                         </div>
                     </div>
                 </div>
@@ -466,11 +457,11 @@ window.updateCartUI = () => {
                         <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
                         
                         <div style="flex:1; text-align:left;">
-                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.name}</div>
+                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3;">${item.name}</div>
                             <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
                         </div>
 
-                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:28px; height:28px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:12px; border: 1px solid #ffccc7; transition: 0.2s;">✕</div>
+                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px; border: 1px solid #ffccc7; transition: 0.2s;">✕</div>
                     </div>
                 `).join('')}
             </div>
@@ -484,7 +475,7 @@ window.updateCartUI = () => {
                     <span>Total Tagihan</span>
                     <span style="color:#b71c1c;">π ${total}</span>
                 </div>
-                <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; background:#6748d7; color:white; box-shadow: 0 6px 15px rgba(103,72,215,0.3); cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">
+                <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; box-shadow: 0 6px 15px rgba(103,72,215,0.3);" onclick="window.handlePayment(${total}, 'Total Keranjang')">
                     CHECKOUT SEKARANG 🚀
                 </button>
             </div>
@@ -637,20 +628,12 @@ if (searchInput) {
 }
 
     // --- EKSEKUSI ---
-    try {
-        await initPi();
-        console.log("Pi SDK siap.");
-    } catch (err) {
-        console.error("Gagal init Pi:", err);
-    }
-
-    // Render produk awal
+    await initPi();
     renderProducts(productsData, 'main-grid');
     
-    // Paksa pasang event listener ke tombol login
+    // Pastikan tombol login terpasang event kliknya secara eksplisit
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
-        console.log("Event listener login telah dipasang.");
     }
-}); // Penutup akhir DOMContentLoaded
+});

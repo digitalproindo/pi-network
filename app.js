@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
 
     // --- KONFIGURASI ---
-    const ADMIN_WA = "6282191851112"; 
+    const ADMIN_WA = "6281906066757"; 
 
     // --- 1. DATA PRODUK (FULL VERSION DENGAN RATING & ULASAN) ---
 const productsData = [
@@ -359,15 +359,45 @@ function renderProducts(data, targetGridId) {
 
     function showSuccessOverlay(amount, name, txid) {
         const overlay = document.createElement('div');
-        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
-        const pesan = `Halo Admin, saya sudah bayar π ${amount} untuk ${name}.%0ATXID: ${txid}%0A%0AAlamat: ${userAddress.nama}, ${userAddress.telepon}, ${userAddress.alamatLengkap}`;
+        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
+        
+        // POLASAN PESAN OTOMATIS OPSI 1 (ELEGANT & PROFESSIONAL)
+        const pesanWhatsApp = `✨ *KONFIRMASI PEMBAYARAN PI NETWORK* ✨%0A` +
+                              `*PT. DIGITAL PRO INDO*%0A` +
+                              `_______________________________%0A%0A` +
+                              `Halo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A` +
+                              `📦 *DETAIL TRANSAKSI:*%0A` +
+                              `• *Item:* ${name}%0A` +
+                              `• *Total:* ${amount} π%0A` +
+                              `• *Status:* Success (Pi Network)%0A` +
+                              `• *TXID:* \`${txid}\` %0A%0A` +
+                              `📍 *DATA PENGIRIMAN:*%0A` +
+                              `• *Penerima:* ${userAddress.nama}%0A` +
+                              `• *Telepon:* ${userAddress.telepon}%0A` +
+                              `• *Alamat:* ${userAddress.alamatLengkap}%0A%0A` +
+                              `_______________________________%0A` +
+                              `✅ *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+
         overlay.innerHTML = `
-            <div style="background:white; padding:30px; border-radius:25px; max-width:350px; width:100%; text-align:center;">
-                <div style="font-size: 50px;">✅</div>
-                <h2 style="color:#27ae60;">Berhasil!</h2>
-                <p>Pembayaran diterima. Klik tombol di bawah untuk kirim bukti ke WhatsApp.</p>
-                <a href="https://wa.me/${ADMIN_WA}?text=${pesan}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold;">Kirim Ke WhatsApp</a>
-                <button onclick="location.reload()" style="background:none; border:none; color:#999; margin-top:10px; cursor:pointer; text-decoration:underline;">Tutup</button>
+            <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+                <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                    <span style="font-size: 45px;">✅</span>
+                </div>
+                <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
+                <p style="color:#64748b; font-size:0.95rem; line-height:1.6; margin: 15px 0 25px;">Koin Pi Anda telah berhasil terverifikasi di Blockchain. Silakan klik tombol di bawah untuk mengirim data pesanan ke Admin.</p>
+                
+                <div style="background:#f1f5f9; padding:15px; border-radius:15px; text-align:left; margin-bottom:25px; font-size:0.85rem; border-left: 4px solid #4a148c;">
+                    <div style="margin-bottom:5px;"><strong>📦 Item:</strong> ${name}</div>
+                    <div style="margin-bottom:5px;"><strong>💰 Total:</strong> ${amount} π</div>
+                    <div style="font-size:0.75rem; color:#94a3b8; word-break:break-all;"><strong>🔗 TXID:</strong> ${txid.substring(0,20)}...</div>
+                </div>
+
+                <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; box-shadow:0 10px 20px rgba(37,211,102,0.3); transition: transform 0.2s;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="24" style="filter: brightness(0) invert(1);">
+                    KIRIM DATA KE WHATSAPP
+                </a>
+                
+                <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; text-decoration:none; font-size:0.85rem; font-weight:600;">Kembali ke Beranda</button>
             </div>`;
         document.body.appendChild(overlay);
     }

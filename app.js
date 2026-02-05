@@ -414,24 +414,73 @@ function renderProducts(data, targetGridId) {
         } catch (e) { alert("Gagal Login."); console.error(e); }
     };
 
-    window.addToCart = (id) => {
-        const p = productsData.find(x => x.id === id);
-        if(p) { cart.push(p); alert("Ditambah ke keranjang!"); updateCartUI(); }
-    };
+    window.removeFromCart = (index) => {
+    // Hapus 1 item berdasarkan urutan (index)
+    cart.splice(index, 1);
+    // Update tampilan keranjang kembali
+    updateCartUI();
+};
 
     function updateCartUI() {
-        const grid = document.getElementById('cart-items');
-        if (!grid) return;
-        if (cart.length === 0) { grid.innerHTML = "<p style='text-align:center;'>Keranjang Kosong</p>"; return; }
-        const total = cart.reduce((s, i) => s + i.price, 0).toFixed(4);
+    const grid = document.getElementById('cart-items');
+    if (!grid) return;
+    
+    if (cart.length === 0) {
         grid.innerHTML = `
-            <button onclick="window.showAddressForm()" style="width:100%; background:#3498db; color:white; border:none; padding:10px; border-radius:8px; margin-bottom:10px;">📍 Alamat Pengiriman</button>
-            ${cart.map((i) => `<div style="display:flex; justify-content:space-between; padding:10px; background:white; margin-bottom:5px; border-radius:10px;"><span>${i.name}</span><b>π ${i.price}</b></div>`).join('')}
-            <div style="padding:15px; text-align:center;">
-                <b>Total: π ${total}</b><br><br>
-                <button class="btn-buy-now" style="width:100%;" onclick="window.handlePayment(${total}, 'Total Keranjang')">Checkout</button>
+            <div style="text-align:center; padding:50px 20px;">
+                <div style="font-size:60px; margin-bottom:10px;">🛒</div>
+                <p style="color:#94a3b8; font-weight:600;">Keranjang Anda masih kosong</p>
+                <button onclick="switchPage('home')" style="background:var(--pi-color); color:white; border:none; padding:10px 20px; border-radius:20px; font-weight:700; margin-top:10px;">Mulai Belanja</button>
             </div>`;
+        return;
     }
+
+    const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
+
+    grid.innerHTML = `
+        <div style="padding: 15px;">
+            <div onclick="window.showAddressForm()" style="background: white; padding: 15px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; border: 1px dashed #4a148c; cursor: pointer;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span>📍</span>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.75rem; color: #64748b;">Alamat Pengiriman:</div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: #1a0033;">
+                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Atur Alamat Sekarang'}
+                        </div>
+                    </div>
+                </div>
+                <span style="color: #4a148c; font-weight: bold;">></span>
+            </div>
+
+            <div id="cart-list">
+                ${cart.map((item, index) => `
+                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:15px; position:relative; box-shadow: 0 4px 6px rgba(0,0,0,0.02); border: 1px solid #f1f5f9;">
+                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:10px; object-fit:cover;">
+                        <div style="flex:1; text-align:left;">
+                            <div style="font-size:0.85rem; font-weight:700; color:#1e293b; margin-bottom:4px; padding-right:25px;">${item.name}</div>
+                            <div style="font-size:0.9rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
+                        </div>
+                        <div onclick="removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:25px; height:25px; background:#fee2e2; color:#ef4444; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:12px;">✕</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div style="background:white; padding:20px; border-radius:20px; margin-top:20px; box-shadow: 0 -5px 20px rgba(0,0,0,0.05);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#64748b;">
+                    <span>Subtotal (${cart.length} Produk)</span>
+                    <span>π ${total}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1rem; font-weight:800; color:#1a0033; border-top:1px solid #f1f5f9; padding-top:10px;">
+                    <span>Total Pembayaran</span>
+                    <span style="color:#b71c1c;">π ${total}</span>
+                </div>
+                <button class="btn-buy-now" style="width:100%; padding:15px; font-size:1rem; border-radius:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">
+                    CHECKOUT SEKARANG 🚀
+                </button>
+            </div>
+        </div>
+    `;
+}
 
     window.switchPage = (pageId) => {
     // 1. Sembunyikan semua halaman

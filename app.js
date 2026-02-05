@@ -406,13 +406,16 @@ window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
     
-    // Jika Keranjang Kosong
+    // Tampilan jika keranjang kosong
     if (cart.length === 0) {
         grid.innerHTML = `
-            <div style="text-align:center; padding:60px 20px;">
-                <div style="font-size:60px; margin-bottom:15px;">🛒</div>
-                <p style="color:#94a3b8; font-weight:600; font-size:1rem;">Keranjang Anda masih kosong</p>
-                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:12px 25px; border-radius:25px; font-weight:700; margin-top:15px; cursor:pointer; box-shadow: 0 4px 12px rgba(103,72,215,0.3);">Mulai Belanja</button>
+            <div style="text-align:center; padding:80px 20px; font-family:'Inter', sans-serif;">
+                <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.8;">🛒</div>
+                <h3 style="color:#1a1a1a; margin-bottom:10px; font-weight:800;">Keranjang Anda Kosong</h3>
+                <p style="color:#64748b; font-size:0.95rem; margin-bottom:25px;">Sepertinya Anda belum menambahkan produk premium ke keranjang.</p>
+                <button onclick="switchPage('home')" style="background:linear-gradient(135deg, #6748d7, #4a148c); color:white; border:none; padding:14px 30px; border-radius:15px; font-weight:bold; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3);">
+                    Mulai Belanja
+                </button>
             </div>`;
         return;
     }

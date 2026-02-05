@@ -558,23 +558,7 @@ if (searchInput) {
 }
 
 
-    window.handleAuth = async () => {
-    try {
-        const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-        currentUser = auth.user;
-        
-        // Update tampilan profil segera setelah login berhasil
-        updateProfileUI();
-        
-        alert("Login Berhasil!");
-    } catch (err) { 
-        console.error(err); 
-        alert("Gagal Login."); 
-    }
-};
-
-// Fungsi khusus untuk merapikan tampilan profil
+    // Fungsi khusus untuk merapikan tampilan profil
 function updateProfileUI() {
     const profileInfo = document.getElementById('profile-info');
     if (profileInfo && currentUser) {

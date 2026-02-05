@@ -362,21 +362,21 @@ function renderProducts(data, targetGridId) {
         overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
         
         // POLASAN PESAN OTOMATIS OPSI 1 (ELEGANT & PROFESSIONAL)
-        const pesanWhatsApp = `✨ *KONFIRMASI PEMBAYARAN PI NETWORK* ✨%0A` +
+        const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK* %0A` +
                               `*PT. DIGITAL PRO INDO*%0A` +
                               `_______________________________%0A%0A` +
                               `Halo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A` +
-                              `📦 *DETAIL TRANSAKSI:*%0A` +
+                              ` *DETAIL TRANSAKSI:*%0A` +
                               `• *Item:* ${name}%0A` +
                               `• *Total:* ${amount} π%0A` +
                               `• *Status:* Success (Pi Network)%0A` +
                               `• *TXID:* \`${txid}\` %0A%0A` +
-                              `📍 *DATA PENGIRIMAN:*%0A` +
+                              ` *DATA PENGIRIMAN:*%0A` +
                               `• *Penerima:* ${userAddress.nama}%0A` +
                               `• *Telepon:* ${userAddress.telepon}%0A` +
                               `• *Alamat:* ${userAddress.alamatLengkap}%0A%0A` +
                               `_______________________________%0A` +
-                              `✅ *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+                              ` *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
 
         overlay.innerHTML = `
             <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">

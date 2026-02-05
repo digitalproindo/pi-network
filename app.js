@@ -535,13 +535,42 @@ window.filterCategory = (category, element) => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    window.switchPage = (pageId) => {
-        ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => document.getElementById(p).classList.add('hidden'));
-        document.getElementById(`page-${pageId}`).classList.remove('hidden');
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById(`nav-${pageId}`).classList.add('active');
-        if(pageId === 'home') renderProducts(productsData, 'main-grid');
-    };
+    // --- 9. LOGIKA PENCARIAN ---
+// --- 9. LOGIKA PENCARIAN ---
+// --- PERBAIKAN LOGIKA PENCARIAN (GRID FIX) ---
+const searchInput = document.getElementById('search-input');
+if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase();
+        const sResult = document.getElementById('search-results');
+        
+        // Pastikan sResult memiliki style Grid yang benar
+        if (sResult) {
+            sResult.style.display = "grid";
+            sResult.style.gridTemplateColumns = "1fr 1fr"; // Tetap 2 kolom
+            sResult.style.gap = "12px";
+            sResult.style.padding = "15px";
+        }
+
+        const filtered = productsData.filter(p => 
+            p.name.toLowerCase().includes(keyword) || 
+            p.category.toLowerCase().includes(keyword)
+        );
+
+        if (keyword === "") {
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 40px;">Cari produk premium favoritmu...</p>`;
+        } else if (filtered.length > 0) {
+            // Memanggil fungsi render yang sudah ada agar desain kartu seragam
+            renderProducts(filtered, 'search-results');
+        } else {
+            sResult.innerHTML = `
+                <div style="grid-column: span 2; text-align: center; padding: 40px;">
+                    <div style="font-size: 40px; margin-bottom: 10px;">🔍</div>
+                    <p style="color: #666;">Produk "<b>${keyword}</b>" tidak ditemukan.</p>
+                </div>`;
+        }
+    });
+}
 
 
     // --- FUNGSI LOGIN FIX ---

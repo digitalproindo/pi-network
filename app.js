@@ -13,22 +13,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 const productsData = [
     { 
         id: 'p1', 
-        name: "Mastering Pi Network 2026", 
-        price: 0.005,
+        name: "Rumah Ultra-Modern", 
+        price: 1.800,
         discount: 10, 
-        category: "E-Book", 
-        images: ["https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=400"], 
-        desc: "Panduan optimasi node dan ekosistem Pi terbaru. Pelajari strategi staking dan keamanan wallet untuk masa depan Pi Network.",
+        category: "Rumah", 
+        images: ["https://i.ibb.co.com/dwZVX86G/1770232154053.png"], 
+        desc: "Rumah mewah dua lantai dengan estetika geometris futuristik yang mengutamakan transparansi kaca dan material premium.Spesifikasi Utama Material: Dinding panel marmer Travertine, beton halus, dan kaca floor-to-ceiling.Pintu Utama: Pivot door kayu solid setinggi 4 meter dengan akses biometrik.Pencahayaan: Sistem Hidden LED linear pada alur masuk (driveway) dan plafon.Lantai: Marmer Italia (interior) dan batu alam antislip (eksterior).Fitur Unggulan Smart Home: Kendali penuh via AI untuk lampu, suhu, dan keamanan.Lansekap: Kolam refleksi air di sekeliling bangunan dan taman minimalis.Area Parkir: Driveway melingkar yang luas dengan pencahayaan futuristik.",
         rating: 4.9,
         sold: 1250,
         reviews: [
-            { user: "Pioneer_Ace", comment: "Sangat edukatif dan mudah dipahami!" },
-            { user: "NodeMaster", comment: "Wajib punya buat yang serius di Pi." }
+            { user: "Pioneer_Ace", comment: "Sangat megah dan mewah" },
+            { user: "NodeMaster", comment: "Wajib punya sebagai Pioner." }
         ]
     },
     { 
         id: 'p2', 
-        name: "COCO Probiotik", 
+        name: "COCO Pro Kuunyit", 
         price: 0.00006,
         discount: 5, // Ini akan tampil -5% 
         category: "Herbal", 
@@ -200,7 +200,7 @@ const productsData = [
     },
     { 
         id: 'hb4', 
-        name: "Probiotik 10 Kunyit", 
+        name: "COCO Pro 10 ", 
         price: 0.00006, 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/4nRdtBpb/IMG-20260203-WA0005.jpg"], 

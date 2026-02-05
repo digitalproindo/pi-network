@@ -405,27 +405,57 @@ window.removeFromCart = (index) => {
 window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
+    
+    // Tampilan jika keranjang kosong
     if (cart.length === 0) {
-        grid.innerHTML = `<div style="text-align:center; padding:60px 20px;">🛒 Keranjang Anda masih kosong</div>`;
+        grid.innerHTML = `
+            <div style="text-align:center; padding:80px 20px; font-family:'Inter', sans-serif;">
+                <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.8;">🛒</div>
+                <h3 style="color:#1a1a1a; margin-bottom:10px; font-weight:800;">Keranjang Anda Kosong</h3>
+                <p style="color:#64748b; font-size:0.95rem; margin-bottom:25px;">Sepertinya Anda belum menambahkan produk premium ke keranjang.</p>
+                <button onclick="switchPage('home')" style="background:linear-gradient(135deg, #6748d7, #4a148c); color:white; border:none; padding:14px 30px; border-radius:15px; font-weight:bold; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3);">
+                    Mulai Belanja
+                </button>
+            </div>`;
         return;
     }
+
     const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
+    
     grid.innerHTML = `
-        <div style="padding: 15px;">
+        <div style="padding: 20px; max-width: 500px; margin: auto; font-family:'Inter', sans-serif;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="font-size: 1.25rem; font-weight: 800; color: #1a1a1a; margin:0;">Detail Pesanan</h2>
+                <span style="background:#f1f5f9; color:#4a148c; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:700;">${cart.length} Item</span>
+            </div>
+
             ${cart.map((item, index) => `
-                <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; border: 1px solid #f1f5f9;">
-                    <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
-                    <div style="flex:1; text-align:left;">
-                        <div style="font-size:0.85rem; font-weight:700;">${item.name}</div>
-                        <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
+                <div style="display:flex; align-items:center; gap:15px; background:white; padding:15px; margin-bottom:15px; border-radius:22px; box-shadow: 0 4px 20px rgba(0,0,0,0.04); border: 1px solid #f8fafc; position:relative; overflow:hidden;">
+                    <img src="${item.images[0]}" style="width:90px; height:90px; border-radius:16px; object-fit:cover; background:#f8fafc;">
+                    <div style="flex:1;">
+                        <div style="font-size:0.95rem; font-weight:700; color:#1e293b; margin-bottom:4px; line-height:1.3;">${item.name}</div>
+                        <div style="font-size:0.8rem; color:#94a3b8; margin-bottom:8px;">${item.category}</div>
+                        <div style="font-size:1.15rem; font-weight:900; color:#6748d7;">${item.price.toFixed(5)} <span style="font-size:0.8rem;">π</span></div>
                     </div>
-                    <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; color:red; cursor:pointer;">✕</div>
+                    <div onclick="window.removeFromCart(${index})" style="width:32px; height:32px; background:#fff1f0; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; transition: 0.3s;">
+                        ✕
+                    </div>
                 </div>`).join('')}
-            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
-                <div style="display:flex; justify-content:space-between; font-weight:800;">
-                    <span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span>
+            
+            <div style="background: linear-gradient(135deg, #1e293b, #0f172a); padding:25px; border-radius:28px; margin-top:30px; color:white; box-shadow: 0 15px 30px rgba(15,23,42,0.25); position:sticky; bottom:20px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; border-bottom:1px dashed rgba(255,255,255,0.2); padding-bottom:15px;">
+                    <span style="opacity:0.8; font-weight:500;">Total Estimasi</span>
+                    <span style="font-size:1.75rem; font-weight:900; letter-spacing:-0.5px;">${total} <span style="font-size:1rem; font-weight:400;">π</span></span>
                 </div>
-                <button class="btn-buy-now" style="width:100%; margin-top:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG</button>
+                
+                <button onclick="window.handlePayment(${total}, 'Total Keranjang')" style="width:100%; background:linear-gradient(90deg, #6748d7, #8e24aa); color:white; border:none; padding:18px; border-radius:18px; font-weight:800; font-size:1.1rem; cursor:pointer; box-shadow: 0 4px 15px rgba(103,72,215,0.4); display:flex; align-items:center; justify-content:center; gap:10px;">
+                    <span>Checkout Sekarang</span>
+                    <span style="font-size:1.2rem;">→</span>
+                </button>
+                
+                <div style="display:flex; align-items:center; justify-content:center; gap:6px; margin-top:15px; opacity:0.6; font-size:0.75rem;">
+                    <span style="font-size:14px;">🔒</span> Transaksi Terenkripsi Pi Network
+                </div>
             </div>
         </div>`;
 };

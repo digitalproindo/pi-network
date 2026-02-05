@@ -535,7 +535,7 @@ window.filterCategory = (category, element) => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // --- PERBAIKAN LOGIKA PENCARIAN (LAYOUT FIX) ---
+    // --- FIX PENCARIAN: 100% SAMA DENGAN BERANDA ---
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -544,12 +544,8 @@ if (searchInput) {
         
         if (!sResult) return;
 
-        // Reset & Paksa Layout Grid agar rapi (2 Kolom)
-        sResult.style.display = "grid";
-        sResult.style.gridTemplateColumns = "repeat(2, 1fr)";
-        sResult.style.gap = "12px";
-        sResult.style.padding = "12px";
-        sResult.style.alignItems = "start"; // Mencegah kartu memanjang otomatis
+        // 1. Pastikan class-nya sama dengan beranda agar CSS global Anda bekerja
+        sResult.className = "product-grid"; 
 
         const filtered = productsData.filter(p => 
             p.name.toLowerCase().includes(keyword) || 
@@ -559,28 +555,8 @@ if (searchInput) {
         if (keyword === "") {
             sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #94a3b8; padding: 40px;">Cari produk premium favoritmu...</p>`;
         } else if (filtered.length > 0) {
-            // Kita buat fungsi render khusus di sini agar kartu tidak berantakan
-            sResult.innerHTML = filtered.map(p => `
-                <div class="product-card" style="background:white; border-radius:15px; overflow:hidden; display:flex; flex-direction:column; height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border: 1px solid #f1f5f9;">
-                    <div class="image-container" style="position:relative; width:100%; aspect-ratio:1/1; overflow:hidden;" onclick="openProductDetail('${p.id}')">
-                        <img src="${p.images[0]}" style="width:100%; height:100%; object-fit:cover;">
-                        <div style="position:absolute; bottom:0; left:0; background:#00b894; color:white; font-size:10px; padding:4px 8px; font-weight:bold;">XTRA Gratis Ongkir+</div>
-                    </div>
-                    <div class="product-info" style="padding:10px; display:flex; flex-direction:column; justify-content:space-between; flex-grow:1;">
-                        <div>
-                            <h3 style="font-size:0.85rem; margin:0; color:#333; height:2.4em; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; line-height:1.2;">${p.name}</h3>
-                            <div style="font-size:1.1rem; font-weight:800; color:#b71c1c; margin:8px 0;">${p.price.toFixed(5)} <span style="font-size:0.7rem;">π</span></div>
-                        </div>
-                        <div style="display:flex; flex-direction:column; gap:8px;">
-                            <div style="background:#e8f5e9; color:#2e7d32; font-size:10px; padding:4px 8px; border-radius:4px; display:inline-block; width:fit-content;">🚚 Gratis ongkir</div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
-                                <span style="font-size:0.7rem; color:#666;">★ ${p.rating} | ${p.sold} terjual</span>
-                                <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background:#6748d7; color:white; border:none; padding:6px 12px; border-radius:20px; font-size:0.75rem; font-weight:bold;">Beli</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+            // 2. Gunakan fungsi render asli milik beranda agar struktur kartu identik
+            renderProducts(filtered, 'search-results');
         } else {
             sResult.innerHTML = `
                 <div style="grid-column: span 2; text-align: center; padding: 40px;">

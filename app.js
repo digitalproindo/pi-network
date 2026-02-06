@@ -463,18 +463,18 @@ window.updateCartUI = () => {
     `;
 };
 
-    window.switchPage = (pageId) => {
-    // Sembunyikan semua halaman utama
+    // Data Produk (Pastikan data ini ada atau panggil dari file data Anda)
+// const productsData = [...]; 
+
+window.switchPage = (pageId) => {
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
         if(el) el.classList.add('hidden');
     });
 
-    // Tampilkan halaman yang dipilih
     const activePage = document.getElementById(`page-${pageId}`);
     if(activePage) activePage.classList.remove('hidden');
 
-    // Update menu navigasi bawah
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
     if(activeNav) activeNav.classList.add('active');
@@ -495,6 +495,66 @@ window.updateCartUI = () => {
 
     if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
+
+window.closeProductDetail = () => {
+    document.getElementById('product-detail-page').classList.add('hidden');
+    const bNav = document.querySelector('.bottom-nav');
+    if(bNav) bNav.style.display = 'flex';
+};
+
+window.openProductDetail = (productId) => {
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
+
+    const bNav = document.querySelector('.bottom-nav');
+    if(bNav) bNav.style.display = 'none';
+
+    document.getElementById('product-detail-page').scrollTop = 0;
+    
+    document.getElementById('detail-content').innerHTML = `
+        <div style="background: white; min-height: 100vh; padding-bottom: 80px;">
+            <img src="${p.images[0]}" style="width: 100%; display: block;">
+            <div style="padding: 20px;">
+                <h2 style="margin: 0; font-size: 1.5rem;">${p.name}</h2>
+                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
+                <p style="line-height: 1.7; color: #475569;">${p.desc}</p>
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">Beli Sekarang</button>
+                </div>
+            </div>
+        </div>`;
+        
+    document.getElementById('product-detail-page').classList.remove('hidden');
+};
+
+// Fungsi Pencarian yang identik dengan Beranda
+const initSearch = () => {
+    const sInput = document.getElementById('search-input');
+    const sResult = document.getElementById('search-results');
+    if(!sInput || !sResult) return;
+
+    sInput.addEventListener('input', (e) => {
+        const key = e.target.value.toLowerCase();
+        if(key === "") {
+            switchPage('cari'); // Kembalikan ke tampilan ilustrasi
+        } else {
+            const filtered = productsData.filter(p => p.name.toLowerCase().includes(key));
+            if(filtered.length > 0) {
+                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
+                renderProducts(filtered, 'search-grid');
+            } else {
+                sResult.innerHTML = `<p style="text-align:center; padding:40px; color:#64748b;">Produk tidak ditemukan.</p>`;
+            }
+        }
+    });
+};
+
+// Jalankan saat halaman dimuat
+document.addEventListener('DOMContentLoaded', () => {
+    renderProducts(productsData, 'main-grid');
+    initSearch();
+});
 
 window.closeProductDetail = () => {
     document.getElementById('product-detail-page').classList.add('hidden');

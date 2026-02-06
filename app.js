@@ -397,21 +397,20 @@ window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
 
-    // Tampilan ketika keranjang kosong (sesuai gambar yang diunggah)
     if (cart.length === 0) {
         grid.innerHTML = `
-            <div style="text-align:center; padding:60px 24px; font-family:'Inter', sans-serif;">
-                <div style="margin-bottom: 20px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 140px; opacity: 0.9;">
+            <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
+                <div style="margin-bottom: 25px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 120px; opacity: 0.8;">
                 </div>
                 
-                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.6rem; font-weight:800;">Keranjang Anda Kosong</h2>
+                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
                 
-                <p style="color:#64748b; font-size:1.1rem; line-height:1.5; margin-bottom:30px; max-width:300px; margin-left:auto; margin-right:auto;">
+                <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
                     Sepertinya Anda belum menambahkan produk premium ke keranjang.
                 </p>
                 
-                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 45px; border-radius:18px; font-weight:700; font-size:1.1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3);">
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3); transition: transform 0.2s;">
                     Mulai Belanja
                 </button>
             </div>`;
@@ -522,49 +521,16 @@ window.filterCategory = (category, element) => {
 
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
-    const searchInput = document.getElementById('search-input');
-const sResult = document.getElementById('search-results');
-
-if (searchInput) {
-    // Fungsi untuk menampilkan tampilan awal (mirip gambar yang Anda kirim)
-    const showInitialSearchUI = () => {
-        sResult.innerHTML = `
-            <div style="text-align:center; padding:40px 24px; font-family:'Inter', sans-serif;">
-                <div style="margin-bottom: 25px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" 
-                         alt="Search" style="width: 120px; opacity: 0.8;">
-                </div>
-                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Cari Produk Premium</h2>
-                <p style="color:#64748b; font-size:1rem; line-height:1.6; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
-                    Temukan berbagai produk unggulan kami dengan mengetik di kolom pencarian.
-                </p>
-                <button onclick="document.getElementById('search-input').focus()" 
-                        style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 8px 20px rgba(103,72,215,0.4);">
-                    Mulai Mencari
-                </button>
-            </div>`;
-    };
-
-    // Panggil tampilan awal saat pertama kali dimuat
-    showInitialSearchUI();
-
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
+        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+        const sResult = document.getElementById('search-results');
         if (keyword === "") {
-            showInitialSearchUI();
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+        } else if (filtered.length > 0) {
+            renderProducts(filtered, 'search-results');
         } else {
-            const filtered = productsData.filter(p => 
-                p.name.toLowerCase().includes(keyword) || 
-                p.category.toLowerCase().includes(keyword)
-            );
-            
-            if (filtered.length > 0) {
-                // Gunakan class grid agar hasil pencarian rapi
-                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
-                renderProducts(filtered, 'search-grid');
-            } else {
-                sResult.innerHTML = `<p style="text-align: center; padding: 40px; color: #64748b;">Produk "${keyword}" tidak ditemukan.</p>`;
-            }
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
     });
 }
@@ -604,62 +570,17 @@ if (searchInput) {
     renderProducts(productsData, 'main-grid');
 
     // 2. Inisialisasi Pi SDK secara aman
-    // Fungsi Fitur Cari
-const initSearchFeature = () => {
-    const searchInput = document.getElementById('search-input');
-    const sResult = document.getElementById('search-results');
-    if (!searchInput || !sResult) return;
-
-    const showInitialSearchUI = () => {
-        sResult.innerHTML = `
-            <div style="text-align:center; padding:40px 24px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8; margin-bottom:20px;">
-                <h2 style="font-weight:800; color:#1a1a1a;">Cari Produk Premium</h2>
-                <p style="color:#64748b; margin-bottom:25px;">Masukkan kata kunci untuk menemukan produk.</p>
-                <button onclick="document.getElementById('search-input').focus()" style="background:#6748d7; color:white; border:none; padding:15px 35px; border-radius:18px; font-weight:700; box-shadow: 0 8px 20px rgba(103,72,215,0.3);">Mulai Mencari</button>
-            </div>`;
-    };
-
-    showInitialSearchUI(); // Tampilkan ilustrasi saat pertama buka
-
-    searchInput.addEventListener('input', (e) => {
-        const keyword = e.target.value.toLowerCase();
-        if (keyword === "") {
-            showInitialSearchUI();
-        } else {
-            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword));
-            if (filtered.length > 0) {
-                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
-                renderProducts(filtered, 'search-grid');
-            } else {
-                sResult.innerHTML = `<p style="text-align:center; padding:40px; color:#64748b;">Produk tidak ditemukan.</p>`;
-            }
-        }
-    });
-};
-
-// EKSEKUSI UTAMA (Letakkan di Paling Bawah)
-document.addEventListener('DOMContentLoaded', async () => {
-    // LANGKAH 1: Render produk beranda segera!
-    if (typeof productsData !== 'undefined') {
-        renderProducts(productsData, 'main-grid');
-    }
-    
-    // LANGKAH 2: Jalankan fitur pencarian
-    initSearchFeature();
-
-    // LANGKAH 3: Jalankan Pi SDK tanpa memblokir render
     try {
-        if (window.Pi) {
-            await initPi();
-        }
+        await initPi();
+        console.log("Pi SDK siap digunakan");
     } catch (err) {
-        console.error("Pi SDK gagal muat, tapi aplikasi tetap jalan.");
+        console.error("Pi SDK gagal muat: ", err);
+        // Tetap biarkan aplikasi jalan meskipun SDK gagal
     }
 
-    // LANGKAH 4: Aktifkan tombol login
+    // 3. Pasang fungsi klik pada tombol login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
     }
-});
+}); // Penutup DOMContentLoaded (pastikan tanda ini jangan dihapus)

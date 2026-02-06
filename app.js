@@ -468,36 +468,70 @@ window.updateCartUI = () => {
         const el = document.getElementById(p);
         if(el) el.classList.add('hidden');
     });
+    
     const activePage = document.getElementById(`page-${pageId}`);
     if(activePage) activePage.classList.remove('hidden');
+    
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
     if(activeNav) activeNav.classList.add('active');
+
+    // LOGIKA TAMBAHAN UNTUK CARI
+    if(pageId === 'cari') {
+        const sResult = document.getElementById('search-results');
+        const sInput = document.getElementById('search-input');
+        if(sResult && (!sInput || sInput.value === "")) {
+            sResult.innerHTML = `
+                <div style="text-align:center; padding:60px 24px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8; margin-bottom:20px;">
+                    <h2 style="font-weight:800; color:#1a1a1a;">Cari Produk Premium</h2>
+                    <p style="color:#64748b; margin-bottom:25px;">Masukkan kata kunci untuk menemukan produk.</p>
+                    <button onclick="document.getElementById('search-input').focus()" style="background:#6748d7; color:white; border:none; padding:15px 35px; border-radius:18px; font-weight:700; box-shadow: 0 8px 20px rgba(103,72,215,0.3);">Mulai Mencari</button>
+                </div>`;
+        }
+    }
+
     if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
 
     window.closeProductDetail = () => {
         document.getElementById('product-detail-page').classList.add('hidden');
+        document.querySelector('.bottom-nav').style.display = 'flex';
+};
     };
 
     window.openProductDetail = (productId) => {
-        const p = productsData.find(x => x.id === productId);
-        if (!p) return;
-        document.getElementById('product-detail-page').scrollTop = 0;
-        document.getElementById('detail-content').innerHTML = `
-            <div style="padding: 15px; background: white;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; cursor: pointer;">← KEMBALI</button>
-                <img src="${p.images[0]}" style="width: 100%; margin: 15px 0; border-radius:15px;">
-                <h2 style="margin: 0;">${p.name}</h2>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c;">π ${p.price.toFixed(5)}</div>
-                <p style="line-height: 1.7;">${p.desc}</p>
-                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
+
+    // Sembunyikan navigasi bawah agar detail produk penuh (opsional)
+    document.querySelector('.bottom-nav').style.display = 'none';
+
+    document.getElementById('product-detail-page').scrollTop = 0;
+    
+    // Perhatikan: Tombol kembali tidak ditaruh di sini agar tetap FIXED di atas
+    document.getElementById('detail-content').innerHTML = `
+        <div style="background: white; min-height: 100vh; padding-bottom: 50px;">
+            <img src="${p.images[0]}" style="width: 100%; display: block; margin-bottom: 20px;">
+            
+            <div style="padding: 0 20px;">
+                <h2 style="margin: 0; font-size: 1.5rem; color: #1e293b;">${p.name}</h2>
+                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
+                
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin: 20px 0;">
+                    <h4 style="margin: 0 0 10px 0; color: #475569;">Deskripsi Produk</h4>
+                    <p style="line-height: 1.7; color: #64748b; margin: 0;">${p.desc}</p>
                 </div>
-            </div>`;
-        document.getElementById('product-detail-page').classList.remove('hidden');
-    };
+
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(74, 20, 140, 0.3);">Beli Sekarang</button>
+                </div>
+            </div>
+        </div>`;
+        
+    document.getElementById('product-detail-page').classList.remove('hidden');
+};
 
 window.filterCategory = (category, element) => {
     const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);

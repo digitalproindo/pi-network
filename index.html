@@ -231,6 +231,24 @@
     border-color: var(--pi-color);
     box-shadow: 0 5px 20px rgba(74, 20, 140, 0.15);
 }
+
+.back-button {
+    position: fixed; /* Kunci posisi */
+    top: 20px;
+    left: 20px;
+    z-index: 3000;   /* Sangat tinggi agar di atas detail produk */
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    cursor: pointer;
+    border: 1px solid #eee;
+}
     </style>
     
 </head>
@@ -276,15 +294,19 @@
     </main>
 
     <main id="page-cari" class="hidden">
+    <div style="padding: 15px 10px 0 10px;">
+        <div class="banner-box" style="height: 120px;">
+            <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+    </div>
+
+    <h3 style="padding: 20px 20px 0 20px; margin:0; font-weight: 800;">Cari Produk</h3>
+
     <div class="search-wrapper">
         <input type="text" id="search-input" placeholder="Cari produk premium..." autocomplete="off">
     </div>
     
-    <div id="search-results" class="marketplace-grid">
-        <p style="grid-column: span 2; text-align: center; color: #94a3b8; padding: 40px 20px; font-size: 0.85rem;">
-            Silakan masukkan nama produk yang Anda cari...
-        </p>
-    </div>
+    <div id="search-results"></div>
 </main>
 
     <main id="page-keranjang" class="hidden">
@@ -307,8 +329,12 @@
     </main>
 
     <div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
-        <div id="detail-content"></div>
+    <div class="back-button" onclick="closeProductDetail()">
+        <span style="font-size: 1.5rem; font-weight: bold; color: #333;">&larr;</span>
     </div>
+    
+    <div id="detail-content"></div>
+</div>
 
     <a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">

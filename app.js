@@ -536,23 +536,36 @@ if (searchInput) {
 }
 
     window.handleAuth = async () => {
-        try {
-            const scopes = ['username', 'payments'];
-            const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-            currentUser = auth.user;
-            
-            const profileInfo = document.getElementById('profile-info');
-            if (profileInfo) {
-                profileInfo.innerHTML = `
-                    <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
-                        <h3>@${currentUser.username}</h3>
-                        <p style="color:green;">✓ Terverifikasi</p>
-                        <button onclick="window.showAddressForm()" style="background:#6748d7; color:white; border:none; padding:10px; border-radius:8px;">Atur Alamat</button>
-                    </div>`;
-            }
-            alert("Login Berhasil!");
-        } catch (err) { console.error(err); alert("Gagal Login."); }
-    };
+    console.log("Tombol login diklik");
+    alert("Memulai proses login..."); // Alert untuk memastikan fungsi jalan
+
+    try {
+        const scopes = ['username', 'payments'];
+        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+        currentUser = auth.user;
+        
+        // Update Tombol di pojok kanan atas
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.innerText = "LOGOUT";
+            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+            loginBtn.onclick = () => location.reload();
+        }
+
+        // Update di Halaman Profil
+        if (document.getElementById('profile-username')) {
+            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        }
+        if (document.getElementById('profile-address')) {
+            document.getElementById('profile-address').innerText = currentUser.uid;
+        }
+
+        alert("Berhasil Login: " + currentUser.username);
+    } catch (err) { 
+        console.error(err); 
+        alert("Gagal Login: " + err.message); 
+    }
+};
 
     renderProducts(productsData, 'main-grid');
 

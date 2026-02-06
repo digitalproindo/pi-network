@@ -204,6 +204,33 @@
             background-color: #25d366; border-radius: 50%; display: flex; 
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
         }
+
+        /* Perbaikan Tampilan Halaman Cari */
+.search-wrapper {
+    display: flex;
+    justify-content: center; /* Membuat input berada di tengah */
+    padding: 20px 15px;      /* Memberi jarak atas dan samping */
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#search-input {
+    width: 90%;             /* Tidak mentok ke pinggir */
+    max-width: 450px;       /* Lebar maksimal agar elegan di layar lebar */
+    padding: 14px 20px;
+    border-radius: 30px;    /* Bentuk kapsul yang premium */
+    border: 2px solid #e2e8f0;
+    outline: none;
+    font-size: 0.9rem;
+    background: #ffffff;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+#search-input:focus {
+    border-color: var(--pi-color);
+    box-shadow: 0 5px 20px rgba(74, 20, 140, 0.15);
+}
     </style>
 </head>
 <body>
@@ -248,11 +275,16 @@
     </main>
 
     <main id="page-cari" class="hidden">
-        <div style="padding: 20px;">
-            <input type="text" id="search-input" placeholder="Cari produk premium..." style="width:100%; padding:14px; border-radius:12px; border:1px solid #ddd; outline:none;">
-        </div>
-        <div id="search-results" class="marketplace-grid"></div>
-    </main>
+    <div class="search-wrapper">
+        <input type="text" id="search-input" placeholder="Cari produk premium..." autocomplete="off">
+    </div>
+    
+    <div id="search-results" class="marketplace-grid">
+        <p style="grid-column: span 2; text-align: center; color: #94a3b8; padding: 40px 20px; font-size: 0.85rem;">
+            Silakan masukkan nama produk yang Anda cari...
+        </p>
+    </div>
+</main>
 
     <main id="page-keranjang" class="hidden">
         <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>

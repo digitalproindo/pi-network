@@ -536,34 +536,38 @@ if (searchInput) {
 }
 
     window.handleAuth = async () => {
+        try {
+            const scopes = ['username', 'payments'];
+            const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+            currentUser = auth.user;
+            
+            const profileInfo = document.getElementById('profile-info');
+            if (profileInfo) {
+                profileInfo.innerHTML = `
+                    <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
+                        <h3>@${currentUser.username}</h3>
+                        <p style="color:green;">✓ Terverifikasi</p>
+                        <button onclick="window.showAddressForm()" style="background:#6748d7; color:white; border:none; padding:10px; border-radius:8px;">Atur Alamat</button>
+                    </div>`;
+            }
+            alert("Login Berhasil!");
+        } catch (err) { console.error(err); alert("Gagal Login."); }
+    };
+
+    renderProducts(productsData, 'main-grid');
+
+    // 2. Inisialisasi Pi SDK secara aman
     try {
-        const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-        currentUser = auth.user;
-        
-        // 1. Update Tombol Login menjadi Logout
-        const loginBtn = document.getElementById('login-btn');
-        if (loginBtn) {
-            loginBtn.innerText = "LOGOUT";
-            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)"; // Berubah jadi merah
-            loginBtn.style.color = "white";
-            loginBtn.onclick = () => location.reload(); // Sederhananya logout dengan reload
-        }
-
-        // 2. Update Tampilan di Halaman Profil (Sesuai ID di index.html)
-        const profileUsername = document.getElementById('profile-username');
-        const profileAddress = document.getElementById('profile-address');
-
-        if (profileUsername) {
-            profileUsername.innerText = `@${currentUser.username}`;
-        }
-        if (profileAddress) {
-            profileAddress.innerText = currentUser.uid; // Menampilkan UID Wallet
-        }
-
-        alert("Login Berhasil! Halo " + currentUser.username);
-    } catch (err) { 
-        console.error(err); 
-        alert("Gagal Login. Pastikan Anda membuka di Pi Browser."); 
+        await initPi();
+        console.log("Pi SDK siap digunakan");
+    } catch (err) {
+        console.error("Pi SDK gagal muat: ", err);
+        // Tetap biarkan aplikasi jalan meskipun SDK gagal
     }
-};
+
+    // 3. Pasang fungsi klik pada tombol login
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = window.handleAuth;
+    }
+}); // Penutup DOMContentLoaded (pastikan tanda ini jangan dihapus)

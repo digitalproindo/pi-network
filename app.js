@@ -548,16 +548,40 @@ window.filterCategory = (category, element) => {
 
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
+    // Pastikan bagian ini ada di dalam app.js Anda
+const searchInput = document.getElementById('search-input');
+const sResult = document.getElementById('search-results');
+
+if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
-        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-        const sResult = document.getElementById('search-results');
+        
         if (keyword === "") {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
-        } else if (filtered.length > 0) {
-            renderProducts(filtered, 'search-results');
+            // Jika kosong, tampilkan ilustrasi (seperti yang kita buat sebelumnya)
+            sResult.innerHTML = `
+                <div style="text-align:center; padding:60px 24px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8; margin-bottom:20px;">
+                    <h2 style="font-weight:800; color:#1a1a1a;">Cari Produk Premium</h2>
+                    <p style="color:#64748b; margin-bottom:25px;">Masukkan kata kunci untuk menemukan produk.</p>
+                </div>`;
         } else {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
+            // Filter produk berdasarkan nama
+            const filtered = productsData.filter(p => 
+                p.name.toLowerCase().includes(keyword)
+            );
+
+            if (filtered.length > 0) {
+                // KUNCINYA DI SINI: Gunakan marketplace-grid agar tampilannya sama dengan beranda
+                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
+                
+                // Panggil fungsi render yang sama dengan beranda
+                renderProducts(filtered, 'search-grid');
+            } else {
+                sResult.innerHTML = `
+                    <div style="text-align:center; padding:40px; color:#64748b;">
+                        <p>Produk "<strong>${e.target.value}</strong>" tidak ditemukan.</p>
+                    </div>`;
+            }
         }
     });
 }

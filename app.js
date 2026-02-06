@@ -604,17 +604,62 @@ if (searchInput) {
     renderProducts(productsData, 'main-grid');
 
     // 2. Inisialisasi Pi SDK secara aman
+    // Fungsi Fitur Cari
+const initSearchFeature = () => {
+    const searchInput = document.getElementById('search-input');
+    const sResult = document.getElementById('search-results');
+    if (!searchInput || !sResult) return;
+
+    const showInitialSearchUI = () => {
+        sResult.innerHTML = `
+            <div style="text-align:center; padding:40px 24px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8; margin-bottom:20px;">
+                <h2 style="font-weight:800; color:#1a1a1a;">Cari Produk Premium</h2>
+                <p style="color:#64748b; margin-bottom:25px;">Masukkan kata kunci untuk menemukan produk.</p>
+                <button onclick="document.getElementById('search-input').focus()" style="background:#6748d7; color:white; border:none; padding:15px 35px; border-radius:18px; font-weight:700; box-shadow: 0 8px 20px rgba(103,72,215,0.3);">Mulai Mencari</button>
+            </div>`;
+    };
+
+    showInitialSearchUI(); // Tampilkan ilustrasi saat pertama buka
+
+    searchInput.addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase();
+        if (keyword === "") {
+            showInitialSearchUI();
+        } else {
+            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword));
+            if (filtered.length > 0) {
+                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
+                renderProducts(filtered, 'search-grid');
+            } else {
+                sResult.innerHTML = `<p style="text-align:center; padding:40px; color:#64748b;">Produk tidak ditemukan.</p>`;
+            }
+        }
+    });
+};
+
+// EKSEKUSI UTAMA (Letakkan di Paling Bawah)
+document.addEventListener('DOMContentLoaded', async () => {
+    // LANGKAH 1: Render produk beranda segera!
+    if (typeof productsData !== 'undefined') {
+        renderProducts(productsData, 'main-grid');
+    }
+    
+    // LANGKAH 2: Jalankan fitur pencarian
+    initSearchFeature();
+
+    // LANGKAH 3: Jalankan Pi SDK tanpa memblokir render
     try {
-        await initPi();
-        console.log("Pi SDK siap digunakan");
+        if (window.Pi) {
+            await initPi();
+        }
     } catch (err) {
-        console.error("Pi SDK gagal muat: ", err);
-        // Tetap biarkan aplikasi jalan meskipun SDK gagal
+        console.error("Pi SDK gagal muat, tapi aplikasi tetap jalan.");
     }
 
-    // 3. Pasang fungsi klik pada tombol login
+    // LANGKAH 4: Aktifkan tombol login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
     }
-}); // Penutup DOMContentLoaded (pastikan tanda ini jangan dihapus)
+});

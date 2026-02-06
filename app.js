@@ -3,13 +3,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let currentUser = null;
     let cart = [];
     
-    // Simpan data alamat
     let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
 
-    // --- KONFIGURASI ---
     const ADMIN_WA = "6281906066757"; 
 
-    // --- 1. DATA PRODUK (SESUAI SCRIPT ASLI ANDA) ---
 const productsData = [
     { 
         id: 'p1', 
@@ -252,21 +249,18 @@ const productsData = [
     }
 ];
 
-// Pastikan produk lainnya juga memiliki properti rating, sold, dan reviews agar tidak error
 productsData.forEach(p => {
     if(!p.rating) p.rating = 4.8;
     if(!p.sold) p.sold = Math.floor(Math.random() * 100) + 10;
     if(!p.reviews) p.reviews = [{user: "Pembeli", comment: "Barang bagus sesuai pesanan."}];
 });
 
-    // --- 2. INISIALISASI ---
     async function initPi() {
         try {
             await Pi.init({ version: "2.0", sandbox: false });
         } catch (e) { console.error("Init Error:", e); }
     }
 
-    // --- 3. FORM ALAMAT ---
     window.showAddressForm = () => {
         const overlay = document.createElement('div');
         overlay.id = "address-overlay";
@@ -294,7 +288,6 @@ productsData.forEach(p => {
         alert("Alamat disimpan.");
     };
 
-    // --- 4. RENDER BERANDA ---
 function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
@@ -326,7 +319,6 @@ function renderProducts(data, targetGridId) {
     });
 }
 
-    // --- 5. PEMBAYARAN ---
     window.handlePayment = async (amount, name) => {
         if (!currentUser) return alert("Silakan Login di Profil!");
         if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
@@ -387,7 +379,6 @@ function renderProducts(data, targetGridId) {
         document.body.appendChild(overlay);
     }
 
-    // --- 6. AUTH, KERANJANG, NAVIGASI ---
     window.addToCart = (id) => {
     const p = productsData.find(x => x.id === id);
     if(p) { 
@@ -405,8 +396,7 @@ window.removeFromCart = (index) => {
 window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
-    
-    // --- TAMPILAN KERANJANG KOSONG (SESUAI GAMBAR) ---
+
     if (cart.length === 0) {
         grid.innerHTML = `
             <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
@@ -427,7 +417,6 @@ window.updateCartUI = () => {
         return;
     }
 
-    // --- TAMPILAN KERANJANG JIKA ADA ISI (TETAP SEPERTI SEBELUMNYA) ---
     const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
     grid.innerHTML = `
         <div style="padding: 15px;">
@@ -487,7 +476,6 @@ window.updateCartUI = () => {
     if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
 
-    // --- 7. DETAIL PRODUK ---
     window.closeProductDetail = () => {
         document.getElementById('product-detail-page').classList.add('hidden');
     };
@@ -511,7 +499,6 @@ window.updateCartUI = () => {
         document.getElementById('product-detail-page').classList.remove('hidden');
     };
 
-   // --- 8. FILTER & LAIN-LAIN ---
 window.filterCategory = (category, element) => {
     const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
     renderProducts(filtered, 'main-grid');
@@ -532,7 +519,6 @@ window.filterCategory = (category, element) => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // --- 9. LOGIKA PENCARIAN ---
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
@@ -549,32 +535,35 @@ if (searchInput) {
     });
 }
 
-    // --- FUNGSI LOGIN FIX ---
     window.handleAuth = async () => {
-        try {
-            const scopes = ['username', 'payments'];
-            const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-            currentUser = auth.user;
-            
-            const profileInfo = document.getElementById('profile-info');
-            if (profileInfo) {
-                profileInfo.innerHTML = `
-                    <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
-                        <h3>@${currentUser.username}</h3>
-                        <p style="color:green;">✓ Terverifikasi</p>
-                        <button onclick="window.showAddressForm()" style="background:#6748d7; color:white; border:none; padding:10px; border-radius:8px;">Atur Alamat</button>
-                    </div>`;
-            }
-            alert("Login Berhasil!");
-        } catch (err) { console.error(err); alert("Gagal Login."); }
-    };
+    try {
+        const scopes = ['username', 'payments'];
+        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+        currentUser = auth.user;
+        
+        // 1. Update Tombol Login menjadi Logout
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.innerText = "LOGOUT";
+            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)"; // Berubah jadi merah
+            loginBtn.style.color = "white";
+            loginBtn.onclick = () => location.reload(); // Sederhananya logout dengan reload
+        }
 
-    // --- EKSEKUSI ---
-    await initPi();
-    renderProducts(productsData, 'main-grid');
-    
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.onclick = window.handleAuth;
+        // 2. Update Tampilan di Halaman Profil (Sesuai ID di index.html)
+        const profileUsername = document.getElementById('profile-username');
+        const profileAddress = document.getElementById('profile-address');
+
+        if (profileUsername) {
+            profileUsername.innerText = `@${currentUser.username}`;
+        }
+        if (profileAddress) {
+            profileAddress.innerText = currentUser.uid; // Menampilkan UID Wallet
+        }
+
+        alert("Login Berhasil! Halo " + currentUser.username);
+    } catch (err) { 
+        console.error(err); 
+        alert("Gagal Login. Pastikan Anda membuka di Pi Browser."); 
     }
-});
+};

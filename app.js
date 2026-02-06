@@ -405,29 +405,73 @@ window.removeFromCart = (index) => {
 window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
+    
+    // --- TAMPILAN KERANJANG KOSONG (SESUAI GAMBAR) ---
     if (cart.length === 0) {
-        grid.innerHTML = `<div style="text-align:center; padding:60px 20px;">🛒 Keranjang Anda masih kosong</div>`;
+        grid.innerHTML = `
+            <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
+                <div style="margin-bottom: 25px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 120px; opacity: 0.8;">
+                </div>
+                
+                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
+                
+                <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
+                    Sepertinya Anda belum menambahkan produk premium ke keranjang.
+                </p>
+                
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3); transition: transform 0.2s;">
+                    Mulai Belanja
+                </button>
+            </div>`;
         return;
     }
+
+    // --- TAMPILAN KERANJANG JIKA ADA ISI (TETAP SEPERTI SEBELUMNYA) ---
     const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
     grid.innerHTML = `
         <div style="padding: 15px;">
-            ${cart.map((item, index) => `
-                <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; border: 1px solid #f1f5f9;">
-                    <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
-                    <div style="flex:1; text-align:left;">
-                        <div style="font-size:0.85rem; font-weight:700;">${item.name}</div>
-                        <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
+            <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
+                <div style="display:flex; align-items:center; gap:12px; text-align:left;">
+                    <span style="font-size:1.2rem;">📍</span>
+                    <div>
+                        <div style="font-size:0.7rem; color:#6748d7; font-weight:bold; text-transform:uppercase;">Alamat Pengiriman</div>
+                        <div style="font-size:0.85rem; font-weight:700; color:#1a1a1a;">
+                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
+                        </div>
                     </div>
-                    <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; color:red; cursor:pointer;">✕</div>
-                </div>`).join('')}
-            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
-                <div style="display:flex; justify-content:space-between; font-weight:800;">
-                    <span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span>
                 </div>
-                <button class="btn-buy-now" style="width:100%; margin-top:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG</button>
+                <span style="color:#6748d7; font-weight:bold;">></span>
             </div>
-        </div>`;
+
+            <div id="cart-list">
+                ${cart.map((item, index) => `
+                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;">
+                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
+                        <div style="flex:1; text-align:left;">
+                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3;">${item.name}</div>
+                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
+                        </div>
+                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px; border: 1px solid #ffccc7;">✕</div>
+                    </div>
+                `).join('')}
+            </div>
+
+            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#64748b;">
+                    <span>Subtotal (${cart.length} Produk)</span>
+                    <span>π ${total}</span>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; color:#1a1a1a; border-top:2px solid #f8fafc; padding-top:15px;">
+                    <span>Total Tagihan</span>
+                    <span style="color:#b71c1c;">π ${total}</span>
+                </div>
+                <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; box-shadow: 0 6px 15px rgba(103,72,215,0.3); background:#6748d7; color:white; cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">
+                    CHECKOUT SEKARANG 🚀
+                </button>
+            </div>
+        </div>
+    `;
 };
 
     window.switchPage = (pageId) => {

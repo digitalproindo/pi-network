@@ -463,128 +463,41 @@ window.updateCartUI = () => {
     `;
 };
 
-    // Data Produk (Pastikan data ini ada atau panggil dari file data Anda)
-// const productsData = [...]; 
-
-window.switchPage = (pageId) => {
+    window.switchPage = (pageId) => {
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
         if(el) el.classList.add('hidden');
     });
-
     const activePage = document.getElementById(`page-${pageId}`);
     if(activePage) activePage.classList.remove('hidden');
-
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
     if(activeNav) activeNav.classList.add('active');
-
-    // Tampilkan ilustrasi Cari jika halaman cari kosong
-    if(pageId === 'cari') {
-        const sResult = document.getElementById('search-results');
-        const sInput = document.getElementById('search-input');
-        if(sResult && (!sInput || sInput.value === "")) {
-            sResult.innerHTML = `
-                <div style="text-align:center; padding:60px 24px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8; margin-bottom:20px;">
-                    <h2 style="font-weight:800; color:#1a1a1a;">Cari Produk Premium</h2>
-                    <p style="color:#64748b; margin-bottom:25px;">Masukkan kata kunci untuk menemukan produk.</p>
-                </div>`;
-        }
-    }
-
     if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
 
-window.closeProductDetail = () => {
-    document.getElementById('product-detail-page').classList.add('hidden');
-    const bNav = document.querySelector('.bottom-nav');
-    if(bNav) bNav.style.display = 'flex';
-};
+    window.closeProductDetail = () => {
+        document.getElementById('product-detail-page').classList.add('hidden');
+    };
 
-window.openProductDetail = (productId) => {
-    const p = productsData.find(x => x.id === productId);
-    if (!p) return;
-
-    const bNav = document.querySelector('.bottom-nav');
-    if(bNav) bNav.style.display = 'none';
-
-    document.getElementById('product-detail-page').scrollTop = 0;
-    
-    document.getElementById('detail-content').innerHTML = `
-        <div style="background: white; min-height: 100vh; padding-bottom: 80px;">
-            <img src="${p.images[0]}" style="width: 100%; display: block;">
-            <div style="padding: 20px;">
-                <h2 style="margin: 0; font-size: 1.5rem;">${p.name}</h2>
-                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
-                <p style="line-height: 1.7; color: #475569;">${p.desc}</p>
+    window.openProductDetail = (productId) => {
+        const p = productsData.find(x => x.id === productId);
+        if (!p) return;
+        document.getElementById('product-detail-page').scrollTop = 0;
+        document.getElementById('detail-content').innerHTML = `
+            <div style="padding: 15px; background: white;">
+                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; cursor: pointer;">← KEMBALI</button>
+                <img src="${p.images[0]}" style="width: 100%; margin: 15px 0; border-radius:15px;">
+                <h2 style="margin: 0;">${p.name}</h2>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c;">π ${p.price.toFixed(5)}</div>
+                <p style="line-height: 1.7;">${p.desc}</p>
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">Beli Sekarang</button>
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
                 </div>
-            </div>
-        </div>`;
-        
-    document.getElementById('product-detail-page').classList.remove('hidden');
-};
-
-// Fungsi Pencarian yang identik dengan Beranda
-const initSearch = () => {
-    const sInput = document.getElementById('search-input');
-    const sResult = document.getElementById('search-results');
-    if(!sInput || !sResult) return;
-
-    sInput.addEventListener('input', (e) => {
-        const key = e.target.value.toLowerCase();
-        if(key === "") {
-            switchPage('cari'); // Kembalikan ke tampilan ilustrasi
-        } else {
-            const filtered = productsData.filter(p => p.name.toLowerCase().includes(key));
-            if(filtered.length > 0) {
-                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
-                renderProducts(filtered, 'search-grid');
-            } else {
-                sResult.innerHTML = `<p style="text-align:center; padding:40px; color:#64748b;">Produk tidak ditemukan.</p>`;
-            }
-        }
-    });
-};
-
-// Jalankan saat halaman dimuat
-document.addEventListener('DOMContentLoaded', () => {
-    renderProducts(productsData, 'main-grid');
-    initSearch();
-});
-
-window.closeProductDetail = () => {
-    document.getElementById('product-detail-page').classList.add('hidden');
-    document.querySelector('.bottom-nav').style.display = 'flex'; // Munculkan kembali nav
-};
-
-window.openProductDetail = (productId) => {
-    const p = productsData.find(x => x.id === productId);
-    if (!p) return;
-
-    document.querySelector('.bottom-nav').style.display = 'none'; // Sembunyikan nav
-    document.getElementById('product-detail-page').scrollTop = 0;
-    
-    // Render konten detail (Tanpa tombol kembali di dalam sini karena sudah ada di index.html)
-    document.getElementById('detail-content').innerHTML = `
-        <div style="background: white; min-height: 100vh; padding-bottom: 80px;">
-            <img src="${p.images[0]}" style="width: 100%; display: block;">
-            <div style="padding: 20px;">
-                <h2 style="margin: 0; font-size: 1.5rem;">${p.name}</h2>
-                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
-                <p style="line-height: 1.7; color: #475569;">${p.desc}</p>
-                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">Beli Sekarang</button>
-                </div>
-            </div>
-        </div>`;
-        
-    document.getElementById('product-detail-page').classList.remove('hidden');
-};
+            </div>`;
+        document.getElementById('product-detail-page').classList.remove('hidden');
+    };
 
 window.filterCategory = (category, element) => {
     const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
@@ -608,40 +521,16 @@ window.filterCategory = (category, element) => {
 
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
-    // Pastikan bagian ini ada di dalam app.js Anda
-const searchInput = document.getElementById('search-input');
-const sResult = document.getElementById('search-results');
-
-if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
-        
+        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+        const sResult = document.getElementById('search-results');
         if (keyword === "") {
-            // Jika kosong, tampilkan ilustrasi (seperti yang kita buat sebelumnya)
-            sResult.innerHTML = `
-                <div style="text-align:center; padding:60px 24px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8; margin-bottom:20px;">
-                    <h2 style="font-weight:800; color:#1a1a1a;">Cari Produk Premium</h2>
-                    <p style="color:#64748b; margin-bottom:25px;">Masukkan kata kunci untuk menemukan produk.</p>
-                </div>`;
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+        } else if (filtered.length > 0) {
+            renderProducts(filtered, 'search-results');
         } else {
-            // Filter produk berdasarkan nama
-            const filtered = productsData.filter(p => 
-                p.name.toLowerCase().includes(keyword)
-            );
-
-            if (filtered.length > 0) {
-                // KUNCINYA DI SINI: Gunakan marketplace-grid agar tampilannya sama dengan beranda
-                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
-                
-                // Panggil fungsi render yang sama dengan beranda
-                renderProducts(filtered, 'search-grid');
-            } else {
-                sResult.innerHTML = `
-                    <div style="text-align:center; padding:40px; color:#64748b;">
-                        <p>Produk "<strong>${e.target.value}</strong>" tidak ditemukan.</p>
-                    </div>`;
-            }
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
     });
 }

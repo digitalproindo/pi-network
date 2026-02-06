@@ -464,31 +464,16 @@ window.updateCartUI = () => {
 };
 
     window.switchPage = (pageId) => {
-    // 1. Tambahkan efek fade-out singkat
-    const currentActive = document.querySelector('main:not(.hidden)');
-    if (currentActive) {
-        currentActive.style.opacity = '0';
-    }
-
-    setTimeout(() => {
-        // 2. Sembunyikan semua halaman
-        document.querySelectorAll('main').forEach(m => {
-            m.classList.add('hidden');
-            m.style.opacity = '1'; // Reset opacity untuk halaman berikutnya
-        });
-
-        // 3. Tampilkan halaman yang dipilih
-        const targetPage = document.getElementById(`page-${pageId}`);
-        if (targetPage) {
-            targetPage.classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll otomatis ke atas
-        }
-
-        // 4. Update Navigasi
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-        const activeNav = document.querySelector(`[onclick="switchPage('${pageId}')"]`);
-        if (activeNav) activeNav.classList.add('active');
-    }, 150);
+    ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
+        const el = document.getElementById(p);
+        if(el) el.classList.add('hidden');
+    });
+    const activePage = document.getElementById(`page-${pageId}`);
+    if(activePage) activePage.classList.remove('hidden');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const activeNav = document.getElementById(`nav-${pageId}`);
+    if(activeNav) activeNav.classList.add('active');
+    if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
 
     window.closeProductDetail = () => {

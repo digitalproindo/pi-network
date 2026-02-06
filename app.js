@@ -522,16 +522,49 @@ window.filterCategory = (category, element) => {
 
 const searchInput = document.getElementById('search-input');
 if (searchInput) {
+    const searchInput = document.getElementById('search-input');
+const sResult = document.getElementById('search-results');
+
+if (searchInput) {
+    // Fungsi untuk menampilkan tampilan awal (mirip gambar yang Anda kirim)
+    const showInitialSearchUI = () => {
+        sResult.innerHTML = `
+            <div style="text-align:center; padding:40px 24px; font-family:'Inter', sans-serif;">
+                <div style="margin-bottom: 25px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" 
+                         alt="Search" style="width: 120px; opacity: 0.8;">
+                </div>
+                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Cari Produk Premium</h2>
+                <p style="color:#64748b; font-size:1rem; line-height:1.6; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
+                    Temukan berbagai produk unggulan kami dengan mengetik di kolom pencarian.
+                </p>
+                <button onclick="document.getElementById('search-input').focus()" 
+                        style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 8px 20px rgba(103,72,215,0.4);">
+                    Mulai Mencari
+                </button>
+            </div>`;
+    };
+
+    // Panggil tampilan awal saat pertama kali dimuat
+    showInitialSearchUI();
+
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
-        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-        const sResult = document.getElementById('search-results');
         if (keyword === "") {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
-        } else if (filtered.length > 0) {
-            renderProducts(filtered, 'search-results');
+            showInitialSearchUI();
         } else {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
+            const filtered = productsData.filter(p => 
+                p.name.toLowerCase().includes(keyword) || 
+                p.category.toLowerCase().includes(keyword)
+            );
+            
+            if (filtered.length > 0) {
+                // Gunakan class grid agar hasil pencarian rapi
+                sResult.innerHTML = `<div class="marketplace-grid" id="search-grid"></div>`;
+                renderProducts(filtered, 'search-grid');
+            } else {
+                sResult.innerHTML = `<p style="text-align: center; padding: 40px; color: #64748b;">Produk "${keyword}" tidak ditemukan.</p>`;
+            }
         }
     });
 }

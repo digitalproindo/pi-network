@@ -283,31 +283,16 @@ productsData.forEach(p => {
         document.body.appendChild(overlay);
     };
 
-    // Fungsi untuk memproses Login
-window.handleAuth = async () => {
-    try {
-        const scopes = ['username', 'payments'];
-        
-        // Fungsi ini wajib ada untuk Pi SDK
-        function onIncompletePaymentFound(payment) {
-            console.log("Ada pembayaran gantung:", payment);
+    window.saveAddress = () => {
+        userAddress = {
+            nama: document.getElementById('ship-name').value,
+            telepon: document.getElementById('ship-phone').value,
+            alamatLengkap: document.getElementById('ship-address').value
         };
-
-        // Meminta izin ke Pi Browser
-        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-        
-        // Simpan data user yang berhasil login
-        currentUser = auth.user;
-        
-        // Perbarui tampilan profil
-        updateProfileUI();
-        
-        alert("Halo " + currentUser.username + ", berhasil login!");
-    } catch (err) {
-        console.error("Login Error:", err);
-        alert("Gagal Login. Pastikan buka di Pi Browser!");
-    }
-};
+        if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
+        document.getElementById('address-overlay').remove();
+        alert("Alamat disimpan.");
+    };
 
     // --- 4. RENDER BERANDA ---
 function renderProducts(data, targetGridId) {
@@ -420,89 +405,42 @@ window.removeFromCart = (index) => {
 window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
-    
-    // Tampilan jika keranjang kosong
     if (cart.length === 0) {
-        grid.innerHTML = `
-            <div style="text-align:center; padding:80px 20px; font-family:'Inter', sans-serif;">
-                <div style="font-size: 64px; margin-bottom: 20px; opacity: 0.8;">🛒</div>
-                <h3 style="color:#1a1a1a; margin-bottom:10px; font-weight:800;">Keranjang Anda Kosong</h3>
-                <p style="color:#64748b; font-size:0.95rem; margin-bottom:25px;">Sepertinya Anda belum menambahkan produk premium ke keranjang.</p>
-                <button onclick="switchPage('home')" style="background:linear-gradient(135deg, #6748d7, #4a148c); color:white; border:none; padding:14px 30px; border-radius:15px; font-weight:bold; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3);">
-                    Mulai Belanja
-                </button>
-            </div>`;
+        grid.innerHTML = `<div style="text-align:center; padding:60px 20px;">🛒 Keranjang Anda masih kosong</div>`;
         return;
     }
-
     const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
-
     grid.innerHTML = `
         <div style="padding: 15px;">
-            <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
-                <div style="display:flex; align-items:center; gap:12px; text-align:left;">
-                    <span style="font-size:1.2rem;">📍</span>
-                    <div>
-                        <div style="font-size:0.7rem; color:#6748d7; font-weight:bold; text-transform:uppercase;">Alamat Pengiriman</div>
-                        <div style="font-size:0.85rem; font-weight:700; color:#1a1a1a;">
-                            ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
-                        </div>
+            ${cart.map((item, index) => `
+                <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; border: 1px solid #f1f5f9;">
+                    <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
+                    <div style="flex:1; text-align:left;">
+                        <div style="font-size:0.85rem; font-weight:700;">${item.name}</div>
+                        <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
                     </div>
+                    <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; color:red; cursor:pointer;">✕</div>
+                </div>`).join('')}
+            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
+                <div style="display:flex; justify-content:space-between; font-weight:800;">
+                    <span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span>
                 </div>
-                <span style="color:#6748d7; font-weight:bold;">></span>
+                <button class="btn-buy-now" style="width:100%; margin-top:15px;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG</button>
             </div>
-
-            <div id="cart-list">
-                ${cart.map((item, index) => `
-                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;">
-                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
-                        
-                        <div style="flex:1; text-align:left;">
-                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3;">${item.name}</div>
-                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
-                        </div>
-
-                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px; border: 1px solid #ffccc7; transition: 0.2s;">✕</div>
-                    </div>
-                `).join('')}
-            </div>
-
-            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#64748b;">
-                    <span>Subtotal (${cart.length} Produk)</span>
-                    <span>π ${total}</span>
-                </div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; color:#1a1a1a; border-top:2px solid #f8fafc; padding-top:15px;">
-                    <span>Total Tagihan</span>
-                    <span style="color:#b71c1c;">π ${total}</span>
-                </div>
-                <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; box-shadow: 0 6px 15px rgba(103,72,215,0.3); background:#6748d7; color:white; cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">
-                    CHECKOUT SEKARANG 🚀
-                </button>
-            </div>
-        </div>
-    `;
+        </div>`;
 };
 
     window.switchPage = (pageId) => {
-    // Sembunyikan semua halaman
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
-        if (el) el.classList.add('hidden');
+        if(el) el.classList.add('hidden');
     });
-
-    // Tampilkan halaman aktif
     const activePage = document.getElementById(`page-${pageId}`);
-    if (activePage) activePage.classList.remove('hidden');
-
-    // Update status navigasi bawah (Navbar)
+    if(activePage) activePage.classList.remove('hidden');
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
-    if (activeNav) activeNav.classList.add('active');
-
-    // Logika khusus saat membuka halaman tertentu
-    if (pageId === 'home') renderProducts(productsData, 'main-grid');
-    if (pageId === 'keranjang') window.updateCartUI();
+    if(activeNav) activeNav.classList.add('active');
+    if(pageId === 'home') renderProducts(productsData, 'main-grid');
 };
 
     // --- 7. DETAIL PRODUK ---
@@ -550,92 +488,49 @@ window.filterCategory = (category, element) => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-  // --- 9. LOGIKA PENCARIAN ---
+    // --- 9. LOGIKA PENCARIAN ---
 const searchInput = document.getElementById('search-input');
-const searchResultsGrid = document.getElementById('search-results');
-
 if (searchInput) {
     searchInput.addEventListener('input', (e) => {
         const keyword = e.target.value.toLowerCase();
-        
-        // Filter produk berdasarkan nama atau kategori yang mengandung keyword
-        const filtered = productsData.filter(p => 
-            p.name.toLowerCase().includes(keyword) || 
-            p.category.toLowerCase().includes(keyword)
-        );
-
-        // Jika keyword kosong, kosongkan hasil atau tampilkan semua (opsional)
+        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+        const sResult = document.getElementById('search-results');
         if (keyword === "") {
-            searchResultsGrid.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Ketik nama produk yang ingin dicari...</p>`;
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
         } else if (filtered.length > 0) {
-            // Gunakan fungsi render yang sudah ada
-            window.renderProducts(filtered, 'search-results');
+            renderProducts(filtered, 'search-results');
         } else {
-            // Jika tidak ditemukan
-            searchResultsGrid.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
     });
 }
 
-
-   // Fungsi khusus untuk merapikan tampilan profil
-// --- FUNGSI UPDATE UI PROFIL DENGAN LOGOUT ---
-function updateProfileUI() {
-    const profileInfo = document.getElementById('profile-info');
-    if (!profileInfo) return;
-
-    if (currentUser) {
-        profileInfo.innerHTML = `
-            <div style="text-align:center; padding:20px; font-family:'Inter', sans-serif;">
-                <div style="width:80px; height:80px; background:linear-gradient(135deg, #6748d7, #4a148c); color:white; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:2rem; font-weight:bold; box-shadow: 0 10px 20px rgba(103,72,215,0.2);">
-                    ${currentUser.username.charAt(0).toUpperCase()}
-                </div>
-                
-                <h3 style="margin:0; color:#1a1a1a; font-size:1.2rem; font-weight:800;">@${currentUser.username}</h3>
-                <div style="display:inline-block; background:#e8f5e9; color:#2e7d32; padding:4px 12px; border-radius:20px; font-size:0.75rem; font-weight:700; margin-top:8px;">
-                    ✓ Akun Terverifikasi
-                </div>
-
-                <div style="margin-top:25px; display:flex; flex-direction:column; gap:12px;">
-                    <button onclick="window.showAddressForm()" style="width:100%; background:white; color:#6748d7; border:2px solid #6748d7; padding:14px; border-radius:15px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                        <span>📍</span> ${userAddress.nama ? 'Ubah Alamat' : 'Lengkapi Alamat'}
-                    </button>
-
-                    <button onclick="window.handleLogout()" style="width:100%; background:#fff1f0; color:#ff4d4f; border:1px solid #ffccc7; padding:14px; border-radius:15px; font-weight:bold; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
-                        <span>🚪</span> Keluar Akun
-                    </button>
-                </div>
-            </div>`;
-    } else {
-        // Tampilan jika user BELUM login atau SUDAH logout
-        profileInfo.innerHTML = `
-            <div style="text-align:center; padding:40px 20px;">
-                <div style="font-size:50px; margin-bottom:15px; opacity:0.3;">👤</div>
-                <p style="color:#64748b; margin-bottom:20px;">Silakan masuk untuk melihat profil Anda</p>
-                <button id="login-btn" onclick="window.handleAuth()" style="background:#6748d7; color:white; border:none; padding:15px 40px; border-radius:15px; font-weight:800; cursor:pointer; box-shadow: 0 6px 15px rgba(103,72,215,0.3);">
-                    LOGIN DENGAN PI
-                </button>
-            </div>`;
-    }
-}
-
-// --- FUNGSI LOGOUT ---
-window.handleLogout = () => {
-    if (confirm("Apakah Anda yakin ingin keluar?")) {
-        currentUser = null; // Menghapus data user di memori
-        updateProfileUI(); // Memperbarui tampilan profil kembali ke tombol Login
-        alert("Anda telah keluar.");
-    }
-};
+    // --- FUNGSI LOGIN FIX ---
+    window.handleAuth = async () => {
+        try {
+            const scopes = ['username', 'payments'];
+            const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+            currentUser = auth.user;
+            
+            const profileInfo = document.getElementById('profile-info');
+            if (profileInfo) {
+                profileInfo.innerHTML = `
+                    <div style="background:white; padding:20px; border-radius:15px; text-align:center;">
+                        <h3>@${currentUser.username}</h3>
+                        <p style="color:green;">✓ Terverifikasi</p>
+                        <button onclick="window.showAddressForm()" style="background:#6748d7; color:white; border:none; padding:10px; border-radius:8px;">Atur Alamat</button>
+                    </div>`;
+            }
+            alert("Login Berhasil!");
+        } catch (err) { console.error(err); alert("Gagal Login."); }
+    };
 
     // --- EKSEKUSI ---
     await initPi();
     renderProducts(productsData, 'main-grid');
-    updateProfileUI(); // Cek status login saat awal buka
-
-    // Cara ini memastikan tombol login berfungsi kapanpun muncul di layar
-    document.addEventListener('click', function (e) {
-        if (e.target && e.target.id === 'login-btn') {
-            window.handleAuth();
-        }
-    });
+    
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = window.handleAuth;
+    }
+});

@@ -29,31 +29,6 @@
 
         .hidden { display: none !important; }
 
-        /* Membuat container pencarian rapi di tengah */
-#page-cari div {
-    display: flex;
-    justify-content: center; /* Memastikan isi di dalamnya center */
-    padding: 20px;
-}
-
-/* Mengatur lebar input pencarian agar tidak mentok */
-#search-input {
-    width: 90%; /* Memberikan ruang di kiri dan kanan */
-    max-width: 500px; /* Batas maksimal lebar agar tidak terlalu panjang di tablet */
-    margin: 0 auto; /* Memastikan posisi di tengah */
-    padding: 14px;
-    border-radius: 12px;
-    border: 1px solid #ddd;
-    outline: none;
-    display: block; /* Agar margin auto bekerja */
-}
-
-/* Efek fokus yang sudah kita buat sebelumnya */
-#search-input:focus {
-    border-color: var(--pi-color) !important;
-    box-shadow: 0 0 0 2px rgba(74, 20, 140, 0.1);
-}
-
         /* --- HEADER PREMIUM (BACK TO OLD STYLE) --- */
         header {
             background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
@@ -140,19 +115,19 @@
     display: block;
 }
 
-/* Badge Diskon: Pojok Kanan Atas Mentok & Dinamis */
+/* Badge Diskon di Pojok Kanan Atas - Dibuat Lebih Rapi */
 .discount-badge {
-    position: absolute; 
-    top: 0; 
+    position: absolute;
+    top: 0;
     right: 0;
-    background: var(--discount-red); 
+    background: #ff4d4f; /* Merah kontras */
     color: white;
-    font-size: 0.75rem; 
-    font-weight: 800; 
-    padding: 5px 10px;
-    border-bottom-left-radius: 12px; 
-    z-index: 5;
-    box-shadow: -1px 1px 5px rgba(0,0,0,0.1);
+    font-size: 11px;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-bottom-left-radius: 10px;
+    z-index: 10;
+    box-shadow: -1px 1px 4px rgba(0,0,0,0.1);
 }
 
 /* Label XTRA di Pojok Kiri Bawah Gambar */
@@ -229,14 +204,6 @@
             background-color: #25d366; border-radius: 50%; display: flex; 
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
         }
-
-        #search-input:focus {
-        border-color: var(--pi-color) !important;
-        box-shadow: 0 0 0 2px rgba(74, 20, 140, 0.1);
-        outline: none; /* Menghilangkan garis biru bawaan browser */
-        transition: 0.3s; /* Agar perubahan warna terasa halus */
-    }
-</style>
     </style>
 </head>
 <body>
@@ -265,18 +232,13 @@
 
     <main id="page-home">
         <div class="category-scroll">
-    <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
-    <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
-    <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
-    <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
-    <div class="category-pill" onclick="filterCategory('Emas', this)">🟡 Emas</div>
-    <div class="category-pill" onclick="filterCategory('Gadget', this)">📱 Gadget</div>
-    <div class="category-pill" onclick="filterCategory('Elektronik', this)">🔌 Elektronik</div>
-    <div class="category-pill" onclick="filterCategory('Makanan', this)">🍱 Makanan</div>
-    <div class="category-pill" onclick="filterCategory('Minuman', this)">🥤 Minuman</div>
-    <div class="category-pill" onclick="filterCategory('Herbal', this)">🍃 Herbal</div>
-    <div class="category-pill" onclick="filterCategory('E-Book', this)">📚 E-Book</div>
-</div>
+            <div class="category-pill active" onclick="filterCategory('all')">Semua</div>
+            <div class="category-pill" onclick="filterCategory('Rumah')">🏠 Rumah</div>
+            <div class="category-pill" onclick="filterCategory('Mobil')">🚗 Mobil</div>
+            <div class="category-pill" onclick="filterCategory('Motor')">🏍️ Motor</div>
+            <div class="category-pill" onclick="filterCategory('Herbal')">🍃 Herbal</div>
+            <div class="category-pill" onclick="filterCategory('E-Book')">📚 E-Book</div>
+        </div>
         <div id="main-grid" class="marketplace-grid"></div>
     </main>
 
@@ -330,6 +292,8 @@
     </nav>
 
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-    <script src="app.js?v=5.1"></script>
+    <script src="app.js?v=4.2"></script>
 </body>
 </html>
+
+

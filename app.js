@@ -397,20 +397,21 @@ window.updateCartUI = () => {
     const grid = document.getElementById('cart-items');
     if (!grid) return;
 
+    // Tampilan ketika keranjang kosong (sesuai gambar yang diunggah)
     if (cart.length === 0) {
         grid.innerHTML = `
-            <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
-                <div style="margin-bottom: 25px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 120px; opacity: 0.8;">
+            <div style="text-align:center; padding:60px 24px; font-family:'Inter', sans-serif;">
+                <div style="margin-bottom: 20px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 140px; opacity: 0.9;">
                 </div>
                 
-                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
+                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.6rem; font-weight:800;">Keranjang Anda Kosong</h2>
                 
-                <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
+                <p style="color:#64748b; font-size:1.1rem; line-height:1.5; margin-bottom:30px; max-width:300px; margin-left:auto; margin-right:auto;">
                     Sepertinya Anda belum menambahkan produk premium ke keranjang.
                 </p>
                 
-                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3); transition: transform 0.2s;">
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 45px; border-radius:18px; font-weight:700; font-size:1.1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3);">
                     Mulai Belanja
                 </button>
             </div>`;
@@ -537,7 +538,7 @@ if (searchInput) {
 
     window.handleAuth = async () => {
     console.log("Tombol login diklik");
-    alert("Memulai proses login..."); // Alert untuk memastikan fungsi jalan
+    alert("Apakah Anda Ingin login..."); // Alert untuk memastikan fungsi jalan
 
     try {
         const scopes = ['username', 'payments'];

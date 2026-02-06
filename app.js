@@ -283,16 +283,31 @@ productsData.forEach(p => {
         document.body.appendChild(overlay);
     };
 
-    window.saveAddress = () => {
-        userAddress = {
-            nama: document.getElementById('ship-name').value,
-            telepon: document.getElementById('ship-phone').value,
-            alamatLengkap: document.getElementById('ship-address').value
+    // Fungsi untuk memproses Login
+window.handleAuth = async () => {
+    try {
+        const scopes = ['username', 'payments'];
+        
+        // Fungsi ini wajib ada untuk Pi SDK
+        function onIncompletePaymentFound(payment) {
+            console.log("Ada pembayaran gantung:", payment);
         };
-        if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
-        document.getElementById('address-overlay').remove();
-        alert("Alamat disimpan.");
-    };
+
+        // Meminta izin ke Pi Browser
+        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
+        
+        // Simpan data user yang berhasil login
+        currentUser = auth.user;
+        
+        // Perbarui tampilan profil
+        updateProfileUI();
+        
+        alert("Halo " + currentUser.username + ", berhasil login!");
+    } catch (err) {
+        console.error("Login Error:", err);
+        alert("Gagal Login. Pastikan buka di Pi Browser!");
+    }
+};
 
     // --- 4. RENDER BERANDA ---
 function renderProducts(data, targetGridId) {
@@ -616,9 +631,11 @@ window.handleLogout = () => {
     // --- EKSEKUSI ---
     await initPi();
     renderProducts(productsData, 'main-grid');
-    
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.onclick = window.handleAuth;
-    }
-});
+    updateProfileUI(); // Cek status login saat awal buka
+
+    // Cara ini memastikan tombol login berfungsi kapanpun muncul di layar
+    document.addEventListener('click', function (e) {
+        if (e.target && e.target.id === 'login-btn') {
+            window.handleAuth();
+        }
+    });

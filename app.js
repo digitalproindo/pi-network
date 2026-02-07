@@ -887,7 +887,7 @@ const productsData = [
         category: "Gadget",
         name: "MacBook Pro M3 14-inch",
         price: 0.00350,
-        images: ["https://images.unsplash.com/photo-1517336714460-4c9888147741?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/4gYFHqtP/Desain-tanpa-judul-20260207-183506-0000.png"],
         desc: `• <b>Layar:</b> Liquid Retina XDR 120Hz<br>
                • <b>Chip:</b> Apple M3 Chip (Next-gen GPU)<br>
                • <b>Memori:</b> 16GB Unified Memory<br>

@@ -798,7 +798,138 @@ const productsData = [
                • <b>Standar:</b> Akreditasi Internasional LBMA<br>
                • <b>Status:</b> Barang koleksi & Investasi institusi`
     },
-    
+    {
+        id: "gold-010",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 500 Gram",
+        price: 0.06400,
+        images: ["https://i.ibb.co.com/vvvCTrw1/Desain-tanpa-judul-20260207-151033-0000.png"],
+        desc: `• <b>Berat:</b> 250 Gram<br>
+               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
+               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
+               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
+               • <b>Status:</b> Barang koleksi & Investasi institusi`
+    },
+    {
+        id: "gadget-001",
+        category: "Gadget",
+        name: "iPhone 15 Pro Max 512GB",
+        price: 0.00250,
+        images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> 6.7" Super Retina XDR OLED<br>
+               • <b>Chipset:</b> A17 Pro (3nm)<br>
+               • <b>Kamera:</b> 48MP Utama, 5x Optical Zoom<br>
+               • <b>Material:</b> Titanium Grade 5<br>
+               • <b>Fitur:</b> Action Button, USB-C 3.0`
+    },
+    {
+        id: "gadget-002",
+        category: "Gadget",
+        name: "Samsung Galaxy S24 Ultra",
+        price: 0.00235,
+        images: ["https://images.unsplash.com/photo-1706114003002-315359a9307b?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> 6.8" Dynamic LTPO AMOLED 2X<br>
+               • <b>Stylus:</b> Built-in S Pen<br>
+               • <b>Kamera:</b> 200MP Quad Tele System<br>
+               • <b>AI:</b> Galaxy AI (Circle to Search, Live Translate)<br>
+               • <b>Baterai:</b> 5000mAh, 45W Fast Charging`
+    },
+    {
+        id: "gadget-003",
+        category: "Gadget",
+        name: "iPad Pro M2 12.9-inch Wi-Fi",
+        price: 0.00180,
+        images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> Liquid Retina XDR mini-LED<br>
+               • <b>Chip:</b> Apple M2 Chip 8-Core CPU<br>
+               • <b>Penyimpanan:</b> 256GB SSD<br>
+               • <b>Koneksi:</b> Wi-Fi 6E ultra-cepat<br>
+               • <b>Aksesori:</b> Mendukung Apple Pencil Gen 2`
+    },
+    {
+        id: "gadget-004",
+        category: "Gadget",
+        name: "Samsung Galaxy Z Fold 5 5G",
+        price: 0.00310,
+        images: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar Utama:</b> 7.6" Dynamic AMOLED (Foldable)<br>
+               • <b>Engsel:</b> Flex Hinge Zero Gap<br>
+               • <b>Multitasking:</b> Taskbar Pro & Drag-and-Drop<br>
+               • <b>Ketahanan:</b> IPX8 Water Resistant<br>
+               • <b>Processor:</b> Snapdragon 8 Gen 2 for Galaxy`
+    },
+    {
+        id: "gadget-005",
+        category: "Gadget",
+        name: "Google Pixel 8 Pro",
+        price: 0.00165,
+        images: ["https://images.unsplash.com/photo-1696486715691-382025150569?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Kamera:</b> Pro-level Triple Camera System<br>
+               • <b>Chipset:</b> Google Tensor G3 AI<br>
+               • <b>Fitur:</b> Best Take, Magic Editor AI<br>
+               • <b>Keamanan:</b> Titan M2 Security Chip<br>
+               • <b>OS:</b> Android Stock (Update 7 Tahun)`
+    },
+    {
+        id: "gadget-006",
+        category: "Gadget",
+        name: "Apple Watch Ultra 2",
+        price: 0.00120,
+        images: ["https://images.unsplash.com/photo-1695668101489-328639203a27?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Body:</b> Aerospace Titanium 49mm<br>
+               • <b>Layar:</b> Kecerahan 3000 nits (Retina Always-on)<br>
+               • <b>Sensor:</b> Kedalaman air & Suhu tubuh<br>
+               • <b>Baterai:</b> Hingga 72 jam (Low Power Mode)<br>
+               • <b>Fitur:</b> Dual-frequency GPS`
+    },
+    {
+        id: "gadget-007",
+        category: "Gadget",
+        name: "MacBook Pro M3 14-inch",
+        price: 0.00350,
+        images: ["https://images.unsplash.com/photo-1517336714460-4c9888147741?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> Liquid Retina XDR 120Hz<br>
+               • <b>Chip:</b> Apple M3 Chip (Next-gen GPU)<br>
+               • <b>Memori:</b> 16GB Unified Memory<br>
+               • <b>Audio:</b> 6-Speaker Sound System<br>
+               • <b>Baterai:</b> Daya tahan hingga 22 Jam`
+    },
+    {
+        id: "gadget-008",
+        category: "Gadget",
+        name: "Sony WH-1000XM5 ANC",
+        price: 0.00065,
+        images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Tipe:</b> Wireless Noise Cancelling Headphone<br>
+               • <b>Audio:</b> High-Res Audio Wireless (LDAC)<br>
+               • <b>Mic:</b> 8 Mikrofon untuk panggilan jernih<br>
+               • <b>Fitur:</b> Speak-to-Chat, Spotify Tap<br>
+               • <b>Baterai:</b> 30 Jam pemakaian terus menerus`
+    },
+    {
+        id: "gadget-009",
+        category: "Gadget",
+        name: "Asus ROG Phone 8 Pro",
+        price: 0.00210,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> 165Hz LTPO AMOLED Gaming Display<br>
+               • <b>Gaming:</b> AirTrigger (Tombol ultrasonik)<br>
+               • <b>Pendingin:</b> GameCool 8 Thermal System<br>
+               • <b>RAM:</b> 24GB LPDDR5X<br>
+               • <b>Fitur:</b> AniMe Vision (Display LED di bodi)`
+    },
+    {
+        id: "gadget-010",
+        category: "Gadget",
+        name: "Xiaomi 14 Ultra Carbon",
+        price: 0.00195,
+        images: ["https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Kamera:</b> Leica Summilux Optical Lens<br>
+               • <b>Sensor:</b> 1-inch Sony LYT-900 Utama<br>
+               • <b>Layar:</b> C8 3000nits WQHD+ AMOLED<br>
+               • <b>Charging:</b> 90W HyperCharge<br>
+               • <b>Bahan:</b> Nano-tech Vegan Leather`
+    }
 ];
 
 productsData.forEach(p => {

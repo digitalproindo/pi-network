@@ -413,6 +413,126 @@ const productsData = [
         ]
     },
     {
+        id: "bike-001",
+        name: "Ducati Panigale V4 R",
+        price: 0.01500,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 998cc Desmosedici Stradale V4 R<br>
+               • <b>Tenaga:</b> 218 HP @ 15.500 RPM<br>
+               • <b>Fitur:</b> Sayap Karbon (Aero Winglets), Öhlins Suspension<br>
+               • <b>Transmisi:</b> Ducati Quick Shift (DQS) Up/Down EVO 2<br>
+               • <b>Berat:</b> 172 kg (Dry Weight)`
+    },
+    {
+        id: "bike-002",
+        name: "Kawasaki Ninja H2R (Track Only)",
+        price: 0.01800,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1614165933394-a62bc2392742?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 998cc In-line Four with Supercharger<br>
+               • <b>Tenaga:</b> 310 HP (Paling bertenaga di dunia)<br>
+               • <b>Top Speed:</b> 400+ km/jam<br>
+               • <b>Bodi:</b> Full Carbon Fiber Aerodynamic Bodywork<br>
+               • <b>Rem:</b> Brembo Stylema Monobloc Calipers`
+    },
+    {
+        id: "bike-003",
+        name: "BMW M 1000 RR",
+        price: 0.01250,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1615172282427-9a57ef2d142e?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 999cc Water-cooled Inline 4-Cylinder<br>
+               • <b>Fitur M:</b> Velg Karbon M, Kursi M, Knalpot Akrapovic Titanium<br>
+               • <b>Elektronik:</b> 7 Mode Berkendara (Rain hingga Race Pro 3)<br>
+               • <b>Akselerasi:</b> 0-100 km/jam dalam 3.1 detik<br>
+               • <b>Instrumen:</b> 6.5-inch TFT Display M Animation`
+    },
+    {
+        id: "bike-004",
+        name: "Harley-Davidson CVO Road Glide",
+        price: 0.01400,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> Milwaukee-Eight® VVT 121 (1.977cc)<br>
+               • <b>Gaya:</b> Grand American Touring Luxury<br>
+               • <b>Infotainment:</b> Skyline™ OS with 12.3-inch Touchscreen<br>
+               • <b>Audio:</b> Rockford Fosgate Stage II Sound System<br>
+               • <b>Cat:</b> Hand-painted Custom Paint Finish`
+    },
+    {
+        id: "bike-005",
+        name: "MV Agusta Rush 1000",
+        price: 0.01650,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1624451006509-f671b5597987?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Konsep:</b> Hyper-Naked Drag Bike Luxury<br>
+               • <b>Mesin:</b> 998cc 16-valve DOHC Inline 4<br>
+               • <b>Edisi:</b> Limited Edition (Hanya 300 unit di dunia)<br>
+               • <b>Velg:</b> Forged Aluminium with Carbon Fiber Cover<br>
+               • <b>Desain:</b> Knalpot Titanium SC-Project`
+    },
+    {
+        id: "bike-006",
+        name: "Aprilia RSV4 Xtrenta",
+        price: 0.01900,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1614165933394-a62bc2392742?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Teknologi:</b> MotoGP Derived Aerodynamics (Underwing)<br>
+               • <b>Mesin:</b> 1.099cc V4 Longitudinal 65°<br>
+               • <b>Tenaga:</b> 230 HP / Berat 166 kg<br>
+               • <b>Sasis:</b> Frame Aluminium Adjustable<br>
+               • <b>Filter Udara:</b> Sprint Filter Level MotoGP`
+    },
+    {
+        id: "bike-007",
+        name: "Triumph Rocket 3 TFC",
+        price: 0.00950,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 2.458cc (Mesin motor terbesar di dunia)<br>
+               • <b>Torsi:</b> 225 Nm (Akselerasi instan)<br>
+               • <b>Material:</b> Carbon Fiber Bodywork & Arrow Silencers<br>
+               • <b>Fitur:</b> Cornering ABS & Traction Control<br>
+               • <b>Edisi:</b> Triumph Factory Custom (TFC)`
+    },
+    {
+        id: "bike-008",
+        name: "Arch Motorcycle KRGT-1",
+        price: 0.02500,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1609527791661-5f219954293a?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Pembuat:</b> Co-founded by Keanu Reeves<br>
+               • <b>Mesin:</b> 2.032cc S&S Cycle V-Twin<br>
+               • <b>Produksi:</b> Bespoke (Dibuat sesuai pesanan pembeli)<br>
+               • <b>Material:</b> Billet Aluminium Frame & Carbon Wheels<br>
+               • <b>Suspensi:</b> Öhlins Arch Proprietary Tuning`
+    },
+    {
+        id: "bike-009",
+        name: "Indian Challenger Elite",
+        price: 0.01100,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> PowerPlus Liquid-cooled V-twin (1.768cc)<br>
+               • <b>Fitur:</b> Smart Lean Technology, Electronic Preload Adj.<br>
+               • <b>Warna:</b> Black Candy over Charcoal Metallic<br>
+               • <b>Audio:</b> PowerBand Audio with Saddlebag Speakers<br>
+               • <b>Lampu:</b> Adaptive LED Headlight`
+    },
+    {
+        id: "bike-010",
+        name: "Honda Gold Wing Tour DCT",
+        price: 0.00850,
+        category: "Motor",
+        images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 1.833cc Liquid-cooled 6-cylinder Boxer<br>
+               • <b>Transmisi:</b> 7-speed Automatic Dual Clutch (DCT)<br>
+               • <b>Kenyamanan:</b> Airbag, Walk Mode (Mundur), Apple CarPlay<br>
+               • <b>Suspensi:</b> Double Wishbone Front Suspension<br>
+               • <b>Kapasitas:</b> Bagasi Luas & Sandaran Punggung Elektrik`
+    },
+    {
         id: "car-001",
         category: "Mobil",
         name: "Toyota Fortuner 2.8 GR Sport 2024",

@@ -527,15 +527,25 @@
 
     <div id="sideNav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
-    <br><br>
     
-    <a href="#" onclick="showAbout(); toggleMenu();">ℹ️ Tentang Kami</a>
-    <a href="#" onclick="showVisiMisi(); toggleMenu();">🎯 Visi & Misi</a>
-    <a href="#" onclick="showLayanan(); toggleMenu();">🌐 Jangkauan Layanan</a>
-    
-    <hr style="opacity: 0.1; margin: 15px 20px; border: 0.5px solid #fff;">
-    <a href="#" onclick="alert('Hubungi Admin: +6282191851112');">📞 Kontak</a>
+    <div class="menu-list">
+        <a href="#" onclick="showAbout(); toggleMenu();">
+            <span class="icon">ℹ️</span> Tentang Kami
+        </a>
+        <a href="#" onclick="showVisiMisi(); toggleMenu();">
+            <span class="icon">🎯</span> Visi & Misi
+        </a>
+        <a href="#" onclick="showLayanan(); toggleMenu();">
+            <span class="icon">🌐</span> Jangkauan Layanan
+        </a>
+        
+        <div class="menu-divider"></div>
+        
+        <a href="#" onclick="alert('Hubungi Admin: +6282191851112');">
+            <span class="icon">📞</span> Kontak
+        </a>
     </div>
+</div>
 
 
 

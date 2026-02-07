@@ -45,18 +45,6 @@ const productsData = [
                • <b>Layanan:</b> 24/7 Concierge Service`
     },
     {
-        id: "house-004",
-        category: "Rumah",
-        name: "European Classic Estate",
-        price: 0.30000,
-        images: ["https://images.unsplash.com/photo-1600585154340-be6199f7e009?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Gaya:</b> Klasik Neoklasik Eropa<br>
-               • <b>Luas Bangunan:</b> 1.800 m²<br>
-               • <b>Fitur:</b> Perpustakaan 2 Lantai, Ballroom Utama<br>
-               • <b>Taman:</b> Gaya Versailles dengan Air Mancur<br>
-               • <b>Material:</b> Pintu Kayu Jati Solid & Kristal Swarovski`
-    },
-    {
         id: "house-005",
         category: "Rumah",
         name: "Tropical Cliffside Sanctuary",
@@ -67,18 +55,6 @@ const productsData = [
                • <b>Fasilitas:</b> Private Beach Access, Deck Yoga<br>
                • <b>Struktur:</b> Kayu Ulin & Batu Alam Lokal<br>
                • <b>Kamar:</b> 5 Suite dengan Semi-Outdoor Bathroom`
-    },
-    {
-        id: "house-006",
-        category: "Rumah",
-        name: "Scandinavian Forest Lodge",
-        price: 0.09500,
-        images: ["https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Lingkungan:</b> Hutan Pinus Pribadi<br>
-               • <b>Fitur:</b> Jendela Lantai ke Langit-langit (Triple Glazed)<br>
-               • <b>Interior:</b> Nordic Pine & Tungku Perapian Modern<br>
-               • <b>Energi:</b> Panel Surya & Geothermal Heating<br>
-               • <b>Fasilitas:</b> Outdoor Hot Tub & Guest House`
     },
     {
         id: "house-007",

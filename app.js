@@ -695,7 +695,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 1 Gram",
         price: 0.00015,
-        images: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/WW2GjHH3/Desain-tanpa-judul-20260207-134044-0000.png"],
         desc: `• <b>Berat:</b> 1 Gram<br>
                • <b>Kemurnian:</b> 999.9 (24 Karat)<br>
                • <b>Sertifikat:</b> CertiCard (New Press)<br>

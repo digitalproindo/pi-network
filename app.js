@@ -299,6 +299,7 @@ const productsData = [
     },
     {
         id: "car-003",
+        category: "Mobil",
         name: "Rolls-Royce Phantom Series II",
         price: 0.15000,
         images: ["https://images.unsplash.com/photo-1631214524020-5e1839765c71?auto=format&fit=crop&w=800&q=80"],
@@ -310,6 +311,7 @@ const productsData = [
     },
     {
         id: "car-004",
+        category: "Mobil",
         name: "Lamborghini Aventador SVJ",
         price: 0.08500,
         images: ["https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80"],
@@ -321,6 +323,7 @@ const productsData = [
     },
     {
         id: "car-005",
+        category: "Mobil",
         name: "Bentley Continental GT Mulliner",
         price: 0.06500,
         images: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&w=800&q=80"],
@@ -332,6 +335,7 @@ const productsData = [
     },
     {
         id: "car-006",
+        category: "Mobil",
         name: "Ferrari SF90 Stradale",
         price: 0.09200,
         images: ["https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80"],
@@ -343,6 +347,7 @@ const productsData = [
     },
     {
         id: "car-007",
+        category: "Mobil",
         name: "Mercedes-Maybach S-Class S680",
         price: 0.04500,
         images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80"],
@@ -354,6 +359,7 @@ const productsData = [
     },
     {
         id: "car-008",
+        category: "Mobil",
         name: "Porsche 911 GT3 RS",
         price: 0.05800,
         images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"],
@@ -365,6 +371,7 @@ const productsData = [
     },
     {
         id: "car-009",
+        category: "Mobil",
         name: "Aston Martin DBS Volante",
         price: 0.07200,
         images: ["https://images.unsplash.com/photo-1603584173870-7f3735998394?auto=format&fit=crop&w=800&q=80"],
@@ -376,6 +383,7 @@ const productsData = [
     },
     {
         id: "car-0010",
+        category: "Mobil",
         name: "Bugatti Chiron Super Sport",
         price: 0.25000,
         images: ["https://images.unsplash.com/photo-1600712242805-5f5671c06a4d?auto=format&fit=crop&w=800&q=80"],
@@ -387,6 +395,7 @@ const productsData = [
     },
     {
         id: "car-0011",
+        category: "Mobil",
         name: "McLaren 720S Spider",
         price: 0.06800,
         images: ["https://images.unsplash.com/photo-1594731804112-870094031668?auto=format&fit=crop&w=800&q=80"],
@@ -398,6 +407,7 @@ const productsData = [
     },
     {
         id: "car-0012",
+        category: "Mobil",
         name: "Range Rover SV Autobiography",
         price: 0.04000,
         images: ["https://images.unsplash.com/photo-1606148301556-99173f629337?auto=format&fit=crop&w=800&q=80"],

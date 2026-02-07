@@ -731,7 +731,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 10 Gram",
         price: 0.00142,
-        images: ["https://images.unsplash.com/photo-1633174524827-db00a6b7bc74?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/qMTw7ZPb/Desain-tanpa-judul-20260207-142456-0000.png"],
         desc: `• <b>Berat:</b> 10 Gram<br>
                • <b>Kemurnian:</b> Au 999.9<br>
                • <b>Desain:</b> Motif Klasik Antam<br>

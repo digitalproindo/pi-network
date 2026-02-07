@@ -213,7 +213,7 @@ const productsData = [
                • <b>Fasilitas:</b> Lapangan Berkuda, Kandang Kuda Premium<br>
                • <b>Interior:</b> Gaya Farmhouse Modern dengan Kayu Oak Ekspos<br>
                • <b>Dapur:</b> Outdoor BBQ Station & Pizza Wood-Oven`
-    }
+    },
     { 
         id: 'p2', 
         name: "COCO Pro Kunyit", 

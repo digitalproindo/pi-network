@@ -490,16 +490,17 @@
 /* Sidebar Styling */
 .sidenav {
     height: 100%;
-    width: 0;
+    width: 0px; 
     position: fixed;
-    z-index: 3000; /* Di atas segalanya */
+    /* Ubah z-index ke angka yang sangat tinggi agar di depan banner/gambar */
+    z-index: 10000; 
     top: 0;
     right: 0;
-    background-color: #1a0033;
+    background-color: #1a0033; /* Warna gelap agar teks putih terbaca jelas */
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5); /* Tambahkan bayangan agar terlihat terpisah */
 }
 
 .sidenav a {

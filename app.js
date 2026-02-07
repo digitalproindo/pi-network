@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 const productsData = [
     {
         id: "house-001",
+        category: "Rumah",
         name: "The Beverly Hills Modern Mansion",
         price: 0.25000,
         images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"],
@@ -21,6 +22,7 @@ const productsData = [
     },
     {
         id: "house-002",
+        category: "Rumah",
         name: "Zen Waterfront Villa",
         price: 0.18000,
         images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"],
@@ -32,6 +34,7 @@ const productsData = [
     },
     {
         id: "house-003",
+        category: "Rumah",
         name: "Penthouse Skyline Duplex",
         price: 0.12000,
         images: ["https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80"],
@@ -43,6 +46,7 @@ const productsData = [
     },
     {
         id: "house-004",
+        category: "Rumah",
         name: "European Classic Estate",
         price: 0.30000,
         images: ["https://images.unsplash.com/photo-1600585154340-be6199f7e009?auto=format&fit=crop&w=800&q=80"],
@@ -54,6 +58,7 @@ const productsData = [
     },
     {
         id: "house-005",
+        category: "Rumah",
         name: "Tropical Cliffside Sanctuary",
         price: 0.15500,
         images: ["https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80"],
@@ -65,6 +70,7 @@ const productsData = [
     },
     {
         id: "house-006",
+        category: "Rumah",
         name: "Scandinavian Forest Lodge",
         price: 0.09500,
         images: ["https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=800&q=80"],
@@ -76,6 +82,7 @@ const productsData = [
     },
     {
         id: "house-007",
+        category: "Rumah",
         name: "Modern Desert Oasis",
         price: 0.14000,
         images: ["https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80"],
@@ -87,6 +94,7 @@ const productsData = [
     },
     {
         id: "house-008",
+        category: "Rumah",
         name: "The Glass House Estate",
         price: 0.21000,
         images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80"],
@@ -98,6 +106,7 @@ const productsData = [
     },
     {
         id: "house-009",
+        category: "Rumah",
         name: "Mediterranean Seafront Palace",
         price: 0.28000,
         images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
@@ -109,6 +118,7 @@ const productsData = [
     },
     {
         id: "house-010",
+        category: "Rumah",
         name: "The Urban Luxury Loft",
         price: 0.08800,
         images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"],

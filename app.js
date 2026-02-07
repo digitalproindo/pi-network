@@ -689,6 +689,126 @@ const productsData = [
                • <b>Belakang:</b> Hot Stone Massage Seats & Deployable Tables<br>
                • <b>Velg:</b> 23-inch Forged Wheels<br>
                • <b>Cat:</b> SV Bespoke Premium Palette`
+    },
+    {
+        id: "gold-001",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 1 Gram",
+        price: 0.00015,
+        images: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 1 Gram<br>
+               • <b>Kemurnian:</b> 999.9 (24 Karat)<br>
+               • <b>Sertifikat:</b> CertiCard (New Press)<br>
+               • <b>Dimensi:</b> 13 x 7.8 x 0.5 mm<br>
+               • <b>Fitur:</b> QR Code autentikasi aplikasi CertiEye`
+    },
+    {
+        id: "gold-002",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 2 Gram",
+        price: 0.00029,
+        images: ["https://images.unsplash.com/photo-1584444248331-10f84594639f?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 2 Gram<br>
+               • <b>Kemurnian:</b> Fine Gold 999.9<br>
+               • <b>Ketebalan:</b> 0.85 mm<br>
+               • <b>Sertifikat:</b> Terintegrasi dalam kemasan CertiCard<br>
+               • <b>Produksi:</b> PT Antam Tbk (Logam Mulia)`
+    },
+    {
+        id: "gold-003",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 5 Gram",
+        price: 0.00072,
+        images: ["https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 5 Gram<br>
+               • <b>Kemurnian:</b> 99.99% Emas Murni<br>
+               • <b>Dimensi:</b> 20.5 x 12.3 mm<br>
+               • <b>Keamanan:</b> Barcode unik pada kemasan<br>
+               • <b>Investasi:</b> Likuiditas tinggi, mudah dijual kembali`
+    },
+    {
+        id: "gold-004",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 10 Gram",
+        price: 0.00142,
+        images: ["https://images.unsplash.com/photo-1633174524827-db00a6b7bc74?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 10 Gram<br>
+               • <b>Kemurnian:</b> Au 999.9<br>
+               • <b>Desain:</b> Motif Klasik Antam<br>
+               • <b>Sertifikat:</b> LBMA (London Bullion Market Association)<br>
+               • <b>Kelengkapan:</b> Nota resmi pembelian digital`
+    },
+    {
+        id: "gold-005",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 25 Gram",
+        price: 0.00350,
+        images: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 25 Gram<br>
+               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
+               • <b>Dimensi:</b> 34 x 20.4 mm<br>
+               • <b>Sertifikat:</b> Akreditasi KAN (Komite Akreditasi Nasional)<br>
+               • <b>Proteksi:</b> Teknologi kemasan anti-pemalsuan`
+    },
+    {
+        id: "gold-006",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 50 Gram",
+        price: 0.00690,
+        images: ["https://images.unsplash.com/photo-1589750615582-4545227699ca?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 50 Gram<br>
+               • <b>Bentuk:</b> Bar (Batangan)<br>
+               • <b>Kemurnian:</b> 24 Karat (99.99%)<br>
+               • <b>Sertifikat:</b> Global Standard LBMA<br>
+               • <b>Dimensi:</b> 42.5 x 25.5 mm`
+    },
+    {
+        id: "gold-007",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 100 Gram",
+        price: 0.01370,
+        images: ["https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 100 Gram<br>
+               • <b>Kemurnian:</b> Au 999.9<br>
+               • <b>Sertifikat:</b> Terpisah (Sertifikat Kertas Klasik/CertiCard)<br>
+               • <b>Dimensi:</b> 50 x 30 mm<br>
+               • <b>Nilai:</b> Instrumen lindung nilai (Hedging) terbaik`
+    },
+    {
+        id: "gold-008",
+        category: "Emas",
+        name: "Emas Antam Gift Series - Wedding",
+        price: 0.00008,
+        images: ["https://images.unsplash.com/photo-1531995811006-35cb42e1a022?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 0.5 Gram<br>
+               • <b>Edisi:</b> Khusus Kado Pernikahan (Gift Series)<br>
+               • <b>Kemasan:</b> Kartu Eksklusif bertema Wedding<br>
+               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
+               • <b>Fitur:</b> Bisa ditambahkan pesan kustom`
+    },
+    {
+        id: "gold-009",
+        category: "Emas",
+        name: "Emas Antam Gift Series - Birthday",
+        price: 0.00008,
+        images: ["https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 0.5 Gram<br>
+               • <b>Edisi:</b> Selamat Ulang Tahun (Birthday)<br>
+               • <b>Kemasan:</b> Kartu berwarna cerah bertema Pesta<br>
+               • <b>Kemurnian:</b> 24 Karat (999.9)<br>
+               • <b>Sertifikat:</b> CertiCard terintegrasi`
+    },
+    {
+        id: "gold-010",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 250 Gram",
+        price: 0.03400,
+        images: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Berat:</b> 250 Gram<br>
+               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
+               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
+               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
+               • <b>Status:</b> Barang koleksi & Investasi institusi`
     }
 ];
 

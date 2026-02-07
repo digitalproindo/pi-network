@@ -530,10 +530,22 @@ window.updateCartUI = () => {
         document.getElementById('product-detail-page').classList.add('hidden');
     };
 
-    window.openProductDetail = (productId) => {
+    window.closeProductDetail = () => {
+    // Sembunyikan halaman detail
+    document.getElementById('product-detail-page').classList.add('hidden');
+    
+    // TAMPILKAN KEMBALI NAVIGASI BAWAH
+    const bNav = document.querySelector('.bottom-nav');
+    if(bNav) {
+        bNav.style.display = 'flex'; // Mengembalikan ke tampilan semula
+    }
+};
+
+window.openProductDetail = (productId) => {
     const p = productsData.find(x => x.id === productId);
     if (!p) return;
 
+    // SEMBUNYIKAN NAVIGASI BAWAH
     const bNav = document.querySelector('.bottom-nav');
     if(bNav) bNav.style.display = 'none';
 

@@ -296,6 +296,116 @@ const productsData = [
             <strong>Catatan:</strong><br>
             Harga sudah termasuk BBN-KB (On The Road) dan asuransi all-risk 1 tahun.
         `
+    },
+    {
+        id: "car-003",
+        name: "Rolls-Royce Phantom Series II",
+        price: 0.15000,
+        images: ["https://images.unsplash.com/photo-1631214524020-5e1839765c71?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 6.75L V12 Twin-Turbo<br>
+               • <b>Tenaga:</b> 563 HP / 900 Nm<br>
+               • <b>Interior:</b> Kustom Hand-Stitched Leather<br>
+               • <b>Fitur:</b> Starlight Headliner, Magic Carpet Ride Suspension<br>
+               • <b>Warna:</b> Midnight Sapphire with Silver Upper`
+    },
+    {
+        id: "car-004",
+        name: "Lamborghini Aventador SVJ",
+        price: 0.08500,
+        images: ["https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 6.5L V12 Naturally Aspirated<br>
+               • <b>Akselerasi:</b> 0-100 km/h dalam 2.8 detik<br>
+               • <b>Aerodinamis:</b> ALA 2.0 (Aerodinamica Lamborghini Attiva)<br>
+               • <b>Sasis:</b> Full Carbon Fiber Monocoque<br>
+               • <b>Transmisi:</b> 7-Speed ISR (Independent Shifting Rods)`
+    },
+    {
+        id: "car-005",
+        name: "Bentley Continental GT Mulliner",
+        price: 0.06500,
+        images: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 6.0L W12 TSI Twin-Turbo<br>
+               • <b>Interior:</b> Diamond-in-Diamond Quilting<br>
+               • <b>Fitur:</b> Bentley Rotating Display, Mulliner Clock<br>
+               • <b>Velg:</b> 22-inch Mulliner Exclusive Wheels<br>
+               • <b>Audio:</b> Naim for Bentley 2.200W Sound System`
+    },
+    {
+        id: "car-006",
+        name: "Ferrari SF90 Stradale",
+        price: 0.09200,
+        images: ["https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Sistem:</b> Plug-in Hybrid AWD<br>
+               • <b>Mesin:</b> 4.0L V8 Turbo + 3 Motor Listrik<br>
+               • <b>Total Tenaga:</b> 1.000 CV (986 HP)<br>
+               • <b>Transmisi:</b> 8-Speed F1 Dual-Clutch<br>
+               • <b>Top Speed:</b> 340 km/h`
+    },
+    {
+        id: "car-007",
+        name: "Mercedes-Maybach S-Class S680",
+        price: 0.04500,
+        images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 6.0L V12 Biturbo<br>
+               • <b>Kursi:</b> Executive Rear Seats with Massage Function<br>
+               • <b>Hiburan:</b> MBUX High-End Rear Seat Entertainment<br>
+               • <b>Fitur:</b> Digital Light, Chauffeur Package<br>
+               • <b>Audio:</b> Burmester 4D Surround Sound`
+    },
+    {
+        id: "car-008",
+        name: "Porsche 911 GT3 RS",
+        price: 0.05800,
+        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 4.0L Naturally Aspirated Boxer-6<br>
+               • <b>RPM:</b> Redline di 9.000 RPM<br>
+               • <b>Sayap:</b> Active Rear Wing with DRS (Drag Reduction System)<br>
+               • <b>Berat:</b> Konstruksi CFRP Ringan (1.450 kg)<br>
+               • <b>Sasis:</b> Rear-axle Steering & PASM Sport Tuning`
+    },
+    {
+        id: "car-009",
+        name: "Aston Martin DBS Volante",
+        price: 0.07200,
+        images: ["https://images.unsplash.com/photo-1603584173870-7f3735998394?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Konfigurasi:</b> Convertible (Atap Terbuka)<br>
+               • <b>Mesin:</b> 5.2L V12 Twin-Turbo<br>
+               • <b>Tenaga:</b> 715 BHP / 900 Nm<br>
+               • <b>Rem:</b> Carbon Ceramic Brake System<br>
+               • <b>Atap:</b> 8-layer Insulated Fabric Roof`
+    },
+    {
+        id: "car-0010",
+        name: "Bugatti Chiron Super Sport",
+        price: 0.25000,
+        images: ["https://images.unsplash.com/photo-1600712242805-5f5671c06a4d?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 8.0L W16 Quad-Turbocharged<br>
+               • <b>Tenaga:</b> 1.600 PS (1.578 HP)<br>
+               • <b>Ban:</b> Michelin Pilot Sport Cup 2 (Special Edition)<br>
+               • <b>Bodi:</b> Longtail Aerodynamics Carbon Fiber<br>
+               • <b>Akselerasi:</b> 0-200 km/h dalam 5.8 detik`
+    },
+    {
+        id: "car-0011",
+        name: "McLaren 720S Spider",
+        price: 0.06800,
+        images: ["https://images.unsplash.com/photo-1594731804112-870094031668?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 4.0L V8 Twin-Turbo<br>
+               • <b>Sasis:</b> Monocage II-S Carbon Fiber<br>
+               • <b>Pintu:</b> Double-Hinged Dihedral Doors<br>
+               • <b>Suspensi:</b> Proactive Chassis Control II<br>
+               • <b>Interior:</b> Alcantara & Bridge of Weir Leather`
+    },
+    {
+        id: "car-0012",
+        name: "Range Rover SV Autobiography",
+        price: 0.04000,
+        images: ["https://images.unsplash.com/photo-1606148301556-99173f629337?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Tipe:</b> Long Wheelbase (LWB) Luxury SUV<br>
+               • <b>Mesin:</b> 5.0L Supercharged V8<br>
+               • <b>Belakang:</b> Hot Stone Massage Seats & Deployable Tables<br>
+               • <b>Velg:</b> 23-inch Forged Wheels<br>
+               • <b>Cat:</b> SV Bespoke Premium Palette`
     }
 ];
 

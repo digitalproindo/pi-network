@@ -863,7 +863,7 @@ const productsData = [
         category: "Gadget",
         name: "Google Pixel 8 Pro",
         price: 0.00165,
-        images: ["https://images.unsplash.com/photo-1696486715691-382025150569?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/4whjRRwC/Desain-tanpa-judul-20260207-182718-0000.png"],
         desc: `• <b>Kamera:</b> Pro-level Triple Camera System<br>
                • <b>Chipset:</b> Google Tensor G3 AI<br>
                • <b>Fitur:</b> Best Take, Magic Editor AI<br>
@@ -875,7 +875,7 @@ const productsData = [
         category: "Gadget",
         name: "Apple Watch Ultra 2",
         price: 0.00120,
-        images: ["https://images.unsplash.com/photo-1695668101489-328639203a27?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/cX2449Wh/Desain-tanpa-judul-20260207-183059-0000.png"],
         desc: `• <b>Body:</b> Aerospace Titanium 49mm<br>
                • <b>Layar:</b> Kecerahan 3000 nits (Retina Always-on)<br>
                • <b>Sensor:</b> Kedalaman air & Suhu tubuh<br>

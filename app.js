@@ -211,7 +211,7 @@ const productsData = [
     { 
         id: 'v1', 
         name: "Sedan Sport Luxury - Tipe S1", 
-        price: 5.5, 
+        price: 0.005, 
         category: "Mobil", 
         images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], 
         desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof. Keamanan tingkat tinggi dengan smart driving assist.",
@@ -534,32 +534,40 @@ window.updateCartUI = () => {
     const p = productsData.find(x => x.id === productId);
     if (!p) return;
 
-    // Sembunyikan navigasi bawah saat melihat detail
     const bNav = document.querySelector('.bottom-nav');
     if(bNav) bNav.style.display = 'none';
 
     document.getElementById('product-detail-page').scrollTop = 0;
     
-    // SISIPKAN DI SINI
     document.getElementById('detail-content').innerHTML = `
-        <div style="background: white; min-height: 100vh; padding-bottom: 80px; font-family:'Inter', sans-serif;">
-            <img src="${p.images[0]}" style="width: 100%; display: block;">
+        <div style="background: white; min-height: 100vh; padding-bottom: 100px; font-family:'Inter', sans-serif; position: relative;">
+            
+            <div class="back-button" onclick="closeProductDetail()" style="position: fixed; top: 20px; left: 20px; z-index: 5000;">
+                <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke:#1a0033; stroke-width:2.5;">
+                    <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
+
+            <div style="width: 100%; pt: 75%; position: relative; background: #f8fafc; overflow: hidden;">
+                <img src="${p.images[0]}" style="width: 100%; height: 300px; object-fit: cover; display: block;">
+            </div>
             
             <div style="padding: 20px;">
-                <h2 style="margin: 0; font-size: 1.5rem; color:#1a1a1a;">${p.name}</h2>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin: 15px 0;">π ${p.price.toFixed(5)}</div>
+                <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; line-height: 1.3;">${p.name}</h2>
+                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
                 
-                <div style="background: #fdfdfd; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; margin-top: 20px;">
-                    <h4 style="margin-top: 0; color: #1a0033; font-weight: 800; border-bottom: 2px solid #6748d7; width: fit-content; padding-bottom: 5px;">
+                <div style="background: #fdfdfd; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; margin-top: 15px;">
+                    <h4 style="margin: 0 0 10px 0; color: #4a148c; font-weight: 800; border-bottom: 2px solid #6748d7; width: fit-content; padding-bottom: 5px;">
                         DETAIL SPESIFIKASI
                     </h4>
                     <div style="line-height: 1.8; color: #475569; font-size: 0.9rem;">
                         ${p.desc}
                     </div>
                 </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
                     <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">Beli Sekarang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
         </div>`;

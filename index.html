@@ -464,6 +464,60 @@
 
 }
 
+/* --- HAMBURGER MENU STYLE --- */
+.menu-icon {
+    position: absolute;
+    top: 55px; /* Tepat di bawah tombol login */
+    right: 15px;
+    cursor: pointer;
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.menu-icon span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: white;
+    transition: 0.3s;
+}
+
+/* Sidebar Styling */
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 3000; /* Di atas segalanya */
+    top: 0;
+    right: 0;
+    background-color: #1a0033;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+}
+
+.sidenav a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: white;
+    display: block;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 30px;
+}
+
     </style>
 
 </head>
@@ -473,34 +527,41 @@
 
 
     <header>
+    <div class="auth-container">
+        <button id="login-btn" class="btn-auth">Login</button>
+    </div>
 
-        <div class="auth-container"><button id="login-btn" class="btn-auth">Login</button></div>
+    <div class="menu-icon" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
-        <div class="header-content">
+    <div id="sideNav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
+        <br><br> <a href="#" onclick="switchPage('home'); toggleMenu();">🏠 Beranda</a>
+        <a href="#" onclick="switchPage('cari'); toggleMenu();">🔍 Cari Produk</a>
+        <a href="#" onclick="switchPage('keranjang'); toggleMenu();">🛒 Keranjang</a>
+        <a href="#" onclick="switchPage('profile'); toggleMenu();">👤 Profil Saya</a>
+        <hr style="opacity: 0.1; margin: 10px 20px;">
+        <a href="#" onclick="alert('Digital Pro Indo: Marketplace Premium Pi Network.');">ℹ️ Tentang Kami</a>
+        <a href="#" onclick="alert('Hubungi Admin: +6282191851112');">📞 Kontak</a>
+    </div>
 
-            <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo">
-
-            <div>
-
-                <h1 style="margin:0; font-size: 1.3rem; font-weight: 800;">DIGITAL PRO <span style="color: #d4af37;">INDO</span></h1>
-
-                <p style="margin:0; opacity: 0.9; font-size: 0.65rem; font-weight: 600; text-transform: uppercase;">Premium Marketplace</p>
-
-            </div>
-
+    <div class="header-content">
+        <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo">
+        <div>
+            <h1 style="margin:0; font-size: 1.3rem; font-weight: 800;">DIGITAL PRO <span style="color: #d4af37;">INDO</span></h1>
+            <p style="margin:0; opacity: 0.9; font-size: 0.65rem; font-weight: 600; text-transform: uppercase;">Premium Marketplace</p>
         </div>
-
-        <div class="header-ticker">
-
-            <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">
-
-                Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium. Pengiriman aman dan terpercaya!
-
-            </marquee>
-
-        </div>
-
-    </header>
+    </div>
+    
+    <div class="header-ticker">
+        <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">
+            Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium.
+        </marquee>
+    </div>
+</header>
 
 
 

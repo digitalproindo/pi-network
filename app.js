@@ -719,7 +719,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 5 Gram",
         price: 0.00072,
-        images: ["https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/JW7Tk9kZ/Desain-tanpa-judul-20260207-141911-0000.png"],
         desc: `• <b>Berat:</b> 5 Gram<br>
                • <b>Kemurnian:</b> 99.99% Emas Murni<br>
                • <b>Dimensi:</b> 20.5 x 12.3 mm<br>
@@ -743,7 +743,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 25 Gram",
         price: 0.00350,
-        images: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/qMTw7ZPb/Desain-tanpa-judul-20260207-142456-0000.png"],
         desc: `• <b>Berat:</b> 25 Gram<br>
                • <b>Kemurnian:</b> 999.9 Fine Gold<br>
                • <b>Dimensi:</b> 34 x 20.4 mm<br>

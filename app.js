@@ -57,18 +57,6 @@ const productsData = [
                • <b>Kamar:</b> 5 Suite dengan Semi-Outdoor Bathroom`
     },
     {
-        id: "house-007",
-        category: "Rumah",
-        name: "Modern Desert Oasis",
-        price: 0.14000,
-        images: ["https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Arsitektur:</b> Cantilever Design<br>
-               • <b>Lokasi:</b> Palm Springs, Arizona<br>
-               • <b>Fasilitas:</b> Fire Pit Area, Lap Pool Panjang<br>
-               • <b>Lantai:</b> Polished Concrete Floors<br>
-               • <b>Dapur:</b> Gourmet Chef's Kitchen (Sub-Zero Appliances)`
-    },
-    {
         id: "house-008",
         category: "Rumah",
         name: "The Glass House Estate",
@@ -106,6 +94,7 @@ const productsData = [
     },
     {
         id: "house-011",
+        category: "Rumah",
         name: "The Floating Diamond Villa",
         price: 0.19500,
         images: ["https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80"],
@@ -116,18 +105,8 @@ const productsData = [
                • <b>Energi:</b> Kemandirian Energi dengan Panel Surya Laut`
     },
     {
-        id: "house-012",
-        name: "Neo-Gothic Hilltop Manor",
-        price: 0.22000,
-        images: ["https://images.unsplash.com/photo-1577495508048-b635879837f1?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Dimensi:</b> LT 8.000 m² / LB 1.500 m²<br>
-               • <b>Ruangan:</b> 10 Kamar Tidur, Kapel Pribadi<br>
-               • <b>Gaya:</b> Modern Gothic dengan Sentuhan Industrial<br>
-               • <b>Fasilitas:</b> Gudang Anggur Bawah Tanah, Menara Observasi<br>
-               • <b>Interior:</b> Lantai Batu Slate & Lampu Gantung Besi Tempa`
-    },
-    {
         id: "house-013",
+        category: "Rumah",
         name: "Cyber-Tech Underground Bunker",
         price: 0.16000,
         images: ["https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80"],
@@ -139,6 +118,7 @@ const productsData = [
     },
     {
         id: "house-014",
+        category: "Rumah",
         name: "Aspen Snow Peak Lodge",
         price: 0.13500,
         images: ["https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&w=800&q=80"],
@@ -150,6 +130,7 @@ const productsData = [
     },
     {
         id: "house-015",
+        category: "Rumah",
         name: "Mediterranean Cliff Villa",
         price: 0.27000,
         images: ["https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80"],
@@ -161,6 +142,7 @@ const productsData = [
     },
     {
         id: "house-016",
+        category: "Rumah",
         name: "The Brutalist Cube Estate",
         price: 0.11000,
         images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
@@ -172,6 +154,7 @@ const productsData = [
     },
     {
         id: "house-017",
+        category: "Rumah",
         name: "Amazonian Eco-Mansion",
         price: 0.14500,
         images: ["https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=800&q=80"],
@@ -182,18 +165,8 @@ const productsData = [
                • <b>Lokasi:</b> Hutan Lindung Tropis`
     },
     {
-        id: "house-018",
-        name: "Tokyo Minimalist Origami House",
-        price: 0.08200,
-        images: ["https://images.unsplash.com/photo-1505691938895-1758d7eaa511?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Dimensi:</b> LT 200 m² / LB 350 m² (Optimasi Lahan Sempit)<br>
-               • <b>Gaya:</b> Origami Folding Design (Banyak Sudut Unik)<br>
-               • <b>Ruangan:</b> Tatami Room Modern, Rooftop Onsen<br>
-               • <b>Teknologi:</b> Partisi Geser Otomatis, Storage Tersembunyi<br>
-               • <b>Material:</b> Kayu Ash & Panel Putih Minimalis`
-    },
-    {
         id: "house-019",
+        category: "Rumah",
         name: "Dubai Sky-High Villa",
         price: 0.35000,
         images: ["https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80"],
@@ -205,6 +178,7 @@ const productsData = [
     },
     {
         id: "house-020",
+        category: "Rumah",
         name: "The Vineyard Ranch Estate",
         price: 0.17500,
         images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"],

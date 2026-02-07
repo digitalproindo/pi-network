@@ -743,7 +743,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 25 Gram",
         price: 0.00350,
-        images: ["https://i.ibb.co.com/qMTw7ZPb/Desain-tanpa-judul-20260207-142456-0000.png"],
+        images: ["https://i.ibb.co.com/K8jSt3G/Desain-tanpa-judul-20260207-145416-0000.png"],
         desc: `• <b>Berat:</b> 25 Gram<br>
                • <b>Kemurnian:</b> 999.9 Fine Gold<br>
                • <b>Dimensi:</b> 34 x 20.4 mm<br>
@@ -767,7 +767,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 100 Gram",
         price: 0.01370,
-        images: ["https://images.unsplash.com/photo-1590523277543-a94d2e4eb00b?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/PzwYFNZ8/Desain-tanpa-judul-20260207-150017-0000.png"],
         desc: `• <b>Berat:</b> 100 Gram<br>
                • <b>Kemurnian:</b> Au 999.9<br>
                • <b>Sertifikat:</b> Terpisah (Sertifikat Kertas Klasik/CertiCard)<br>
@@ -775,41 +775,30 @@ const productsData = [
                • <b>Nilai:</b> Instrumen lindung nilai (Hedging) terbaik`
     },
     {
-        id: "gold-008",
-        category: "Emas",
-        name: "Emas Antam Gift Series - Wedding",
-        price: 0.00008,
-        images: ["https://images.unsplash.com/photo-1531995811006-35cb42e1a022?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Berat:</b> 0.5 Gram<br>
-               • <b>Edisi:</b> Khusus Kado Pernikahan (Gift Series)<br>
-               • <b>Kemasan:</b> Kartu Eksklusif bertema Wedding<br>
-               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
-               • <b>Fitur:</b> Bisa ditambahkan pesan kustom`
-    },
-    {
-        id: "gold-009",
-        category: "Emas",
-        name: "Emas Antam Gift Series - Birthday",
-        price: 0.00008,
-        images: ["https://images.unsplash.com/photo-1513201099705-a9746e1e201f?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Berat:</b> 0.5 Gram<br>
-               • <b>Edisi:</b> Selamat Ulang Tahun (Birthday)<br>
-               • <b>Kemasan:</b> Kartu berwarna cerah bertema Pesta<br>
-               • <b>Kemurnian:</b> 24 Karat (999.9)<br>
-               • <b>Sertifikat:</b> CertiCard terintegrasi`
-    },
-    {
         id: "gold-010",
         category: "Emas",
         name: "Emas Antam Logam Mulia 250 Gram",
         price: 0.03400,
-        images: ["https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/hx080kjJ/Desain-tanpa-judul-20260207-150526-0000.png"],
         desc: `• <b>Berat:</b> 250 Gram<br>
                • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
                • <b>Kemurnian:</b> 999.9 Fine Gold<br>
                • <b>Standar:</b> Akreditasi Internasional LBMA<br>
                • <b>Status:</b> Barang koleksi & Investasi institusi`
-    }
+    },
+    {
+        id: "gold-010",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 500 Gram",
+        price: 0.06400,
+        images: ["https://i.ibb.co.com/vvvCTrw1/Desain-tanpa-judul-20260207-151033-0000.png"],
+        desc: `• <b>Berat:</b> 250 Gram<br>
+               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
+               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
+               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
+               • <b>Status:</b> Barang koleksi & Investasi institusi`
+    },
+    
 ];
 
 productsData.forEach(p => {

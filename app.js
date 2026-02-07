@@ -246,6 +246,56 @@ const productsData = [
         reviews: [
             { user: "RiderPi", comment: "Tarikan enteng, tampilannya gahar banget." }
         ]
+    },
+    {
+        id: "car-001",
+        category: "Mobil",
+        name: "Toyota Fortuner 2.8 GR Sport 2024",
+        price: 0.15000, // Harga dalam Pi (Contoh)
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
+        desc: `
+            <strong>Spesifikasi Utama:</strong><br>
+            • Kondisi: Baru (Gress)<br>
+            • Mesin: 2.800 cc Diesel Turbo (1GD-FTV)<br>
+            • Transmisi: Otomatis 6-Speed<br>
+            • Tenaga: 203.9 PS / 500 Nm<br>
+            • Sistem Penggerak: 4x2 RWD<br><br>
+            
+            <strong>Fitur Premium:</strong><br>
+            • Full GR Sport Bodykit<br>
+            • Wireless Charger & NFC<br>
+            • Toyota Safety Sense (TSS)<br>
+            • Kamera 360 & Power Backdoor dengan Kick Sensor<br><br>
+            
+            <strong>Kelengkapan:</strong><br>
+            Surat Lengkap (STNK & BPKB), Garansi Resmi Toyota 3 Tahun, Gratis Service & Oli.
+        `
+    },
+    {
+        id: "car-002",
+        category: "Mobil",
+        name: "Honda CR-V 2.0 RS e:HEV Hybrid 2024",
+        price: 0.18500,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=1000&auto=format&fit=crop"],
+        desc: `
+            <strong>Spesifikasi Utama:</strong><br>
+            • Kondisi: Baru<br>
+            • Mesin: 2.0L i-VTEC + Electric Motor (Hybrid)<br>
+            • Transmisi: e-CVT<br>
+            • Tenaga Gabungan: 207 PS<br>
+            • Warna: Platinum White Pearl<br><br>
+            
+            <strong>Fitur Unggulan:</strong><br>
+            • Honda SENSING™ Lengkap<br>
+            • Panoramic Sunroof<br>
+            • BOSE Premium Sound System (12 Speakers)<br>
+            • Interactive Head-up Display<br><br>
+            
+            <strong>Catatan:</strong><br>
+            Harga sudah termasuk BBN-KB (On The Road) dan asuransi all-risk 1 tahun.
+        `
     }
 ];
 
@@ -481,23 +531,41 @@ window.updateCartUI = () => {
     };
 
     window.openProductDetail = (productId) => {
-        const p = productsData.find(x => x.id === productId);
-        if (!p) return;
-        document.getElementById('product-detail-page').scrollTop = 0;
-        document.getElementById('detail-content').innerHTML = `
-            <div style="padding: 15px; background: white;">
-                <button onclick="closeProductDetail()" style="border: none; background: #27ae60; color: white; padding: 10px 22px; border-radius: 20px; font-weight: 800; cursor: pointer;">← KEMBALI</button>
-                <img src="${p.images[0]}" style="width: 100%; margin: 15px 0; border-radius:15px;">
-                <h2 style="margin: 0;">${p.name}</h2>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c;">π ${p.price.toFixed(5)}</div>
-                <p style="line-height: 1.7;">${p.desc}</p>
-                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 14px; border-radius: 14px; font-weight: 800;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 14px; border-radius: 14px; font-weight: 800;">Beli Sekarang</button>
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
+
+    // Sembunyikan navigasi bawah saat melihat detail
+    const bNav = document.querySelector('.bottom-nav');
+    if(bNav) bNav.style.display = 'none';
+
+    document.getElementById('product-detail-page').scrollTop = 0;
+    
+    // SISIPKAN DI SINI
+    document.getElementById('detail-content').innerHTML = `
+        <div style="background: white; min-height: 100vh; padding-bottom: 80px; font-family:'Inter', sans-serif;">
+            <img src="${p.images[0]}" style="width: 100%; display: block;">
+            
+            <div style="padding: 20px;">
+                <h2 style="margin: 0; font-size: 1.5rem; color:#1a1a1a;">${p.name}</h2>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin: 15px 0;">π ${p.price.toFixed(5)}</div>
+                
+                <div style="background: #fdfdfd; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; margin-top: 20px;">
+                    <h4 style="margin-top: 0; color: #1a0033; font-weight: 800; border-bottom: 2px solid #6748d7; width: fit-content; padding-bottom: 5px;">
+                        DETAIL SPESIFIKASI
+                    </h4>
+                    <div style="line-height: 1.8; color: #475569; font-size: 0.9rem;">
+                        ${p.desc}
+                    </div>
                 </div>
-            </div>`;
-        document.getElementById('product-detail-page').classList.remove('hidden');
-    };
+                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">Beli Sekarang</button>
+                </div>
+            </div>
+        </div>`;
+        
+    document.getElementById('product-detail-page').classList.remove('hidden');
+};
 
 window.filterCategory = (category, element) => {
     const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);

@@ -462,10 +462,10 @@ const productsData = [
     },
     {
         id: "bike-005",
-        name: "MV Agusta Rush 1000",
+        name: "MV Agusta Rush 1000 cc",
         price: 0.01650,
         category: "Motor",
-        images: ["https://images.unsplash.com/photo-1624451006509-f671b5597987?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
         desc: `• <b>Konsep:</b> Hyper-Naked Drag Bike Luxury<br>
                • <b>Mesin:</b> 998cc 16-valve DOHC Inline 4<br>
                • <b>Edisi:</b> Limited Edition (Hanya 300 unit di dunia)<br>
@@ -477,7 +477,7 @@ const productsData = [
         name: "Aprilia RSV4 Xtrenta",
         price: 0.01900,
         category: "Motor",
-        images: ["https://images.unsplash.com/photo-1614165933394-a62bc2392742?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
         desc: `• <b>Teknologi:</b> MotoGP Derived Aerodynamics (Underwing)<br>
                • <b>Mesin:</b> 1.099cc V4 Longitudinal 65°<br>
                • <b>Tenaga:</b> 230 HP / Berat 166 kg<br>
@@ -501,24 +501,12 @@ const productsData = [
         name: "Arch Motorcycle KRGT-1",
         price: 0.02500,
         category: "Motor",
-        images: ["https://images.unsplash.com/photo-1609527791661-5f219954293a?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/d4dwYps4/Desain-tanpa-judul-20260207-132911-0000.png"],
         desc: `• <b>Pembuat:</b> Co-founded by Keanu Reeves<br>
                • <b>Mesin:</b> 2.032cc S&S Cycle V-Twin<br>
                • <b>Produksi:</b> Bespoke (Dibuat sesuai pesanan pembeli)<br>
                • <b>Material:</b> Billet Aluminium Frame & Carbon Wheels<br>
                • <b>Suspensi:</b> Öhlins Arch Proprietary Tuning`
-    },
-    {
-        id: "bike-009",
-        name: "Indian Challenger Elite",
-        price: 0.01100,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Mesin:</b> PowerPlus Liquid-cooled V-twin (1.768cc)<br>
-               • <b>Fitur:</b> Smart Lean Technology, Electronic Preload Adj.<br>
-               • <b>Warna:</b> Black Candy over Charcoal Metallic<br>
-               • <b>Audio:</b> PowerBand Audio with Saddlebag Speakers<br>
-               • <b>Lampu:</b> Adaptive LED Headlight`
     },
     {
         id: "bike-010",

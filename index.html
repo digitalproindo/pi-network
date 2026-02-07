@@ -490,17 +490,16 @@
 /* Sidebar Styling */
 .sidenav {
     height: 100%;
-    width: 0px; 
-    position: fixed;
-    /* Ubah z-index ke angka yang sangat tinggi agar di depan banner/gambar */
-    z-index: 10000; 
+    width: 0; 
+    position: fixed; /* Tetap di layar meski di-scroll */
+    z-index: 999999 !important; /* Nilai sangat tinggi agar di depan gambar/banner */
     top: 0;
     right: 0;
-    background-color: #1a0033; /* Warna gelap agar teks putih terbaca jelas */
+    background-color: #1a0033; /* Warna solid, jangan pakai transparansi dulu */
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.5); /* Tambahkan bayangan agar terlihat terpisah */
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5); /* Bayangan tebal agar terlihat di atas */
 }
 
 .sidenav a {
@@ -509,7 +508,8 @@
     font-size: 1.1rem;
     color: white;
     display: block;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap; /* Teks tidak berantakan jika layar sempit */
 }
 
 .sidenav .closebtn {

@@ -211,7 +211,7 @@ const productsData = [
     { 
         id: 'v1', 
         name: "Sedan Sport Luxury - Tipe S1", 
-        price: 0.005, 
+        price: 0.0005, 
         category: "Mobil", 
         images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], 
         desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof. Keamanan tingkat tinggi dengan smart driving assist.",
@@ -542,32 +542,32 @@ window.updateCartUI = () => {
     document.getElementById('detail-content').innerHTML = `
         <div style="background: white; min-height: 100vh; padding-bottom: 100px; font-family:'Inter', sans-serif; position: relative;">
             
-            <div class="back-button" onclick="closeProductDetail()" style="position: fixed; top: 20px; left: 20px; z-index: 5000;">
-                <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:none; stroke:#1a0033; stroke-width:2.5;">
-                    <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round"/>
+            <div onclick="closeProductDetail()" style="position: fixed; top: 15px; left: 15px; z-index: 9999; background: #4a148c; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; cursor: pointer;">
+                <svg viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke:white; stroke-width:3;">
+                    <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
 
-            <div style="width: 100%; pt: 75%; position: relative; background: #f8fafc; overflow: hidden;">
-                <img src="${p.images[0]}" style="width: 100%; height: 300px; object-fit: cover; display: block;">
+            <div style="width: 100%; height: 320px; background: #f1f5f9; overflow: hidden; position: relative;">
+                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
             </div>
             
-            <div style="padding: 20px;">
-                <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; line-height: 1.3;">${p.name}</h2>
-                <div style="font-size: 2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
+            <div style="padding: 20px; position: relative; z-index: 10; background: white; border-radius: 30px 30px 0 0; margin-top: -30px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
+                <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; font-weight: 800;">${p.name}</h2>
+                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
                 
-                <div style="background: #fdfdfd; padding: 20px; border-radius: 15px; border: 1px solid #f1f5f9; margin-top: 15px;">
+                <div style="background: #fdfdfd; padding: 20px; border-radius: 20px; border: 1px solid #f1f5f9; margin-top: 15px;">
                     <h4 style="margin: 0 0 10px 0; color: #4a148c; font-weight: 800; border-bottom: 2px solid #6748d7; width: fit-content; padding-bottom: 5px;">
                         DETAIL SPESIFIKASI
                     </h4>
-                    <div style="line-height: 1.8; color: #475569; font-size: 0.9rem;">
+                    <div style="line-height: 1.8; color: #475569; font-size: 0.95rem;">
                         ${p.desc}
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 16px; border-radius: 16px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(74,20,140,0.3);">Beli Sekarang</button>
+                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
+                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
         </div>`;

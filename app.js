@@ -815,7 +815,7 @@ const productsData = [
         category: "Gadget",
         name: "iPhone 15 Pro Max 512GB",
         price: 0.00250,
-        images: ["https://images.unsplash.com/photo-1696446701796-da61225697cc?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/kgxjnpyp/Desain-tanpa-judul-20260207-181545-0000.png"],
         desc: `• <b>Layar:</b> 6.7" Super Retina XDR OLED<br>
                • <b>Chipset:</b> A17 Pro (3nm)<br>
                • <b>Kamera:</b> 48MP Utama, 5x Optical Zoom<br>
@@ -827,7 +827,7 @@ const productsData = [
         category: "Gadget",
         name: "Samsung Galaxy S24 Ultra",
         price: 0.00235,
-        images: ["https://images.unsplash.com/photo-1706114003002-315359a9307b?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/RprpNpf6/Desain-tanpa-judul-20260207-182139-0000.png"],
         desc: `• <b>Layar:</b> 6.8" Dynamic LTPO AMOLED 2X<br>
                • <b>Stylus:</b> Built-in S Pen<br>
                • <b>Kamera:</b> 200MP Quad Tele System<br>

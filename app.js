@@ -755,7 +755,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 50 Gram",
         price: 0.00690,
-        images: ["https://images.unsplash.com/photo-1589750615582-4545227699ca?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/GvbphD6M/Desain-tanpa-judul-20260207-143702-0000.png"],
         desc: `• <b>Berat:</b> 50 Gram<br>
                • <b>Bentuk:</b> Bar (Batangan)<br>
                • <b>Kemurnian:</b> 24 Karat (99.99%)<br>

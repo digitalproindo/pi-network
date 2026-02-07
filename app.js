@@ -386,7 +386,7 @@ const productsData = [
         category: "Mobil",
         name: "Bugatti Chiron Super Sport",
         price: 0.25000,
-        images: ["https://images.unsplash.com/photo-1566024101573-f32320bb7927?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/mFMXn0VQ/Desain-tanpa-judul-20260207-120754-0000.png"],
         desc: `• <b>Mesin:</b> 8.0L W16 Quad-Turbocharged<br>
                • <b>Tenaga:</b> 1.600 PS (1.578 HP)<br>
                • <b>Ban:</b> Michelin Pilot Sport Cup 2 (Special Edition)<br>

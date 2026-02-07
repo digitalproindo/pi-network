@@ -883,30 +883,47 @@ function renderProducts(data, targetGridId) {
 }
 
     window.handlePayment = async (amount, name) => {
-        if (!currentUser) return alert("Silakan Login di Profil!");
-        if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
-        try {
-            await Pi.createPayment({
-                amount: parseFloat(amount),
-                memo: `Pembelian ${name}`,
-                metadata: { productName: name },
-            }, {
-                onReadyForServerApproval: async (paymentId) => {
-                    const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
-                    return res.ok;
-                },
-                onReadyForServerCompletion: async (paymentId, txid) => {
-                    const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
-                    if (res.ok) { 
-                        showSuccessOverlay(amount, name, txid);
-                        if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
-                    }
-                },
-                onCancel: () => {},
-                onError: (e, p) => { if(p) handleIncompletePayment(p); }
-            });
-        } catch (err) { console.error(err); }
-    };
+    if (!currentUser) return alert("Silakan Login di Profil!");
+    if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
+
+    // Logika tambahan untuk mendetailkan isi keranjang
+    let detailedItemName = name;
+    if (name === 'Total Keranjang' && cart.length > 0) {
+        // Mengambil semua nama produk di keranjang dan menggabungkannya
+        const itemNames = cart.map(item => item.name).join(", ");
+        detailedItemName = `Keranjang (${itemNames})`;
+    }
+
+    try {
+        await Pi.createPayment({
+            amount: parseFloat(amount),
+            memo: `Pembelian ${name}`,
+            metadata: { productName: detailedItemName }, // Gunakan nama yang lebih detail
+        }, {
+            onReadyForServerApproval: async (paymentId) => {
+                const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
+                return res.ok;
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+                const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
+                if (res.ok) { 
+                    // Kirim detailedItemName ke overlay sukses
+                    showSuccessOverlay(amount, detailedItemName, txid);
+                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
+                }
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+                const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
+                if (res.ok) { 
+                    showSuccessOverlay(amount, detailedItemName, txid);
+                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
+                }
+            },
+            onCancel: () => {},
+            onError: (e, p) => { if(p) handleIncompletePayment(p); }
+        });
+    } catch (err) { console.error(err); }
+};
 
     function showSuccessOverlay(amount, name, txid) {
         const overlay = document.createElement('div');

@@ -1322,3 +1322,38 @@ if (searchInput) {
         loginBtn.onclick = window.handleAuth;
     }
 }); // Penutup DOMContentLoaded (pastikan tanda ini jangan dihapus)
+
+// ... baris terakhir kode lama Anda ( }); )
+
+/**
+ * FUNGSI NAVIGASI HAMBURGER MENU
+ * Diletakkan di luar agar bisa dipanggil oleh onclick di HTML
+ */
+function toggleMenu() {
+    const nav = document.getElementById("sideNav");
+    
+    if (!nav) {
+        console.error("Elemen sideNav tidak ditemukan!");
+        return;
+    }
+
+    // Logika buka tutup berdasarkan lebar
+    if (nav.style.width === "250px") {
+        nav.style.width = "0px";
+    } else {
+        nav.style.width = "250px";
+    }
+}
+
+// Menutup menu jika user klik di luar area sidebar
+window.addEventListener('click', function(event) {
+    const nav = document.getElementById("sideNav");
+    const menuIcon = document.querySelector('.menu-icon');
+    
+    if (nav && nav.style.width === "250px") {
+        // Jika yang diklik bukan menu dan bukan tombol garis tiga
+        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
+            nav.style.width = "0px";
+        }
+    }
+});

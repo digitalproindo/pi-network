@@ -707,7 +707,7 @@ const productsData = [
         category: "Emas",
         name: "Emas Antam Logam Mulia 2 Gram",
         price: 0.00029,
-        images: ["https://images.unsplash.com/photo-1584444248331-10f84594639f?auto=format&fit=crop&w=800&q=80"],
+        images: ["https://i.ibb.co.com/WWSt12zP/Desain-tanpa-judul-20260207-134711-0000.png"],
         desc: `• <b>Berat:</b> 2 Gram<br>
                • <b>Kemurnian:</b> Fine Gold 999.9<br>
                • <b>Ketebalan:</b> 0.85 mm<br>

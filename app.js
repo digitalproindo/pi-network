@@ -8,20 +8,115 @@ document.addEventListener("DOMContentLoaded", async () => {
     const ADMIN_WA = "6281906066757"; 
 
 const productsData = [
-    { 
-        id: 'p1', 
-        name: "Rumah Ultra-Modern", 
-        price: 1.800,
-        discount: 10, 
-        category: "Rumah", 
-        images: ["https://i.ibb.co.com/dwZVX86G/1770232154053.png"], 
-        desc: "Rumah mewah dua lantai dengan estetika geometris futuristik yang mengutamakan transparansi kaca dan material premium.Spesifikasi Utama Material: Dinding panel marmer Travertine, beton halus, dan kaca floor-to-ceiling.Pintu Utama: Pivot door kayu solid setinggi 4 meter dengan akses biometrik.Pencahayaan: Sistem Hidden LED linear pada alur masuk (driveway) dan plafon.Lantai: Marmer Italia (interior) dan batu alam antislip (eksterior).Fitur Unggulan Smart Home: Kendali penuh via AI untuk lampu, suhu, dan keamanan.Lansekap: Kolam refleksi air di sekeliling bangunan dan taman minimalis.Area Parkir: Driveway melingkar yang luas dengan pencahayaan futuristik.",
-        rating: 4.9,
-        sold: 1250,
-        reviews: [
-            { user: "Pioneer_Ace", comment: "Sangat megah dan mewah" },
-            { user: "NodeMaster", comment: "Wajib punya sebagai Pioner." }
-        ]
+    {
+        id: "house-001",
+        name: "The Beverly Hills Modern Mansion",
+        price: 0.25000,
+        images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Luas Tanah:</b> 2.500 m²<br>
+               • <b>Kamar Tidur:</b> 7 Master Suite<br>
+               • <b>Fasilitas:</b> Infinity Pool, Home Cinema, Wine Cellar<br>
+               • <b>Lokasi:</b> Beverly Hills, California<br>
+               • <b>Garasi:</b> Kapasitas 10 Mobil Mewah`
+    },
+    {
+        id: "house-002",
+        name: "Zen Waterfront Villa",
+        price: 0.18000,
+        images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Pemandangan:</b> Akses Langsung ke Danau Privasi<br>
+               • <b>Gaya:</b> Arsitektur Minimalis Modern<br>
+               • <b>Fasilitas:</b> Dermaga Pribadi, Spa & Sauna, Gym<br>
+               • <b>Sistem:</b> Full Smart Home Technology<br>
+               • <b>Keamanan:</b> Biometric Entry System`
+    },
+    {
+        id: "house-003",
+        name: "Penthouse Skyline Duplex",
+        price: 0.12000,
+        images: ["https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lantai:</b> Lantai 50 & 51 (Top Floor)<br>
+               • <b>Pemandangan:</b> 360° City Skyline View<br>
+               • <b>Interior:</b> Marmer Italia & Panel Emas<br>
+               • <b>Fasilitas:</b> Private Rooftop Garden & Jacuzzi<br>
+               • <b>Layanan:</b> 24/7 Concierge Service`
+    },
+    {
+        id: "house-004",
+        name: "European Classic Estate",
+        price: 0.30000,
+        images: ["https://images.unsplash.com/photo-1600585154340-be6199f7e009?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Gaya:</b> Klasik Neoklasik Eropa<br>
+               • <b>Luas Bangunan:</b> 1.800 m²<br>
+               • <b>Fitur:</b> Perpustakaan 2 Lantai, Ballroom Utama<br>
+               • <b>Taman:</b> Gaya Versailles dengan Air Mancur<br>
+               • <b>Material:</b> Pintu Kayu Jati Solid & Kristal Swarovski`
+    },
+    {
+        id: "house-005",
+        name: "Tropical Cliffside Sanctuary",
+        price: 0.15500,
+        images: ["https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lokasi:</b> Tebing Uluwatu, Bali<br>
+               • <b>Konsep:</b> Open Living Space with Ocean View<br>
+               • <b>Fasilitas:</b> Private Beach Access, Deck Yoga<br>
+               • <b>Struktur:</b> Kayu Ulin & Batu Alam Lokal<br>
+               • <b>Kamar:</b> 5 Suite dengan Semi-Outdoor Bathroom`
+    },
+    {
+        id: "house-006",
+        name: "Scandinavian Forest Lodge",
+        price: 0.09500,
+        images: ["https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lingkungan:</b> Hutan Pinus Pribadi<br>
+               • <b>Fitur:</b> Jendela Lantai ke Langit-langit (Triple Glazed)<br>
+               • <b>Interior:</b> Nordic Pine & Tungku Perapian Modern<br>
+               • <b>Energi:</b> Panel Surya & Geothermal Heating<br>
+               • <b>Fasilitas:</b> Outdoor Hot Tub & Guest House`
+    },
+    {
+        id: "house-007",
+        name: "Modern Desert Oasis",
+        price: 0.14000,
+        images: ["https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Arsitektur:</b> Cantilever Design<br>
+               • <b>Lokasi:</b> Palm Springs, Arizona<br>
+               • <b>Fasilitas:</b> Fire Pit Area, Lap Pool Panjang<br>
+               • <b>Lantai:</b> Polished Concrete Floors<br>
+               • <b>Dapur:</b> Gourmet Chef's Kitchen (Sub-Zero Appliances)`
+    },
+    {
+        id: "house-008",
+        name: "The Glass House Estate",
+        price: 0.21000,
+        images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Material Dominan:</b> Kaca Tempered & Baja Hitam<br>
+               • <b>Privasi:</b> Smart Glass (Bisa Buram Otomatis)<br>
+               • <b>Lansekap:</b> Koi Pond Keliling Bangunan<br>
+               • <b>Ruang:</b> Galeri Seni Pribadi & Studio Musik<br>
+               • <b>Luas:</b> Kavling Sudut 3.000 m²`
+    },
+    {
+        id: "house-009",
+        name: "Mediterranean Seafront Palace",
+        price: 0.28000,
+        images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lokasi:</b> French Riviera (Cote d'Azur)<br>
+               • <b>Atap:</b> Terakota Tradisional Spanyol<br>
+               • <b>Taman:</b> Kebun Zaitun & Citrus<br>
+               • <b>Fasilitas:</b> Lapangan Tenis Pribadi, Helipad<br>
+               • <b>Kamar Mandi:</b> Perlengkapan Emas 24 Karat`
+    },
+    {
+        id: "house-010",
+        name: "The Urban Luxury Loft",
+        price: 0.08800,
+        images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Tipe:</b> Industrial Luxury Loft<br>
+               • <b>Tinggi Plafon:</b> 6 Meter (Double Height Ceiling)<br>
+               • <b>Fitur:</b> Tangga Melingkar Besi Kustom<br>
+               • <b>Lokasi:</b> Pusat Distrik Finansial<br>
+               • <b>Sistem:</b> Voice Controlled Home Automation`
     },
     { 
         id: 'p2', 

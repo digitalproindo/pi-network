@@ -3,241 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Digital Pro Indo - Solusi Transformasi Digital</title>
+    <title>PT Digital Pro Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
-        body { font-family: 'Montserrat', sans-serif; background-color: #f8faff; overflow-x: hidden; }
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; overflow-x: hidden; background-color: #fdfbff; }
         
-        /* Animasi Gradient Flow */
+        /* Sidebar Styling (Struktur Asli Anda) */
+        .sidenav {
+            height: 100%; width: 0; position: fixed; z-index: 1000001 !important;
+            top: 0; right: 0; background-color: #1a0033; 
+            overflow-x: hidden; transition: 0.5s; padding-top: 60px; 
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+        }
+        .menu-list { width: 280px; overflow: hidden; }
+        .sidenav a {
+            padding: 15px 25px; text-decoration: none; font-size: 1.1rem;
+            color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+        }
+        .sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; color: white; cursor: pointer; }
+        
+        /* Header Fix */
+        .fixed-header { z-index: 99999 !important; background-color: #6c147b !important; }
+
+        /* Animasi Hero */
         .hero-bg {
-            background: linear-gradient(-45deg, #6c147b, #4a0072, #1a0033, #8e24aa);
+            background: linear-gradient(-45deg, #6c147b, #4a0072, #1a0033);
             background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
+            animation: gradientBG 15s ease infinite;
         }
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
-        /* Glassmorphism Premium */
-        .glass-premium {
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .glass-premium:hover {
-            transform: translateY(-10px);
-            background: rgba(255, 255, 255, 1);
-            box-shadow: 0 30px 60px -12px rgba(108, 20, 123, 0.2);
-        }
-
-        /* Sidenav */
-        .sidenav {
-            height: 100%; width: 0; position: fixed; z-index: 1000000;
-            top: 0; right: 0; background-color: #1a0033; 
-            overflow-x: hidden; transition: 0.5s; padding-top: 60px;
-            box-shadow: -15px 0 35px rgba(0,0,0,0.6);
-        }
-        .sidenav a { padding: 15px 30px; color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .sidenav .closebtn { position: absolute; top: 15px; left: 15px; font-size: 35px; color: white; }
-
-        /* Floating Animation */
-        .float-anim { animation: floating 3s ease-in-out infinite; }
-        @keyframes floating {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-            100% { transform: translateY(0px); }
-        }
-
-        .step-number {
-            background: linear-gradient(135deg, #6c147b, #9c27b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
     </style>
 </head>
 <body>
 
-    <nav class="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-[99999]" style="background-color: #6c147b;">
-    <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-full transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
+    <nav class="fixed top-0 w-full px-4 py-3 flex justify-between items-center shadow-lg fixed-header">
+        <button onclick="window.history.back()" class="p-2 outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
 
-    <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" 
-         alt="Logo DPI" class="h-10 w-auto object-contain">
+        <div class="flex items-center">
+            <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" 
+                 alt="Logo DPI" class="h-10 w-auto">
+        </div>
 
-    <button onclick="toggleMenu()" class="p-2 hover:bg-white/10 rounded-full transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-        </svg>
-    </button>
-</nav>
+        <button onclick="toggleMenu()" class="p-2 outline-none">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </nav>
 
     <div id="sideNav" class="sidenav">
-        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
-        <div class="mt-10 px-4">
-            <a href="./" class="text-xl font-bold border-none text-yellow-500">🏠 Home</a>
-            <a href="tentang-kami.html">ℹ️ Profil Perusahaan</a>
-            <a href="layanan.html">🌐 Jangkauan Layanan</a>
+        <span class="closebtn" onclick="toggleMenu()">&times;</span>
+        <div class="menu-list mt-8">
+            <a href="./" onclick="toggleMenu()">🏠 Home</a>
+            <a href="tentang-kami.html">ℹ️ Tentang Kami</a>
             <a href="visi-misi.html">🎯 Visi & Misi</a>
-            <a href="https://wa.me/6282191851112" class="mt-10 bg-yellow-500 text-purple-900 rounded-xl font-bold text-center">📞 Hubungi Kami</a>
+            <a href="layanan.html">🌐 Layanan</a>
+            <a href="https://wa.me/6282191851112" target="_blank">📞 Kontak</a>
         </div>
     </div>
 
-    <section class="hero-bg pt-44 pb-32 px-6 text-center text-white rounded-b-[60px] shadow-2xl relative overflow-hidden">
-        <div class="relative z-10" data-aos="zoom-out" data-aos-duration="1200">
-            <span class="bg-white/10 backdrop-blur-md px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest border border-white/20">The Future of Digitalization</span>
-            <h1 class="text-4xl md:text-7xl font-black mt-8 leading-tight">Elevate Your <br><span class="text-yellow-400">Digital Identity</span></h1>
-            <p class="mt-6 text-lg text-purple-100 max-w-3xl mx-auto font-medium opacity-90">
-                Kami hadir untuk menjembatani ide cemerlang Anda dengan teknologi masa depan. Bangun ekosistem bisnis yang cerdas, efisien, dan menguntungkan.
-            </p>
-            <div class="mt-12 flex flex-wrap justify-center gap-6">
-                <button class="bg-white text-purple-900 font-extrabold py-5 px-10 rounded-2xl shadow-2xl hover:bg-yellow-400 transition transform hover:-translate-y-1">Daftar Mitra UMKM</button>
-                <button class="bg-transparent border-2 border-white/40 py-5 px-10 rounded-2xl font-bold hover:bg-white/10 transition">Lihat Portofolio</button>
-            </div>
-        </div>
-        <div class="absolute -bottom-20 -left-20 w-64 h-64 bg-purple-400/20 rounded-full blur-3xl"></div>
-    </section>
-
-    <section class="max-w-6xl mx-auto px-6 -mt-16 grid grid-cols-2 md:grid-cols-4 gap-4 relative z-20">
-        <div class="glass-premium p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="100">
-            <div class="text-3xl font-black text-purple-900">500+</div>
-            <div class="text-xs font-bold text-gray-500 mt-1 uppercase">Mitra UMKM</div>
-        </div>
-        <div class="glass-premium p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="200">
-            <div class="text-3xl font-black text-purple-900">1.2K+</div>
-            <div class="text-xs font-bold text-gray-500 mt-1 uppercase">Project Selesai</div>
-        </div>
-        <div class="glass-premium p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="300">
-            <div class="text-3xl font-black text-purple-900">24/7</div>
-            <div class="text-xs font-bold text-gray-500 mt-1 uppercase">Dukungan Sistem</div>
-        </div>
-        <div class="glass-premium p-6 rounded-3xl text-center" data-aos="fade-up" data-aos-delay="400">
-            <div class="text-3xl font-black text-purple-900">99%</div>
-            <div class="text-xs font-bold text-gray-500 mt-1 uppercase">Kepuasan Klien</div>
+    <section class="hero-bg pt-40 pb-24 px-8 text-center text-white rounded-b-[50px] shadow-2xl">
+        <div data-aos="zoom-in">
+            <h1 class="text-4xl font-extrabold leading-tight tracking-tight">Digital Pro Indo<br><span class="text-yellow-400 text-2xl font-semibold italic">Solusi Digital Partner</span></h1>
+            <p class="mt-6 text-sm text-purple-100 opacity-90 leading-relaxed">Membangun ekosistem marketplace dan jasa layanan digital premium masa kini.</p>
         </div>
     </section>
 
-    <main class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="text-center mb-16" data-aos="fade-up">
-            <h2 class="text-4xl font-black text-gray-900">Solusi <span class="text-purple-700">Terintegrasi</span></h2>
-            <div class="w-24 h-2 bg-yellow-500 mx-auto mt-4 rounded-full"></div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
-            <div class="glass-premium p-10 rounded-[40px] relative group" data-aos="fade-up">
-                <div class="text-5xl mb-6 group-hover:scale-110 transition">🚀</div>
-                <h3 class="text-2xl font-black text-purple-900 mb-4">Digital Advertising</h3>
-                <p class="text-gray-600 leading-relaxed italic">"Bukan sekadar iklan, tapi strategi konversi."</p>
-                <ul class="mt-4 space-y-2 text-sm text-gray-500">
-                    <li>• Google Search Ads</li>
-                    <li>• Meta Ads (FB & IG)</li>
-                    <li>• TikTok Marketing</li>
-                </ul>
+    <main class="py-16 px-6 max-w-4xl mx-auto">
+        <div class="grid grid-cols-1 gap-6">
+            <div class="bg-white p-8 rounded-[30px] shadow-xl border-l-8 border-purple-600" data-aos="fade-up">
+                <div class="text-4xl mb-4 text-purple-600">🌐</div>
+                <h3 class="font-bold text-xl text-purple-900">Jasa Web & App</h3>
+                <p class="text-gray-500 mt-2 text-sm leading-relaxed">Platform digital premium dengan performa tinggi dan desain UX masa depan.</p>
             </div>
 
-            <div class="glass-premium p-10 rounded-[40px] border-t-4 border-yellow-500" data-aos="fade-up" data-aos-delay="100">
-                <div class="text-5xl mb-6">💎</div>
-                <h3 class="text-2xl font-black text-purple-900 mb-4">Web & App Dev</h3>
-                <p class="text-gray-600 leading-relaxed">Membangun aset digital yang aman, cepat, dan siap bersaing di pasar global.</p>
-                <div class="mt-6 flex gap-2">
-                    <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg text-xs font-bold">React</span>
-                    <span class="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg text-xs font-bold">NodeJS</span>
-                </div>
-            </div>
-
-            <div class="glass-premium p-10 rounded-[40px]" data-aos="fade-up" data-aos-delay="200">
-                <div class="text-5xl mb-6">🏗️</div>
-                <h3 class="text-2xl font-black text-purple-900 mb-4">Marketplace</h3>
-                <p class="text-gray-600 leading-relaxed">Ekosistem jual beli khusus untuk produk unggulan UMKM binaan PT Digital Pro Indo.</p>
-                <button class="mt-8 bg-purple-900 text-white w-full py-3 rounded-2xl font-bold hover:bg-purple-700 transition">Jelajahi Produk</button>
+            <div class="bg-white p-8 rounded-[30px] shadow-xl border-l-8 border-yellow-500" data-aos="fade-up" data-aos-delay="100">
+                <div class="text-4xl mb-4">🛒</div>
+                <h3 class="font-bold text-xl text-purple-900">Marketplace Integration</h3>
+                <p class="text-gray-500 mt-2 text-sm leading-relaxed">Ekosistem UMKM untuk pemasaran produk yang lebih cerdas dan terukur.</p>
             </div>
         </div>
     </main>
 
-    <section class="bg-gray-900 py-24 px-6 rounded-[60px] mx-4 mb-20 text-white relative overflow-hidden">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <div data-aos="fade-right">
-                <h2 class="text-4xl font-black mb-6">4 Langkah Mudah <br><span class="text-yellow-500">Mulai Digitalisasi</span></h2>
-                <p class="text-gray-400 mb-10">Bergabunglah dengan ratusan pengusaha sukses lainnya dalam waktu kurang dari 24 jam.</p>
-                
-                <div class="space-y-8">
-                    <div class="flex gap-6">
-                        <div class="text-4xl font-black step-number">01</div>
-                        <div>
-                            <h4 class="font-bold text-lg">Konsultasi Gratis</h4>
-                            <p class="text-sm text-gray-500">Diskusikan kebutuhan bisnis Anda dengan ahli kami.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-6">
-                        <div class="text-4xl font-black step-number">02</div>
-                        <div>
-                            <h4 class="font-bold text-lg">Strategi & Planning</h4>
-                            <p class="text-sm text-gray-500">Kami menyusun roadmap teknologi untuk Anda.</p>
-                        </div>
-                    </div>
-                    <div class="flex gap-6">
-                        <div class="text-4xl font-black step-number">03</div>
-                        <div>
-                            <h4 class="font-bold text-lg">Eksekusi Presisi</h4>
-                            <p class="text-sm text-gray-500">Pengembangan sistem dan kampanye iklan dimulai.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="relative flex justify-center" data-aos="zoom-in">
-                <div class="w-80 h-80 bg-purple-600 rounded-full blur-[100px] absolute opacity-30"></div>
-                <img src="https://i.ibb.co.com/gLr9vD2x/ORANG-PERTAMA-20260208-133734-0000.png" class="w-64 h-auto float-anim relative z-10" alt="App Preview">
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-white pt-24 pb-12 px-8 text-center md:text-left border-t">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-            <div class="col-span-2">
-                <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" class="h-10 mb-6 mx-auto md:mx-0">
-                <p class="text-gray-500 max-w-sm leading-relaxed">PT Digital Pro Indo berkomitmen untuk mengakselerasi pertumbuhan UMKM dan korporasi melalui inovasi digital yang berkelanjutan.</p>
-            </div>
-            <div>
-                <h5 class="font-black text-purple-900 mb-6">Quick Links</h5>
-                <ul class="text-gray-500 space-y-3 text-sm">
-                    <li><a href="#" class="hover:text-purple-700">Syarat & Ketentuan</a></li>
-                    <li><a href="#" class="hover:text-purple-700">Kebijakan Privasi</a></li>
-                    <li><a href="#" class="hover:text-purple-700">Pusat Bantuan</a></li>
-                </ul>
-            </div>
-            <div>
-                <h5 class="font-black text-purple-900 mb-6">Sosial Media</h5>
-                <div class="flex justify-center md:justify-start gap-4">
-                    <div class="w-10 h-10 bg-purple-900 text-white rounded-xl flex items-center justify-center font-bold">IG</div>
-                    <div class="w-10 h-10 bg-purple-900 text-white rounded-xl flex items-center justify-center font-bold">FB</div>
-                    <div class="w-10 h-10 bg-purple-900 text-white rounded-xl flex items-center justify-center font-bold">LI</div>
-                </div>
-            </div>
-        </div>
-        <p class="text-center text-[10px] text-gray-400 font-bold uppercase tracking-[0.4em]">© 2026 PT DIGITAL PRO INDO. All Rights Reserved.</p>
+    <footer class="bg-[#1a0033] text-white p-10 text-center rounded-t-[40px]">
+        <p class="text-sm font-black text-yellow-500">PT DIGITAL PRO INDO</p>
+        <p class="text-[10px] text-gray-400 mt-2 tracking-widest uppercase">© 2026 Seluruh Hak Cipta Dilindungi.</p>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ once: true });
+        AOS.init({ duration: 800, once: true });
 
         function toggleMenu() {
-    const nav = document.getElementById("sideNav");
-    // Gunakan 280px agar pas dengan lebar .menu-list yang kita buat sebelumnya
-    if (nav.style.width === "280px") {
-        nav.style.width = "0";
-    } else {
-        nav.style.width = "280px";
-    }
-}
+            const nav = document.getElementById("sideNav");
+            if (nav.style.width === "280px") {
+                nav.style.width = "0";
+            } else {
+                nav.style.width = "280px";
+            }
+        }
     </script>
 </body>
 </html>

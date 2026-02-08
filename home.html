@@ -141,7 +141,7 @@
         <a href="#layanan" onclick="toggleMenu()" class="text-2xl font-bold">Layanan</a>
         <a href="#portofolio" onclick="toggleMenu()" class="text-2xl font-bold">Portofolio</a>
         <hr class="border-white/10 my-2">
-        <a href="https://wa.me/6282191851112" class="bg-purple-600 text-center py-3 rounded-xl font-bold">Hubungi Kami</a>
+        <a href="https://api.whatsapp.com/send?phone=6282191851112&text=Halo%20PT%20Digital%20Pro%20Indo,%20saya%20ingin%20konsultasi." target="_blank" class="bg-purple-600 text-center py-3 rounded-xl font-bold">Hubungi Kami</a>
     </div>
 
     <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
@@ -151,7 +151,7 @@
             <p class="mt-6 text-gray-400 text-lg leading-relaxed max-w-lg">Kami membantu bisnis Anda berkembang lebih cepat dengan teknologi AI, Cloud, dan Strategi Digital Marketing yang inovatif.</p>
             
             <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <a href="#layanan" class="group px-8 py-4 bg-purple-600 hover:bg-purple-700 rounded-2xl font-bold transition shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2">
+                <a href="https://api.whatsapp.com/send?phone=6282191851112&text=Halo%20PT%20Digital%20Pro%20Indo,%20saya%20tertarik%20memulai%20proyek%20digital." target="_blank" class="group px-8 py-4 bg-purple-600 hover:bg-purple-700 rounded-2xl font-bold transition shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2">
                     Mulai Sekarang
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -351,7 +351,7 @@
             <div>
                 <h4 class="font-bold mb-6">Hubungi Kami</h4>
                 <p class="text-gray-500 text-sm mb-4">Jakarta, Indonesia</p>
-                <a href="https://wa.me/6282191851112?text=6282191851112&text=Halo%20PT%20Digital%20Pro%20Indo,%20saya%20tertarik%20konsultasi%20layanan%20digital." target="_blank" class="text-purple-400 font-bold hover:text-purple-300 transition underline underline-offset-4">0821-9185-1112</a>
+                <a href="https://api.whatsapp.com/send?phone=6282191851112&text=Halo%20PT%20Digital%20Pro%20Indo,%20saya%20ingin%20bertanya%20mengenai%20layanan." target="_blank" class="text-purple-400 font-bold hover:text-purple-300 transition underline underline-offset-4">0821-9185-1112</a>
             </div>
         </div>
         <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 text-center text-xs text-gray-600 font-bold tracking-widest">
@@ -370,7 +370,7 @@
             overlay.classList.toggle('active');
         }
 
-        // POLES: Script Angka Berjalan (Counter)
+        // SCRIPT COUNTER
         const counters = document.querySelectorAll('.counter');
         const speed = 200; 
 
@@ -392,12 +392,11 @@
             });
         };
 
-        // Trigger animasi saat element masuk ke layar
         const statsSection = document.getElementById('stats-section');
         const observer = new IntersectionObserver((entries) => {
             if (entries[0].isIntersecting) {
                 runCounter();
-                observer.disconnect(); // Jalankan hanya sekali
+                observer.disconnect();
             }
         }, { threshold: 0.5 });
 

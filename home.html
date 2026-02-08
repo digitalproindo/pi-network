@@ -3,210 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT. Digital Pro Indo | Digital Ecosystem</title>
+    <title>Home - PT Digital Pro Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
-
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
-        .bg-royal-purple { background-color: #1a0033; }
-        .text-gold { color: #D4AF37; }
-        .bg-gold { background: linear-gradient(135deg, #D4AF37 0%, #F1D37E 100%); }
+        /* --- CSS ASLI ANDA (DENGAN PERBAIKAN OVERFLOW) --- */
+        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; }
         
-        /* Animasi Floating untuk Ikon */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
-            100% { transform: translateY(0px); }
+        .sidenav {
+            height: 100%; width: 0; position: fixed; z-index: 999999 !important;
+            top: 0; right: 0; background-color: #1a0033; 
+            overflow-x: hidden; /* Mencegah teks keluar ke samping */
+            transition: 0.5s; padding-top: 60px; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
-        .float-animation { animation: float 4s ease-in-out infinite; }
 
-        /* Custom Swiper Style */
-        .swiper-pagination-bullet-active { background: #D4AF37 !important; }
+        /* PERBAIKAN: Membungkus menu agar benar-benar hilang saat width: 0 */
+        .menu-list {
+            width: 280px; /* Lebar tetap di dalam agar tidak bergeser saat transisi */
+            overflow: hidden;
+        }
+
+        .sidenav a {
+            padding: 15px 25px; text-decoration: none; font-size: 1.1rem;
+            color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.1);
+            white-space: nowrap;
+        }
+        .sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; }
+        
+        .menu-item-split {
+            display: flex; align-items: center; width: 100%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-right: 15px; box-sizing: border-box;
+        }
+        .arrow-btn {
+            padding: 12px; background: none; border: none; color: #FFD700;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            border-left: 1px solid rgba(255, 255, 255, 0.1); transition: 0.3s; margin-left: 5px;
+        }
+        .menu-item-split a { flex: 1; padding: 18px 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .arrow { font-size: 0.7rem; margin-left: -2px; }
+        
+        .dropdown-container { display: none; background-color: rgba(0, 0, 0, 0.3); padding-left: 20px; }
+        .dropdown-container a { font-size: 0.9rem !important; padding: 12px 25px !important; border-bottom: none !important; opacity: 0.7; }
+        .arrow-btn.active .arrow { transform: rotate(180deg); color: #FFD700; }
+        
+        .fixed-header { z-index: 9999; }
     </style>
 </head>
-<body class="bg-white text-gray-900">
+<body class="bg-gray-50">
 
-    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-[9999] px-4 py-3 flex justify-between items-center shadow-md">
-    <button onclick="window.location.href='./'" class="p-2 hover:bg-gray-100 rounded-full transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-royal-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-    </button>
+    <nav class="fixed top-0 w-full bg-white px-4 py-3 flex justify-between items-center shadow-md fixed-header">
+        <button onclick="window.location.href='./'" class="p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-purple-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
 
-    <div class="flex items-center gap-2">
-        <img src="logo.png" alt="Logo" class="h-8 w-auto">
-        <span class="text-royal-purple font-bold text-lg tracking-tighter hidden md:block">DIGITAL PRO <span class="text-gold">INDO</span></span>
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 bg-purple-900 rounded flex items-center justify-center text-white font-bold text-xs italic">DPI</div>
+            <span class="font-bold text-purple-900 text-sm tracking-tight">DIGITAL PRO <span class="text-yellow-600">INDO</span></span>
+        </div>
+
+        <button onclick="toggleMenu()" class="p-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-purple-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+    </nav>
+
+    <div id="sideNav" class="sidenav">
+        <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
+        
+        <div class="menu-list mt-8">
+            <a href="./" onclick="toggleMenu()">🏠 Home</a>
+            
+            <div class="menu-item-split">
+                <a href="tentang-kami.html" style="border:none;">ℹ️ Tentang Kami</a>
+                <button class="arrow-btn" onclick="toggleDropdown(event)">
+                    <span class="arrow">▼</span>
+                </button>
+            </div>
+            <div id="aboutDropdown" class="dropdown-container">
+                <a href="tentang-kami.html">Profil Perusahaan</a>
+                <a href="visi-misi.html">Visi & Misi</a>
+                <a href="layanan.html">Jangkauan Layanan</a>
+            </div>
+
+            <a href="visi-misi.html">🎯 Visi & Misi</a>
+            <a href="layanan.html">🌐 Layanan</a>
+            <a href="https://wa.me/6282191851112" target="_blank">📞 Kontak</a>
+        </div>
     </div>
 
-    <button onclick="toggleMenu()" class="p-2 text-royal-purple">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-        </svg>
-    </button>
-</nav>
-
-<div id="sideNav" class="sidenav">
-    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
-    
-    <div class="menu-list mt-10">
-        <a href="./" onclick="toggleMenu();">
-            <span class="icon">🏠</span> Home
-        </a>
-
-        <div class="menu-item-split">
-            <a href="tentang-kami.html" class="main-link">
-                <span class="icon">ℹ️</span> Tentang Kami
-            </a>
-            <button class="arrow-btn" onclick="toggleDropdown(event)">
-                <span class="arrow">▼</span>
-            </button>
-        </div>
-        <div class="dropdown-container" id="aboutDropdown">
-            <a href="tentang-kami.html">Profil Perusahaan</a>
-            <a href="visi-misi.html">Visi & Misi</a>
-            <a href="layanan.html">Jangkauan Layanan</a>
-        </div>
-
-        <a href="visi-misi.html">
-            <span class="icon">🎯</span> Visi & Misi
-        </a>
-
-        <a href="layanan.html">
-            <span class="icon">🌐</span> Layanan
-        </a>
-
-        <div class="menu-divider" style="height: 1px; background: rgba(255,255,255,0.1); margin: 15px 25px;"></div>
+    <main class="pt-24 px-6">
+        <section class="py-10 text-center">
+            <h1 class="text-2xl font-bold text-purple-900">Solusi Digital Partner</h1>
+            <p class="text-gray-600 mt-3 text-sm">Membangun ekosistem marketplace dan jasa layanan digital premium.</p>
+        </section>
         
-        <a href="https://wa.me/6282191851112" target="_blank">
-            <span class="icon">📞</span> Kontak
-        </a>
-    </div>
-</div>
-
-    <section class="relative min-h-screen flex items-center px-8 bg-royal-purple pt-20 overflow-hidden">
-        <div class="absolute top-20 right-[-10%] w-64 h-64 bg-gold opacity-10 blur-[100px] float-animation"></div>
-        
-        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
-            <div data-aos="fade-right" data-aos-duration="1000">
-                <h1 class="text-white text-4xl md:text-6xl font-bold leading-tight">
-                    Transformasi <span class="text-gold italic">Bisnis</span> ke Level <span class="text-gold">Premium.</span>
-                </h1>
-                <p class="text-gray-300 mt-6 text-lg leading-relaxed">
-                    Kami menghadirkan ekosistem digital terintegrasi: Jasa Web/App, Periklanan, dan Marketplace Eksklusif untuk UMKM & Perusahaan.
-                </p>
-                <div class="mt-10 flex gap-4">
-                    <button class="bg-gold px-8 py-4 rounded-2xl font-bold text-royal-purple hover:scale-105 transition shadow-[0_10px_20px_rgba(212,175,55,0.3)]">Mulai Sekarang</button>
-                </div>
+        <div class="grid grid-cols-1 gap-5 pb-20">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-yellow-500">
+                <h3 class="font-bold text-purple-900">Jasa Web & App</h3>
+                <p class="text-sm text-gray-500 mt-2">Pembuatan website perusahaan dan aplikasi mobile lengkap dengan integrasi sistem.</p>
             </div>
-            <div class="hidden md:block float-animation" data-aos="zoom-in" data-aos-duration="1500">
-                <img src="https://cdni.iconscout.com/illustration/premium/thumb/digital-marketing-agency-illustration-download-in-svg-png-gif-file-formats--business-management-office-concept-pack-illustrations-5014352.png" alt="Digital Agency" class="w-full">
+            <div class="bg-white p-6 rounded-2xl shadow-sm border-l-4 border-yellow-500">
+                <h3 class="font-bold text-purple-900">Marketplace Integration</h3>
+                <p class="text-sm text-gray-500 mt-2">Daftarkan produk UMKM Anda ke dalam ekosistem marketplace kami untuk jangkauan lebih luas.</p>
             </div>
         </div>
-    </section>
+    </main>
 
-    <section class="py-24 px-8 bg-gray-50">
-        <div class="max-w-6xl mx-auto text-center mb-16" data-aos="fade-up">
-            <h2 class="text-3xl font-bold text-royal-purple">Layanan Unggulan</h2>
-            <div class="w-20 h-1 bg-gold mx-auto mt-4 rounded-full"></div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="100">
-                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">🌐</div>
-                <h3 class="font-bold text-xl mb-3">Web Dev</h3>
-                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Website custom yang cepat, aman, dan berkelas dunia.</p>
-            </div>
-            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="200">
-                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">📱</div>
-                <h3 class="font-bold text-xl mb-3">Mobile Apps</h3>
-                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Aplikasi Android/iOS dengan UI/UX premium.</p>
-            </div>
-            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="300">
-                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">🚀</div>
-                <h3 class="font-bold text-xl mb-3">Digital Ads</h3>
-                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Iklan tertarget untuk hasilkan profit maksimal.</p>
-            </div>
-            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="400">
-                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">🤝</div>
-                <h3 class="font-bold text-xl mb-3">Mitra UMKM</h3>
-                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Pasang produk Anda di Marketplace kami secara instan.</p>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-24 px-8 overflow-hidden">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-2xl font-bold mb-12" data-aos="fade-right">Klien Kami Berkata</h2>
-            <div class="swiper mySwiper pb-12">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide bg-white border border-gray-200 p-8 rounded-[32px] shadow-sm">
-                        <p class="text-gray-600 italic mb-6">"Website kami naik kelas sejak menggunakan jasa PT. Digital Pro Indo. Desainnya sangat mewah!"</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gold rounded-full"></div>
-                            <div>
-                                <h4 class="font-bold">Budi Santoso</h4>
-                                <p class="text-xs text-gray-400">Owner UMKM Properti</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="swiper-slide bg-white border border-gray-200 p-8 rounded-[32px] shadow-sm">
-                        <p class="text-gray-600 italic mb-6">"Sangat membantu bisnis kami masuk ke ranah digital lewat iklan profesional."</p>
-                        <div class="flex items-center gap-4">
-                            <div class="w-12 h-12 bg-gold rounded-full"></div>
-                            <div>
-                                <h4 class="font-bold">Siska Putri</h4>
-                                <p class="text-xs text-gray-400">Founder Tech-Startup</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="swiper-pagination"></div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-royal-purple text-white pt-20 pb-10 px-8 rounded-t-[50px]">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 border-b border-white/10 pb-12">
-            <div>
-                <h2 class="text-2xl font-bold text-gold mb-6 tracking-tighter">DIGITAL PRO INDO</h2>
-                <p class="text-gray-400 text-sm leading-relaxed">Ekosistem Digital Terpadu & Marketplace Premium Indonesia.</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6">Menu Cepat</h4>
-                <div class="grid grid-cols-2 text-sm text-gray-400 gap-4">
-                    <a href="tentang-kami.html" class="hover:text-gold transition">Tentang Kami</a>
-                    <a href="visi-misi.html" class="hover:text-gold transition">Visi Misi</a>
-                    <a href="layanan.html" class="hover:text-gold transition">Layanan</a>
-                    <a href="index.html" class="hover:text-gold transition">Beranda</a>
-                </div>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6">Hubungi Kami</h4>
-                <p class="text-gray-400 text-sm mb-2">WhatsApp: +62 821 9185 1112</p>
-                <p class="text-gray-400 text-sm">Email: admin@ptdigitalproindo.com</p>
-            </div>
-        </div>
-        <p class="text-center text-xs text-gray-600 mt-8">© 2026 PT. Digital Pro Indo. Crafted with Excellence.</p>
+    <footer class="bg-[#1a0033] text-white p-8 text-center">
+        <p class="text-sm font-bold tracking-widest text-yellow-500">PT DIGITAL PRO INDO</p>
+        <p class="text-[10px] text-gray-400 mt-2 uppercase tracking-widest">© 2026 Seluruh Hak Cipta Dilindungi.</p>
     </footer>
 
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script>
-        // Inisialisasi AOS (Animasi Scroll)
-        AOS.init();
-
-        // Inisialisasi Swiper (Slider)
-        var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 1,
-            spaceBetween: 30,
-            pagination: { el: ".swiper-pagination", clickable: true },
-            breakpoints: {
-                768: { slidesPerView: 2 }
+        function toggleMenu() {
+            const nav = document.getElementById("sideNav");
+            // Cek lebar saat ini untuk buka/tutup
+            if (nav.style.width === "280px") {
+                nav.style.width = "0";
+            } else {
+                nav.style.width = "280px";
             }
-        });
+        }
+
+        function toggleDropdown(event) {
+            event.stopPropagation();
+            const dropdown = document.getElementById("aboutDropdown");
+            const btn = event.currentTarget;
+            if (dropdown.style.display === "block") {
+                dropdown.style.display = "none";
+                btn.classList.remove("active");
+            } else {
+                dropdown.style.display = "block";
+                btn.classList.add("active");
+            }
+        }
     </script>
 </body>
 </html>

@@ -3,49 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Digital Pro Indo | Digital Transformation Partner</title>
+    <title>PT Digital Pro Indo | Transformasi Bisnis Digital Anda</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+
     <style>
         :root {
             --primary: #6c147b;
+            --secondary: #9c27b0;
             --dark: #1a0033;
             --accent: #FFD700;
+            --light-bg: #f4f7fe;
         }
-        body { font-family: 'Montserrat', sans-serif; background-color: #f4f7fe; color: #333; }
+        body { font-family: 'Montserrat', sans-serif; background-color: var(--light-bg); color: #333; overflow-x: hidden; }
         
-        /* Glassmorphism Sidebar */
-        .sidenav {
-            height: 100%; width: 0; position: fixed; z-index: 1000001 !important;
-            top: 0; right: 0; background: rgba(26, 0, 51, 0.95);
-            backdrop-filter: blur(10px);
-            overflow-x: hidden; transition: 0.5s; padding-top: 80px; 
-            box-shadow: -15px 0 35px rgba(0,0,0,0.3);
-        }
-        .menu-list a {
-            padding: 18px 30px; text-decoration: none; font-size: 1rem; font-weight: 600;
-            color: #fff; display: block; transition: 0.3s; border-left: 4px solid transparent;
-        }
-        .menu-list a:hover { background: rgba(255,215,0,0.1); border-left: 4px solid var(--accent); color: var(--accent); }
-        .sidenav .closebtn { position: absolute; top: 20px; left: 20px; font-size: 35px; color: white; cursor: pointer; }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--light-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--secondary); }
 
-        /* Animated Header */
+        /* Header Styles */
         .fixed-header { 
-            z-index: 99999; 
-            background: rgba(108, 20, 123, 0.9) !important; 
-            backdrop-filter: blur(8px);
+            z-index: 100000; 
+            background: rgba(108, 20, 123, 0.95); 
+            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease-in-out;
         }
 
-        /* Digital Hero Background */
+        /* Sidenav Styles (Glassmorphism + Dark) */
+        .sidenav {
+            height: 100%; width: 0; position: fixed; z-index: 1000001;
+            top: 0; right: 0; background: rgba(26, 0, 51, 0.9); /* More transparent */
+            backdrop-filter: blur(15px); /* Stronger blur */
+            overflow-x: hidden; transition: 0.6s ease-in-out; padding-top: 100px; /* More space */
+            box-shadow: -20px 0 50px rgba(0,0,0,0.4); /* Deeper shadow */
+        }
+        .sidenav a {
+            padding: 18px 30px; text-decoration: none; font-size: 1.1rem; font-weight: 500;
+            color: #fff; display: block; transition: 0.3s ease; border-left: 5px solid transparent;
+            position: relative; overflow: hidden;
+        }
+        .sidenav a:hover { 
+            background: rgba(255,215,0,0.1); 
+            border-left: 5px solid var(--accent); 
+            color: var(--accent);
+            transform: translateX(10px);
+        }
+        .sidenav .closebtn { position: absolute; top: 25px; left: 25px; font-size: 38px; color: #fff; cursor: pointer; }
+        
+        /* Hero Section - Gradient & Animation */
         .hero-bg {
-            background: linear-gradient(-45deg, #6c147b, #4a0072, #1a0033, #9c27b0);
+            background: linear-gradient(-45deg, #6c147b, #4a0072, #1a0033, #8e24aa);
             background-size: 400% 400%;
-            animation: gradientBG 12s ease infinite;
-            position: relative;
-            overflow: hidden;
+            animation: gradientBG 15s ease infinite;
+            position: relative; overflow: hidden;
         }
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
@@ -53,36 +68,100 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Tech Mesh Effect */
-        .hero-bg::after {
+        /* Digital Grid Overlay */
+        .hero-bg::before {
             content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
-            background-size: 30px 30px;
+            background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+            background-size: 40px 40px;
+            opacity: 0.7;
+            z-index: 1;
+        }
+        .hero-content { position: relative; z-index: 2; }
+
+        /* Modern Card Styling */
+        .digital-feature-card {
+            background: #fff;
+            border-radius: 25px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.08);
+            transition: all 0.4s ease-in-out;
+            border: 1px solid rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .digital-feature-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 60px rgba(var(--primary-rgb, 108, 20, 123), 0.2);
+            border-color: var(--primary);
+        }
+        .digital-feature-card::before {
+            content: ""; position: absolute; bottom: 0; left: 0; width: 100%; height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: translateX(-100%); transition: transform 0.4s ease-in-out;
+        }
+        .digital-feature-card:hover::before { transform: translateX(0); }
+
+        .icon-gradient {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 3.5rem; /* Larger icons */
+            display: inline-block;
         }
 
-        /* Card Pulse & Glow */
-        .digital-card {
-            background: white;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            border: 1px solid rgba(108, 20, 123, 0.05);
+        /* Testimonial Card */
+        .testimonial-card {
+            background: #fff;
+            border-radius: 25px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
         }
-        .digital-card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(108, 20, 123, 0.15);
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 45px rgba(0,0,0,0.1);
         }
 
-        .icon-box {
-            width: 70px; height: 70px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 20px; background: #f4f0f7;
-            margin-bottom: 1.5rem; transition: 0.3s;
+        /* Partner Logo Animation */
+        .partner-logo-container {
+            overflow: hidden;
+            white-space: nowrap;
         }
-        .digital-card:hover .icon-box { background: var(--primary); color: white; transform: rotate(10deg); }
+        .partner-logo-track {
+            display: inline-block;
+            animation: scroll-left 30s linear infinite; /* Adjust speed */
+        }
+        .partner-logo-track:hover {
+            animation-play-state: paused;
+        }
+        .partner-logo-track img {
+            height: 60px; /* Adjust height */
+            margin: 0 40px; /* Space between logos */
+            filter: grayscale(100%) brightness(150%);
+            transition: filter 0.3s ease;
+        }
+        .partner-logo-track img:hover {
+            filter: grayscale(0%) brightness(100%);
+        }
+        @keyframes scroll-left {
+            0% { transform: translateX(0%); }
+            100% { transform: translateX(-100%); }
+        }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
+        /* Footer */
+        .footer-bg {
+            background: var(--dark);
+            position: relative;
+            overflow: hidden;
+        }
+        .footer-bg::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 25px 25px;
+            opacity: 0.5;
+            z-index: 0;
+        }
+        .footer-content { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
@@ -108,7 +187,7 @@
 
     <div id="sideNav" class="sidenav">
         <span class="closebtn" onclick="toggleMenu()">&times;</span>
-        <div class="menu-list">
+        <div class="menu-list mt-8">
             <a href="./">🏠 Beranda</a>
             <a href="tentang-kami.html">ℹ️ Profil Perusahaan</a>
             <a href="visi-misi.html">🎯 Visi & Misi</a>
@@ -117,79 +196,175 @@
         </div>
     </div>
 
-    <section class="hero-bg pt-48 pb-32 px-8 text-center text-white rounded-b-[60px] shadow-2xl">
-        <div data-aos="fade-up" data-aos-duration="1200" class="relative z-10">
-            <span class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 inline-block">Innovating The Future</span>
-            <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6">Expertise in <br><span class="text-yellow-400">Digital Ecosystem</span></h1>
-            <p class="mt-4 text-base md:text-lg text-purple-100 max-w-2xl mx-auto opacity-80 font-medium">
-                Mitra transformasi digital terdepan untuk membangun infrastruktur bisnis yang cerdas, adaptif, dan berkelanjutan.
-            </p>
-            <div class="mt-10 flex flex-wrap justify-center gap-4">
-                <button class="bg-yellow-500 hover:bg-yellow-400 text-purple-900 font-extrabold py-4 px-8 rounded-2xl transition transform hover:scale-105">Mulai Sekarang</button>
-                <button class="bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md py-4 px-8 rounded-2xl font-bold transition">Hubungi Kami</button>
+    <section class="hero-bg pt-48 pb-32 px-8 text-white rounded-b-[70px] shadow-2xl relative">
+        <div class="hero-content max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 text-center lg:text-left">
+            <div data-aos="fade-right" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
+                <span class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-5 py-2 rounded-full text-sm font-bold tracking-widest uppercase mb-6 inline-block">Innovate. Transform. Grow.</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-7">Empowering Your <br><span class="text-yellow-400">Digital Horizon</span></h1>
+                <p class="mt-4 text-lg text-purple-100 max-w-2xl lg:max-w-xl mx-auto lg:mx-0 opacity-80 font-medium leading-relaxed">
+                    PT Digital Pro Indo adalah katalisator transformasi digital Anda. Kami membangun masa depan bisnis dengan solusi teknologi yang cerdas dan terintegrasi.
+                </p>
+                <div class="mt-12 flex flex-wrap justify-center lg:justify-start gap-5">
+                    <button class="bg-yellow-500 hover:bg-yellow-400 text-purple-900 font-extrabold py-4 px-10 rounded-2xl shadow-xl transition transform hover:-translate-y-1">Mulai Proyek Anda</button>
+                    <button class="bg-white/15 hover:bg-white/25 border border-white/20 backdrop-blur-md py-4 px-10 rounded-2xl font-bold transition text-white">Jelajahi Solusi</button>
+                </div>
+            </div>
+            <div class="relative w-full lg:w-1/2 mt-12 lg:mt-0 flex justify-center items-center" data-aos="fade-left" data-aos-duration="1200" data-aos-easing="ease-out-cubic">
+                <div id="lottie-animation" style="width: 100%; max-width: 500px; height: auto;"></div>
             </div>
         </div>
     </section>
 
-    <main class="py-24 px-6 max-w-6xl mx-auto">
+    <section class="py-24 px-6 max-w-7xl mx-auto">
         <div class="text-center mb-16" data-aos="fade-up">
-            <h2 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-tighter">Layanan Unggulan Kami</h2>
-            <div class="h-1.5 w-20 bg-purple-600 mx-auto rounded-full"></div>
+            <h2 class="text-4xl font-black text-gray-900 mb-4 uppercase tracking-tight">Solusi Digital Kami</h2>
+            <p class="text-lg text-gray-600 max-w-2xl mx-auto">Kami menawarkan serangkaian layanan komprehensif untuk mendorong bisnis Anda ke era digital.</p>
+            <div class="h-1.5 w-24 bg-purple-600 mx-auto mt-6 rounded-full"></div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="digital-card p-10 rounded-[40px] shadow-sm" data-aos="fade-right">
-                <div class="icon-box text-3xl text-purple-600">🌐</div>
-                <h3 class="font-extrabold text-2xl text-purple-900 mb-4">Web & App Solution</h3>
-                <p class="text-gray-500 leading-relaxed mb-6">Pengembangan platform berbasis web dan mobile dengan standar UI/UX modern untuk performa bisnis maksimal.</p>
-                <a href="#" class="text-purple-600 font-bold hover:underline flex items-center gap-2">Pelajari Detail <span>→</span></a>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div class="digital-feature-card p-8 text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="icon-gradient mb-6 mx-auto">💻</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-3">Pengembangan Web & Aplikasi</h3>
+                <p class="text-gray-500 leading-relaxed text-sm">Menciptakan pengalaman digital yang intuitif dan berkinerja tinggi, dari situs web hingga aplikasi mobile kustom.</p>
             </div>
 
-            <div class="digital-card p-10 rounded-[40px] shadow-sm" data-aos="fade-left">
-                <div class="icon-box text-3xl text-yellow-600">🛒</div>
-                <h3 class="font-extrabold text-2xl text-purple-900 mb-4">Marketplace Synergy</h3>
-                <p class="text-gray-500 leading-relaxed mb-6">Integrasi ekosistem UMKM ke dalam jaringan marketplace profesional untuk jangkauan pasar yang lebih luas.</p>
-                <a href="#" class="text-purple-600 font-bold hover:underline flex items-center gap-2">Pelajari Detail <span>→</span></a>
+            <div class="digital-feature-card p-8 text-center" data-aos="fade-up" data-aos-delay="200">
+                <div class="icon-gradient mb-6 mx-auto">🛒</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-3">Integrasi Marketplace UMKM</h3>
+                <p class="text-gray-500 leading-relaxed text-sm">Menghubungkan produk UMKM Anda ke pasar yang lebih luas melalui integrasi sistem marketplace.</p>
+            </div>
+
+            <div class="digital-feature-card p-8 text-center" data-aos="fade-up" data-aos-delay="300">
+                <div class="icon-gradient mb-6 mx-auto">📈</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-3">Strategi Pemasaran Digital</h3>
+                <p class="text-gray-500 leading-relaxed text-sm">Meningkatkan visibilitas dan konversi dengan strategi SEO, SEM, dan manajemen media sosial yang efektif.</p>
+            </div>
+
+            <div class="digital-feature-card p-8 text-center" data-aos="fade-up" data-aos-delay="400">
+                <div class="icon-gradient mb-6 mx-auto">🔒</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-3">Keamanan Siber & Cloud</h3>
+                <p class="text-gray-500 leading-relaxed text-sm">Melindungi aset digital Anda dengan solusi keamanan siber terkemuka dan infrastruktur cloud yang skalabel.</p>
+            </div>
+
+            <div class="digital-feature-card p-8 text-center" data-aos="fade-up" data-aos-delay="500">
+                <div class="icon-gradient mb-6 mx-auto">📊</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-3">Analisis Data & AI</h3>
+                <p class="text-gray-500 leading-relaxed text-sm">Mengubah data menjadi wawasan actionable dengan analitik canggih dan solusi berbasis kecerdasan buatan.</p>
+            </div>
+
+            <div class="digital-feature-card p-8 text-center" data-aos="fade-up" data-aos-delay="600">
+                <div class="icon-gradient mb-6 mx-auto">💡</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-3">Konsultasi Teknologi</h3>
+                <p class="text-gray-500 leading-relaxed text-sm">Pendampingan ahli untuk memetakan strategi teknologi dan inovasi digital sesuai tujuan bisnis Anda.</p>
             </div>
         </div>
-    </main>
+    </section>
 
-    <footer class="bg-[#1a0033] text-white rounded-t-[50px] overflow-hidden">
-        <div class="max-w-6xl mx-auto px-8 pt-20 pb-12">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-                <div>
-                    <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" alt="Logo" class="h-10 mb-6">
-                    <p class="text-gray-400 text-sm leading-relaxed">Memberikan solusi digital inovatif yang membantu bisnis berkembang lebih cepat di era teknologi informasi.</p>
+    <section class="bg-gradient-to-r from-purple-800 to-purple-600 py-24 px-6 rounded-[70px] text-white relative overflow-hidden my-20">
+        <div class="absolute inset-0 z-0 bg-pattern opacity-10" style="background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px); background-size: 30px 30px;"></div>
+        <div class="max-w-7xl mx-auto text-center relative z-10">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-5" data-aos="fade-up">Apa Kata Klien Kami?</h2>
+            <p class="text-lg text-purple-100 max-w-3xl mx-auto mb-16" data-aos="fade-up" data-aos-delay="100">
+                Dengarkan langsung pengalaman mereka yang telah bertransformasi bersama PT Digital Pro Indo.
+            </p>
+
+            <div class="swiper-container max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://i.ibb.co.com/j82c16c/user1.jpg" alt="Client 1" class="w-20 h-20 rounded-full mx-auto mb-6 shadow-md">
+                            <p class="text-gray-700 italic text-lg leading-relaxed mb-6">"PT Digital Pro Indo mengubah cara kami berbisnis. Website kami sekarang jauh lebih interaktif dan penjualan meningkat drastis. Sangat direkomendasikan!"</p>
+                            <h4 class="font-bold text-purple-800 text-xl">Andi Pratama</h4>
+                            <p class="text-sm text-gray-500">CEO, Kreatif Solusi</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://i.ibb.co.com/N74V3yL/user2.jpg" alt="Client 2" class="w-20 h-20 rounded-full mx-auto mb-6 shadow-md">
+                            <p class="text-gray-700 italic text-lg leading-relaxed mb-6">"Layanan marketplace mereka sangat membantu UMKM kecil seperti kami. Produk kami kini bisa menjangkau pelanggan di seluruh Indonesia. Terima kasih DPI!"</p>
+                            <h4 class="font-bold text-purple-800 text-xl">Budi Santoso</h4>
+                            <p class="text-sm text-gray-500">Pemilik, Rasa Nusantara</p>
+                        </div>
+                    </div>
+                    <div class="swiper-slide">
+                        <div class="testimonial-card">
+                            <img src="https://i.ibb.co.com/gS3sXq8/user3.jpg" alt="Client 3" class="w-20 h-20 rounded-full mx-auto mb-6 shadow-md">
+                            <p class="text-gray-700 italic text-lg leading-relaxed mb-6">"Dengan strategi digital marketing dari DPI, brand awareness kami meroket. Timnya profesional, responsif, dan hasilnya nyata!"</p>
+                            <h4 class="font-bold text-purple-800 text-xl">Citra Dewi</h4>
+                            <p class="text-sm text-gray-500">Marketing Manager, LuxTech</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="swiper-pagination mt-12"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-12" data-aos="fade-up">
+            <h2 class="text-3xl font-black text-gray-800 mb-4 uppercase tracking-tighter">Dipercaya Oleh</h2>
+            <p class="text-md text-gray-600">Kemitraan strategis untuk inovasi berkelanjutan.</p>
+        </div>
+
+        <div class="partner-logo-container mt-12" data-aos="fade-up" data-aos-delay="100">
+            <div class="partner-logo-track flex items-center">
+                <img src="https://i.ibb.co.com/V9r3c3c/partner1.png" alt="Partner 1">
+                <img src="https://i.ibb.co.com/w42bB0Z/partner2.png" alt="Partner 2">
+                <img src="https://i.ibb.co.com/Bf1hS4P/partner3.png" alt="Partner 3">
+                <img src="https://i.ibb.co.com/x5c9f9F/partner4.png" alt="Partner 4">
+                <img src="https://i.ibb.co.com/V9r3c3c/partner1.png" alt="Partner 1">
+                <img src="https://i.ibb.co.com/w42bB0Z/partner2.png" alt="Partner 2">
+                <img src="https://i.ibb.co.com/Bf1hS4P/partner3.png" alt="Partner 3">
+                <img src="https://i.ibb.co.com/x5c9f9F/partner4.png" alt="Partner 4">
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer-bg text-white rounded-t-[70px] overflow-hidden mt-20">
+        <div class="footer-content max-w-7xl mx-auto px-8 pt-24 pb-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                <div class="col-span-2">
+                    <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" alt="Logo PT Digital Pro Indo" class="h-11 mb-6 filter brightness-150">
+                    <p class="text-gray-400 text-sm leading-relaxed max-w-md">Katalisator Anda dalam mencapai puncak inovasi digital. Bersama, kita wujudkan masa depan bisnis yang tak terbatas.</p>
                 </div>
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-yellow-500">Navigasi</h4>
+                    <h4 class="text-lg font-bold mb-6 text-yellow-500">Solusi</h4>
                     <ul class="space-y-3 text-gray-400 text-sm">
-                        <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
-                        <li><a href="#" class="hover:text-white transition">Layanan</a></li>
-                        <li><a href="#" class="hover:text-white transition">Visi & Misi</a></li>
-                        <li><a href="#" class="hover:text-white transition">Kontak</a></li>
+                        <li><a href="#" class="hover:text-white transition">Web & App Dev</a></li>
+                        <li><a href="#" class="hover:text-white transition">Marketplace UMKM</a></li>
+                        <li><a href="#" class="hover:text-white transition">Digital Marketing</a></li>
+                        <li><a href="#" class="hover:text-white transition">AI & Data Analytics</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-bold mb-6 text-yellow-500">Hubungi Kami</h4>
-                    <p class="text-gray-400 text-sm leading-relaxed">Jl. Digital Pro No. 2026<br>Jakarta, Indonesia</p>
-                    <p class="text-gray-400 text-sm mt-4">WhatsApp: +62 821 9185 1112</p>
+                    <h4 class="text-lg font-bold mb-6 text-yellow-500">Perusahaan</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="tentang-kami.html" class="hover:text-white transition">Tentang Kami</a></li>
+                        <li><a href="visi-misi.html" class="hover:text-white transition">Visi & Misi</a></li>
+                        <li><a href="layanan.html" class="hover:text-white transition">Layanan</a></li>
+                        <li><a href="#" class="hover:text-white transition">Karir</a></li>
+                    </ul>
                 </div>
             </div>
             
-            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                <p class="text-[11px] text-gray-500 tracking-widest uppercase font-bold">© 2026 PT DIGITAL PRO INDO. All Rights Reserved.</p>
-                <div class="flex gap-6">
-                    <a href="#" class="text-gray-500 hover:text-white transition text-xs">Privacy Policy</a>
-                    <a href="#" class="text-gray-500 hover:text-white transition text-xs">Terms of Service</a>
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[11px] text-gray-600 tracking-widest uppercase font-bold">© 2026 PT DIGITAL PRO INDO. All Rights Reserved.</p>
+                <div class="flex gap-4">
+                    <a href="https://wa.me/6282191851112" target="_blank" class="w-10 h-10 bg-gray-700 hover:bg-yellow-500 text-white flex items-center justify-center rounded-full transition">WA</a>
+                    <a href="#" class="w-10 h-10 bg-gray-700 hover:bg-yellow-500 text-white flex items-center justify-center rounded-full transition">IG</a>
+                    <a href="#" class="w-10 h-10 bg-gray-700 hover:bg-yellow-500 text-white flex items-center justify-center rounded-full transition">LI</a>
                 </div>
             </div>
         </div>
     </footer>
 
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
     <script>
-        AOS.init({ duration: 1000, once: true });
+        AOS.init({ duration: 1200, once: true, easing: 'ease-out-cubic' });
 
         function toggleMenu() {
             const nav = document.getElementById("sideNav");
@@ -200,13 +375,48 @@
             }
         }
         
-        // Header Blur on Scroll
+        // Header Shadow/Blur on Scroll
         window.addEventListener('scroll', function() {
             const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.classList.add('shadow-2xl');
+            if (window.scrollY > 80) { // Adjust scroll value as needed
+                nav.classList.add('shadow-xl');
             } else {
-                nav.classList.remove('shadow-2xl');
+                nav.classList.remove('shadow-xl');
+            }
+        });
+
+        // Initialize Lottie Player
+        const lottiePlayer = document.createElement('lottie-player');
+        lottiePlayer.setAttribute('src', 'https://assets5.lottiefiles.com/packages/lf20_xd9yplfg.json'); // Example animation: abstract tech
+        lottiePlayer.setAttribute('background', 'transparent');
+        lottiePlayer.setAttribute('speed', '1');
+        lottiePlayer.setAttribute('style', 'width: 100%; height: auto;');
+        lottiePlayer.setAttribute('loop', '');
+        lottiePlayer.setAttribute('autoplay', '');
+        document.getElementById('lottie-animation').appendChild(lottiePlayer);
+
+        // Initialize Swiper for Testimonials
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            autoplay: {
+                delay: 5000,
+                disableOnInteraction: false,
+            },
+            breakpoints: {
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 40,
+                },
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 50,
+                },
             }
         });
     </script>

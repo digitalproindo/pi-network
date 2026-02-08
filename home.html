@@ -3,112 +3,162 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT. Digital Pro Indo | Digital Solutions & Marketplace</title>
+    <title>PT. Digital Pro Indo | Digital Ecosystem</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
     <style>
-        body { font-family: 'Montserrat', sans-serif; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .bg-royal-purple { background-color: #1a0033; }
         .text-gold { color: #D4AF37; }
         .bg-gold { background: linear-gradient(135deg, #D4AF37 0%, #F1D37E 100%); }
-        .card-hover:hover { transform: translateY(-10px); transition: all 0.3s ease; }
+        
+        /* Animasi Floating untuk Ikon */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+        .float-animation { animation: float 4s ease-in-out infinite; }
+
+        /* Custom Swiper Style */
+        .swiper-pagination-bullet-active { background: #D4AF37 !important; }
     </style>
 </head>
 <body class="bg-white text-gray-900">
 
-    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 px-6 py-4 flex justify-between items-center shadow-sm">
+    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-lg z-[9999] px-6 py-4 flex justify-between items-center shadow-sm">
         <span class="text-royal-purple font-bold text-xl tracking-tighter">DIGITAL PRO <span class="text-gold">INDO</span></span>
-        <button onclick="window.location.href='index.html'" class="text-royal-purple">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <button onclick="window.location.href='index.html'" class="p-2 bg-purple-50 rounded-lg text-royal-purple">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
         </button>
     </nav>
 
-    <section class="relative pt-32 pb-20 px-8 bg-royal-purple text-center overflow-hidden">
-        <div class="relative z-10">
-            <h1 class="text-white text-3xl md:text-5xl font-bold leading-tight">Solusi Digital Terpadu untuk <span class="text-gold">Bisnis Masa Depan</span></h1>
-            <p class="text-gray-300 mt-6 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
-                Dari pembuatan website hingga strategi periklanan global. Kami membantu UMKM dan Perusahaan bertransformasi ke ekosistem digital premium.
-            </p>
-            <div class="mt-10 flex flex-col md:flex-row gap-4 justify-center">
-                <a href="#services" class="bg-gold px-8 py-3 rounded-full font-bold text-royal-purple shadow-lg">Layanan Kami</a>
-                <a href="https://wa.me/6282191851112" class="border border-gold text-gold px-8 py-3 rounded-full font-bold">Konsultasi Gratis</a>
+    <section class="relative min-h-screen flex items-center px-8 bg-royal-purple pt-20 overflow-hidden">
+        <div class="absolute top-20 right-[-10%] w-64 h-64 bg-gold opacity-10 blur-[100px] float-animation"></div>
+        
+        <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center relative z-10">
+            <div data-aos="fade-right" data-aos-duration="1000">
+                <h1 class="text-white text-4xl md:text-6xl font-bold leading-tight">
+                    Transformasi <span class="text-gold italic">Bisnis</span> ke Level <span class="text-gold">Premium.</span>
+                </h1>
+                <p class="text-gray-300 mt-6 text-lg leading-relaxed">
+                    Kami menghadirkan ekosistem digital terintegrasi: Jasa Web/App, Periklanan, dan Marketplace Eksklusif untuk UMKM & Perusahaan.
+                </p>
+                <div class="mt-10 flex gap-4">
+                    <button class="bg-gold px-8 py-4 rounded-2xl font-bold text-royal-purple hover:scale-105 transition shadow-[0_10px_20px_rgba(212,175,55,0.3)]">Mulai Sekarang</button>
+                </div>
+            </div>
+            <div class="hidden md:block float-animation" data-aos="zoom-in" data-aos-duration="1500">
+                <img src="https://cdni.iconscout.com/illustration/premium/thumb/digital-marketing-agency-illustration-download-in-svg-png-gif-file-formats--business-management-office-concept-pack-illustrations-5014352.png" alt="Digital Agency" class="w-full">
             </div>
         </div>
     </section>
 
-    <section id="services" class="py-20 px-8 bg-gray-50">
+    <section class="py-24 px-8 bg-gray-50">
+        <div class="max-w-6xl mx-auto text-center mb-16" data-aos="fade-up">
+            <h2 class="text-3xl font-bold text-royal-purple">Layanan Unggulan</h2>
+            <div class="w-20 h-1 bg-gold mx-auto mt-4 rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="100">
+                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">🌐</div>
+                <h3 class="font-bold text-xl mb-3">Web Dev</h3>
+                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Website custom yang cepat, aman, dan berkelas dunia.</p>
+            </div>
+            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="200">
+                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">📱</div>
+                <h3 class="font-bold text-xl mb-3">Mobile Apps</h3>
+                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Aplikasi Android/iOS dengan UI/UX premium.</p>
+            </div>
+            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="300">
+                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">🚀</div>
+                <h3 class="font-bold text-xl mb-3">Digital Ads</h3>
+                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Iklan tertarget untuk hasilkan profit maksimal.</p>
+            </div>
+            <div class="bg-white p-8 rounded-[32px] shadow-xl hover:bg-royal-purple hover:text-white transition-all group border border-gray-100" data-aos="fade-up" data-aos-delay="400">
+                <div class="w-16 h-16 bg-purple-50 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-gold transition-colors">🤝</div>
+                <h3 class="font-bold text-xl mb-3">Mitra UMKM</h3>
+                <p class="text-gray-500 group-hover:text-gray-300 text-sm">Pasang produk Anda di Marketplace kami secara instan.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-8 overflow-hidden">
         <div class="max-w-6xl mx-auto">
-            <h2 class="text-2xl font-bold text-royal-purple text-center mb-12">Layanan Utama Kami</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
-                    <div class="text-3xl mb-4">🌐</div>
-                    <h3 class="font-bold text-lg mb-2">Web Development</h3>
-                    <p class="text-gray-500 text-sm">Pembuatan website perusahaan, landing page, dan sistem informasi lengkap.</p>
+            <h2 class="text-2xl font-bold mb-12" data-aos="fade-right">Klien Kami Berkata</h2>
+            <div class="swiper mySwiper pb-12">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide bg-white border border-gray-200 p-8 rounded-[32px] shadow-sm">
+                        <p class="text-gray-600 italic mb-6">"Website kami naik kelas sejak menggunakan jasa PT. Digital Pro Indo. Desainnya sangat mewah!"</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gold rounded-full"></div>
+                            <div>
+                                <h4 class="font-bold">Budi Santoso</h4>
+                                <p class="text-xs text-gray-400">Owner UMKM Properti</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="swiper-slide bg-white border border-gray-200 p-8 rounded-[32px] shadow-sm">
+                        <p class="text-gray-600 italic mb-6">"Sangat membantu bisnis kami masuk ke ranah digital lewat iklan profesional."</p>
+                        <div class="flex items-center gap-4">
+                            <div class="w-12 h-12 bg-gold rounded-full"></div>
+                            <div>
+                                <h4 class="font-bold">Siska Putri</h4>
+                                <p class="text-xs text-gray-400">Founder Tech-Startup</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
-                    <div class="text-3xl mb-4">📱</div>
-                    <h3 class="font-bold text-lg mb-2">Mobile Apps</h3>
-                    <p class="text-gray-500 text-sm">Pengembangan aplikasi Android & iOS custom sesuai kebutuhan bisnis Anda.</p>
-                </div>
-                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
-                    <div class="text-3xl mb-4">🚀</div>
-                    <h3 class="font-bold text-lg mb-2">Digital Ads</h3>
-                    <p class="text-gray-500 text-sm">Layanan iklan digital profesional (FB, IG, Google Ads) untuk meningkatkan penjualan.</p>
-                </div>
-                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
-                    <div class="text-3xl mb-4">🛒</div>
-                    <h3 class="font-bold text-lg mb-2">Merchant Partner</h3>
-                    <p class="text-gray-500 text-sm">Bantu UMKM & Brand masuk ke Marketplace Digital Pro Indo dengan sistem profesional.</p>
-                </div>
+                <div class="swiper-pagination"></div>
             </div>
         </div>
     </section>
 
-    <section class="py-20 px-8 bg-white">
-        <div class="max-w-5xl mx-auto bg-royal-purple rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-10 shadow-2xl">
-            <div class="flex-1">
-                <h2 class="text-white text-3xl font-bold mb-4">Punya Produk Berkualitas?</h2>
-                <p class="text-gray-300 mb-6 leading-relaxed">Bergabunglah sebagai mitra Merchant di Marketplace Digital Pro Indo. Kami berikan akses ke ribuan calon pembeli potensial dalam ekosistem kami.</p>
-                <ul class="text-gold text-sm space-y-2 mb-8">
-                    <li>✓ Pendaftaran Mudah & Cepat</li>
-                    <li>✓ Support Digital Marketing</li>
-                    <li>✓ Sistem Transaksi Aman</li>
-                </ul>
-                <a href="https://wa.me/6282191851112?text=Halo%20Admin,%20saya%20tertarik%20menjadi%20partner%20merchant" class="bg-gold text-royal-purple px-6 py-3 rounded-xl font-bold inline-block">Daftar Jadi Mitra</a>
-            </div>
-            <div class="flex-1 text-center">
-                <div class="bg-white/10 p-6 rounded-full inline-block animate-pulse">
-                    <span class="text-6xl">🤝</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <footer class="bg-royal-purple text-white pt-20 pb-10 px-8">
-        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-white/10 pb-12">
+    <footer class="bg-royal-purple text-white pt-20 pb-10 px-8 rounded-t-[50px]">
+        <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-12 border-b border-white/10 pb-12">
             <div>
-                <h2 class="text-xl font-bold mb-6 text-gold">PT. DIGITAL PRO INDO</h2>
-                <p class="text-gray-400 text-sm leading-loose">Solusi Digital & Marketplace Premium Indonesia.</p>
+                <h2 class="text-2xl font-bold text-gold mb-6 tracking-tighter">DIGITAL PRO INDO</h2>
+                <p class="text-gray-400 text-sm leading-relaxed">Ekosistem Digital Terpadu & Marketplace Premium Indonesia.</p>
             </div>
             <div>
-                <h4 class="font-bold mb-6">Quick Links</h4>
+                <h4 class="font-bold mb-6">Menu Cepat</h4>
                 <div class="grid grid-cols-2 text-sm text-gray-400 gap-4">
-                    <a href="tentang-kami.html" class="hover:text-gold">Tentang</a>
-                    <a href="visi-misi.html" class="hover:text-gold">Visi Misi</a>
-                    <a href="layanan.html" class="hover:text-gold">Layanan</a>
-                    <a href="index.html" class="hover:text-gold">Marketplace</a>
+                    <a href="tentang-kami.html" class="hover:text-gold transition">Tentang Kami</a>
+                    <a href="visi-misi.html" class="hover:text-gold transition">Visi Misi</a>
+                    <a href="layanan.html" class="hover:text-gold transition">Layanan</a>
+                    <a href="index.html" class="hover:text-gold transition">Beranda</a>
                 </div>
             </div>
             <div>
-                <h4 class="font-bold mb-6">Kontak</h4>
-                <p class="text-gray-400 text-sm">+62 821 9185 1112</p>
-                <p class="text-gray-400 text-sm mt-2">admin@ptdigitalproindo.com</p>
+                <h4 class="font-bold mb-6">Hubungi Kami</h4>
+                <p class="text-gray-400 text-sm mb-2">WhatsApp: +62 821 9185 1112</p>
+                <p class="text-gray-400 text-sm">Email: admin@ptdigitalproindo.com</p>
             </div>
         </div>
-        <p class="text-center text-xs text-gray-600 mt-8">© 2026 PT. Digital Pro Indo. All Rights Reserved.</p>
+        <p class="text-center text-xs text-gray-600 mt-8">© 2026 PT. Digital Pro Indo. Crafted with Excellence.</p>
     </footer>
 
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script>
+        // Inisialisasi AOS (Animasi Scroll)
+        AOS.init();
+
+        // Inisialisasi Swiper (Slider)
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1,
+            spaceBetween: 30,
+            pagination: { el: ".swiper-pagination", clickable: true },
+            breakpoints: {
+                768: { slidesPerView: 2 }
+            }
+        });
+    </script>
 </body>
 </html>

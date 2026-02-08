@@ -63,22 +63,22 @@
 </head>
 <body>
 
-    <nav class="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-[99999] transition-all" style="background-color: #6c147b;">
-        <button onclick="window.location.href='./'" class="p-2 hover:bg-white/10 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-        </button>
+    <nav class="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-[99999]" style="background-color: #6c147b;">
+    <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-full transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
 
-        <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" 
-             alt="Logo DPI" class="h-10 w-auto object-contain">
+    <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" 
+         alt="Logo DPI" class="h-10 w-auto object-contain">
 
-        <button onclick="toggleMenu()" class="p-2 hover:bg-white/10 rounded-full">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-        </button>
-    </nav>
+    <button onclick="toggleMenu()" class="p-2 hover:bg-white/10 rounded-full transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+</nav>
 
     <div id="sideNav" class="sidenav">
         <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>

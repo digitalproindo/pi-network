@@ -55,13 +55,28 @@
             transform: translateY(-5px);
         }
 
-        /* Mobile Menu */
+        /* REVISI: Mobile Menu Ramping (280px) */
         #mobile-menu {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
             transform: translateX(100%);
+            width: 280px; /* Lebar menu tidak menutupi seluruh layar */
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
         #mobile-menu.active {
             transform: translateX(0);
+        }
+
+        /* REVISI: Overlay untuk area di luar menu */
+        #menu-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 55;
+        }
+        #menu-overlay.active {
+            display: block;
         }
 
         .gradient-text {
@@ -88,6 +103,12 @@
     </div>
 
     <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
+        <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-xl transition group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+            </svg>
+        </button>
+
         <div class="flex items-center">
             <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-8">
         </div>
@@ -103,12 +124,14 @@
         </button>
     </nav>
 
-    <div id="mobile-menu" class="fixed inset-0 z-[60] bg-[#05010d] flex flex-col p-10 space-y-8">
-        <button onclick="toggleMenu()" class="self-end p-2 text-white text-3xl">&times;</button>
-        <a href="#" class="text-4xl font-bold gradient-text">Beranda</a>
-        <a href="#" class="text-4xl font-bold">Layanan</a>
-        <a href="#" class="text-4xl font-bold">Tentang</a>
-        <a href="https://wa.me/6282191851112" class="bg-purple-600 text-center py-4 rounded-xl font-bold">Hubungi Kami</a>
+    <div id="menu-overlay" onclick="toggleMenu()"></div>
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full z-[60] bg-[#0f001e] flex flex-col p-8 pt-24 space-y-6">
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+        <a href="#" class="text-2xl font-bold gradient-text">Beranda</a>
+        <a href="#" class="text-2xl font-bold">Layanan</a>
+        <a href="#" class="text-2xl font-bold">Tentang</a>
+        <hr class="border-white/10 my-2">
+        <a href="https://wa.me/6282191851112" class="bg-purple-600 text-center py-3 rounded-xl font-bold">Hubungi Kami</a>
     </div>
 
     <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
@@ -228,9 +251,12 @@
     <script>
         AOS.init({ duration: 1000, once: true });
 
+        // REVISI: Fungsi toggle untuk menu dan overlay
         function toggleMenu() {
             const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('menu-overlay');
             menu.classList.toggle('active');
+            overlay.classList.toggle('active');
         }
     </script>
 </body>

@@ -29,14 +29,62 @@
 </head>
 <body class="bg-white text-gray-900">
 
-    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-lg z-[9999] px-6 py-4 flex justify-between items-center shadow-sm">
-        <span class="text-royal-purple font-bold text-xl tracking-tighter">DIGITAL PRO <span class="text-gold">INDO</span></span>
-        <button onclick="window.location.href='index.html'" class="p-2 bg-purple-50 rounded-lg text-royal-purple">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-            </svg>
-        </button>
-    </nav>
+    <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-[9999] px-4 py-3 flex justify-between items-center shadow-md">
+    <button onclick="window.location.href='./'" class="p-2 hover:bg-gray-100 rounded-full transition">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-royal-purple" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
+
+    <div class="flex items-center gap-2">
+        <img src="logo.png" alt="Logo" class="h-8 w-auto">
+        <span class="text-royal-purple font-bold text-lg tracking-tighter hidden md:block">DIGITAL PRO <span class="text-gold">INDO</span></span>
+    </div>
+
+    <button onclick="toggleMenu()" class="p-2 text-royal-purple">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+</nav>
+
+<div id="sideNav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
+    
+    <div class="menu-list mt-10">
+        <a href="./" onclick="toggleMenu();">
+            <span class="icon">🏠</span> Home
+        </a>
+
+        <div class="menu-item-split">
+            <a href="tentang-kami.html" class="main-link">
+                <span class="icon">ℹ️</span> Tentang Kami
+            </a>
+            <button class="arrow-btn" onclick="toggleDropdown(event)">
+                <span class="arrow">▼</span>
+            </button>
+        </div>
+        <div class="dropdown-container" id="aboutDropdown">
+            <a href="tentang-kami.html">Profil Perusahaan</a>
+            <a href="visi-misi.html">Visi & Misi</a>
+            <a href="layanan.html">Jangkauan Layanan</a>
+        </div>
+
+        <a href="visi-misi.html">
+            <span class="icon">🎯</span> Visi & Misi
+        </a>
+
+        <a href="layanan.html">
+            <span class="icon">🌐</span> Layanan
+        </a>
+
+        <div class="menu-divider" style="height: 1px; background: rgba(255,255,255,0.1); margin: 15px 25px;"></div>
+        
+        <a href="https://wa.me/6282191851112" target="_blank">
+            <span class="icon">📞</span> Kontak
+        </a>
+    </div>
+</div>
 
     <section class="relative min-h-screen flex items-center px-8 bg-royal-purple pt-20 overflow-hidden">
         <div class="absolute top-20 right-[-10%] w-64 h-64 bg-gold opacity-10 blur-[100px] float-animation"></div>

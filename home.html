@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT. Digital Pro Indo | Official Website</title>
+    <title>PT. Digital Pro Indo | Digital Solutions & Marketplace</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -11,14 +11,13 @@
         .bg-royal-purple { background-color: #1a0033; }
         .text-gold { color: #D4AF37; }
         .bg-gold { background: linear-gradient(135deg, #D4AF37 0%, #F1D37E 100%); }
+        .card-hover:hover { transform: translateY(-10px); transition: all 0.3s ease; }
     </style>
 </head>
-<body class="bg-white text-gray-900 antialiased">
+<body class="bg-white text-gray-900">
 
     <nav class="fixed top-0 w-full bg-white/90 backdrop-blur-md z-50 px-6 py-4 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-2">
-            <span class="text-royal-purple font-bold text-xl tracking-tighter">DIGITAL PRO <span class="text-gold">INDO</span></span>
-        </div>
+        <span class="text-royal-purple font-bold text-xl tracking-tighter">DIGITAL PRO <span class="text-gold">INDO</span></span>
         <button onclick="window.location.href='index.html'" class="text-royal-purple">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
@@ -26,87 +25,89 @@
         </button>
     </nav>
 
-    <section class="relative h-screen flex items-center px-8 bg-royal-purple overflow-hidden">
-        <div class="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070')] bg-cover bg-center"></div>
-        <div class="relative z-10 max-w-2xl">
-            <h4 class="text-gold font-semibold tracking-[0.2em] mb-4 text-sm uppercase">Official Corporate Website</h4>
-            <h1 class="text-white text-4xl md:text-6xl font-bold leading-tight mb-6">
-                Inovasi Tanpa Batas untuk <span class="text-gold">Masa Depan Digital.</span>
-            </h1>
-            <p class="text-gray-300 text-lg mb-8 leading-relaxed">
-                PT. Digital Pro Indo adalah pemimpin dalam penyediaan solusi marketplace premium, investasi properti modern, dan ekosistem digital terpercaya.
+    <section class="relative pt-32 pb-20 px-8 bg-royal-purple text-center overflow-hidden">
+        <div class="relative z-10">
+            <h1 class="text-white text-3xl md:text-5xl font-bold leading-tight">Solusi Digital Terpadu untuk <span class="text-gold">Bisnis Masa Depan</span></h1>
+            <p class="text-gray-300 mt-6 text-sm md:text-lg max-w-2xl mx-auto leading-relaxed">
+                Dari pembuatan website hingga strategi periklanan global. Kami membantu UMKM dan Perusahaan bertransformasi ke ekosistem digital premium.
             </p>
-            <div class="flex gap-4">
-                <a href="tentang-kami.html" class="bg-gold px-8 py-4 rounded-lg font-bold text-royal-purple shadow-lg inline-block">Profil Perusahaan</a>
+            <div class="mt-10 flex flex-col md:flex-row gap-4 justify-center">
+                <a href="#services" class="bg-gold px-8 py-3 rounded-full font-bold text-royal-purple shadow-lg">Layanan Kami</a>
+                <a href="https://wa.me/6282191851112" class="border border-gold text-gold px-8 py-3 rounded-full font-bold">Konsultasi Gratis</a>
             </div>
         </div>
     </section>
 
-    <section class="py-24 px-8 bg-gray-50">
-        <div class="max-w-6xl mx-auto text-center mb-16">
-            <h2 class="text-3xl font-bold text-royal-purple mb-4">Pilar Bisnis Kami</h2>
-            <p class="text-gray-500">Dedikasi kami dalam menghadirkan kualitas di berbagai sektor.</p>
+    <section id="services" class="py-20 px-8 bg-gray-50">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-2xl font-bold text-royal-purple text-center mb-12">Layanan Utama Kami</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
+                    <div class="text-3xl mb-4">🌐</div>
+                    <h3 class="font-bold text-lg mb-2">Web Development</h3>
+                    <p class="text-gray-500 text-sm">Pembuatan website perusahaan, landing page, dan sistem informasi lengkap.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
+                    <div class="text-3xl mb-4">📱</div>
+                    <h3 class="font-bold text-lg mb-2">Mobile Apps</h3>
+                    <p class="text-gray-500 text-sm">Pengembangan aplikasi Android & iOS custom sesuai kebutuhan bisnis Anda.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
+                    <div class="text-3xl mb-4">🚀</div>
+                    <h3 class="font-bold text-lg mb-2">Digital Ads</h3>
+                    <p class="text-gray-500 text-sm">Layanan iklan digital profesional (FB, IG, Google Ads) untuk meningkatkan penjualan.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-md card-hover border-b-4 border-gold">
+                    <div class="text-3xl mb-4">🛒</div>
+                    <h3 class="font-bold text-lg mb-2">Merchant Partner</h3>
+                    <p class="text-gray-500 text-sm">Bantu UMKM & Brand masuk ke Marketplace Digital Pro Indo dengan sistem profesional.</p>
+                </div>
+            </div>
         </div>
+    </section>
 
-        <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div class="bg-white p-10 rounded-3xl shadow-xl hover:-translate-y-2 transition-transform">
-                <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-gold mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
-                </div>
-                <h3 class="text-xl font-bold mb-4">Properti Mewah</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Akses eksklusif ke aset properti premium dengan nilai investasi yang menjanjikan.</p>
+    <section class="py-20 px-8 bg-white">
+        <div class="max-w-5xl mx-auto bg-royal-purple rounded-[40px] p-10 flex flex-col md:flex-row items-center gap-10 shadow-2xl">
+            <div class="flex-1">
+                <h2 class="text-white text-3xl font-bold mb-4">Punya Produk Berkualitas?</h2>
+                <p class="text-gray-300 mb-6 leading-relaxed">Bergabunglah sebagai mitra Merchant di Marketplace Digital Pro Indo. Kami berikan akses ke ribuan calon pembeli potensial dalam ekosistem kami.</p>
+                <ul class="text-gold text-sm space-y-2 mb-8">
+                    <li>✓ Pendaftaran Mudah & Cepat</li>
+                    <li>✓ Support Digital Marketing</li>
+                    <li>✓ Sistem Transaksi Aman</li>
+                </ul>
+                <a href="https://wa.me/6282191851112?text=Halo%20Admin,%20saya%20tertarik%20menjadi%20partner%20merchant" class="bg-gold text-royal-purple px-6 py-3 rounded-xl font-bold inline-block">Daftar Jadi Mitra</a>
             </div>
-
-            <div class="bg-white p-10 rounded-3xl shadow-xl hover:-translate-y-2 transition-transform">
-                <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-gold mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            <div class="flex-1 text-center">
+                <div class="bg-white/10 p-6 rounded-full inline-block animate-pulse">
+                    <span class="text-6xl">🤝</span>
                 </div>
-                <h3 class="text-xl font-bold mb-4">Teknologi Modern</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Menghadirkan perangkat dan solusi digital terkini untuk gaya hidup masa depan.</p>
-            </div>
-
-            <div class="bg-white p-10 rounded-3xl shadow-xl hover:-translate-y-2 transition-transform">
-                <div class="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center text-gold mb-6">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                </div>
-                <h3 class="text-xl font-bold mb-4">Marketplace Pi</h3>
-                <p class="text-gray-500 text-sm leading-relaxed">Ekosistem belanja aman menggunakan koin Pi khusus bagi komunitas Pionir Indonesia.</p>
             </div>
         </div>
     </section>
 
     <footer class="bg-royal-purple text-white pt-20 pb-10 px-8">
-        <div class="max-w-6xl mx-auto grid md:grid-cols-4 gap-12 border-b border-white/10 pb-12">
-            <div class="col-span-2">
-                <h2 class="text-2xl font-bold mb-6">PT. DIGITAL PRO <span class="text-gold">INDO</span></h2>
-                <p class="text-gray-400 text-sm max-w-sm leading-loose">
-                    Platform ekosistem digital terintegrasi yang fokus pada pemberdayaan ekonomi komunitas digital di Indonesia melalui inovasi teknologi dan aset premium.
-                </p>
+        <div class="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-12 border-b border-white/10 pb-12">
+            <div>
+                <h2 class="text-xl font-bold mb-6 text-gold">PT. DIGITAL PRO INDO</h2>
+                <p class="text-gray-400 text-sm leading-loose">Solusi Digital & Marketplace Premium Indonesia.</p>
             </div>
             <div>
-                <h4 class="font-bold mb-6 text-gold">Navigasi</h4>
-                <ul class="space-y-4 text-sm text-gray-400">
-                    <li><a href="./" class="hover:text-gold">Beranda</a></li>
-                    <li><a href="tentang-kami.html" class="hover:text-gold">Tentang Kami</a></li>
-                    <li><a href="visi-misi.html" class="hover:text-gold">Visi & Misi</a></li>
-                    <li><a href="layanan.html" class="hover:text-gold">Layanan</a></li>
-                </ul>
+                <h4 class="font-bold mb-6">Quick Links</h4>
+                <div class="grid grid-cols-2 text-sm text-gray-400 gap-4">
+                    <a href="tentang-kami.html" class="hover:text-gold">Tentang</a>
+                    <a href="visi-misi.html" class="hover:text-gold">Visi Misi</a>
+                    <a href="layanan.html" class="hover:text-gold">Layanan</a>
+                    <a href="index.html" class="hover:text-gold">Marketplace</a>
+                </div>
             </div>
             <div>
-                <h4 class="font-bold mb-6 text-gold">Hubungi Kami</h4>
-                <p class="text-gray-400 text-sm mb-4">Jakarta, Indonesia</p>
+                <h4 class="font-bold mb-6">Kontak</h4>
                 <p class="text-gray-400 text-sm">+62 821 9185 1112</p>
-                <p class="text-gray-400 text-sm">admin@ptdigitalproindo.com</p>
+                <p class="text-gray-400 text-sm mt-2">admin@ptdigitalproindo.com</p>
             </div>
         </div>
-        
-        <div class="max-w-6xl mx-auto pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-gray-500 gap-4">
-            <p>© 2026 PT. Digital Pro Indo. Seluruh hak cipta dilindungi undang-undang.</p>
-            <div class="flex gap-6">
-                <a href="#">Syarat & Ketentuan</a>
-                <a href="#">Kebijakan Privasi</a>
-            </div>
-        </div>
+        <p class="text-center text-xs text-gray-600 mt-8">© 2026 PT. Digital Pro Indo. All Rights Reserved.</p>
     </footer>
 
 </body>

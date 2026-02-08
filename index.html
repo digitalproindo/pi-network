@@ -491,15 +491,15 @@
 .sidenav {
     height: 100%;
     width: 0; 
-    position: fixed; /* Tetap di layar meski di-scroll */
-    z-index: 999999 !important; /* Nilai sangat tinggi agar di depan gambar/banner */
+    position: fixed;
+    z-index: 999999 !important;
     top: 0;
     right: 0;
-    background-color: #1a0033; /* Warna solid, jangan pakai transparansi dulu */
+    background-color: #1a0033;
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.5); /* Bayangan tebal agar terlihat di atas */
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
 }
 
 .sidenav a {
@@ -509,7 +509,7 @@
     color: white;
     display: block;
     border-bottom: 1px solid rgba(255,255,255,0.1);
-    white-space: nowrap; /* Teks tidak berantakan jika layar sempit */
+    white-space: nowrap;
 }
 
 .sidenav .closebtn {
@@ -519,39 +519,40 @@
     font-size: 30px;
 }
 
-/* Gaya tombol dropdown */
-.dropdown-btn {
-    padding: 18px 25px;
-    text-decoration: none;
-    font-size: 1rem;
-    color: white;
+/* --- REVISI STRUKTUR SPLIT DROPDOWN --- */
+.menu-item-split {
     display: flex;
     align-items: center;
     width: 100%;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    outline: none;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Konsisten dengan link lain */
 }
 
-.dropdown-btn .arrow {
-    margin-left: auto;
-    font-size: 0.7rem;
+/* Bagian Link Teks (Pindah Halaman) */
+.menu-item-split a {
+    flex: 1; /* Mengambil ruang kiri */
+    border-bottom: none !important; /* Hapus border internal agar tidak double */
+    padding: 18px 25px;
+}
+
+/* Bagian Tombol Panah (Buka Dropdown) */
+.arrow-btn {
+    padding: 18px 25px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.1);
     transition: 0.3s;
 }
 
-/* Wadah sub-menu (tersembunyi secara default) */
+/* Wadah sub-menu */
 .dropdown-container {
     display: none;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.3); /* Lebih gelap sedikit untuk kontras */
     padding-left: 20px;
-}
-
-/* Animasi rotasi panah saat aktif */
-.dropdown-btn.active .arrow {
-    transform: rotate(180deg);
 }
 
 /* Mengatur link di dalam dropdown */
@@ -559,8 +560,16 @@
     font-size: 0.9rem !important;
     padding: 12px 25px !important;
     border-bottom: none !important;
-    opacity: 0.8;
+    opacity: 0.7;
 }
+
+/* Animasi Rotasi Panah */
+.arrow-btn.active .arrow {
+    transform: rotate(180deg);
+    color: #FFD700; /* Warna emas saat aktif */
+}
+
+
 
     </style>
 
@@ -576,10 +585,15 @@
             <span class="icon">🏠</span> Home
         </a>
 
-        <button class="dropdown-btn" onclick="toggleDropdown()">
-            <span class="icon">ℹ️</span> Tentang Kami 
-            <span class="arrow">▼</span>
-        </button>
+        <div class="menu-item-split">
+            <a href="tentang-kami.html" class="main-link">
+                <span class="icon">ℹ️</span> Tentang Kami
+            </a>
+            <button class="arrow-btn" onclick="toggleDropdown(event)">
+                <span class="arrow">▼</span>
+            </button>
+        </div>
+
         <div class="dropdown-container" id="aboutDropdown">
             <a href="tentang-kami.html">Profil Perusahaan</a>
             <a href="visi-misi.html">Visi & Misi</a>

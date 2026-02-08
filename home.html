@@ -3,108 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Digital Pro Indo</title>
+    <title>PT Digital Pro Indo | Digital Transformation Partner</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
-        body { font-family: 'Montserrat', sans-serif; margin: 0; padding: 0; overflow-x: hidden; background-color: #fdfbff; }
+        :root {
+            --primary: #6c147b;
+            --dark: #1a0033;
+            --accent: #FFD700;
+        }
+        body { font-family: 'Montserrat', sans-serif; background-color: #f4f7fe; color: #333; }
         
-        /* Sidebar Styling (Struktur Asli Anda) */
+        /* Glassmorphism Sidebar */
         .sidenav {
             height: 100%; width: 0; position: fixed; z-index: 1000001 !important;
-            top: 0; right: 0; background-color: #1a0033; 
-            overflow-x: hidden; transition: 0.5s; padding-top: 60px; 
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            top: 0; right: 0; background: rgba(26, 0, 51, 0.95);
+            backdrop-filter: blur(10px);
+            overflow-x: hidden; transition: 0.5s; padding-top: 80px; 
+            box-shadow: -15px 0 35px rgba(0,0,0,0.3);
         }
-        .menu-list { width: 280px; overflow: hidden; }
-        .sidenav a {
-            padding: 15px 25px; text-decoration: none; font-size: 1.1rem;
-            color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.1);
-            white-space: nowrap;
+        .menu-list a {
+            padding: 18px 30px; text-decoration: none; font-size: 1rem; font-weight: 600;
+            color: #fff; display: block; transition: 0.3s; border-left: 4px solid transparent;
         }
-        .sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; color: white; cursor: pointer; }
-        
-        /* Header Fix */
-        .fixed-header { z-index: 99999 !important; background-color: #6c147b !important; }
+        .menu-list a:hover { background: rgba(255,215,0,0.1); border-left: 4px solid var(--accent); color: var(--accent); }
+        .sidenav .closebtn { position: absolute; top: 20px; left: 20px; font-size: 35px; color: white; cursor: pointer; }
 
-        /* Animasi Hero */
+        /* Animated Header */
+        .fixed-header { 
+            z-index: 99999; 
+            background: rgba(108, 20, 123, 0.9) !important; 
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* Digital Hero Background */
         .hero-bg {
-            background: linear-gradient(-45deg, #6c147b, #4a0072, #1a0033);
+            background: linear-gradient(-45deg, #6c147b, #4a0072, #1a0033, #9c27b0);
             background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
+            animation: gradientBG 12s ease infinite;
+            position: relative;
+            overflow: hidden;
         }
         @keyframes gradientBG {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        /* Tech Mesh Effect */
+        .hero-bg::after {
+            content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* Card Pulse & Glow */
+        .digital-card {
+            background: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(108, 20, 123, 0.05);
+        }
+        .digital-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 40px rgba(108, 20, 123, 0.15);
+        }
+
+        .icon-box {
+            width: 70px; height: 70px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 20px; background: #f4f0f7;
+            margin-bottom: 1.5rem; transition: 0.3s;
+        }
+        .digital-card:hover .icon-box { background: var(--primary); color: white; transform: rotate(10deg); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 10px; }
     </style>
 </head>
 <body>
 
-    <nav class="fixed top-0 w-full px-4 py-3 flex justify-between items-center shadow-lg fixed-header">
-        <button onclick="window.history.back()" class="p-2 outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <nav class="fixed top-0 w-full px-5 py-4 flex justify-between items-center fixed-header">
+        <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-xl transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
             </svg>
         </button>
 
-        <div class="flex items-center">
+        <div class="flex items-center group cursor-pointer">
             <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" 
-                 alt="Logo DPI" class="h-10 w-auto">
+                 alt="Logo DPI" class="h-9 w-auto transition transform group-hover:scale-105">
         </div>
 
-        <button onclick="toggleMenu()" class="p-2 outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 6h16M4 12h16m-7 6h7" />
+        <button onclick="toggleMenu()" class="p-2 hover:bg-white/10 rounded-xl transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
             </svg>
         </button>
     </nav>
 
     <div id="sideNav" class="sidenav">
         <span class="closebtn" onclick="toggleMenu()">&times;</span>
-        <div class="menu-list mt-8">
-            <a href="./" onclick="toggleMenu()">🏠 Home</a>
-            <a href="tentang-kami.html">ℹ️ Tentang Kami</a>
+        <div class="menu-list">
+            <a href="./">🏠 Beranda</a>
+            <a href="tentang-kami.html">ℹ️ Profil Perusahaan</a>
             <a href="visi-misi.html">🎯 Visi & Misi</a>
-            <a href="layanan.html">🌐 Layanan</a>
-            <a href="https://wa.me/6282191851112" target="_blank">📞 Kontak</a>
+            <a href="layanan.html">🌐 Layanan Digital</a>
+            <a href="https://wa.me/6282191851112" target="_blank">💬 Konsultasi WhatsApp</a>
         </div>
     </div>
 
-    <section class="hero-bg pt-40 pb-24 px-8 text-center text-white rounded-b-[50px] shadow-2xl">
-        <div data-aos="zoom-in">
-            <h1 class="text-4xl font-extrabold leading-tight tracking-tight">Digital Pro Indo<br><span class="text-yellow-400 text-2xl font-semibold italic">Solusi Digital Partner</span></h1>
-            <p class="mt-6 text-sm text-purple-100 opacity-90 leading-relaxed">Membangun ekosistem marketplace dan jasa layanan digital premium masa kini.</p>
+    <section class="hero-bg pt-48 pb-32 px-8 text-center text-white rounded-b-[60px] shadow-2xl">
+        <div data-aos="fade-up" data-aos-duration="1200" class="relative z-10">
+            <span class="bg-yellow-500/20 text-yellow-400 border border-yellow-500/30 px-4 py-1.5 rounded-full text-xs font-bold tracking-widest uppercase mb-6 inline-block">Innovating The Future</span>
+            <h1 class="text-4xl md:text-6xl font-black leading-tight mb-6">Expertise in <br><span class="text-yellow-400">Digital Ecosystem</span></h1>
+            <p class="mt-4 text-base md:text-lg text-purple-100 max-w-2xl mx-auto opacity-80 font-medium">
+                Mitra transformasi digital terdepan untuk membangun infrastruktur bisnis yang cerdas, adaptif, dan berkelanjutan.
+            </p>
+            <div class="mt-10 flex flex-wrap justify-center gap-4">
+                <button class="bg-yellow-500 hover:bg-yellow-400 text-purple-900 font-extrabold py-4 px-8 rounded-2xl transition transform hover:scale-105">Mulai Sekarang</button>
+                <button class="bg-white/10 hover:bg-white/20 border border-white/30 backdrop-blur-md py-4 px-8 rounded-2xl font-bold transition">Hubungi Kami</button>
+            </div>
         </div>
     </section>
 
-    <main class="py-16 px-6 max-w-4xl mx-auto">
-        <div class="grid grid-cols-1 gap-6">
-            <div class="bg-white p-8 rounded-[30px] shadow-xl border-l-8 border-purple-600" data-aos="fade-up">
-                <div class="text-4xl mb-4 text-purple-600">🌐</div>
-                <h3 class="font-bold text-xl text-purple-900">Jasa Web & App</h3>
-                <p class="text-gray-500 mt-2 text-sm leading-relaxed">Platform digital premium dengan performa tinggi dan desain UX masa depan.</p>
+    <main class="py-24 px-6 max-w-6xl mx-auto">
+        <div class="text-center mb-16" data-aos="fade-up">
+            <h2 class="text-3xl font-black text-gray-900 mb-4 uppercase tracking-tighter">Layanan Unggulan Kami</h2>
+            <div class="h-1.5 w-20 bg-purple-600 mx-auto rounded-full"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="digital-card p-10 rounded-[40px] shadow-sm" data-aos="fade-right">
+                <div class="icon-box text-3xl text-purple-600">🌐</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-4">Web & App Solution</h3>
+                <p class="text-gray-500 leading-relaxed mb-6">Pengembangan platform berbasis web dan mobile dengan standar UI/UX modern untuk performa bisnis maksimal.</p>
+                <a href="#" class="text-purple-600 font-bold hover:underline flex items-center gap-2">Pelajari Detail <span>→</span></a>
             </div>
 
-            <div class="bg-white p-8 rounded-[30px] shadow-xl border-l-8 border-yellow-500" data-aos="fade-up" data-aos-delay="100">
-                <div class="text-4xl mb-4">🛒</div>
-                <h3 class="font-bold text-xl text-purple-900">Marketplace Integration</h3>
-                <p class="text-gray-500 mt-2 text-sm leading-relaxed">Ekosistem UMKM untuk pemasaran produk yang lebih cerdas dan terukur.</p>
+            <div class="digital-card p-10 rounded-[40px] shadow-sm" data-aos="fade-left">
+                <div class="icon-box text-3xl text-yellow-600">🛒</div>
+                <h3 class="font-extrabold text-2xl text-purple-900 mb-4">Marketplace Synergy</h3>
+                <p class="text-gray-500 leading-relaxed mb-6">Integrasi ekosistem UMKM ke dalam jaringan marketplace profesional untuk jangkauan pasar yang lebih luas.</p>
+                <a href="#" class="text-purple-600 font-bold hover:underline flex items-center gap-2">Pelajari Detail <span>→</span></a>
             </div>
         </div>
     </main>
 
-    <footer class="bg-[#1a0033] text-white p-10 text-center rounded-t-[40px]">
-        <p class="text-sm font-black text-yellow-500">PT DIGITAL PRO INDO</p>
-        <p class="text-[10px] text-gray-400 mt-2 tracking-widest uppercase">© 2026 Seluruh Hak Cipta Dilindungi.</p>
+    <footer class="bg-[#1a0033] text-white rounded-t-[50px] overflow-hidden">
+        <div class="max-w-6xl mx-auto px-8 pt-20 pb-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+                <div>
+                    <img src="https://i.ibb.co.com/23ynHTbZ/ORANG-PERTAMA-414-x-44-piksel-20260208-141309-0000.png" alt="Logo" class="h-10 mb-6">
+                    <p class="text-gray-400 text-sm leading-relaxed">Memberikan solusi digital inovatif yang membantu bisnis berkembang lebih cepat di era teknologi informasi.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-yellow-500">Navigasi</h4>
+                    <ul class="space-y-3 text-gray-400 text-sm">
+                        <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
+                        <li><a href="#" class="hover:text-white transition">Layanan</a></li>
+                        <li><a href="#" class="hover:text-white transition">Visi & Misi</a></li>
+                        <li><a href="#" class="hover:text-white transition">Kontak</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-bold mb-6 text-yellow-500">Hubungi Kami</h4>
+                    <p class="text-gray-400 text-sm leading-relaxed">Jl. Digital Pro No. 2026<br>Jakarta, Indonesia</p>
+                    <p class="text-gray-400 text-sm mt-4">WhatsApp: +62 821 9185 1112</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-white/10 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-[11px] text-gray-500 tracking-widest uppercase font-bold">© 2026 PT DIGITAL PRO INDO. All Rights Reserved.</p>
+                <div class="flex gap-6">
+                    <a href="#" class="text-gray-500 hover:text-white transition text-xs">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-white transition text-xs">Terms of Service</a>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 800, once: true });
+        AOS.init({ duration: 1000, once: true });
 
         function toggleMenu() {
             const nav = document.getElementById("sideNav");
@@ -114,6 +199,16 @@
                 nav.style.width = "280px";
             }
         }
+        
+        // Header Blur on Scroll
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.classList.add('shadow-2xl');
+            } else {
+                nav.classList.remove('shadow-2xl');
+            }
+        });
     </script>
 </body>
 </html>

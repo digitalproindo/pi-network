@@ -1345,6 +1345,20 @@ function toggleMenu() {
     }
 }
 
+function toggleDropdown() {
+    const dropdown = document.getElementById("aboutDropdown");
+    const btn = document.querySelector(".dropdown-btn");
+    
+    // Toggle tampilan (block/none)
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        btn.classList.remove("active");
+    } else {
+        dropdown.style.display = "block";
+        btn.classList.add("active");
+    }
+}
+
 // Menutup menu jika user klik di luar area sidebar
 window.addEventListener('click', function(event) {
     const nav = document.getElementById("sideNav");

@@ -519,6 +519,49 @@
     font-size: 30px;
 }
 
+/* Gaya tombol dropdown */
+.dropdown-btn {
+    padding: 18px 25px;
+    text-decoration: none;
+    font-size: 1rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    outline: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-btn .arrow {
+    margin-left: auto;
+    font-size: 0.7rem;
+    transition: 0.3s;
+}
+
+/* Wadah sub-menu (tersembunyi secara default) */
+.dropdown-container {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding-left: 20px;
+}
+
+/* Animasi rotasi panah saat aktif */
+.dropdown-btn.active .arrow {
+    transform: rotate(180deg);
+}
+
+/* Mengatur link di dalam dropdown */
+.dropdown-container a {
+    font-size: 0.9rem !important;
+    padding: 12px 25px !important;
+    border-bottom: none !important;
+    opacity: 0.8;
+}
+
     </style>
 
 </head>
@@ -532,16 +575,17 @@
         <a href="./" onclick="toggleMenu();">
             <span class="icon">🏠</span> Home
         </a>
-        <a href="tentang-kami.html" onclick="showAbout(); toggleMenu();">
-            <span class="icon">ℹ️</span> Tentang Kami
-        </a>
-        <a href="#" onclick="showVisiMisi(); toggleMenu();">
-            <span class="icon">🎯</span> Visi & Misi
-        </a>
-        <a href="#" onclick="showLayanan(); toggleMenu();">
-            <span class="icon">🌐</span> Jangkauan Layanan
-        </a>
-        
+
+        <button class="dropdown-btn" onclick="toggleDropdown()">
+            <span class="icon">ℹ️</span> Tentang Kami 
+            <span class="arrow">▼</span>
+        </button>
+        <div class="dropdown-container" id="aboutDropdown">
+            <a href="tentang-kami.html">Profil Perusahaan</a>
+            <a href="visi-misi.html">Visi & Misi</a>
+            <a href="layanan.html">Jangkauan Layanan</a>
+        </div>
+
         <div class="menu-divider"></div>
         
         <a href="https://wa.me/6282191851112?text=Halo%20Admin%20Digital%20Pro%20Indo,%20saya%20ingin%20bertanya%20mengenai%20produk%20dan%20layanan." target="_blank">

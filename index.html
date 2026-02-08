@@ -527,16 +527,18 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Konsisten dengan link lain */
 }
 
-/* Bagian Link Teks (Pindah Halaman) */
-.menu-item-split a {
-    flex: 1; /* Mengambil ruang kiri */
-    border-bottom: none !important; /* Hapus border internal agar tidak double */
-    padding: 18px 25px;
+/* Update pada kontainer split agar ada jarak dari kanan */
+.menu-item-split {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 10px; /* Memberikan ruang aman di sisi kanan layar */
 }
 
-/* Bagian Tombol Panah (Buka Dropdown) */
+/* Update pada tombol panah */
 .arrow-btn {
-    padding: 18px 25px;
+    padding: 15px 15px; /* Padding dikurangi agar lebih proporsional */
     background: none;
     border: none;
     color: white;
@@ -546,6 +548,13 @@
     justify-content: center;
     border-left: 1px solid rgba(255, 255, 255, 0.1);
     transition: 0.3s;
+    min-width: 50px; /* Memastikan area klik tetap nyaman */
+}
+
+/* Menyesuaikan ukuran panah agar lebih elegan */
+.arrow {
+    font-size: 0.8rem;
+    opacity: 0.8;
 }
 
 /* Wadah sub-menu */

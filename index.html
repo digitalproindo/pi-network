@@ -527,34 +527,46 @@
     border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Konsisten dengan link lain */
 }
 
-/* Update pada kontainer split agar ada jarak dari kanan */
+/* Update pada kontainer split */
 .menu-item-split {
     display: flex;
     align-items: center;
     width: 100%;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    padding-right: 10px; /* Memberikan ruang aman di sisi kanan layar */
+    /* Memberikan jarak 15px dari tepi kanan sidebar */
+    padding-right: 15px; 
+    box-sizing: border-box; /* Memastikan padding tidak merusak lebar */
 }
 
-/* Update pada tombol panah */
+/* Update pada tombol panah agar lebih ke tengah */
 .arrow-btn {
-    padding: 15px 15px; /* Padding dikurangi agar lebih proporsional */
+    padding: 12px; 
     background: none;
     border: none;
-    color: white;
+    color: #FFD700; /* Warna emas agar lebih terlihat */
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
+    /* Garis pembatas vertikal */
+    border-left: 1px solid rgba(255, 255, 255, 0.1); 
     transition: 0.3s;
-    min-width: 50px; /* Memastikan area klik tetap nyaman */
+    margin-left: 5px; /* Jarak antara teks dan area tombol panah */
 }
 
-/* Menyesuaikan ukuran panah agar lebih elegan */
+/* Memastikan teks utama tidak mendorong panah terlalu jauh */
+.menu-item-split a {
+    flex: 1;
+    padding: 18px 20px; /* Padding kiri dan kanan teks */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .arrow {
-    font-size: 0.8rem;
-    opacity: 0.8;
+    font-size: 0.7rem;
+    /* Memberikan sedikit dorongan ke kiri agar tidak terlihat nempel ke tepi tombol */
+    margin-left: -2px; 
 }
 
 /* Wadah sub-menu */

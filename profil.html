@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Perusahaan | PT Digital Pro Indo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #05010d;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05010d 100%);
+            z-index: -1;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #9c27b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .client-logo {
+            filter: grayscale(100%) brightness(0.8);
+            transition: all 0.4s ease;
+            opacity: 0.6;
+        }
+        
+        .client-logo:hover {
+            filter: grayscale(0%) brightness(1);
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .client-track {
+            display: flex;
+            width: calc(250px * 12);
+            animation: scroll 30s linear infinite;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
+        <a href="index.html" class="p-2 hover:bg-white/10 rounded-xl transition flex items-center gap-2 group">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-400 group-hover:-translate-x-1 transition" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="text-sm font-bold">Kembali</span>
+        </a>
+        <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-6">
+    </nav>
+
+    <section class="pt-32 pb-20 px-6 max-w-5xl mx-auto text-center">
+        <div data-aos="zoom-out">
+            <span class="text-purple-400 text-xs font-bold tracking-[0.3em] uppercase">About Our Agency</span>
+            <h1 class="text-5xl md:text-6xl font-bold mt-4 mb-8">Mendefinisikan Ulang <br><span class="gradient-text">Masa Depan Digital.</span></h1>
+            <p class="text-gray-400 text-lg leading-relaxed">PT Digital Pro Indo hadir sebagai katalisator perubahan bagi bisnis yang ingin bertransformasi di era teknologi tinggi.</p>
+        </div>
+    </section>
+
+    <section class="py-20 border-y border-white/5 bg-white/[0.02]">
+        <div class="max-w-7xl mx-auto px-6 mb-12 text-center md:text-left">
+            <h2 class="text-2xl font-bold tracking-tight">Klien yang Telah <span class="text-purple-500">Bekerjasama</span></h2>
+            <p class="text-gray-500 mt-2">Daftar korporasi dan mitra strategis yang mempercayakan solusi digital mereka kepada kami.</p>
+        </div>
+        
+        <div class="overflow-hidden flex items-center">
+            <div class="client-track space-x-16">
+                <div class="flex items-center gap-16">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="h-8 client-logo" alt="Google">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" class="h-8 client-logo" alt="Microsoft">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" class="h-8 client-logo" alt="Amazon">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg" class="h-8 client-logo" alt="Samsung">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/Telkom_Indonesia_2013.svg" class="h-10 client-logo" alt="Telkom">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" class="h-8 client-logo" alt="Meta">
+                </div>
+                <div class="flex items-center gap-16">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" class="h-8 client-logo" alt="Google">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/9/96/Microsoft_logo_%282012%29.svg" class="h-8 client-logo" alt="Microsoft">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" class="h-8 client-logo" alt="Amazon">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/24/Samsung_Logo.svg" class="h-8 client-logo" alt="Samsung">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/Telkom_Indonesia_2013.svg" class="h-10 client-logo" alt="Telkom">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Meta_Platforms_Inc._logo.svg" class="h-8 client-logo" alt="Meta">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+        <div class="glass-card p-2 overflow-hidden" data-aos="fade-right">
+            <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=1000" class="rounded-2xl opacity-80" alt="Office">
+        </div>
+        <div data-aos="fade-left">
+            <h2 class="text-3xl font-bold mb-6">Cerita Kami</h2>
+            <p class="text-gray-400 mb-6 leading-relaxed">Berawal dari sekelompok inovator di Jakarta, kami melihat adanya kesenjangan besar antara teknologi global dengan implementasi lokal pada UMKM dan perusahaan berkembang.</p>
+            <p class="text-gray-400 leading-relaxed">Hingga tahun 2026 ini, kami telah dipercaya oleh ratusan mitra untuk membangun infrastruktur Cloud, AI, dan strategi pemasaran yang tidak hanya fungsional, tetapi juga futuristik.</p>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 bg-purple-600/5">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="glass-card p-10 border-l-4 border-purple-600" data-aos="fade-up">
+                <h3 class="text-2xl font-bold mb-4">Visi Kami</h3>
+                <p class="text-gray-400 italic">"Menjadi pemimpin global dalam ekosistem digital yang inklusif, cerdas, dan berkelanjutan bagi seluruh pelaku bisnis di Indonesia."</p>
+            </div>
+            <div class="glass-card p-10 border-l-4 border-white/20" data-aos="fade-up" data-aos-delay="100">
+                <h3 class="text-2xl font-bold mb-4">Misi Kami</h3>
+                <ul class="text-gray-400 space-y-3">
+                    <li class="flex gap-3"><span class="text-purple-400 font-bold">01.</span> Mengintegrasikan AI dalam setiap proses bisnis konvensional.</li>
+                    <li class="flex gap-3"><span class="text-purple-400 font-bold">02.</span> Memberdayakan UMKM melalui platform e-commerce yang kompetitif.</li>
+                    <li class="flex gap-3"><span class="text-purple-400 font-bold">03.</span> Membangun keamanan data tingkat tinggi bagi mitra kami.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="text-center mb-16">
+            <h2 class="text-4xl font-bold mb-4">Otak di Balik Layar</h2>
+            <div class="h-1 w-20 bg-purple-600 mx-auto"></div>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div class="team-card text-center group" data-aos="fade-up">
+                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <h4 class="text-xl font-bold">Alex Pratama</h4>
+                <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Chief Executive Officer</p>
+            </div>
+            <div class="team-card text-center group" data-aos="fade-up" data-aos-delay="100">
+                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <h4 class="text-xl font-bold">Sarah Quinn</h4>
+                <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Chief Tech Officer</p>
+            </div>
+            <div class="team-card text-center group" data-aos="fade-up" data-aos-delay="200">
+                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=500" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                </div>
+                <h4 class="text-xl font-bold">Rian Hidayat</h4>
+                <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Head of Digital Strategy</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-12 px-6 border-t border-white/5 text-center">
+        <p class="text-gray-600 text-xs font-bold tracking-[0.4em] uppercase">© 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.</p>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+    </script>
+</body>
+</html>

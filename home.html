@@ -91,23 +91,16 @@
     </div>
 
     <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
-        <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-xl transition group">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-            </svg>
-        </button>
+    <button onclick="goBack()" class="p-2 hover:bg-white/10 rounded-xl transition group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+        </svg>
+    </button>
 
-        <div class="flex items-center">
-            <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-8">
-        </div>
-        
-        <div class="hidden md:flex space-x-8 text-sm font-medium">
-            <a href="#" class="hover:text-purple-400 transition">Beranda</a>
-            <a href="#layanan" class="hover:text-purple-400 transition">Layanan</a>
-            <a href="#portofolio" class="hover:text-purple-400 transition">Portofolio</a>
-        </div>
-
-        <div class="w-10 md:hidden"></div>
+    <div class="flex items-center">
+        <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-8">
+    </div>
+    
     </nav>
 
     <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
@@ -266,6 +259,15 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Fungsi Kembali ke Layar Sebelumnya
+function goBack() {
+    if (document.referrer !== "" && window.history.length > 1) {
+        window.history.back();
+    } else {
+        // Jika tidak ada riwayat, arahkan ke beranda atau URL utama Anda
+        window.location.href = "#"; 
+    }
+}
         AOS.init({ duration: 1000, once: true });
 
         // SCRIPT COUNTER

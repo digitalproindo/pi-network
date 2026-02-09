@@ -284,6 +284,15 @@
     <script>
         
         AOS.init({ duration: 1000, once: true });
+        // Fungsi Kembali ke Layar Sebelumnya
+function goBack() {
+    if (document.referrer !== "" && window.history.length > 1) {
+        window.history.back();
+    } else {
+        // Jika tidak ada riwayat, arahkan ke beranda atau URL utama Anda
+        window.location.href = "#"; 
+    }
+}
 
         // SCRIPT COUNTER
         const counters = document.querySelectorAll('.counter');

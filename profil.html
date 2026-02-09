@@ -30,6 +30,23 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Animasi tambahan untuk kartu Owner */
+        .owner-card:hover .glass-card {
+            background: rgba(156, 39, 176, 0.1);
+            border-color: rgba(156, 39, 176, 0.3);
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .owner-card img {
+            transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .owner-card:hover img {
+            transform: scale(1.1);
         }
 
         .gradient-text {
@@ -154,32 +171,32 @@
         </div>
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            <div class="team-card text-center group" data-aos="fade-up">
+            <div class="owner-card text-center group" data-aos="fade-up">
                 <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card bg-white/5">
                     <img src="https://i.ibb.co.com/1f5dYn4P/Desain-tanpa-judul-20260209-125041-0000.png" 
                          loading="lazy" 
                          alt="Johari"
-                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                         class="w-full h-full object-cover transition-all duration-500">
                 </div>
                 <h4 class="text-xl font-bold">Johari</h4>
                 <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Chief Executive Officer</p>
             </div>
-            <div class="team-card text-center group" data-aos="fade-up" data-aos-delay="100">
+            <div class="owner-card text-center group" data-aos="fade-up" data-aos-delay="100">
                 <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card bg-white/5">
                     <img src="https://i.ibb.co.com/nqYwnynL/Desain-tanpa-judul-20260209-130039-0000.png" 
                          loading="lazy"
                          alt="M. Kasirin"
-                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                         class="w-full h-full object-cover transition-all duration-500">
                 </div>
                 <h4 class="text-xl font-bold">M.Kasirin</h4>
                 <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Chief Tech Officer</p>
             </div>
-            <div class="team-card text-center group" data-aos="fade-up" data-aos-delay="200">
+            <div class="owner-card text-center group" data-aos="fade-up" data-aos-delay="200">
                 <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card bg-white/5">
                     <img src="https://i.ibb.co.com/4Z4KJb9Q/Desain-tanpa-judul-20260209-130602-0000.png" 
                          loading="lazy"
                          alt="Mr. Yanto"
-                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                         class="w-full h-full object-cover transition-all duration-500">
                 </div>
                 <h4 class="text-xl font-bold">Mr.Yanto</h4>
                 <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Head of Digital Strategy</p>

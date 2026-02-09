@@ -304,48 +304,37 @@
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Fungsi Kembali ke Layar Sebelumnya
-function goBack() {
-    if (document.referrer !== "" && window.history.length > 1) {
-        window.history.back();
-    } else {
-        // Jika tidak ada riwayat, arahkan ke beranda atau URL utama Anda
-        window.location.href = "#"; 
+    let wasSidebarOpen = false;
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        if (sidebar.classList.contains('translate-x-full')) {
+            sidebar.classList.remove('translate-x-full');
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            wasSidebarOpen = true; // Tandai bahwa sidebar sedang dibuka
+        } else {
+            sidebar.classList.add('translate-x-full');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
     }
-}
-        AOS.init({ duration: 1000, once: true });
 
-        // SCRIPT COUNTER
-        const counters = document.querySelectorAll('.counter');
-        const speed = 200; 
-
-        const runCounter = () => {
-            counters.forEach(counter => {
-                const updateCount = () => {
-                    const target = +counter.getAttribute('data-target');
-                    const count = +counter.innerText;
-                    const inc = target / speed;
-
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + inc);
-                        setTimeout(updateCount, 20);
-                    } else {
-                        counter.innerText = target;
-                    }
-                };
-                updateCount();
-            });
-        };
-
-        const statsSection = document.getElementById('stats-section');
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                runCounter();
-                observer.disconnect();
-            }
-        }, { threshold: 0.5 });
-
-        observer.observe(statsSection);
-    </script>
+    // Fungsi Tombol Kembali yang Anda inginkan
+    function goBack() {
+        // Cek jika status terakhir adalah dari sidebar, maka buka sidebar lagi
+        if (wasSidebarOpen) {
+            toggleSidebar();
+            wasSidebarOpen = false; // Reset status setelah dikembalikan
+        } else if (window.history.length > 1) {
+            // Jika tidak ada urusan dengan sidebar, kembali ke halaman web sebelumnya
+            window.history.back();
+        } else {
+            // Fallback ke atas halaman jika tidak ada history
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+    }
+</script>
 </body>
 </html>

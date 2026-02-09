@@ -28,9 +28,9 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        /* Transisi halus untuk Sidebar */
+        /* Transisi Sidebar yang halus */
         #mobile-menu {
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
         #menu-overlay {
             transition: opacity 0.3s ease;
@@ -41,7 +41,7 @@
     <div class="bg-glow"></div>
 
     <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
-        <button onclick="openMenu()" class="p-2 hover:bg-white/10 rounded-xl transition group">
+        <button onclick="toggleSidebar(true)" class="p-2 hover:bg-white/10 rounded-xl transition group">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
             </svg>
@@ -51,20 +51,20 @@
             <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-8">
         </div>
         
-        <button onclick="openMenu()" class="p-2 hover:bg-white/10 rounded-xl transition">
+        <button onclick="toggleSidebar(true)" class="p-2 hover:bg-white/10 rounded-xl transition">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
     </nav>
 
-    <div id="menu-overlay" onclick="closeMenu()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[55] hidden opacity-0"></div>
+    <div id="menu-overlay" onclick="toggleSidebar(false)" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[55] hidden opacity-0"></div>
     
     <div id="mobile-menu" class="fixed top-0 right-0 h-full z-[60] bg-[#0a041a] w-[280px] translate-x-full p-8 pt-20 border-l border-white/10 shadow-2xl">
-        <button onclick="closeMenu()" class="absolute top-6 right-6 text-white text-3xl hover:text-purple-500 transition">&times;</button>
+        <button onclick="toggleSidebar(false)" class="absolute top-6 right-6 text-white text-3xl hover:text-purple-500 transition">&times;</button>
         
         <nav class="flex flex-col space-y-6">
-            <a href="#" onclick="closeMenu()" class="flex items-center gap-4 text-xl font-bold text-white hover:text-purple-400 transition">
+            <a href="#" onclick="toggleSidebar(false)" class="flex items-center gap-4 text-xl font-bold text-white hover:text-purple-400 transition">
                 <span class="text-2xl">🏠</span> Home
             </a>
             
@@ -74,8 +74,8 @@
                     <span class="text-[10px] text-purple-400">▼</span>
                 </div>
                 <div class="pl-12 flex flex-col space-y-4 text-gray-400 text-sm font-medium">
-                    <a href="#" onclick="closeMenu()" class="hover:text-white transition">Profil Perusahaan</a>
-                    <a href="#" onclick="closeMenu()" class="hover:text-white transition">Visi & Misi</a>
+                    <a href="#" onclick="toggleSidebar(false)" class="hover:text-white transition">Profil Perusahaan</a>
+                    <a href="#" onclick="toggleSidebar(false)" class="hover:text-white transition">Visi & Misi</a>
                 </div>
             </div>
 
@@ -85,41 +85,38 @@
         </nav>
     </div>
 
-    <main class="relative pt-40 px-6 max-w-7xl mx-auto">
-        <div class="text-center md:text-left" data-aos="fade-up">
+    <main class="relative pt-40 px-6 max-w-7xl mx-auto text-center">
+        <div data-aos="fade-up">
             <h1 class="text-5xl md:text-7xl font-bold leading-tight">Solusi Digital <br><span class="gradient-text">Masa Depan.</span></h1>
-            <p class="mt-6 text-gray-400 text-lg max-w-xl">Halaman ini muncul setelah Anda mengklik 'Home' di menu samping. Klik tombol panah di pojok kiri atas untuk kembali ke menu sidebar.</p>
+            <p class="mt-6 text-gray-400 text-lg max-w-xl mx-auto">Klik tombol panah di pojok kiri atas untuk mengembalikan tampilan ke menu sidebar.</p>
         </div>
     </main>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        // Inisialisasi AOS
         AOS.init({ duration: 1000, once: true });
 
         const menu = document.getElementById('mobile-menu');
         const overlay = document.getElementById('menu-overlay');
 
-        // Fungsi membuka menu (Tampilan awal saat garis tiga diklik)
-        function openMenu() {
-            menu.classList.remove('translate-x-full');
-            menu.classList.add('translate-x-0');
-            overlay.classList.remove('hidden');
-            setTimeout(() => {
-                overlay.classList.add('opacity-100');
-                overlay.classList.remove('opacity-0');
-            }, 10);
-        }
-
-        // Fungsi menutup menu (Tampilan saat Home diklik)
-        function closeMenu() {
-            menu.classList.add('translate-x-full');
-            menu.classList.remove('translate-x-0');
-            overlay.classList.add('opacity-0');
-            overlay.classList.remove('opacity-100');
-            setTimeout(() => {
-                overlay.classList.add('hidden');
-            }, 300);
+        /**
+         * Fungsi tunggal untuk mengontrol Sidebar
+         * @param {boolean} show - true untuk menampilkan, false untuk menyembunyikan
+         */
+        function toggleSidebar(show) {
+            if (show) {
+                // Menampilkan Sidebar (State saat pertama kali garis tiga diklik)
+                menu.classList.remove('translate-x-full');
+                menu.classList.add('translate-x-0');
+                overlay.classList.remove('hidden');
+                setTimeout(() => overlay.classList.add('opacity-100'), 10);
+            } else {
+                // Menyembunyikan Sidebar
+                menu.classList.add('translate-x-full');
+                menu.classList.remove('translate-x-0');
+                overlay.classList.remove('opacity-100');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
         }
     </script>
 </body>

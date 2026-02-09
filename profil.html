@@ -59,29 +59,32 @@
             width: calc(250px * 12);
             animation: scroll 30s linear infinite;
         }
+
+        /* Optimasi transisi gambar */
+        img {
+            transition: opacity 0.5s ease-in-out;
+        }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
 
     <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 px-6 py-4 flex items-center shadow-sm">
-    <a href="./" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" stroke="black">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-        </svg>
-        <span class="text-sm font-bold text-black">Kembali</span>
-    </a>
-</nav>
+        <a href="./" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" stroke="black">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="text-sm font-bold text-black">Kembali</span>
+        </a>
+    </nav>
 
     <section class="pt-40 pb-20 px-6">
         <div class="max-w-4xl mx-auto text-center" data-aos="zoom-out">
             <span class="text-purple-400 text-xs font-bold tracking-[0.3em] uppercase block mb-4">About Our Agency</span>
-            
             <h1 class="text-4xl md:text-6xl font-bold leading-[1.2] md:leading-tight mb-8 mx-auto max-w-3xl">
                 Mendefinisikan Ulang <br>
                 <span class="gradient-text">Masa Depan Digital.</span>
             </h1>
-            
             <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
                 PT Digital Pro Indo hadir sebagai katalisator perubahan bagi bisnis yang ingin bertransformasi di era teknologi tinggi dengan presisi dan inovasi tanpa batas.
             </p>
@@ -152,22 +155,31 @@
         
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             <div class="team-card text-center group" data-aos="fade-up">
-                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card">
-                    <img src="https://i.ibb.co.com/1f5dYn4P/Desain-tanpa-judul-20260209-125041-0000.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card bg-white/5">
+                    <img src="https://i.ibb.co.com/1f5dYn4P/Desain-tanpa-judul-20260209-125041-0000.png" 
+                         loading="lazy" 
+                         alt="Johari"
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
                 </div>
                 <h4 class="text-xl font-bold">Johari</h4>
                 <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Chief Executive Officer</p>
             </div>
             <div class="team-card text-center group" data-aos="fade-up" data-aos-delay="100">
-                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card">
-                    <img src="https://i.ibb.co.com/nqYwnynL/Desain-tanpa-judul-20260209-130039-0000.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card bg-white/5">
+                    <img src="https://i.ibb.co.com/nqYwnynL/Desain-tanpa-judul-20260209-130039-0000.png" 
+                         loading="lazy"
+                         alt="M. Kasirin"
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
                 </div>
                 <h4 class="text-xl font-bold">M.Kasirin</h4>
                 <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Chief Tech Officer</p>
             </div>
             <div class="team-card text-center group" data-aos="fade-up" data-aos-delay="200">
-                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card">
-                    <img src="https://i.ibb.co.com/4Z4KJb9Q/Desain-tanpa-judul-20260209-130602-0000.png" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
+                <div class="relative overflow-hidden rounded-3xl mb-6 aspect-square glass-card bg-white/5">
+                    <img src="https://i.ibb.co.com/4Z4KJb9Q/Desain-tanpa-judul-20260209-130602-0000.png" 
+                         loading="lazy"
+                         alt="Mr. Yanto"
+                         class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
                 </div>
                 <h4 class="text-xl font-bold">Mr.Yanto</h4>
                 <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-1">Head of Digital Strategy</p>
@@ -175,8 +187,15 @@
         </div>
     </section>
 
-    <footer class="py-12 px-6 border-t border-white/5 text-center">
-        <p class="text-gray-600 text-xs font-bold tracking-[0.4em] uppercase">© 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.</p>
+    <footer class="py-12 px-6 border-t border-white/5 bg-[#05010d]">
+        <div class="max-w-7xl mx-auto flex flex-col items-center">
+            <div class="mb-6 text-sm font-bold tracking-tighter italic">
+                DIGITAL<span class="text-purple-500">PRO</span>
+            </div>
+            <p class="text-gray-600 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase text-center leading-loose">
+                © 2026 PT DIGITAL PRO INDO. <br class="md:hidden"> ALL RIGHTS RESERVED.
+            </p>
+        </div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>

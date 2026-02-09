@@ -23,55 +23,22 @@
             background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05010d 100%);
             z-index: -1;
         }
-        .blob {
-            position: absolute;
-            width: 300px; height: 300px;
-            background: #6c147b;
-            filter: blur(120px);
-            border-radius: 50%;
-            opacity: 0.4;
-            animation: move 20s infinite alternate;
-        }
-        @keyframes move {
-            from { transform: translate(-10%, -10%); }
-            to { transform: translate(110%, 110%); }
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: #9c27b0;
-            transform: translateY(-5px);
-        }
         .gradient-text {
             background: linear-gradient(90deg, #fff, #9c27b0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
-        .slider-track {
-            display: flex;
-            width: calc(200px * 10);
-            animation: scroll 20s linear infinite;
-        }
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        /* Animasi Sidebar */
+        /* Transisi halus untuk Sidebar */
         #mobile-menu {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #menu-overlay {
+            transition: opacity 0.3s ease;
         }
     </style>
 </head>
 <body>
-    <div class="bg-glow">
-        <div class="blob"></div>
-    </div>
+    <div class="bg-glow"></div>
 
     <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
         <button onclick="openMenu()" class="p-2 hover:bg-white/10 rounded-xl transition group">
@@ -91,87 +58,69 @@
         </button>
     </nav>
 
-    <div id="menu-overlay" onclick="closeMenu()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[55] hidden"></div>
+    <div id="menu-overlay" onclick="closeMenu()" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-[55] hidden opacity-0"></div>
     
-    <div id="mobile-menu" class="fixed top-0 right-0 h-full z-[60] bg-[#0a041a] w-[280px] translate-x-full p-8 pt-20 border-l border-white/10">
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full z-[60] bg-[#0a041a] w-[280px] translate-x-full p-8 pt-20 border-l border-white/10 shadow-2xl">
         <button onclick="closeMenu()" class="absolute top-6 right-6 text-white text-3xl hover:text-purple-500 transition">&times;</button>
         
         <nav class="flex flex-col space-y-6">
-            <a href="#" onclick="closeMenu()" class="flex items-center gap-3 text-xl font-bold text-white hover:text-purple-400 transition">
-                <span>🏠</span> Home
+            <a href="#" onclick="closeMenu()" class="flex items-center gap-4 text-xl font-bold text-white hover:text-purple-400 transition">
+                <span class="text-2xl">🏠</span> Home
             </a>
             
             <div class="space-y-4">
                 <div class="flex items-center justify-between text-xl font-bold text-white border-b border-white/10 pb-2">
-                    <span class="flex items-center gap-3">ℹ️ Tentang</span>
+                    <span class="flex items-center gap-4"><span class="text-2xl">ℹ️</span> Tentang</span>
                     <span class="text-[10px] text-purple-400">▼</span>
                 </div>
-                <div class="pl-8 flex flex-col space-y-4 text-gray-400 text-sm font-medium">
+                <div class="pl-12 flex flex-col space-y-4 text-gray-400 text-sm font-medium">
                     <a href="#" onclick="closeMenu()" class="hover:text-white transition">Profil Perusahaan</a>
                     <a href="#" onclick="closeMenu()" class="hover:text-white transition">Visi & Misi</a>
                 </div>
             </div>
 
-            <a href="https://api.whatsapp.com/send?phone=6282191851112" class="flex items-center gap-3 text-xl font-bold text-white hover:text-purple-400 transition">
-                <span>📞</span> Kontak
+            <a href="https://api.whatsapp.com/send?phone=6282191851112" class="flex items-center gap-4 text-xl font-bold text-white hover:text-purple-400 transition">
+                <span class="text-2xl">📞</span> Kontak
             </a>
         </nav>
     </div>
 
-    <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
-        <div class="md:w-1/2" data-aos="fade-up">
-            <span class="px-4 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-400 text-xs font-bold tracking-widest uppercase">Digital Transformation Partner</span>
-            <h1 class="text-5xl md:text-7xl font-bold mt-6 leading-tight">Solusi Digital <br><span class="gradient-text">Masa Depan.</span></h1>
-            <p class="mt-6 text-gray-400 text-lg leading-relaxed max-w-lg">Membangun ekosistem digital untuk masa depan bisnis Indonesia.</p>
-            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <a href="#" class="px-8 py-4 bg-purple-600 rounded-2xl font-bold hover:bg-purple-700 transition shadow-lg shadow-purple-600/20">Mulai Sekarang</a>
-            </div>
+    <main class="relative pt-40 px-6 max-w-7xl mx-auto">
+        <div class="text-center md:text-left" data-aos="fade-up">
+            <h1 class="text-5xl md:text-7xl font-bold leading-tight">Solusi Digital <br><span class="gradient-text">Masa Depan.</span></h1>
+            <p class="mt-6 text-gray-400 text-lg max-w-xl">Halaman ini muncul setelah Anda mengklik 'Home' di menu samping. Klik tombol panah di pojok kiri atas untuk kembali ke menu sidebar.</p>
         </div>
-        <div class="md:w-1/2 flex justify-center" data-aos="zoom-in">
-             <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" class="w-full max-w-md opacity-50" style="animation: move 5s infinite alternate;">
-        </div>
-    </section>
-
-    <div id="stats-section" class="py-10 flex justify-around border-y border-white/5 bg-white/5">
-        <div class="text-center"><p class="text-3xl font-bold gradient-text"><span class="counter" data-target="100">0</span>+</p></div>
-        <div class="text-center"><p class="text-3xl font-bold gradient-text"><span class="counter" data-target="50">0</span>+</p></div>
-    </div>
+    </main>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Inisialisasi AOS
         AOS.init({ duration: 1000, once: true });
 
-        // LOGIKA MENU
         const menu = document.getElementById('mobile-menu');
         const overlay = document.getElementById('menu-overlay');
 
+        // Fungsi membuka menu (Tampilan awal saat garis tiga diklik)
         function openMenu() {
             menu.classList.remove('translate-x-full');
+            menu.classList.add('translate-x-0');
             overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('opacity-100');
+                overlay.classList.remove('opacity-0');
+            }, 10);
         }
 
+        // Fungsi menutup menu (Tampilan saat Home diklik)
         function closeMenu() {
             menu.classList.add('translate-x-full');
-            overlay.classList.add('hidden');
+            menu.classList.remove('translate-x-0');
+            overlay.classList.add('opacity-0');
+            overlay.classList.remove('opacity-100');
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
         }
-
-        // SCRIPT COUNTER
-        const counters = document.querySelectorAll('.counter');
-        const runCounter = () => {
-            counters.forEach(counter => {
-                const target = +counter.getAttribute('data-target');
-                let count = 0;
-                const update = () => {
-                    if(count < target) {
-                        count += Math.ceil(target/50);
-                        counter.innerText = count;
-                        setTimeout(update, 30);
-                    } else { counter.innerText = target; }
-                };
-                update();
-            });
-        };
-        runCounter();
     </script>
 </body>
 </html>

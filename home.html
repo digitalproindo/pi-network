@@ -83,6 +83,11 @@
         a:active {
             transform: scale(0.95);
         }
+
+        /* Sidebar Styles */
+        #mobile-menu {
+            transition: transform 0.5s cubic-bezier(0.77, 0.2, 0.05, 1);
+        }
     </style>
 </head>
 <body>
@@ -91,7 +96,7 @@
     </div>
 
     <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
-        <button onclick="window.history.back()" class="p-2 hover:bg-white/10 rounded-xl transition group">
+        <button onclick="toggleMenu()" class="p-2 hover:bg-white/10 rounded-xl transition group">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white group-hover:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
             </svg>
@@ -109,6 +114,33 @@
 
         <div class="w-10 md:hidden"></div>
     </nav>
+
+    <div id="menu-overlay" onclick="toggleMenu()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[55] hidden"></div>
+    
+    <div id="mobile-menu" class="fixed top-0 right-0 h-full z-[60] bg-[#1a0b2e] w-[280px] translate-x-full p-8 pt-20 border-l border-white/10 shadow-2xl">
+        <button onclick="toggleMenu()" class="absolute top-6 right-6 text-white text-3xl">&times;</button>
+        
+        <nav class="flex flex-col space-y-6">
+            <a href="#" onclick="toggleMenu()" class="flex items-center gap-3 text-xl font-bold hover:text-purple-400 transition">
+                <span>🏠</span> Home
+            </a>
+            
+            <div class="space-y-4">
+                <div class="flex items-center justify-between text-xl font-bold border-b border-white/10 pb-2">
+                    <span class="flex items-center gap-3">ℹ️ Tentang</span>
+                    <span class="text-[10px] text-purple-400">▼</span>
+                </div>
+                <div class="pl-8 flex flex-col space-y-4 text-gray-400 text-sm">
+                    <a href="#" onclick="toggleMenu()" class="hover:text-white transition">Profil Perusahaan</a>
+                    <a href="#" onclick="toggleMenu()" class="hover:text-white transition">Visi & Misi</a>
+                </div>
+            </div>
+
+            <a href="https://api.whatsapp.com/send?phone=6282191851112" class="flex items-center gap-3 text-xl font-bold hover:text-purple-400 transition">
+                <span>📞</span> Kontak
+            </a>
+        </nav>
+    </div>
 
     <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
         <div class="md:w-1/2" data-aos="fade-up">
@@ -267,6 +299,20 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 1000, once: true });
+
+        // Fungsi Toggle Menu Sidebar
+        function toggleMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const overlay = document.getElementById('menu-overlay');
+            
+            if (menu.classList.contains('translate-x-full')) {
+                menu.classList.remove('translate-x-full');
+                overlay.classList.remove('hidden');
+            } else {
+                menu.classList.add('translate-x-full');
+                overlay.classList.add('hidden');
+            }
+        }
 
         // SCRIPT COUNTER
         const counters = document.querySelectorAll('.counter');

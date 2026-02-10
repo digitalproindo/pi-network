@@ -582,16 +582,6 @@
     cursor: pointer; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
 
-/* Animasi Planet */
-.sidebar-planet {
-    position: absolute; bottom: 20px; right: -20px; width: 150px;
-    opacity: 0.4; z-index: -1; pointer-events: none;
-    animation: rotatePlanet 20s linear infinite;
-}
-@keyframes rotatePlanet {
-    from { transform: rotate(0deg) translateY(10px) rotate(0deg); }
-    to { transform: rotate(360deg) translateY(10px) rotate(-360deg); }
-}
 
 /* Modal Popup */
 .modal-overlay {
@@ -614,8 +604,6 @@
 
    <div id="sideNav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
-    
-    <img src="https://i.gifer.com/604.gif" class="planet-anim">
     
     <div class="menu-list" style="position: relative; z-index: 10;">
         <a href="home.html"><span class="icon">🏠</span> Beranda Web</a>

@@ -650,18 +650,7 @@
         <a href="home.html" style="border-bottom: 1px solid rgba(255,255,255,0.05);">
             <span style="filter: drop-shadow(0 0 5px #fff);">🏠</span> Beranda Utama
         </a>
-
-        <button class="btn-converter" onclick="showComingSoon()">
-            <span>🔄</span> CONVERTER
-        </button>
-    </div>
-
-    <div style="text-align: center; margin-top: 50px;">
-        <img src="https://i.gifer.com/ZKZg.gif" width="80" style="opacity: 0.7;" alt="Astronaut">
-    </div>
-</div>
-
-<div id="toast" class="coming-soon-toast">🚀 Fitur sedang disiapkan (Coming Soon!)</div>
+        
 
         <div class="dropdown-container" id="aboutDropdown">
             <a href="visi misi.html">Visi & Misi</a>
@@ -864,28 +853,8 @@
 
     <script src="app.js?v=4.2"></script>
 
-    <script>
-        function showComingSoon() {
-            const toast = document.getElementById("toast");
-            toast.classList.add("show");
-            
-            // Hilangkan otomatis setelah 3 detik
-            setTimeout(() => {
-                toast.classList.remove("show");
-            }, 3000);
-        }
-
-        function toggleMenu() {
-            var sideNav = document.getElementById("sideNav");
-            // Saya sesuaikan ukurannya ke 280px agar lebih lega untuk animasi planet
-            if (sideNav.style.width === "280px") {
-                sideNav.style.width = "0";
-            } else {
-                sideNav.style.width = "280px";
-            }
-        }
-    </script>
 </body>
+
 </html>
 
 

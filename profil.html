@@ -82,32 +82,32 @@
             transition: opacity 0.5s ease-in-out;
         }
 
+        /* --- PERUBAHAN WARNA HEADER & NAV --- */
         .black-nav {
-    background-color: #000000;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
+            background-color: #000000 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-/* Header Utama Hitam */
-.black-header-section {
-    background-color: #000000;
-    padding-top: 120px;
-    padding-bottom: 80px;
-}
+        .black-header-section {
+            background-color: #000000 !important;
+            padding-top: 160px; /* Menyesuaikan agar tidak tertutup nav */
+            padding-bottom: 80px;
+        }
     </style>
 </head>
 <body>
     <div class="bg-glow"></div>
 
-    <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-md z-50 px-6 py-4 flex items-center shadow-sm">
+    <nav class="fixed top-0 w-full black-nav z-50 px-6 py-4 flex items-center shadow-sm">
         <a href="./" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-black" fill="none" viewBox="0 0 24 24" stroke="black">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
-            <span class="text-sm font-bold text-black">Kembali</span>
+            <span class="text-sm font-bold text-white">Kembali</span>
         </a>
     </nav>
 
-    <section class="pt-40 pb-20 px-6">
+    <section class="black-header-section px-6">
         <div class="max-w-4xl mx-auto text-center" data-aos="zoom-out">
             <span class="text-purple-400 text-xs font-bold tracking-[0.3em] uppercase block mb-4">About Our Agency</span>
             <h1 class="text-4xl md:text-6xl font-bold leading-[1.2] md:leading-tight mb-8 mx-auto max-w-3xl">

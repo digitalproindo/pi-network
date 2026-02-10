@@ -16,18 +16,13 @@
             overflow-x: hidden;
         }
 
-        /* Memastikan semua elemen teks menggunakan font yang sama */
         h1, h2, h3, h4, p, span, a, div {
             font-family: 'Space Grotesk', sans-serif;
         }
 
-        /* Container Partikel */
         #particles-js {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05010d 100%);
         }
@@ -43,7 +38,6 @@
             background: rgba(156, 39, 176, 0.08);
             border-color: rgba(156, 39, 176, 0.4);
             transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
 
         .gradient-text {
@@ -67,108 +61,96 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
             </svg>
-            <span class="text-sm font-bold uppercase tracking-widest">Kembali</span>
+            <span class="text-sm font-bold uppercase tracking-widest">Back</span>
         </button>
         <div class="hidden md:block text-xs font-bold tracking-[0.5em] uppercase opacity-70">Corporate Strategy</div>
         <div class="w-20"></div>
     </nav>
 
-    <section class="relative pt-48 pb-20 px-6">
+    <section class="relative pt-32 pb-16 px-6">
         <div class="max-w-5xl mx-auto text-center" data-aos="fade-up">
-            <h1 class="text-6xl md:text-8xl font-bold mb-8 leading-none">Visi & <br><span class="gradient-text">Misi Kami.</span></h1>
-            <p class="text-gray-400 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed font-light">
-                Lebih dari sekadar kata-kata, ini adalah komitmen jangka panjang PT Digital Pro Indo untuk memimpin evolusi teknologi di Indonesia.
+            <h1 class="text-5xl md:text-7xl font-bold mb-4 tracking-tighter leading-tight">
+                Visi & <br class="md:hidden"> <span class="gradient-text">Misi Kami.</span>
+            </h1>
+            <p class="text-gray-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed font-light opacity-80">
+                Komitmen jangka panjang PT Digital Pro Indo untuk memimpin evolusi teknologi di Indonesia.
             </p>
         </div>
     </section>
 
-    <section class="py-20 px-6 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div class="glass-v2 p-10 md:p-16 rounded-[50px]" data-aos="fade-right">
-                <div class="inline-block p-4 bg-purple-600/20 rounded-3xl mb-8 border border-purple-500/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <section class="py-12 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="glass-v2 p-10 md:p-14 rounded-[40px]" data-aos="fade-right">
+                <div class="inline-block p-3 bg-purple-600/20 rounded-2xl mb-6 border border-purple-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                     </svg>
                 </div>
-                <h2 class="text-4xl font-bold mb-6">Visi</h2>
-                <p class="text-gray-400 text-xl leading-relaxed italic">
-                    "Menjadi integrator solusi digital nomor satu di Indonesia yang menghubungkan potensi bisnis lokal dengan kecanggihan kecerdasan buatan global di tahun 2030."
+                <h2 class="text-3xl font-bold mb-4 tracking-tight">Visi</h2>
+                <p class="text-gray-400 text-lg leading-relaxed italic font-medium">
+                    "Menjadi integrator solusi digital nomor satu di Indonesia yang menghubungkan potensi bisnis lokal dengan kecanggihan AI global di tahun 2030."
                 </p>
             </div>
 
-            <div class="glass-v2 p-10 md:p-16 rounded-[50px]" data-aos="fade-left">
-                <div class="inline-block p-4 bg-purple-600/20 rounded-3xl mb-8 border border-purple-500/30">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div class="glass-v2 p-10 md:p-14 rounded-[40px]" data-aos="fade-left">
+                <div class="inline-block p-3 bg-purple-600/20 rounded-2xl mb-6 border border-purple-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                 </div>
-                <h2 class="text-4xl font-bold mb-8">Misi Kami</h2>
-                <div class="space-y-8">
-                    <div class="flex gap-6">
-                        <div class="text-purple-500 font-bold text-2xl">01</div>
-                        <p class="text-gray-400">Melakukan demokratisasi teknologi AI agar dapat diakses oleh UMKM dengan biaya terjangkau namun performa maksimal.</p>
+                <h2 class="text-3xl font-bold mb-6 tracking-tight">Misi Kami</h2>
+                <div class="space-y-6 text-sm md:text-base">
+                    <div class="flex gap-4">
+                        <div class="text-purple-500 font-bold">01</div>
+                        <p class="text-gray-400 font-medium">Demokratisasi teknologi AI untuk UMKM dengan performa maksimal.</p>
                     </div>
-                    <div class="flex gap-6">
-                        <div class="text-purple-500 font-bold text-2xl">02</div>
-                        <p class="text-gray-400">Membangun ekosistem cloud yang aman, cepat, dan handal bagi infrastruktur bisnis digital Indonesia.</p>
+                    <div class="flex gap-4">
+                        <div class="text-purple-500 font-bold">02</div>
+                        <p class="text-gray-400 font-medium">Ekosistem cloud aman dan handal bagi infrastruktur bisnis nasional.</p>
                     </div>
-                    <div class="flex gap-6">
-                        <div class="text-purple-500 font-bold text-2xl">03</div>
-                        <p class="text-gray-400">Mengedukasi dan melatih mitra bisnis untuk mandiri secara digital melalui strategi pemasaran berbasis data.</p>
+                    <div class="flex gap-4">
+                        <div class="text-purple-500 font-bold">03</div>
+                        <p class="text-gray-400 font-medium">Edukasi kemandirian digital melalui strategi berbasis data.</p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <footer class="mt-20 bg-black/80 backdrop-blur-2xl border-t border-white/5 pt-20 pb-10">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-16">
+    <footer class="mt-16 bg-black/80 backdrop-blur-2xl border-t border-white/5 pt-16 pb-10">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-12">
             <div class="col-span-1 md:col-span-2">
-                <div class="text-2xl font-bold mb-6 tracking-tighter">DIGITAL<span class="text-purple-600">PRO</span></div>
-                <p class="text-gray-500 max-w-sm mb-8 text-sm">
-                    Menghadirkan solusi Next-Gen untuk transformasi bisnis Anda. Kami bukan sekadar agensi, kami adalah partner pertumbuhan digital Anda.
+                <div class="text-xl font-bold mb-4 tracking-tighter">DIGITAL<span class="text-purple-600">PRO</span></div>
+                <p class="text-gray-500 max-w-sm mb-6 text-sm font-medium">
+                    Partner pertumbuhan digital Anda. Menghadirkan solusi Next-Gen untuk transformasi bisnis masa depan.
                 </p>
-                <div class="flex gap-4">
-                    <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-purple-600 transition duration-500 group cursor-pointer text-xs">
-                        <span class="group-hover:text-white">FB</span>
-                    </div>
-                    <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-purple-600 transition duration-500 group cursor-pointer text-xs">
-                        <span class="group-hover:text-white">IG</span>
-                    </div>
-                    <div class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-purple-600 transition duration-500 group cursor-pointer text-xs">
-                        <span class="group-hover:text-white">LI</span>
-                    </div>
+                <div class="flex gap-3">
+                    <div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:bg-purple-600 transition cursor-pointer text-[10px] font-bold">FB</div>
+                    <div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:bg-purple-600 transition cursor-pointer text-[10px] font-bold">IG</div>
+                    <div class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:bg-purple-600 transition cursor-pointer text-[10px] font-bold">LI</div>
                 </div>
             </div>
 
             <div>
-                <h4 class="font-bold mb-8 uppercase tracking-widest text-xs text-white">Layanan Utama</h4>
-                <ul class="text-gray-500 space-y-4 text-sm">
+                <h4 class="font-bold mb-6 uppercase tracking-widest text-[10px] text-white">Layanan</h4>
+                <ul class="text-gray-500 space-y-3 text-sm font-medium">
                     <li><a href="#" class="hover:text-purple-400 transition">AI Integration</a></li>
                     <li><a href="#" class="hover:text-purple-400 transition">Cloud Computing</a></li>
-                    <li><a href="#" class="hover:text-purple-400 transition">Web Development</a></li>
-                    <li><a href="#" class="hover:text-purple-400 transition">Digital Strategy</a></li>
+                    <li><a href="#" class="hover:text-purple-400 transition">Web Dev</a></li>
                 </ul>
             </div>
 
             <div>
-                <h4 class="font-bold mb-8 uppercase tracking-widest text-xs text-white">Hubungi</h4>
-                <p class="text-gray-500 text-sm leading-loose mb-4">
-                    Gedung Digital Pro, Lt. 24<br>
-                    Jakarta Barat, Indonesia
-                </p>
-                <a href="tel:+6282191851112" class="text-purple-400 font-bold hover:underline">0821-9185-1112</a>
+                <h4 class="font-bold mb-6 uppercase tracking-widest text-[10px] text-white">Hubungi</h4>
+                <p class="text-gray-500 text-sm leading-relaxed mb-4 font-medium">Gedung Digital Pro, Jakarta</p>
+                <a href="tel:+6282191851112" class="text-purple-400 font-bold text-sm hover:underline">0821-9185-1112</a>
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-6 mt-20 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-            <p class="text-[10px] text-gray-600 font-bold tracking-[0.5em] uppercase text-center md:text-left">
-                © 2026 PT DIGITAL PRO INDO. SELURUH HAK CIPTA DILINDUNGI.
+        <div class="max-w-7xl mx-auto px-6 mt-16 pt-8 border-t border-white/5 text-center">
+            <p class="text-[9px] text-gray-600 font-bold tracking-[0.5em] uppercase">
+                © 2026 PT DIGITAL PRO INDO.
             </p>
-            <div class="flex gap-8 text-[10px] text-gray-600 font-bold tracking-widest uppercase">
-                <a href="#" class="hover:text-white transition">Privacy Policy</a>
-                <a href="#" class="hover:text-white transition">Terms of Service</a>
-            </div>
         </div>
     </footer>
 
@@ -176,21 +158,15 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 1000, once: true });
-
         particlesJS("particles-js", {
             "particles": {
-                "number": { "value": 80, "density": { "enable": true, "value_area": 800 } },
+                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
                 "color": { "value": "#9c27b0" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.5, "random": false },
-                "size": { "value": 3, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#9c27b0", "opacity": 0.4, "width": 1 },
-                "move": { "enable": true, "speed": 2, "direction": "none", "random": false, "straight": false, "out_mode": "out", "bounce": false }
-            },
-            "interactivity": {
-                "detect_on": "canvas",
-                "events": { "onhover": { "enable": true, "mode": "grab" }, "onclick": { "enable": true, "mode": "push" }, "resize": true },
-                "modes": { "grab": { "distance": 140, "line_linked": { "opacity": 1 } }, "push": { "particles_nb": 4 } }
+                "opacity": { "value": 0.3, "random": false },
+                "size": { "value": 2, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#9c27b0", "opacity": 0.2, "width": 1 },
+                "move": { "enable": true, "speed": 1.5, "direction": "none", "out_mode": "out" }
             },
             "retina_detect": true
         });

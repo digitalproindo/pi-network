@@ -576,10 +576,41 @@
 .sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; }
 
 /* Tombol Converter */
+/* Tombol Converter yang Presisi */
 .btn-converter {
-    margin: 25px; padding: 15px; background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
-    color: #1a0033; border: none; border-radius: 15px; font-weight: 800;
-    cursor: pointer; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+    /* Menyamakan margin dengan padding link (25px) agar teks sejajar tegak lurus */
+    margin: 10px 20px; 
+    /* Padding disesuaikan agar tinggi tombol proporsional */
+    padding: 12px 15px;
+    /* Lebar otomatis menyesuaikan sisa ruang sidebar */
+    width: calc(100% - 40px); 
+    
+    background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+    color: #1a0033;
+    border: none;
+    border-radius: 12px; /* Border radius sedikit lebih lembut */
+    font-size: 1.05rem; /* Menyamakan ukuran font dengan menu (1.1rem) */
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Teks rata kiri agar sejajar dengan Beranda */
+    gap: 15px; /* Jarak ikon sama dengan menu lainnya */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+.btn-converter:hover {
+    transform: translateX(5px); /* Efek geser ke kanan sama seperti link menu */
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-converter span {
+    font-size: 1.2rem; /* Ukuran ikon disamakan */
+    display: inline-block;
+    width: 25px; /* Lebar area ikon tetap agar teks setelahnya sejajar */
+    text-align: center;
 }
 
 
@@ -605,15 +636,17 @@
    <div id="sideNav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
     
-    <div class="menu-list" style="position: relative; z-index: 10;">
-        <a href="home.html"><span class="icon">🏠</span> Beranda Web</a>
+    <div class="menu-list" style="margin-top: 20px;">
+        <a href="home.html"><span>🏠</span> Beranda Web</a>
         
         <button class="btn-converter" onclick="openModal()">
             <span>🔄</span> CONVERTER
         </button>
 
         <div style="text-align: center; margin-top: 40px;">
-            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A5dmF4amZhczN1MWNzdzZlYTd1cHFlZTlpNTBiNXI3dXJ0ZWpsbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9k1173PdfJWRsoE/giphy.gif" width="100" style="opacity: 0.8;">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A5dmF4amZhczN1MWNzdzZlYTd1cHFlZTlpNTBiNXI3dXJ0ZWpsbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9k1173PdfJWRsoE/giphy.gif" 
+                 width="110" 
+                 style="opacity: 0.9;">
         </div>
     </div>
 </div>

@@ -3,178 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Executive Team | PT Digital Pro Indo</title>
+    <title>Tim Kami | PT Digital Pro Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@200;300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
-        :root {
-            --midnight: #0D0518;
-            --deep-purple: #1A0B2E; /* 1. Deep & Muted Background */
-            --soft-gold: #C5A059;   /* 1. Soft Gold Accent */
-            --off-white: #E0E0E0;   /* 1. Off-white Text */
-        }
-
+        html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--midnight);
-            color: var(--off-white);
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #05010d;
+            color: #ffffff;
+            margin: 0;
             overflow-x: hidden;
-            line-height: 1.6;
         }
 
-        /* 3. Mesh Gradient Halus sebagai Background */
-        .mesh-bg {
+        .bg-glow {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05010d 100%);
             z-index: -1;
-            background: 
-                radial-gradient(at 0% 0%, #1A0B2E 0%, transparent 40%),
-                radial-gradient(at 100% 100%, #120626 0%, transparent 40%);
         }
 
-        /* 2. Headings Style */
-        h1, h2, h3 {
-            font-family: 'Cinzel', serif;
-            letter-spacing: 0.15em; /* 2. Letter Spacing */
-            text-transform: uppercase;
-        }
-
-        /* 3. Glassmorphism Card */
         .glass-card {
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 0.5px solid rgba(197, 160, 89, 0.15); /* Thin Gold Border */
-            transition: all 0.8s cubic-bezier(0.25, 1, 0.5, 1); /* 5. Smooth Transition */
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .glass-card:hover {
-            border-color: var(--soft-gold);
-            background: rgba(197, 160, 89, 0.05);
+        .team-card:hover .glass-card {
+            background: rgba(156, 39, 176, 0.1);
+            border-color: rgba(156, 39, 176, 0.3);
             transform: translateY(-10px);
         }
 
-        .gold-accent {
-            background: linear-gradient(135deg, #C5A059 0%, #F1D38E 50%, #B38728 100%);
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #9c27b0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* 4. Whitespace & Image Container */
-        .member-img-wrapper {
-            position: relative;
-            overflow: hidden;
-            background: var(--deep-purple);
-            border-radius: 2px;
+        /* Navigasi & Header Hitam Konsisten */
+        .black-nav {
+            background-color: #000000 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .member-img-wrapper img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 1.2s ease;
-            filter: contrast(1.05) brightness(0.9); /* No BW Effect */
+        .black-header-section {
+            background-color: #000000 !important;
+            padding-top: 160px;
+            padding-bottom: 80px;
         }
 
-        .glass-card:hover img {
+        .member-img {
+            filter: grayscale(30%);
+            transition: all 0.5s ease;
+        }
+        
+        .team-card:hover .member-img {
+            filter: grayscale(0%);
             transform: scale(1.05);
         }
-
-        /* Mobile Precision */
-        @media (max-width: 640px) {
-            .hero-title { font-size: 2.75rem !important; }
-            section { padding-left: 1.5rem; padding-right: 1.5rem; }
-        }
-
-        /* 5. Custom Scrollbar */
-        ::-webkit-scrollbar { width: 3px; }
-        ::-webkit-scrollbar-track { background: var(--midnight); }
-        ::-webkit-scrollbar-thumb { background: var(--soft-gold); }
     </style>
 </head>
 <body>
-    <div class="mesh-bg"></div>
+    <div class="bg-glow"></div>
 
-    <nav class="fixed top-0 w-full z-50 px-8 py-6 flex items-center justify-between border-b border-white/5 bg-[#0D0518]/80 backdrop-blur-md">
-        <button onclick="window.history.back()" class="flex items-center gap-4 group">
-            <div class="h-[1px] w-6 bg-white/20 group-hover:w-10 group-hover:bg-[#C5A059] transition-all duration-500"></div>
-            <span class="text-[9px] uppercase tracking-[0.4em] font-light text-white/50 group-hover:text-white">Kembali</span>
-        </button>
-        <div class="text-[8px] tracking-[0.6em] text-[#C5A059] uppercase font-bold hidden md:block">The Executive Circle</div>
-        <div class="w-10"></div>
+    <nav class="fixed top-0 w-full black-nav z-50 px-6 py-4 flex items-center shadow-sm">
+        <a href="profil.html" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            <span class="text-sm font-bold text-white">Kembali ke Profil</span>
+        </a>
     </nav>
 
-    <section class="relative pt-64 pb-32">
-        <div class="max-w-4xl mx-auto text-center" data-aos="fade-up">
-            <span class="text-[#C5A059] text-[10px] tracking-[1em] uppercase font-bold mb-10 block">Luxury in Digital</span>
-            <h1 class="hero-title text-5xl md:text-7xl font-bold mb-12 leading-tight">
-                Minds Behind <br><span class="gold-accent">The Vision.</span>
+    <section class="black-header-section px-6">
+        <div class="max-w-4xl mx-auto text-center" data-aos="zoom-out">
+            <span class="text-purple-400 text-xs font-bold tracking-[0.3em] uppercase block mb-4">Core Experts</span>
+            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-8">
+                Kenali Tim <br>
+                <span class="gradient-text">Profesional Kami.</span>
             </h1>
-            <div class="h-[0.5px] w-16 bg-[#C5A059]/30 mx-auto mb-12"></div>
-            <p class="text-white/40 text-xs md:text-sm max-w-lg mx-auto leading-loose tracking-widest font-light">
-                Individu terpilih yang mendedikasikan presisi teknis untuk transformasi digital yang tak tertandingi.
+            <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
+                Dibalik setiap solusi inovatif, terdapat dedikasi dari para ahli yang berkomitmen untuk memberikan kualitas terbaik bagi bisnis Anda.
             </p>
         </div>
     </section>
 
-    <section class="py-20 max-w-7xl mx-auto px-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 md:gap-20">
+    <section class="py-24 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
             
-            <div class="glass-card p-8 md:p-12 flex flex-col items-center" data-aos="fade-up" data-aos-delay="100">
-                <div class="member-img-wrapper mb-10 w-full aspect-[4/5]">
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800" alt="CEO">
-                </div>
-                <div class="text-center">
-                    <h3 class="text-lg font-bold mb-2 tracking-[0.2em]">Alexander Putra</h3>
-                    <p class="text-[#C5A059] text-[9px] tracking-[0.4em] uppercase font-bold mb-6">Founder & CEO</p>
-                    <p class="text-white/30 text-[11px] font-light leading-relaxed tracking-wide">Mengorkestrasi strategi makro untuk ekspansi ekosistem digital.</p>
-                </div>
-            </div>
-
-            <div class="glass-card p-8 md:p-12 flex flex-col items-center" data-aos="fade-up" data-aos-delay="200">
-                <div class="member-img-wrapper mb-10 w-full aspect-[4/5]">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" alt="CTO">
-                </div>
-                <div class="text-center">
-                    <h3 class="text-lg font-bold mb-2 tracking-[0.2em]">Sarah Wijaya</h3>
-                    <p class="text-[#C5A059] text-[9px] tracking-[0.4em] uppercase font-bold mb-6">Chief Technology</p>
-                    <p class="text-white/30 text-[11px] font-light leading-relaxed tracking-wide">Pionir arsitektur infrastruktur dengan standar keamanan global.</p>
+            <div class="team-card group" data-aos="fade-up">
+                <div class="glass-card p-8 text-center h-full">
+                    <div class="relative w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full border-2 border-purple-500/30">
+                        <img src="https://i.ibb.co.com/1f5dYn4P/Desain-tanpa-judul-20260209-125041-0000.png" alt="Johari" class="member-img w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold">Johari</h3>
+                    <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-2 mb-4">CEO & Founder</p>
+                    <p class="text-gray-500 text-sm leading-relaxed">Berfokus pada strategi pertumbuhan dan visi jangka panjang perusahaan.</p>
                 </div>
             </div>
 
-            <div class="glass-card p-8 md:p-12 flex flex-col items-center" data-aos="fade-up" data-aos-delay="300">
-                <div class="member-img-container member-img-wrapper mb-10 w-full aspect-[4/5]">
-                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=800" alt="Creative">
+            <div class="team-card group" data-aos="fade-up" data-aos-delay="100">
+                <div class="glass-card p-8 text-center h-full">
+                    <div class="relative w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full border-2 border-purple-500/30">
+                        <img src="https://i.ibb.co.com/nqYwnynL/Desain-tanpa-judul-20260209-130039-0000.png" alt="Muhammad Kasirin" class="member-img w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold">Muhammad Kasirin</h3>
+                    <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-2 mb-4">CTO</p>
+                    <p class="text-gray-500 text-sm leading-relaxed">Memastikan infrastruktur teknologi kami selalu berada di standar tertinggi.</p>
                 </div>
-                <div class="text-center">
-                    <h3 class="text-lg font-bold mb-2 tracking-[0.2em]">David Hartono</h3>
-                    <p class="text-[#C5A059] text-[9px] tracking-[0.4em] uppercase font-bold mb-6">Creative Director</p>
-                    <p class="text-white/30 text-[11px] font-light leading-relaxed tracking-wide">Mengharmonisasikan estetika visual ke dalam fungsionalitas digital.</p>
+            </div>
+
+            <div class="team-card group" data-aos="fade-up" data-aos-delay="200">
+                <div class="glass-card p-8 text-center h-full">
+                    <div class="relative w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full border-2 border-purple-500/30">
+                        <img src="https://i.ibb.co.com/4Z4KJb9Q/Desain-tanpa-judul-20260209-130602-0000.png" alt="Riyanto" class="member-img w-full h-full object-cover">
+                    </div>
+                    <h3 class="text-2xl font-bold">Riyanto</h3>
+                    <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-2 mb-4">Digital Strategy</p>
+                    <p class="text-gray-500 text-sm leading-relaxed">Menganalisis tren pasar untuk memberikan solusi digital yang tepat sasaran.</p>
                 </div>
             </div>
 
         </div>
     </section>
 
-    <footer class="mt-40 border-t border-white/5 py-24 bg-black/20">
-        <div class="max-w-7xl mx-auto px-8 flex flex-col items-center">
-            <div class="text-lg font-bold tracking-[0.8em] mb-8 italic uppercase">DIGITAL<span class="gold-accent">PRO</span></div>
-            <div class="flex gap-12 text-[8px] font-bold tracking-[0.4em] text-white/20 uppercase mb-16">
-                <a href="#" class="hover:text-[#C5A059] transition-all duration-700">LinkedIn</a>
-                <a href="#" class="hover:text-[#C5A059] transition-all duration-700">Portfolio</a>
-                <a href="#" class="hover:text-[#C5A059] transition-all duration-700">Career</a>
+    <footer class="py-12 px-6 border-t border-white/5 bg-[#05010d]">
+        <div class="max-w-7xl mx-auto flex flex-col items-center">
+            <div class="mb-6 text-sm font-bold tracking-tighter italic">
+                DIGITAL<span class="text-purple-500">PRO</span>
             </div>
-            <p class="text-[8px] text-white/10 tracking-[1em] uppercase text-center">
-                © 2026 PT DIGITAL PRO INDO. EXCELLENCE REDEFINED.
+            <p class="text-gray-600 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase text-center">
+                © 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.
             </p>
         </div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 1500, once: true, easing: 'ease-in-out' });
+        AOS.init({ duration: 1000, once: true });
     </script>
 </body>
 </html>

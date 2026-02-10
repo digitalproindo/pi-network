@@ -297,10 +297,17 @@
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
+        // Inisialisasi animasi AOS
         AOS.init({ duration: 1000, once: true });
 
-        /* SCRIPT SIDEBAR */
+        /* 1. SCRIPT TOMBOL KEMBALI (KE INDEX.HTML) */
+        function goBack() {
+            window.location.href = "index.html";
+        }
+
+        /* 2. SCRIPT SIDEBAR */
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -308,7 +315,7 @@
             overlay.classList.toggle('hidden');
         }
 
-        /* SCRIPT DROPDOWN */
+        /* 3. SCRIPT DROPDOWN PROFIL */
         function toggleDropdown() {
             const content = document.getElementById('dropContent');
             const icon = document.getElementById('dropIcon');
@@ -316,16 +323,7 @@
             icon.classList.toggle('active-rotate');
         }
 
-        /* SCRIPT KEMBALI */
-        function goBack() {
-            if (document.referrer !== "" && window.history.length > 1) {
-                window.history.back();
-            } else {
-                window.location.href = "#"; 
-            }
-        }
-
-        // Script Counter Anda (Tetap Dipertahankan)
+        /* 4. SCRIPT COUNTER ANGKA (JIKA ADA) */
         const counters = document.querySelectorAll('.counter');
         const speed = 200; 
         const runCounter = () => {

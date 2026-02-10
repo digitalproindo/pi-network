@@ -84,25 +84,47 @@
             transform: scale(0.95);
         }
 
-        /* --- SIDEBAR STYLES --- */
+        /* --- STYLES SIDEBAR BARU --- */
         #sidebar {
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(10, 2, 22, 0.95);
+            backdrop-filter: blur(20px);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
         }
         #sidebar.closed {
             transform: translateX(100%);
+            opacity: 0;
+        }
+        .sidebar-link {
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+        }
+        .sidebar-link:hover {
+            background: rgba(156, 39, 176, 0.15);
+            padding-left: 20px;
+            color: #d8b4fe;
         }
         .dropdown-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease-out;
+            transition: all 0.4s ease-in-out;
+            opacity: 0;
         }
         .dropdown-content.show {
-            max-height: 200px;
+            max-height: 300px;
+            opacity: 1;
+            margin-top: 8px;
+            margin-bottom: 8px;
         }
         .rotate-icon {
-            transition: transform 0.3s ease;
+            transition: transform 0.4s ease;
         }
-        .rotate-icon.active {
+        .active-rotate {
             transform: rotate(180deg);
         }
     </style>
@@ -130,41 +152,55 @@
         </button>
     </nav>
 
-    <div id="sidebar" class="fixed inset-y-0 right-0 w-72 bg-[#0a0216] z-[100] border-l border-white/10 shadow-2xl closed p-8 flex flex-col">
-        <div class="flex justify-end mb-10">
-            <button onclick="toggleSidebar()" class="p-2 hover:bg-white/10 rounded-full transition">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="flex flex-col gap-4 text-lg font-medium">
-            <a href="#" onclick="toggleSidebar()" class="hover:text-purple-400 transition py-2">Beranda</a>
-            
-            <div class="relative">
-                <button onclick="toggleDropdown()" class="w-full flex justify-between items-center hover:text-purple-400 transition py-2">
-                    <span>Profil</span>
-                    <svg id="dropIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 rotate-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+    <div id="sidebar" class="fixed inset-y-0 right-0 w-80 z-[100] border-l border-white/10 closed p-8 flex flex-col justify-between">
+        <div>
+            <div class="flex justify-between items-center mb-10">
+                <span class="text-xs font-bold tracking-[0.3em] text-purple-500 uppercase">Menu Utama</span>
+                <button onclick="toggleSidebar()" class="p-2 hover:bg-white/10 rounded-full transition text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
-                <div id="dropContent" class="dropdown-content flex flex-col pl-4 gap-3 bg-white/5 rounded-lg mt-1">
-                    <a href="#" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition py-2 pt-3">Visi & Misi</a>
-                    <a href="#" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition py-2">Tim Kami</a>
-                    <a href="#layanan" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition py-2 pb-3">Layanan</a>
-                </div>
             </div>
 
-            <a href="#portofolio" onclick="toggleSidebar()" class="hover:text-purple-400 transition py-2">Portofolio</a>
-            
-            <a href="https://api.whatsapp.com/send?phone=6282191851112" class="mt-6 px-6 py-3 bg-purple-600 rounded-xl text-center font-bold hover:bg-purple-700 transition shadow-lg shadow-purple-600/20">
-                Hubungi Kami
-            </a>
+            <div class="flex flex-col gap-2">
+                <a href="#" onclick="toggleSidebar()" class="sidebar-link text-white font-medium">
+                    <span>🏠</span> Beranda
+                </a>
+                
+                <div class="relative">
+                    <button onclick="toggleDropdown()" class="sidebar-link w-full text-white font-medium">
+                        <div class="flex items-center gap-3">
+                            <span>👤</span> Profil
+                        </div>
+                        <svg id="dropIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-icon ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    <div id="dropContent" class="dropdown-content pl-10 border-l border-purple-500/30 ml-4 flex flex-col gap-3">
+                        <a href="#" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition">Visi & Misi</a>
+                        <a href="#" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition">Tim Kami</a>
+                        <a href="#layanan" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition">Layanan</a>
+                    </div>
+                </div>
+
+                <a href="#portofolio" onclick="toggleSidebar()" class="sidebar-link text-white font-medium">
+                    <span>💼</span> Portofolio
+                </a>
+
+                <a href="https://api.whatsapp.com/send?phone=6282191851112" class="mt-8 px-6 py-4 bg-gradient-to-r from-purple-600 to-blue-600 rounded-2xl text-center font-bold hover:scale-105 transition shadow-lg shadow-purple-600/30">
+                    Hubungi Kami
+                </a>
+            </div>
+        </div>
+
+        <div class="mt-auto flex flex-col items-center gap-4 border-t border-white/5 pt-8">
+            <img src="https://cdn.pixabay.com/animation/2023/04/13/10/37/10-37-37-332_512.gif" alt="Rocket GIF" class="w-32 h-32 object-contain grayscale hover:grayscale-0 transition duration-500">
+            <p class="text-[10px] text-gray-500 tracking-widest text-center">PT DIGITAL PRO INDO <br> VERSION 2.0</p>
         </div>
     </div>
     
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[90] hidden"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] hidden transition-opacity duration-300"></div>
 
     <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
         <div class="md:w-1/2" data-aos="fade-up">
@@ -234,67 +270,6 @@
         </div>
     </section>
 
-    <section id="portofolio" class="py-24 px-6 max-w-7xl mx-auto border-t border-white/5">
-        <div class="text-center mb-16">
-            <h2 class="text-4xl font-bold mb-4 text-white">Portofolio Kami</h2>
-            <p class="text-gray-400 max-w-2xl mx-auto text-lg italic">"Lebih dari 100+ Proyek Digital telah diselesaikan. Membantu UMKM hingga Korporasi naik kelas ke ekosistem PT. DIGITAL PRO INDO."</p>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="portfolio-card relative group overflow-hidden rounded-3xl bg-purple-900/20 border border-white/10" data-aos="fade-up">
-                <div class="aspect-video overflow-hidden bg-[#1a0b2e]">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800" class="portfolio-img w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" alt="Enterprise Web">
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#05010d] via-transparent to-transparent opacity-90"></div>
-                <div class="absolute bottom-0 left-0 p-8">
-                    <span class="text-purple-400 text-xs font-bold uppercase tracking-widest">Enterprise Web</span>
-                    <h3 class="text-xl font-bold mt-2">Portal Holding Company</h3>
-                </div>
-            </div>
-
-            <div class="portfolio-card relative group overflow-hidden rounded-3xl bg-purple-900/20 border border-white/10" data-aos="fade-up" data-aos-delay="100">
-                <div class="aspect-video overflow-hidden bg-[#1a0b2e]">
-                    <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&q=80&w=800" class="portfolio-img w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" alt="UMKM Partnership">
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#05010d] via-transparent to-transparent opacity-90"></div>
-                <div class="absolute bottom-0 left-0 p-8">
-                    <span class="text-purple-400 text-xs font-bold uppercase tracking-widest">UMKM Partnership</span>
-                    <h3 class="text-xl font-bold mt-2">Katalog Produk UMKM Unggulan</h3>
-                </div>
-            </div>
-
-            <div class="portfolio-card relative group overflow-hidden rounded-3xl bg-purple-900/20 border border-white/10" data-aos="fade-up" data-aos-delay="200">
-                <div class="aspect-video overflow-hidden bg-[#1a0b2e]">
-                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800" class="portfolio-img w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-all duration-700" alt="AI Analytics">
-                </div>
-                <div class="absolute inset-0 bg-gradient-to-t from-[#05010d] via-transparent to-transparent opacity-90"></div>
-                <div class="absolute bottom-0 left-0 p-8">
-                    <span class="text-purple-400 text-xs font-bold uppercase tracking-widest">AI Analytics</span>
-                    <h3 class="text-xl font-bold mt-2">Dashboard Prediksi Bisnis</h3>
-                </div>
-            </div>
-        </div>
-
-        <div id="stats-section" class="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 text-center" data-aos="fade-up">
-            <div>
-                <p class="text-4xl md:text-5xl font-bold gradient-text"><span class="counter" data-target="100">0</span>+</p>
-                <p class="text-gray-500 text-sm mt-2 font-bold tracking-widest uppercase">UMKM Bergabung</p>
-            </div>
-            <div>
-                <p class="text-4xl md:text-5xl font-bold gradient-text"><span class="counter" data-target="50">0</span>+</p>
-                <p class="text-gray-500 text-sm mt-2 font-bold tracking-widest uppercase">Website Live</p>
-            </div>
-            <div>
-                <p class="text-4xl md:text-5xl font-bold gradient-text"><span class="counter" data-target="25">0</span>+</p>
-                <p class="text-gray-500 text-sm mt-2 font-bold tracking-widest uppercase">Aplikasi Mobile</p>
-            </div>
-            <div>
-                <p class="text-4xl md:text-5xl font-bold gradient-text"><span class="counter" data-target="99">0</span>%</p>
-                <p class="text-gray-500 text-sm mt-2 font-bold tracking-widest uppercase">Klien Puas</p>
-            </div>
-        </div>
-    </section>
-
     <footer class="py-16 px-6 border-t border-white/5 text-center md:text-left">
         <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
             <div class="md:col-span-2">
@@ -315,9 +290,6 @@
                 <a href="https://api.whatsapp.com/send?phone=6282191851112" target="_blank" class="text-purple-400 font-bold hover:text-purple-300 transition underline underline-offset-4">0821-9185-1112</a>
             </div>
         </div>
-        <div class="max-w-7xl mx-auto mt-16 pt-8 border-t border-white/5 text-center text-xs text-gray-600 font-bold tracking-widest">
-            © 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.
-        </div>
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -332,19 +304,12 @@
             overlay.classList.toggle('hidden');
         }
 
-        /* SCRIPT DROPDOWN PROFIL */
+        /* SCRIPT DROPDOWN */
         function toggleDropdown() {
             const content = document.getElementById('dropContent');
             const icon = document.getElementById('dropIcon');
             content.classList.toggle('show');
-            icon.classList.toggle('rotate-icon active');
-            
-            // Animasi manual class rotate karena tailwind butuh class khusus
-            if(icon.style.transform === "rotate(180deg)") {
-                icon.style.transform = "rotate(0deg)";
-            } else {
-                icon.style.transform = "rotate(180deg)";
-            }
+            icon.classList.toggle('active-rotate');
         }
 
         /* SCRIPT KEMBALI */
@@ -356,37 +321,23 @@
             }
         }
 
-        /* SCRIPT COUNTER */
+        // Script Counter Anda (Tetap Dipertahankan)
         const counters = document.querySelectorAll('.counter');
         const speed = 200; 
-
         const runCounter = () => {
             counters.forEach(counter => {
                 const updateCount = () => {
                     const target = +counter.getAttribute('data-target');
                     const count = +counter.innerText;
                     const inc = target / speed;
-
                     if (count < target) {
                         counter.innerText = Math.ceil(count + inc);
                         setTimeout(updateCount, 20);
-                    } else {
-                        counter.innerText = target;
-                    }
+                    } else { counter.innerText = target; }
                 };
                 updateCount();
             });
         };
-
-        const statsSection = document.getElementById('stats-section');
-        const observer = new IntersectionObserver((entries) => {
-            if (entries[0].isIntersecting) {
-                runCounter();
-                observer.disconnect();
-            }
-        }, { threshold: 0.5 });
-
-        observer.observe(statsSection);
     </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tim Kami | PT Digital Pro Indo</title>
+    <title>Tim Profesional | PT Digital Pro Indo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
@@ -45,26 +45,26 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Navigasi & Header Hitam Konsisten */
         .black-nav {
             background-color: #000000 !important;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+        /* Merapatkan jarak Header Section */
         .black-header-section {
             background-color: #000000 !important;
-            padding-top: 160px;
-            padding-bottom: 80px;
+            padding-top: 100px; /* Jarak atas diperkecil agar lebih dekat ke Nav */
+            padding-bottom: 60px;
         }
 
         .member-img {
-            filter: grayscale(30%);
+            filter: grayscale(100%);
             transition: all 0.5s ease;
         }
         
         .team-card:hover .member-img {
             filter: grayscale(0%);
-            transform: scale(1.05);
+            transform: scale(1.1);
         }
     </style>
 </head>
@@ -72,74 +72,108 @@
     <div class="bg-glow"></div>
 
     <nav class="fixed top-0 w-full black-nav z-50 px-6 py-4 flex items-center shadow-sm">
-        <a href="profil.html" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            <span class="text-sm font-bold text-white">Kembali ke Profil</span>
-        </a>
+        <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+            <a href="profil.html" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                </svg>
+                <span class="text-sm font-bold text-white uppercase tracking-widest">Kembali</span>
+            </a>
+            <div class="text-xs font-bold tracking-widest italic">DIGITAL<span class="text-purple-500">PRO</span></div>
+        </div>
     </nav>
 
     <section class="black-header-section px-6">
         <div class="max-w-4xl mx-auto text-center" data-aos="zoom-out">
-            <span class="text-purple-400 text-xs font-bold tracking-[0.3em] uppercase block mb-4">Core Experts</span>
-            <h1 class="text-4xl md:text-6xl font-bold leading-tight mb-8">
+            <span class="text-purple-400 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase block mb-2">Core Experts</span>
+            <h1 class="text-3xl md:text-6xl font-bold leading-tight mb-4">
                 Kenali Tim <br>
                 <span class="gradient-text">Profesional Kami.</span>
             </h1>
-            <p class="text-gray-400 text-base md:text-lg leading-relaxed max-w-2xl mx-auto">
-                Dibalik setiap solusi inovatif, terdapat dedikasi dari para ahli yang berkomitmen untuk memberikan kualitas terbaik bagi bisnis Anda.
+            <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
+                Kombinasi antara pengalaman bertahun-tahun dan visi teknologi masa depan untuk pertumbuhan bisnis Anda.
             </p>
         </div>
     </section>
 
-    <section class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-12">
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             
             <div class="team-card group" data-aos="fade-up">
-                <div class="glass-card p-8 text-center h-full">
-                    <div class="relative w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full border-2 border-purple-500/30">
+                <div class="glass-card p-8 text-center">
+                    <div class="relative w-32 h-32 mx-auto mb-6 overflow-hidden rounded-2xl border border-white/10">
                         <img src="https://i.ibb.co.com/1f5dYn4P/Desain-tanpa-judul-20260209-125041-0000.png" alt="Johari" class="member-img w-full h-full object-cover">
                     </div>
-                    <h3 class="text-2xl font-bold">Johari</h3>
-                    <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-2 mb-4">CEO & Founder</p>
-                    <p class="text-gray-500 text-sm leading-relaxed">Berfokus pada strategi pertumbuhan dan visi jangka panjang perusahaan.</p>
+                    <h3 class="text-xl font-bold">Johari</h3>
+                    <p class="text-purple-400 text-xs font-bold uppercase tracking-widest mt-1 mb-4">CEO & Founder</p>
+                    <p class="text-gray-500 text-xs leading-relaxed">Arsitek strategi utama dibalik setiap kesuksesan digital mitra kami.</p>
                 </div>
             </div>
 
             <div class="team-card group" data-aos="fade-up" data-aos-delay="100">
-                <div class="glass-card p-8 text-center h-full">
-                    <div class="relative w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full border-2 border-purple-500/30">
+                <div class="glass-card p-8 text-center">
+                    <div class="relative w-32 h-32 mx-auto mb-6 overflow-hidden rounded-2xl border border-white/10">
                         <img src="https://i.ibb.co.com/nqYwnynL/Desain-tanpa-judul-20260209-130039-0000.png" alt="Muhammad Kasirin" class="member-img w-full h-full object-cover">
                     </div>
-                    <h3 class="text-2xl font-bold">Muhammad Kasirin</h3>
-                    <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-2 mb-4">CTO</p>
-                    <p class="text-gray-500 text-sm leading-relaxed">Memastikan infrastruktur teknologi kami selalu berada di standar tertinggi.</p>
+                    <h3 class="text-xl font-bold">Muhammad Kasirin</h3>
+                    <p class="text-purple-400 text-xs font-bold uppercase tracking-widest mt-1 mb-4">Chief Tech Officer</p>
+                    <p class="text-gray-500 text-xs leading-relaxed">Memastikan setiap lini kode dan infrastruktur berjalan pada performa maksimal.</p>
                 </div>
             </div>
 
             <div class="team-card group" data-aos="fade-up" data-aos-delay="200">
-                <div class="glass-card p-8 text-center h-full">
-                    <div class="relative w-40 h-40 mx-auto mb-6 overflow-hidden rounded-full border-2 border-purple-500/30">
+                <div class="glass-card p-8 text-center">
+                    <div class="relative w-32 h-32 mx-auto mb-6 overflow-hidden rounded-2xl border border-white/10">
                         <img src="https://i.ibb.co.com/4Z4KJb9Q/Desain-tanpa-judul-20260209-130602-0000.png" alt="Riyanto" class="member-img w-full h-full object-cover">
                     </div>
-                    <h3 class="text-2xl font-bold">Riyanto</h3>
-                    <p class="text-purple-400 text-sm font-bold uppercase tracking-widest mt-2 mb-4">Digital Strategy</p>
-                    <p class="text-gray-500 text-sm leading-relaxed">Menganalisis tren pasar untuk memberikan solusi digital yang tepat sasaran.</p>
+                    <h3 class="text-xl font-bold">Riyanto</h3>
+                    <p class="text-purple-400 text-xs font-bold uppercase tracking-widest mt-1 mb-4">Digital Strategy</p>
+                    <p class="text-gray-500 text-xs leading-relaxed">Menghubungkan teknologi dengan kebutuhan pasar melalui analisis data yang tajam.</p>
                 </div>
             </div>
-
         </div>
     </section>
 
-    <footer class="py-12 px-6 border-t border-white/5 bg-[#05010d]">
-        <div class="max-w-7xl mx-auto flex flex-col items-center">
-            <div class="mb-6 text-sm font-bold tracking-tighter italic">
-                DIGITAL<span class="text-purple-500">PRO</span>
+    <footer class="pt-20 pb-10 px-6 border-t border-white/5 bg-black">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div class="col-span-1 md:col-span-2">
+                <div class="text-xl font-bold tracking-tighter italic mb-6">
+                    DIGITAL<span class="text-purple-500">PRO</span>
+                </div>
+                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                    Kami adalah mitra teknologi yang berdedikasi untuk memberikan solusi digital inovatif guna mempercepat pertumbuhan bisnis Anda di era modern.
+                </p>
             </div>
-            <p class="text-gray-600 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase text-center">
+
+            <div>
+                <h4 class="text-white font-bold mb-6">Navigasi</h4>
+                <ul class="text-gray-500 text-sm space-y-4">
+                    <li><a href="index.html" class="hover:text-purple-400 transition">Beranda</a></li>
+                    <li><a href="profil.html" class="hover:text-purple-400 transition">Tentang Kami</a></li>
+                    <li><a href="#" class="hover:text-purple-400 transition">Layanan</a></li>
+                    <li><a href="#" class="hover:text-purple-400 transition">Kontak</a></li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-white font-bold mb-6">Hubungi Kami</h4>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    Jakarta Selatan, Indonesia<br>
+                    info@digitalproindo.com<br>
+                    +62 812 3456 7890
+                </p>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto border-t border-white/5 pt-8 flex flex-col md:row justify-between items-center gap-4">
+            <p class="text-gray-600 text-[10px] font-bold tracking-[0.4em] uppercase text-center md:text-left">
                 © 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.
             </p>
+            <div class="flex gap-6">
+                <div class="w-4 h-4 bg-white/10 rounded-full"></div>
+                <div class="w-4 h-4 bg-white/10 rounded-full"></div>
+                <div class="w-4 h-4 bg-white/10 rounded-full"></div>
+            </div>
         </div>
     </footer>
 

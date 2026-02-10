@@ -197,10 +197,6 @@
 
 }
 
-
-
-/* Badge Diskon di Pojok Kanan Atas - Dibuat Lebih Rapi */
-
 .discount-badge {
 
     position: absolute;
@@ -356,31 +352,17 @@
 
 
         .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; padding: 10px 0 25px 0; border-top: 1px solid #eee; z-index: 1000; }
-
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; cursor: pointer; }
-
         .nav-item.active { color: var(--pi-color); }
-
         .nav-icon { font-size: 1.3rem; }
-
         .nav-text { font-size: 0.6rem; font-weight: 700; }
 
-
-
         .whatsapp-float {
-
             position: fixed; bottom: 100px; right: 20px; width: 55px; height: 55px; 
-
             background-color: #25d366; border-radius: 50%; display: flex; 
-
             align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
 
         }
-
-
-
-        /* Perbaikan Tampilan Halaman Cari */
-
 .search-wrapper {
 
     display: flex;
@@ -659,6 +641,20 @@
         <p style="color: #fff; opacity: 0.8; font-size: 0.9rem; margin-top: 10px;">
             Fitur Converter sedang dalam tahap pengembangan teknis.
         </p>
+    </div>
+</div>
+
+<div id="loginModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeLoginModal()">&times;</span>
+        <div style="font-size: 50px; margin-bottom: 10px;">🔐</div>
+        <h2 style="color: #d4af37; margin: 0; font-size: 1.5rem;">Akses Anggota</h2>
+        <p style="color: #fff; opacity: 0.8; font-size: 0.9rem; margin: 15px 0;">
+            Silakan pilih metode login Anda untuk melanjutkan.
+        </p>
+        <button class="btn-converter" style="width: 100%; margin: 10px 0;">
+            <span>🥧</span> Login dengan Pi
+        </button>
     </div>
 </div>
     

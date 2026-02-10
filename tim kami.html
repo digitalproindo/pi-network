@@ -17,44 +17,54 @@
             letter-spacing: -0.01em;
         }
 
+        /* Tipografi & Warna Gold Premium */
         h1, h2, h3, h4, p, span, a, div {
             font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .gold-text {
+            background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 700;
         }
 
         #particles-js {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #120626 0%, #05010d 100%);
+            background: radial-gradient(circle at 50% 50%, #1a1202 0%, #05010d 100%);
         }
 
+        /* Glow Orb dengan nuansa Gold */
         .glow-orb {
             position: absolute;
-            width: 450px;
-            height: 450px;
-            background: radial-gradient(circle, rgba(156, 39, 176, 0.12) 0%, rgba(0,0,0,0) 70%);
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(191, 149, 63, 0.1) 0%, rgba(0,0,0,0) 70%);
             border-radius: 50%;
-            filter: blur(80px);
+            filter: blur(60px);
             z-index: -1;
         }
 
+        /* Glassmorphism dengan Border Gold Tipis */
         .glass-v2 {
             background: rgba(255, 255, 255, 0.01);
             backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(191, 149, 63, 0.15);
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .glass-v2:hover {
-            background: rgba(156, 39, 176, 0.04);
-            border-color: rgba(156, 39, 176, 0.3);
-            transform: translateY(-10px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+            background: rgba(191, 149, 63, 0.05);
+            border-color: rgba(191, 149, 63, 0.5);
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
         }
 
-        .gradient-text {
-            background: linear-gradient(90deg, #ffffff, #d8b4fe, #9c27b0, #ffffff);
+        .gradient-gold {
+            background: linear-gradient(90deg, #ffffff, #fcf6ba, #bf953f, #ffffff);
             background-size: 300% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -65,110 +75,111 @@
             to { background-position: 300% center; }
         }
 
-        /* Foto Profil Hover Effect */
+        /* Container Foto - No Grayscale */
         .member-img-container {
             position: relative;
             overflow: hidden;
-            border-radius: 24px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         
         .member-img-container img {
             transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            filter: none !important; /* Memastikan tidak ada grayscale */
         }
 
         .glass-v2:hover img {
-            transform: scale(1.1);
+            transform: scale(1.08);
+        }
+
+        /* Mobile Precision */
+        @media (max-width: 640px) {
+            .hero-title { font-size: 3.5rem !important; }
+            .glass-v2 { padding: 1.5rem !important; }
         }
     </style>
 </head>
 <body>
     <div id="particles-js"></div>
-    <div class="glow-orb" style="top: 20%; left: -10%;"></div>
-    <div class="glow-orb" style="bottom: 10%; right: -10%;"></div>
+    <div class="glow-orb" style="top: 15%; left: -5%;"></div>
+    <div class="glow-orb" style="bottom: 20%; right: -5%;"></div>
 
-    <nav class="fixed top-0 w-full bg-[#05010d]/60 backdrop-blur-xl z-50 px-8 py-5 flex items-center justify-between border-b border-white/5">
-        <button onclick="window.history.back()" class="flex items-center gap-3 group text-white/80 hover:text-white transition-all">
-            <div class="p-2 rounded-full border border-white/10 group-hover:border-purple-500/50 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <nav class="fixed top-0 w-full bg-[#05010d]/80 backdrop-blur-xl z-50 px-6 py-4 flex items-center justify-between border-b border-white/5 shadow-2xl">
+        <button onclick="window.history.back()" class="flex items-center gap-2 group text-white/90">
+            <div class="p-1.5 rounded-full border border-gold/20 group-hover:border-[#bf953f] transition-all">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                 </svg>
             </div>
-            <span class="text-xs font-bold uppercase tracking-[0.2em]">Kembali</span>
+            <span class="text-[10px] font-bold uppercase tracking-[0.2em]">Kembali</span>
         </button>
-        <div class="hidden md:block text-[10px] font-bold tracking-[0.6em] uppercase text-white/40">The Minds Behind Digital Pro</div>
-        <div class="w-24"></div>
+        <div class="hidden md:block text-[9px] font-bold tracking-[0.5em] uppercase text-[#bf953f]/60">Elite Professional Circle</div>
+        <div class="w-12"></div>
     </nav>
 
-    <section class="relative pt-40 pb-16 px-6">
+    <section class="relative pt-32 pb-12 px-6">
         <div class="max-w-5xl mx-auto text-center" data-aos="fade-up">
-            <div class="inline-block px-4 py-1.5 mb-6 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-400 text-[10px] font-bold uppercase tracking-[0.3em]">
-                Creative Innovators
+            <div class="inline-block px-3 py-1 mb-6 rounded-full border border-[#bf953f]/30 bg-[#bf953f]/5 text-[#fcf6ba] text-[9px] font-bold uppercase tracking-[0.3em]">
+                Excellence & Integrity
             </div>
-            <h1 class="text-6xl md:text-8xl font-bold mb-6 tracking-tighter leading-[0.9]">
-                Expert <br><span class="gradient-text">Tim Kami.</span>
+            <h1 class="hero-title text-5xl md:text-8xl font-bold mb-4 tracking-tighter leading-tight">
+                Expert <br><span class="gradient-gold">Tim Kami.</span>
             </h1>
-            <p class="text-white/50 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-light mt-4">
-                Sinergi para profesional yang berdedikasi tinggi untuk menghadirkan solusi digital revolusioner.
+            <p class="text-white/40 text-sm md:text-lg max-w-xl mx-auto leading-relaxed font-light">
+                Dedikasi tanpa batas dari para ahli untuk mewujudkan transformasi digital berkelas dunia.
             </p>
         </div>
     </section>
 
-    <section class="py-16 px-6 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <section class="py-12 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <div class="glass-v2 p-8 rounded-[40px]" data-aos="fade-up" data-aos-delay="100">
-                <div class="member-img-container mb-8 aspect-[4/5] bg-white/5">
-                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800" alt="CEO" class="w-full h-full object-cover grayscale hover:grayscale-0">
+            <div class="glass-v2 p-6 rounded-[32px]" data-aos="fade-up" data-aos-delay="100">
+                <div class="member-img-container mb-6 aspect-[4/5]">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800" alt="CEO" class="w-full h-full object-cover">
                 </div>
                 <div class="text-center">
-                    <h3 class="text-2xl font-bold tracking-tight mb-1">Alexander Putra</h3>
-                    <p class="text-purple-500 text-xs font-bold uppercase tracking-widest mb-4">Founder & CEO</p>
-                    <p class="text-white/40 text-sm font-light leading-relaxed">Visioner dibalik strategi ekspansi dan inovasi teknologi Digital Pro Indo.</p>
+                    <h3 class="text-xl font-bold tracking-tight mb-1">Alexander Putra</h3>
+                    <p class="gold-text text-[10px] uppercase tracking-widest mb-3">Founder & CEO</p>
+                    <p class="text-white/40 text-xs leading-relaxed font-light px-2">Visioner utama dalam memimpin arah strategis Digital Pro Indo.</p>
                 </div>
             </div>
 
-            <div class="glass-v2 p-8 rounded-[40px]" data-aos="fade-up" data-aos-delay="200">
-                <div class="member-img-container mb-8 aspect-[4/5] bg-white/5">
-                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" alt="CTO" class="w-full h-full object-cover grayscale hover:grayscale-0">
+            <div class="glass-v2 p-6 rounded-[32px]" data-aos="fade-up" data-aos-delay="200">
+                <div class="member-img-container mb-6 aspect-[4/5]">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800" alt="CTO" class="w-full h-full object-cover">
                 </div>
                 <div class="text-center">
-                    <h3 class="text-2xl font-bold tracking-tight mb-1">Sarah Wijaya</h3>
-                    <p class="text-purple-500 text-xs font-bold uppercase tracking-widest mb-4">Chief Technology Officer</p>
-                    <p class="text-white/40 text-sm font-light leading-relaxed">Memimpin pengembangan infrastruktur AI dan sistem cloud keamanan tinggi.</p>
+                    <h3 class="text-xl font-bold tracking-tight mb-1">Sarah Wijaya</h3>
+                    <p class="gold-text text-[10px] uppercase tracking-widest mb-3">Chief Technology Officer</p>
+                    <p class="text-white/40 text-xs leading-relaxed font-light px-2">Arsitek sistem dibalik infrastruktur cloud dan keamanan data.</p>
                 </div>
             </div>
 
-            <div class="glass-v2 p-8 rounded-[40px]" data-aos="fade-up" data-aos-delay="300">
-                <div class="member-img-container mb-8 aspect-[4/5] bg-white/5">
-                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=800" alt="Marketing" class="w-full h-full object-cover grayscale hover:grayscale-0">
+            <div class="glass-v2 p-6 rounded-[32px]" data-aos="fade-up" data-aos-delay="300">
+                <div class="member-img-container mb-6 aspect-[4/5]">
+                    <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=800" alt="Creative" class="w-full h-full object-cover">
                 </div>
                 <div class="text-center">
-                    <h3 class="text-2xl font-bold tracking-tight mb-1">David Hartono</h3>
-                    <p class="text-purple-500 text-xs font-bold uppercase tracking-widest mb-4">Creative Director</p>
-                    <p class="text-white/40 text-sm font-light leading-relaxed">Menjaga estetika dan narasi brand untuk pengalaman user yang premium.</p>
+                    <h3 class="text-xl font-bold tracking-tight mb-1">David Hartono</h3>
+                    <p class="gold-text text-[10px] uppercase tracking-widest mb-3">Creative Director</p>
+                    <p class="text-white/40 text-xs leading-relaxed font-light px-2">Mengkurasi pengalaman visual premium untuk setiap mitra bisnis.</p>
                 </div>
             </div>
 
         </div>
     </section>
 
-    <footer class="mt-20 bg-black/40 backdrop-blur-3xl border-t border-white/5 pt-24 pb-12">
-        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-20">
-            <div class="col-span-1 md:col-span-2">
-                <div class="text-2xl font-bold mb-8 tracking-tighter italic">DIGITAL<span class="text-purple-600">PRO</span></div>
-                <p class="text-white/40 max-w-sm mb-10 text-sm leading-relaxed font-light">
-                    Membangun masa depan digital yang lebih cerdas dengan kolaborasi talenta terbaik.
-                </p>
+    <footer class="mt-20 border-t border-white/5 pt-16 pb-10 bg-black/20">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <div class="text-xl font-bold mb-6 tracking-tighter italic uppercase">DIGITAL<span class="gold-text italic">PRO</span></div>
+            <div class="flex flex-wrap justify-center gap-6 mb-10 text-[10px] font-bold tracking-widest text-white/30 uppercase">
+                <a href="#" class="hover:text-[#bf953f] transition-colors">Instagram</a>
+                <a href="#" class="hover:text-[#bf953f] transition-colors">LinkedIn</a>
+                <a href="#" class="hover:text-[#bf953f] transition-colors">Career</a>
             </div>
-            <div>
-                <h4 class="font-bold mb-8 uppercase tracking-[0.3em] text-[10px] text-white/90">Kontak Tim</h4>
-                <p class="text-white/40 text-xs leading-loose mb-6 font-light">career@digitalpro.id</p>
-                <a href="tel:+6282191851112" class="text-purple-400 font-bold text-sm">0821-9185-1112</a>
-            </div>
-        </div>
-        <div class="max-w-7xl mx-auto px-6 mt-24 pt-10 border-t border-white/5 text-center">
-            <p class="text-[9px] text-white/20 font-bold tracking-[0.6em] uppercase">
-                © 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.
+            <p class="text-[9px] text-white/20 font-bold tracking-[0.5em] uppercase">
+                © 2026 PT DIGITAL PRO INDO. EXCELLENCE REDEFINED.
             </p>
         </div>
     </footer>
@@ -176,16 +187,16 @@
     <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ duration: 1200, once: true, easing: 'ease-out-cubic' });
+        AOS.init({ duration: 1000, once: true });
         particlesJS("particles-js", {
             "particles": {
-                "number": { "value": 60, "density": { "enable": true, "value_area": 800 } },
-                "color": { "value": "#9c27b0" },
+                "number": { "value": 50, "density": { "enable": true, "value_area": 800 } },
+                "color": { "value": "#bf953f" },
                 "shape": { "type": "circle" },
-                "opacity": { "value": 0.3 },
-                "size": { "value": 2, "random": true },
-                "line_linked": { "enable": true, "distance": 150, "color": "#9c27b0", "opacity": 0.2 },
-                "move": { "enable": true, "speed": 1.2 }
+                "opacity": { "value": 0.2 },
+                "size": { "value": 1.5, "random": true },
+                "line_linked": { "enable": true, "distance": 150, "color": "#bf953f", "opacity": 0.1, "width": 1 },
+                "move": { "enable": true, "speed": 0.8 }
             },
             "retina_detect": true
         });

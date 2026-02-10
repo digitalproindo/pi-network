@@ -9,10 +9,7 @@
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     
     <style>
-        html {
-            scroll-behavior: smooth;
-        }
-
+        html { scroll-behavior: smooth; }
         body {
             font-family: 'Space Grotesk', sans-serif;
             background-color: #05010d;
@@ -21,13 +18,13 @@
             overflow-x: hidden;
         }
 
+        /* Latar Belakang & Animasi */
         .bg-glow {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05010d 100%);
             z-index: -1;
         }
-
         .blob {
             position: absolute;
             width: 300px; height: 300px;
@@ -37,66 +34,23 @@
             opacity: 0.4;
             animation: move 20s infinite alternate;
         }
-
         @keyframes move {
             from { transform: translate(-10%, -10%); }
             to { transform: translate(110%, 110%); }
         }
 
-        .glass-card {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            border-color: #9c27b0;
-            transform: translateY(-5px);
-        }
-
-        .portfolio-img {
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .portfolio-card:hover .portfolio-img {
-            transform: scale(1.1);
-        }
-
-        .gradient-text {
-            background: linear-gradient(90deg, #fff, #9c27b0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        @keyframes scroll {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        .slider-track {
-            display: flex;
-            width: calc(200px * 10);
-            animation: scroll 20s linear infinite;
-        }
-
-        a:active {
-            transform: scale(0.95);
-        }
-
-        /* --- STYLES SIDEBAR BARU --- */
+        /* Sidebar Styling */
         #sidebar {
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(10, 2, 22, 0.95);
-            backdrop-filter: blur(20px);
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            background: rgba(10, 2, 22, 0.98);
+            backdrop-filter: blur(25px);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.8);
         }
         #sidebar.closed {
             transform: translateX(100%);
             opacity: 0;
         }
         .sidebar-link {
-            position: relative;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
@@ -105,7 +59,7 @@
             border-radius: 12px;
         }
         .sidebar-link:hover {
-            background: rgba(156, 39, 176, 0.15);
+            background: rgba(156, 39, 176, 0.2);
             padding-left: 20px;
             color: #d8b4fe;
         }
@@ -119,20 +73,45 @@
             max-height: 300px;
             opacity: 1;
             margin-top: 8px;
-            margin-bottom: 8px;
         }
-        .rotate-icon {
-            transition: transform 0.4s ease;
+
+        /* GIF Container */
+        .gif-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .active-rotate {
-            transform: rotate(180deg);
+        .gif-glow {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #9c27b0;
+            filter: blur(40px);
+            opacity: 0.3;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .gif-img {
+            position: relative;
+            z-index: 1;
+            width: 120px;
+            height: auto;
+            pointer-events: none;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #9c27b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 <body>
-    <div class="bg-glow">
-        <div class="blob"></div>
-    </div>
+    <div class="bg-glow"><div class="blob"></div></div>
 
     <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center bg-[#05010d]/80 backdrop-blur-md border-b border-white/5">
         <button onclick="goBack()" class="p-2 hover:bg-white/10 rounded-xl transition group">
@@ -155,7 +134,7 @@
     <div id="sidebar" class="fixed inset-y-0 right-0 w-80 z-[100] border-l border-white/10 closed p-8 flex flex-col justify-between">
         <div>
             <div class="flex justify-between items-center mb-10">
-                <span class="text-xs font-bold tracking-[0.3em] text-purple-500 uppercase">Menu Utama</span>
+                <span class="text-xs font-bold tracking-[0.3em] text-purple-500 uppercase">Navigasi Digital</span>
                 <button onclick="toggleSidebar()" class="p-2 hover:bg-white/10 rounded-full transition text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -173,14 +152,14 @@
                         <div class="flex items-center gap-3">
                             <span>👤</span> Profil
                         </div>
-                        <svg id="dropIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 rotate-icon ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg id="dropIcon" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-auto transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                         </svg>
                     </button>
                     <div id="dropContent" class="dropdown-content pl-10 border-l border-purple-500/30 ml-4 flex flex-col gap-3">
-                        <a href="#" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition">Visi & Misi</a>
-                        <a href="#" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition">Tim Kami</a>
-                        <a href="#layanan" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition">Layanan</a>
+                        <a href="#" class="text-sm text-gray-400 hover:text-white transition py-1">Visi & Misi</a>
+                        <a href="#" class="text-sm text-gray-400 hover:text-white transition py-1">Tim Kami</a>
+                        <a href="#layanan" onclick="toggleSidebar()" class="text-sm text-gray-400 hover:text-white transition py-1">Layanan</a>
                     </div>
                 </div>
 
@@ -194,109 +173,34 @@
             </div>
         </div>
 
-        <div class="mt-auto flex flex-col items-center gap-4 border-t border-white/5 pt-8">
-            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/u0pAInRSTHMBjFND3E/giphy.gif" alt="Rocket GIF" class="w-32 h-32 object-contain grayscale hover:grayscale-0 transition duration-500">
-            <p class="text-[10px] text-gray-500 tracking-widest text-center">PT DIGITAL PRO INDO <br> VERSION 2.0</p>
+        <div class="mt-auto flex flex-col items-center gap-4 pt-8">
+            <div class="gif-container">
+                <div class="gif-glow"></div>
+                <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueGZueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/u0pAInRSTHMBjFND3E/giphy.gif" 
+                     alt="Rocket Animation" 
+                     class="gif-img">
+            </div>
+            <p class="text-[10px] text-gray-500 tracking-[0.2em] text-center font-bold">DIGITAL PRO INDO <br> EST. 2026</p>
         </div>
     </div>
     
-    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] hidden transition-opacity duration-300"></div>
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[90] hidden transition-opacity"></div>
 
-    <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto text-center md:text-left flex flex-col md:flex-row items-center gap-10">
+    <section class="relative pt-32 pb-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-10">
         <div class="md:w-1/2" data-aos="fade-up">
             <span class="px-4 py-1.5 bg-purple-500/10 border border-purple-500/30 rounded-full text-purple-400 text-xs font-bold tracking-widest uppercase">Digital Transformation Partner</span>
             <h1 class="text-5xl md:text-7xl font-bold mt-6 leading-tight">Solusi Digital <br><span class="gradient-text">Masa Depan.</span></h1>
             <p class="mt-6 text-gray-400 text-lg leading-relaxed max-w-lg">Kami membantu bisnis Anda berkembang lebih cepat dengan teknologi AI, Cloud, dan Strategi Digital Marketing yang inovatif.</p>
-            
-            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <a href="https://api.whatsapp.com/send?phone=6282191851112&text=Halo%20PT%20Digital%20Pro%20Indo,%20saya%20tertarik%20memulai%20proyek%20digital." target="_blank" class="group px-8 py-4 bg-purple-600 hover:bg-purple-700 rounded-2xl font-bold transition shadow-lg shadow-purple-600/20 flex items-center justify-center gap-2">
-                    Mulai Sekarang
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                    </svg>
-                </a>
-                <a href="#portofolio" class="px-8 py-4 bg-white/5 border border-white/10 rounded-2xl font-bold hover:bg-white/10 hover:border-purple-500/50 transition flex items-center justify-center">
-                    Lihat Portofolio
-                </a>
-            </div>
         </div>
-        <div class="md:w-1/2 relative flex justify-center" data-aos="zoom-in">
-            <div class="w-64 h-64 md:w-80 md:h-80 bg-purple-600/20 rounded-full absolute blur-3xl"></div>
-            <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" class="relative z-10 w-full max-w-md floating opacity-50" style="animation: move 5s infinite alternate;">
+        <div class="md:w-1/2 flex justify-center">
+            <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" class="w-full max-w-md opacity-50" style="animation: move 5s infinite alternate;">
         </div>
     </section>
-
-    <div class="py-10 bg-white/5 border-y border-white/5 overflow-hidden">
-        <p class="text-center text-xs uppercase tracking-[0.3em] text-gray-500 mb-8 font-bold">Dipercaya oleh Perusahaan Global</p>
-        <div class="slider-track space-x-12 opacity-40">
-            <span class="text-2xl font-bold grayscale">GOOGLE</span>
-            <span class="text-2xl font-bold grayscale">MICROSOFT</span>
-            <span class="text-2xl font-bold grayscale">AMAZON</span>
-            <span class="text-2xl font-bold grayscale">SAMSUNG</span>
-            <span class="text-2xl font-bold grayscale">TELKOM</span>
-            <span class="text-2xl font-bold grayscale">GOOGLE</span>
-            <span class="text-2xl font-bold grayscale">MICROSOFT</span>
-            <span class="text-2xl font-bold grayscale">AMAZON</span>
-            <span class="text-2xl font-bold grayscale">SAMSUNG</span>
-            <span class="text-2xl font-bold grayscale">TELKOM</span>
-        </div>
-    </div>
-
-    <section id="layanan" class="py-24 px-6 max-w-7xl mx-auto">
-        <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
-            <div>
-                <h2 class="text-4xl font-bold">Layanan Unggulan</h2>
-                <div class="h-1 w-20 bg-purple-600 mt-4"></div>
-            </div>
-            <p class="text-gray-400 max-w-md">Strategi komprehensif untuk mendominasi pasar digital dengan ekosistem yang terintegrasi.</p>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div class="glass-card p-8" data-aos="fade-up">
-                <div class="text-4xl mb-6">🌐</div>
-                <h3 class="text-xl font-bold mb-3">Web & App Dev</h3>
-                <p class="text-gray-400 text-sm">Pembuatan website premium dengan performa tinggi dan desain UI/UX modern.</p>
-            </div>
-            <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="100">
-                <div class="text-4xl mb-6">🚀</div>
-                <h3 class="text-xl font-bold mb-3">Digital Marketing</h3>
-                <p class="text-gray-400 text-sm">Optimasi SEO dan iklan media sosial untuk meningkatkan konversi penjualan.</p>
-            </div>
-            <div class="glass-card p-8" data-aos="fade-up" data-aos-delay="200">
-                <div class="text-4xl mb-6">📊</div>
-                <h3 class="text-xl font-bold mb-3">Data Analytics</h3>
-                <p class="text-gray-400 text-sm">Analisis data bisnis untuk pengambilan keputusan yang lebih akurat.</p>
-            </div>
-        </div>
-    </section>
-
-    <footer class="py-16 px-6 border-t border-white/5 text-center md:text-left">
-        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12">
-            <div class="md:col-span-2">
-                <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" class="h-8 mb-6 mx-auto md:mx-0">
-                <p class="text-gray-500 text-sm max-w-sm">Membangun ekosistem digital terintegrasi untuk masa depan bisnis Indonesia yang lebih cerdas.</p>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6">Navigasi</h4>
-                <ul class="text-gray-500 space-y-4 text-sm">
-                    <li><a href="#" class="hover:text-white transition">Tentang Kami</a></li>
-                    <li><a href="#layanan" class="hover:text-white transition">Layanan</a></li>
-                    <li><a href="#portofolio" class="hover:text-white transition">Portofolio</a></li>
-                </ul>
-            </div>
-            <div>
-                <h4 class="font-bold mb-6">Hubungi Kami</h4>
-                <p class="text-gray-500 text-sm mb-4">Jakarta, Indonesia</p>
-                <a href="https://api.whatsapp.com/send?phone=6282191851112" target="_blank" class="text-purple-400 font-bold hover:text-purple-300 transition underline underline-offset-4">0821-9185-1112</a>
-            </div>
-        </div>
-    </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
         AOS.init({ duration: 1000, once: true });
 
-        /* SCRIPT SIDEBAR */
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebar-overlay');
@@ -304,40 +208,16 @@
             overlay.classList.toggle('hidden');
         }
 
-        /* SCRIPT DROPDOWN */
         function toggleDropdown() {
             const content = document.getElementById('dropContent');
             const icon = document.getElementById('dropIcon');
             content.classList.toggle('show');
-            icon.classList.toggle('active-rotate');
+            icon.style.transform = content.classList.contains('show') ? "rotate(180deg)" : "rotate(0deg)";
         }
 
-        /* SCRIPT KEMBALI */
         function goBack() {
-            if (document.referrer !== "" && window.history.length > 1) {
-                window.history.back();
-            } else {
-                window.location.href = "#"; 
-            }
+            window.history.length > 1 ? window.history.back() : window.location.href = "#";
         }
-
-        // Script Counter Anda (Tetap Dipertahankan)
-        const counters = document.querySelectorAll('.counter');
-        const speed = 200; 
-        const runCounter = () => {
-            counters.forEach(counter => {
-                const updateCount = () => {
-                    const target = +counter.getAttribute('data-target');
-                    const count = +counter.innerText;
-                    const inc = target / speed;
-                    if (count < target) {
-                        counter.innerText = Math.ceil(count + inc);
-                        setTimeout(updateCount, 20);
-                    } else { counter.innerText = target; }
-                };
-                updateCount();
-            });
-        };
     </script>
 </body>
 </html>

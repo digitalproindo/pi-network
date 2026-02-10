@@ -847,41 +847,38 @@
     <script src="app.js?v=4.2"></script>
 
     <script>
-        function toggleMenu() {
-            var sideNav = document.getElementById("sideNav");
-            if (sideNav.style.width === "280px") {
-                sideNav.style.width = "0";
-            } else {
-                sideNav.style.width = "280px";
-            }
-        }
+    function toggleMenu() {
+        var sideNav = document.getElementById("sideNav");
+        sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
+    }
 
-        // Fungsi Modal
-        // Fungsi Modal Coming Soon (Sudah Ada)
-function openModal() { document.getElementById("comingSoonModal").style.display = "flex"; }
-function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
-
-// TAMBAHKAN FUNGSI BARU UNTUK LOGIN
-function openLoginModal() {
-    document.getElementById("loginModal").style.display = "flex";
-}
-
-function closeLoginModal() {
-    document.getElementById("loginModal").style.display = "none";
-}
-
-// Update fungsi window.onclick agar bisa menutup kedua modal jika klik di luar box
-window.onclick = function(event) {
-    var modalSoon = document.getElementById("comingSoonModal");
-    var modalLogin = document.getElementById("loginModal");
+    function openModal() { 
+        document.getElementById("comingSoonModal").style.display = "flex"; 
+    }
     
-    if (event.target == modalSoon) {
-        modalSoon.style.display = "none";
+    function closeModal() { 
+        document.getElementById("comingSoonModal").style.display = "none"; 
     }
-    if (event.target == modalLogin) {
-        modalLogin.style.display = "none";
+
+    // FUNGSI LOGIN (PASTIKAN ID loginModal ADA DI HTML)
+    function openLoginModal() {
+        var modal = document.getElementById("loginModal");
+        if(modal) {
+            modal.style.setProperty("display", "flex", "important");
+        } else {
+            alert("Elemen loginModal tidak ditemukan di HTML!");
+        }
     }
-}
+
+    function closeLoginModal() {
+        document.getElementById("loginModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target.className === "modal-overlay") {
+            event.target.style.display = "none";
+        }
+    }
     </script>
 </body>
 </html>

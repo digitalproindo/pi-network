@@ -558,117 +558,52 @@
 }
 
 /* Sidebar Background Galaksi */
+/* --- SIDEBAR GALAKSI --- */
 .sidenav {
-    height: 100%;
-    width: 0; 
-    position: fixed;
-    z-index: 999999 !important;
-    top: 0;
-    right: 0;
-    background: #05010d url('https://www.transparenttextures.com/patterns/stardust.png'); /* Efek Bintang */
-    overflow-x: hidden;
-    transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
-    padding-top: 60px;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.8);
-    border-left: 1px solid rgba(156, 39, 176, 0.3);
+    height: 100%; width: 0; position: fixed; z-index: 999999 !important;
+    top: 0; right: 0; background: #05010d url('https://www.transparenttextures.com/patterns/stardust.png');
+    overflow-x: hidden; transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    padding-top: 60px; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+    display: flex; flex-direction: column;
 }
 
-/* Animasi Planet Melayang */
+.sidenav a {
+    padding: 15px 25px; text-decoration: none; font-size: 1.1rem;
+    color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap; transition: 0.3s;
+}
+
+.sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; }
+
+/* Tombol Converter */
+.btn-converter {
+    margin: 25px; padding: 15px; background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+    color: #1a0033; border: none; border-radius: 15px; font-weight: 800;
+    cursor: pointer; box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+/* Animasi Planet */
 .sidebar-planet {
-    position: absolute;
-    bottom: 20px;
-    right: -20px;
-    width: 150px;
-    opacity: 0.5;
-    z-index: -1;
+    position: absolute; bottom: 20px; right: -20px; width: 150px;
+    opacity: 0.4; z-index: -1; pointer-events: none;
     animation: rotatePlanet 20s linear infinite;
 }
-
 @keyframes rotatePlanet {
     from { transform: rotate(0deg) translateY(10px) rotate(0deg); }
     to { transform: rotate(360deg) translateY(10px) rotate(-360deg); }
 }
 
-/* Tombol Converter Futuristik */
-.btn-converter {
-    margin: 25px;
-    padding: 12px 20px;
-    background: linear-gradient(135deg, #6a1b9a 0%, #4a148c 100%);
-    color: #ffd700;
-    border: 1px solid rgba(212, 175, 55, 0.5);
-    border-radius: 12px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 0 15px rgba(106, 27, 154, 0.4);
-    transition: all 0.3s ease;
-}
-
-.btn-converter:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-    border-color: #ffd700;
-}
-
-/* Notifikasi Coming Soon */
-.coming-soon-toast {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-100px);
-    background: rgba(0, 0, 0, 0.9);
-    color: #ffd700;
-    padding: 15px 30px;
-    border-radius: 50px;
-    border: 1px solid #d4af37;
-    font-weight: bold;
-    z-index: 1000000;
-    transition: 0.5s ease;
-}
-
-.coming-soon-toast.show {
-    transform: translateX(-50%) translateY(0);
-}
-
+/* Modal Popup */
 .modal-overlay {
-            /* Pastikan CSS Modal yang saya berikan sebelumnya juga ada di sini */
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%;
-            background: rgba(0,0,0,0.85); 
-            backdrop-filter: blur(8px);
-            display: none; 
-            align-items: center; 
-            justify-content: center; 
-            z-index: 1000000;
-        }
-        
-        .modal-content {
-            background: #1a0b2e; 
-            border: 2px solid #d4af37; 
-            padding: 40px;
-            border-radius: 25px; 
-            position: relative; 
-            text-align: center;
-            max-width: 300px; 
-            width: 80%;
-        }
-
-        .close-modal {
-            position: absolute; 
-            top: 15px; 
-            right: 15px; 
-            color: #d4af37;
-            font-size: 24px; 
-            cursor: pointer;
-        }
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; z-index: 1000001;
+}
+.modal-content {
+    background: #1a0b2e; border: 2px solid #d4af37; padding: 40px;
+    border-radius: 25px; position: relative; text-align: center; width: 80%; max-width: 320px;
+}
+.close-modal { position: absolute; top: 15px; right: 15px; color: #d4af37; font-size: 28px; cursor: pointer; }
     </style>
 </head>
     </style>

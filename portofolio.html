@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofolio Kreatif | PT Digital Pro Indo</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;500;700&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background-color: #05010d;
+            color: #ffffff;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1a0b2e 0%, #05010d 100%);
+            z-index: -1;
+        }
+
+        .black-nav {
+            background-color: #000000 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .black-header-section {
+            background-color: #000000 !important;
+            padding-top: 100px;
+            padding-bottom: 60px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Portfolio Specific Styles */
+        .glass-project-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 30px;
+            overflow: hidden;
+            transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .project-image-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 20px;
+            margin: 15px;
+        }
+
+        .project-image {
+            transition: all 0.8s ease;
+            filter: saturate(0.8);
+        }
+
+        .glass-project-card:hover {
+            border-color: rgba(156, 39, 176, 0.4);
+            transform: translateY(-15px) scale(1.02);
+            background: rgba(156, 39, 176, 0.05);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), 0 0 20px rgba(156, 39, 176, 0.1);
+        }
+
+        .glass-project-card:hover .project-image {
+            transform: scale(1.1);
+            filter: saturate(1.2);
+        }
+
+        .category-badge {
+            background: rgba(156, 39, 176, 0.15);
+            color: #d8b4fe;
+            padding: 4px 12px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            border: 1px solid rgba(156, 39, 176, 0.3);
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #fff, #9c27b0, #673ab7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: textFlow 4s linear infinite;
+        }
+
+        @keyframes textFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        /* Filter Button Styling */
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: #9c27b0;
+            border-color: #9c27b0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(156, 39, 176, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow"></div>
+
+    <nav class="fixed top-0 w-full black-nav z-50 px-6 py-4 flex items-center shadow-sm">
+        <div class="max-w-7xl mx-auto w-full nav-grid">
+            <div class="flex justify-start">
+                <a href="index.html" class="flex items-center gap-2 font-semibold hover:opacity-70 transition-opacity">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    <span class="text-sm font-bold text-white uppercase tracking-widest hidden md:inline">Beranda</span>
+                </a>
+            </div>
+            <div class="flex justify-center">
+                <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-8 md:h-10">
+            </div>
+            <div class="hidden md:block"></div>
+        </div>
+    </nav>
+
+    <section class="black-header-section px-6">
+        <div class="max-w-4xl mx-auto text-center" data-aos="zoom-out">
+            <span class="text-purple-400 text-[10px] md:text-xs font-bold tracking-[0.4em] uppercase block mb-2">Our Masterpieces</span>
+            <h1 class="text-3xl md:text-6xl font-bold leading-tight mb-4">
+                Karya Pilihan <br>
+                <span class="gradient-text">Masa Depan Digital.</span>
+            </h1>
+            <p class="text-gray-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto">
+                Eksplorasi proyek-proyek inovatif yang telah membantu mitra kami mendefinisikan ulang batas kesuksesan di industri mereka.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-20 px-6 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10">
+            
+            <div class="glass-project-card group" data-aos="fade-up">
+                <div class="project-image-container">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=2426&auto=format&fit=crop" alt="Fintech App" class="project-image w-full h-[300px] object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="category-badge">Fintech Solution</span>
+                    </div>
+                </div>
+                <div class="p-8 pt-0">
+                    <h3 class="text-2xl font-bold mb-3">Neo Bank Interface</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Revolusi perbankan digital dengan sistem keamanan AI yang mampu memprediksi risiko transaksi secara instan.</p>
+                    <div class="flex items-center gap-4">
+                        <div class="h-[1px] flex-grow bg-white/10"></div>
+                        <span class="text-[10px] font-bold tracking-widest text-purple-400 uppercase">View Project</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-project-card group" data-aos="fade-up" data-aos-delay="100">
+                <div class="project-image-container">
+                    <img src="https://images.unsplash.com/photo-1551288049-bbda64626dc1?q=80&w=2340&auto=format&fit=crop" alt="Dashboard AI" class="project-image w-full h-[300px] object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="category-badge">Big Data</span>
+                    </div>
+                </div>
+                <div class="p-8 pt-0">
+                    <h3 class="text-2xl font-bold mb-3">Insight Analytics</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Dashboard analisis data real-time untuk manufaktur skala besar guna meningkatkan efisiensi operasional hingga 40%.</p>
+                    <div class="flex items-center gap-4">
+                        <div class="h-[1px] flex-grow bg-white/10"></div>
+                        <span class="text-[10px] font-bold tracking-widest text-purple-400 uppercase">View Project</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-project-card group" data-aos="fade-up">
+                <div class="project-image-container">
+                    <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?q=80&w=2400&auto=format&fit=crop" alt="E-Commerce" class="project-image w-full h-[300px] object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="category-badge">E-Commerce</span>
+                    </div>
+                </div>
+                <div class="p-8 pt-0">
+                    <h3 class="text-2xl font-bold mb-3">Vogue Marketplace</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Platform belanja fashion premium dengan integrasi AR (Augmented Reality) untuk fitur Virtual Try-On.</p>
+                    <div class="flex items-center gap-4">
+                        <div class="h-[1px] flex-grow bg-white/10"></div>
+                        <span class="text-[10px] font-bold tracking-widest text-purple-400 uppercase">View Project</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="glass-project-card group" data-aos="fade-up" data-aos-delay="100">
+                <div class="project-image-container">
+                    <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=2340&auto=format&fit=crop" alt="Security" class="project-image w-full h-[300px] object-cover">
+                    <div class="absolute top-4 left-4">
+                        <span class="category-badge">Cyber Security</span>
+                    </div>
+                </div>
+                <div class="p-8 pt-0">
+                    <h3 class="text-2xl font-bold mb-3">Shield Protocol</h3>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">Infrastruktur keamanan berlapis untuk melindungi data sensitif pemerintahan dari ancaman siber global.</p>
+                    <div class="flex items-center gap-4">
+                        <div class="h-[1px] flex-grow bg-white/10"></div>
+                        <span class="text-[10px] font-bold tracking-widest text-purple-400 uppercase">View Project</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="pt-20 pb-10 px-6 border-t border-white/5 bg-black">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 mb-16 text-center md:text-left">
+            <div class="col-span-1 md:col-span-2 flex flex-col items-center md:items-start">
+                <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo" class="h-8 mb-6">
+                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                    Membangun jembatan antara visi kreatif dan teknologi mutakhir untuk menciptakan dampak nyata bagi industri digital.
+                </p>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-widest">Explore</h4>
+                <ul class="text-gray-500 text-sm space-y-4">
+                    <li><a href="index.html" class="hover:text-purple-400 transition">Beranda</a></li>
+                    <li><a href="layanan.html" class="hover:text-purple-400 transition">Layanan</a></li>
+                    <li><a href="tim.html" class="hover:text-purple-400 transition">Tim Kami</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-widest">Connect</h4>
+                <p class="text-gray-500 text-sm leading-relaxed">
+                    Jakarta Selatan, Indonesia<br>
+                    project@digitalproindo.com
+                </p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto border-t border-white/5 pt-8 text-center">
+            <p class="text-gray-600 text-[10px] font-bold tracking-[0.4em] uppercase">
+                © 2026 PT DIGITAL PRO INDO. ALL RIGHTS RESERVED.
+            </p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ 
+            duration: 1000, 
+            once: true,
+            mirror: false 
+        });
+    </script>
+</body>
+</html>

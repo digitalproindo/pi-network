@@ -610,13 +610,15 @@
 
 
 .social-icon {
-    transition: transform 0.3s ease, opacity 0.3s;
-    opacity: 0.7;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .social-icon:hover {
-    transform: translateY(-5px);
-    opacity: 1;
+    transform: scale(1.2); /* Ikon membesar sedikit saat di-hover */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
 }
     </style>
 </head>
@@ -642,19 +644,28 @@
                  width="110" 
                  style="opacity: 0.9;">
 
-                 <div class="social-footer" style="margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1);">
-    <p style="font-size: 12px; color: #aaa; margin-bottom: 15px; letter-spacing: 1px;">FOLLOW US</p>
-    <div style="display: flex; justify-content: center; gap: 20px;">
-        <a href="https://youtube.com/@usernameanda" target="_blank" class="social-icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="24" height="24" style="filter: invert(1);">
+         <div class="social-footer" style="margin-top: auto; padding: 20px; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2);">
+    <p style="font-size: 11px; color: #d4af37; margin-bottom: 15px; letter-spacing: 2px; font-weight: bold;">CONNECT WITH US</p>
+    <div style="display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+        
+        <a href="https://youtube.com/@username" target="_blank" class="social-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="28" height="28" style="filter: none;">
         </a>
-        <a href="https://facebook.com/usernameanda" target="_blank" class="social-icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384053.png" width="24" height="24" style="filter: invert(1);">
+
+        <a href="https://facebook.com/username" target="_blank" class="social-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" width="28" height="28" style="filter: none;">
         </a>
-        <a href="https://instagram.com/usernameanda" target="_blank" class="social-icon">
-            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384063.png" width="24" height="24" style="filter: invert(1);">
+
+        <a href="https://instagram.com/username" target="_blank" class="social-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="28" height="28" style="filter: none;">
         </a>
+
+        <a href="https://x.com/username" target="_blank" class="social-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/5969/5969020.png" width="28" height="28" style="filter: none; background: white; border-radius: 4px; padding: 1px;">
+        </a>
+
     </div>
+</div>
 </div>
         </div>
     </div>
@@ -684,9 +695,6 @@
         </button>
     </div>
 </div>
-    
-
-
 
     <header>
     <div class="auth-container" style="position: absolute; top: 15px; right: 15px; z-index: 20;">
@@ -754,9 +762,7 @@
     <div class="category-pill" onclick="filterCategory('E-Book', this)">📚 E-Book</div>
 </div>
 
-
-        <div id="main-grid" class="marketplace-grid"></div>
-
+     <div id="main-grid" class="marketplace-grid"></div>
     </main>
 
 

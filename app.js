@@ -555,7 +555,7 @@ const productsData = [
         id: "car-001",
         category: "Mobil",
         name: "Toyota Fortuner 2.8 GR Sport 2024",
-        price: 0.15000, // Harga dalam Pi (Contoh)
+        price: 0.15000,
         discount: 5,
         images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
         desc: `
@@ -1352,14 +1352,7 @@ if (searchInput) {
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
     }
-}); // Penutup DOMContentLoaded (pastikan tanda ini jangan dihapus)
-
-// ... baris terakhir kode lama Anda ( }); )
-
-/**
- * FUNGSI NAVIGASI HAMBURGER MENU
- * Diletakkan di luar agar bisa dipanggil oleh onclick di HTML
- */
+});
 function toggleMenu() {
     const nav = document.getElementById("sideNav");
     

@@ -205,6 +205,37 @@ const productsData = [
     },
     { 
         id: 'p3', 
+        name: "An-Nisa", 
+        price: 0.00010,
+        discount: 5, 
+        category: "Herbal", 
+        images: ["https://i.ibb.co.com/0jjhzJ7p/Desain-tanpa-judul-20260211-213452-0000.png"], 
+        desc: "Keputihan, Gatal-gatal ,Membunuh bakteri, Melancarkan menstruasi, Mengatasi nyeri haid, Mencegah kanker rahim, Membasmi mioma / Kista, Merapatkan dan mengencangkan, Mengatasi semua problem kewanitaan,Memperbaiki dan memperbanyak hormon",
+        rating: 5.0,
+        sold: 3400,
+        reviews: [
+            { user: "Sehat_Sentosa", comment: "Asam lambung saya membaik, terima kasih!" },
+            { user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }
+        ]
+    },
+    { 
+        id: 'p4', 
+        name: "Ar-Rizal", 
+        price: 0.00010,
+        discount: 5, 
+        category: "Herbal", 
+        images: ["https://i.ibb.co.com/Ndjmbdbj/Desain-tanpa-judul-20260211-214933-0000.png"], 
+        desc: "Mengencangkan Mr.P, Menguatkan Mr.P, Menguatkan Jantung, Meningkatkan gairah, Mengatasi ejakulasi dini, Suplemen terbaik buat Profil, Meningkatkan kwalitas Hormon, Memperlama hubungan Pasutri, Melancarkan sirkulasi darah ke alat vital,  Meningkatkan dan memperbanyak kwalitas Hormon",
+        rating: 5.0,
+        sold: 3400,
+        reviews: [
+            { user: "Sehat_Sentosa", comment: "Asam lambung saya membaik, terima kasih!" },
+            { user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }
+        ]
+    },
+    
+    { 
+        id: 'p3', 
         name: "Smart Home System Pro", 
         price: 0.500, 
         category: "Rumah", 

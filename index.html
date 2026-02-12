@@ -637,7 +637,11 @@
         <button class="btn-converter" onclick="openModal()">
             <span>🔄</span> CONVERTER
         </button>
-    <a href="faq.html"><span>❓</span> FAQ / Bantuan</a>    
+    <a href="faq.html"><span>❓</span> FAQ / Bantuan</a>
+    
+    <a href="javascript:void(0)" id="menuKomunitas" onclick="openKomunitasModal()" style="display: none;">
+    <span>🤝</span> Gabung Komunitas
+</a>
 
         <div style="text-align: center; margin-top: 40px;">
             <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A5dmF4amZhczN1MWNzdzZlYTd1cHFlZTlpNTBiNXI3dXJ0ZWpsbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9k1173PdfJWRsoE/giphy.gif" 
@@ -917,6 +921,31 @@
         }
     }
     </script>
+
+    <div id="komunitasModal" class="modal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px);">
+    <div style="background:#1a1a2e; max-width:400px; margin:10% auto; padding:25px; border-radius:20px; border:1px solid #d4af37; color:white;">
+        <h2 style="color:#d4af37; text-align:center; margin-bottom:20px;">Gabung Komunitas 🤝</h2>
+        <form id="formKomunitas">
+            <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:white;">
+            
+            <input type="number" name="whatsapp" placeholder="Nomor WhatsApp (Aktif)" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:white;">
+            
+            <input type="text" name="kota" placeholder="Kota/Kabupaten" required style="width:100%; padding:12px; margin-bottom:15px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:white;">
+            
+            <select name="provinsi" required style="width:100%; padding:12px; margin-bottom:20px; border-radius:10px; border:none; background:rgba(255,255,255,0.1); color:white;">
+                <option value="" disabled selected>Pilih Provinsi</option>
+                <option value="Aceh">Aceh</option>
+                <option value="DKI Jakarta">DKI Jakarta</option>
+                <option value="Jawa Barat">Jawa Barat</option>
+                <option value="Jawa Tengah">Jawa Tengah</option>
+                <option value="Jawa Timur">Jawa Timur</option>
+                </select>
+            
+            <button type="submit" style="width:100%; padding:15px; background:#d4af37; border:none; border-radius:10px; font-weight:bold; cursor:pointer;">KIRIM DATA</button>
+            <p onclick="closeKomunitasModal()" style="text-align:center; margin-top:15px; cursor:pointer; font-size:12px; color:#aaa;">Batal</p>
+        </form>
+    </div>
+</div>
 </body>
 </html>
 

@@ -628,7 +628,7 @@
 
 <body>
 
-   <div id="sideNav" class="sidenav">
+<div id="sideNav" class="sidenav">
     <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
     
     <div class="menu-list" style="margin-top: 20px;">
@@ -637,48 +637,39 @@
         <button class="btn-converter" onclick="openModal()">
             <span>🔄</span> CONVERTER
         </button>
-    <a href="faq.html"><span>❓</span> FAQ / Bantuan</a>
-    <a href="faq.html"><span>🤝</span>Gabung Komunitas</a>
-    
-
+        
+        <a href="faq.html"><span>❓</span> FAQ / Bantuan</a>
+        
+        <a href="javascript:void(0)" onclick="openKomunitasModal()">
+            <span>🤝</span> Gabung Komunitas
+        </a>
 
         <div style="text-align: center; margin-top: 40px;">
             <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A5dmF4amZhczN1MWNzdzZlYTd1cHFlZTlpNTBiNXI3dXJ0ZWpsbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9k1173PdfJWRsoE/giphy.gif" 
                  width="110" 
                  style="opacity: 0.9;">
-
-       <div class="social-footer" style="margin-top: auto; padding: 20px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3);">
-    <p style="font-size: 10px; color: #d4af37; margin-bottom: 12px; letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase;">FOLLOW US</p>
-    
-    <div style="display: flex; justify-content: center; align-items: center; gap: 8px; max-width: 140px; margin: 0 auto; flex-wrap: nowrap;">
-        
-        <a href="https://youtube.com/@username" target="_blank" style="display: flex;">
-            <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="20" height="20">
-        </a>
-
-        <a href="https://facebook.com/username" target="_blank" style="display: flex;">
-            <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" width="20" height="20">
-        </a>
-
-        <a href="https://instagram.com/username" target="_blank" style="display: flex;">
-            <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="20" height="20">
-        </a>
-
-        <a href="https://x.com/username" target="_blank" style="display: flex; align-items: center;">
-            <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white">
-                <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
-            </svg>
-        </a>
-
-    </div>
-</div>
-</div>
-</div>
         </div>
-    </div>
-</div>
 
-<div id="comingSoonModal" class="modal-overlay">
+        <div class="social-footer" style="margin-top: 20px; padding: 20px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3);">
+            <p style="font-size: 10px; color: #d4af37; margin-bottom: 12px; letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase;">FOLLOW US</p>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; max-width: 140px; margin: 0 auto; flex-wrap: nowrap;">
+                <a href="https://youtube.com/@username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="20" height="20">
+                </a>
+                <a href="https://facebook.com/username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" width="20" height="20">
+                </a>
+                <a href="https://instagram.com/username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="20" height="20">
+                </a>
+                <a href="https://x.com/username" target="_blank" style="display: flex; align-items: center;">
+                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white">
+                        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div> </div> <div id="comingSoonModal" class="modal-overlay">
     <div class="modal-content">
         <span class="close-modal" onclick="closeModal()">&times;</span>
         <div style="font-size: 50px; margin-bottom: 10px;">🚀</div>
@@ -703,10 +694,28 @@
     </div>
 </div>
 
-    <header>
-    <div class="auth-container" style="position: absolute; top: 15px; right: 15px; z-index: 20;">
-    <button id="login-btn" class="btn-auth" onclick="openLoginModal()">Login</button>
+<div id="komunitasModal" class="modal-overlay" style="display:none; align-items: center; justify-content: center; z-index: 3000;">
+    <div class="modal-content" style="max-width: 350px; background: #0a0a1a; border: 1px solid #d4af37;">
+        <span class="close-modal" onclick="closeKomunitasModal()">&times;</span>
+        <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.3rem;">Gabung Komunitas</h2>
+        <form id="formKomunitas">
+            <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+            <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+            <input type="text" name="kota" placeholder="Kota / Kabupaten" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+            <select name="provinsi" required style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+                <option value="" disabled selected>Pilih Provinsi...</option>
+                <option value="Aceh">Aceh</option><option value="Sumut">Sumatera Utara</option><option value="Jabar">Jawa Barat</option>
+                <option value="Jateng">Jawa Tengah</option><option value="Jatim">Jawa Timur</option><option value="Bali">Bali</option>
+            </select>
+            <button type="submit" id="btnKirim" class="btn-converter" style="width:100%;">DAFTAR SEKARANG</button>
+        </form>
+    </div>
 </div>
+
+<header>
+    <div class="auth-container" style="position: absolute; top: 15px; right: 15px; z-index: 20;">
+        <button id="login-btn" class="btn-auth" onclick="openLoginModal()">Login</button>
+    </div>
 
     <div class="menu-icon" onclick="toggleMenu()">
         <span></span>
@@ -714,23 +723,17 @@
         <span></span>
     </div>
 
-    <div class="header-content" style="display: flex; items-center; gap: 12px;">
-    <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" 
-         class="brand-logo" 
-         alt="Logo"
-         fetchpriority="high"
-         loading="eager"
-         style="width: 45px; height: 45px; object-fit: contain;">
-    
-    <div>
-        <h1 style="margin:0; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">
-            DIGITAL PRO <span style="color: #d4af37;">INDO</span>
-        </h1>
-        <p style="margin:0; opacity: 0.9; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
-            Premium Marketplace
-        </p>
+    <div class="header-content" style="display: flex; align-items: center; gap: 12px;">
+        <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo" style="width: 45px; height: 45px; object-fit: contain;">
+        <div>
+            <h1 style="margin:0; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">
+                DIGITAL PRO <span style="color: #d4af37;">INDO</span>
+            </h1>
+            <p style="margin:0; opacity: 0.9; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                Premium Marketplace
+            </p>
+        </div>
     </div>
-</div>
     
     <div class="header-ticker">
         <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">
@@ -739,187 +742,125 @@
     </div>
 </header>
 
-
-
-    <div class="banner-container">
-
-        <div class="banner-box">
-
-            <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" style="width: 100%; height: 100%; object-fit: cover;" id="banner-img">
-
-        </div>
-
+<div class="banner-container">
+    <div class="banner-box">
+        <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" style="width: 100%; height: 100%; object-fit: cover;" id="banner-img">
     </div>
-
-
-
-    <main id="page-home">
-
-        <div class="category-scroll">
-    <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
-    <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
-    <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
-    <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
-    <div class="category-pill" onclick="filterCategory('Emas', this)">🟡 Emas</div>
-    <div class="category-pill" onclick="filterCategory('Herbal', this)">🍃 Herbal</div>
-    <div class="category-pill" onclick="filterCategory('Gadget', this)">📱 Gadget</div>
-    <div class="category-pill" onclick="filterCategory('Elektronik', this)">🔌 Elektronik</div>
-    <div class="category-pill" onclick="filterCategory('Makanan', this)">🍱 Makanan</div>
-    <div class="category-pill" onclick="filterCategory('Minuman', this)">🥤 Minuman</div>
-    <div class="category-pill" onclick="filterCategory('E-Book', this)">📚 E-Book</div>
 </div>
 
-     <div id="main-grid" class="marketplace-grid"></div>
-    </main>
-
-
-
-    <main id="page-cari" class="hidden">
-
-    <div class="search-wrapper">
-
-        <input type="text" id="search-input" placeholder="Cari produk premium..." autocomplete="off">
-
+<main id="page-home">
+    <div class="category-scroll">
+        <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
+        <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
+        <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
+        <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
     </div>
-
-    
-
-    <div id="search-results" class="marketplace-grid">
-
-        <p style="grid-column: span 2; text-align: center; color: #94a3b8; padding: 40px 20px; font-size: 0.85rem;">
-
-            Silakan masukkan nama produk yang Anda cari...
-
-        </p>
-
-    </div>
-
+    <div id="main-grid" class="marketplace-grid"></div>
 </main>
 
-
-
-    <main id="page-keranjang" class="hidden">
-
-        <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>
-
-        <div id="cart-items"></div>
-
-    </main>
-
-
-
-    <main id="page-profile" class="hidden">
-
-        <div class="profile-card" style="margin-top: 60px;">
-
-            <div class="avatar-border">
-
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
-
-            </div>
-
-            <h2 id="profile-username" class="profile-username">User</h2>
-
-            <div class="uid-box">
-
-                <strong>Wallet UID:</strong><br>
-
-                <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
-
-            </div>
-
-            <div class="badge-verified">Status: Verified ✅</div>
-
-        </div>
-
-    </main>
-
-
-
-    <div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
-
-        <div id="detail-content"></div>
-
+<main id="page-cari" class="hidden">
+    <div class="search-wrapper">
+        <input type="text" id="search-input" placeholder="Cari produk premium..." autocomplete="off">
     </div>
+    <div id="search-results" class="marketplace-grid">
+        <p style="text-align: center; color: #94a3b8; padding: 40px;">Silakan masukkan nama produk...</p>
+    </div>
+</main>
 
+<main id="page-keranjang" class="hidden">
+    <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>
+    <div id="cart-items"></div>
+</main>
 
-
-    <a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
-
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">
-
-    </a>
-
-
-
-    <nav class="bottom-nav">
-
-        <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
-
-            <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
-
+<main id="page-profile" class="hidden">
+    <div class="profile-card" style="margin-top: 60px;">
+        <div class="avatar-border">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
         </div>
-
-        <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
-
-            <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
-
+        <h2 id="profile-username" class="profile-username">User</h2>
+        <div class="uid-box">
+            <strong>Wallet UID:</strong><br>
+            <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
         </div>
+        <div class="badge-verified">Status: Verified ✅</div>
+    </div>
+</main>
 
-        <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+<div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
+    <div id="detail-content"></div>
+</div>
 
-            <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
+<a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">
+</a>
 
-        </div>
+<nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+        <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
+    </div>
+    <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
+        <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
+    </div>
+    <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+        <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+        <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
+    </div>
+</nav>
 
-        <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
-
-            <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
-
-        </div>
-
-    </nav>
-
-
-
-    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-
-    <script src="app.js?v=4.2"></script>
-
-    <script>
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="app.js?v=4.2"></script>
+<script>
     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
     }
 
-    function openModal() { 
-        document.getElementById("comingSoonModal").style.display = "flex"; 
+    function openModal() { document.getElementById("comingSoonModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
+    function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+    function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
+
+    // FUNGSI GABUNG KOMUNITAS (BARU)
+    function openKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "flex";
+        toggleMenu(); // Tutup sidebar setelah klik
     }
-    
-    function closeModal() { 
-        document.getElementById("comingSoonModal").style.display = "none"; 
+    function closeKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "none";
     }
 
-    // FUNGSI LOGIN (PASTIKAN ID loginModal ADA DI HTML)
-    function openLoginModal() {
-        var modal = document.getElementById("loginModal");
-        if(modal) {
-            modal.style.setProperty("display", "flex", "important");
-        } else {
-            alert("Elemen loginModal tidak ditemukan di HTML!");
-        }
-    }
+    // LOGIKA KIRIM DATA KE GOOGLE SHEETS
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
+    const form = document.getElementById('formKomunitas');
 
-    function closeLoginModal() {
-        document.getElementById("loginModal").style.display = "none";
-    }
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('btnKirim');
+        btn.innerText = "MENGIRIM...";
+        btn.disabled = true;
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("Selamat! Anda telah bergabung dalam komunitas.");
+                closeKomunitasModal();
+                form.reset();
+            })
+            .catch(error => alert("Error: Silakan coba lagi nanti."))
+            .finally(() => {
+                btn.innerText = "DAFTAR SEKARANG";
+                btn.disabled = false;
+            });
+    });
 
     window.onclick = function(event) {
         if (event.target.className === "modal-overlay") {
             event.target.style.display = "none";
         }
     }
-    </script>
+</script>
+
 </body>
 </html>
 

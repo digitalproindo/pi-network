@@ -699,16 +699,27 @@
         <span class="close-modal" onclick="closeKomunitasModal()">&times;</span>
         <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.3rem;">Gabung Komunitas</h2>
         <form id="formKomunitas">
-            <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-            <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-            <input type="text" name="kota" placeholder="Kota / Kabupaten" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-            <select name="provinsi" required style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-                <option value="" disabled selected>Pilih Provinsi...</option>
-                <option value="Aceh">Aceh</option><option value="Sumut">Sumatera Utara</option><option value="Jabar">Jawa Barat</option>
-                <option value="Jateng">Jawa Tengah</option><option value="Jatim">Jawa Timur</option><option value="Bali">Bali</option>
-            </select>
-            <button type="submit" id="btnKirim" class="btn-converter" style="width:100%;">DAFTAR SEKARANG</button>
-        </form>
+    <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+    <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+    
+    <select id="selectProvinsi" name="provinsi" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
+        <option value="">Pilih Provinsi</option>
+    </select>
+    
+    <select id="selectKota" name="kota" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;" disabled>
+        <option value="">Pilih Kota/Kabupaten</option>
+    </select>
+    
+    <select id="selectKecamatan" name="kecamatan" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;" disabled>
+        <option value="">Pilih Kecamatan</option>
+    </select>
+    
+    <select id="selectKelurahan" name="kelurahan" required style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;" disabled>
+        <option value="">Pilih Kelurahan</option>
+    </select>
+
+    <button type="submit" id="btnKirim" class="btn-converter" style="width:100%;">DAFTAR SEKARANG</button>
+</form>
     </div>
 </div>
 
@@ -859,6 +870,70 @@
             event.target.style.display = "none";
         }
     }
+
+    const provSelect = document.getElementById('selectProvinsi');
+const kotaSelect = document.getElementById('selectKota');
+const kecSelect = document.getElementById('selectKecamatan');
+const kelSelect = document.getElementById('selectKelurahan');
+
+// Load Provinsi
+fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+    .then(res => res.json())
+    .then(provinces => {
+        provinces.forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p.name;
+            opt.dataset.id = p.id;
+            opt.innerHTML = p.name;
+            provSelect.appendChild(opt);
+        });
+    });
+
+// Event saat Provinsi dipilih
+provSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kotaSelect, "Kota/Kabupaten");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kotaSelect, data));
+});
+
+// Event saat Kota dipilih
+kotaSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kecSelect, "Kecamatan");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kecSelect, data));
+});
+
+// Event saat Kecamatan dipilih
+kecSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kelSelect, "Kelurahan");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kelSelect, data));
+});
+
+function populate(target, data) {
+    target.disabled = false;
+    data.forEach(d => {
+        let opt = document.createElement('option');
+        opt.value = d.name;
+        opt.dataset.id = d.id;
+        opt.innerHTML = d.name;
+        target.appendChild(opt);
+    });
+}
+
+function resetDropdown(target, label) {
+    target.innerHTML = `<option value="">Pilih ${label}</option>`;
+    target.disabled = true;
+}
 </script>
 
 </body>

@@ -695,31 +695,38 @@
 </div>
 
 <div id="komunitasModal" class="modal-overlay" style="display:none; align-items: center; justify-content: center; z-index: 3000;">
-    <div class="modal-content" style="max-width: 350px; background: #0a0a1a; border: 1px solid #d4af37;">
+    <div class="modal-content" style="max-width: 350px; background: #0a0a1a; border: 1px solid #d4af37; padding: 25px; border-radius: 20px;">
         <span class="close-modal" onclick="closeKomunitasModal()">&times;</span>
-        <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.3rem;">Gabung Komunitas</h2>
+        <h2 style="color: #d4af37; margin-bottom: 20px; font-size: 1.3rem; text-align: center;">Gabung Komunitas</h2>
+        
         <form id="formKomunitas">
-    <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-    <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-    
-    <select id="selectProvinsi" name="provinsi" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;">
-        <option value="">Pilih Provinsi</option>
-    </select>
-    
-    <select id="selectKota" name="kota" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;" disabled>
-        <option value="">Pilih Kota/Kabupaten</option>
-    </select>
-    
-    <select id="selectKecamatan" name="kecamatan" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;" disabled>
-        <option value="">Pilih Kecamatan</option>
-    </select>
-    
-    <select id="selectKelurahan" name="kelurahan" required style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #333; background:#111; color:#fff;" disabled>
-        <option value="">Pilih Kelurahan</option>
-    </select>
+            <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; box-sizing: border-box;">
+            
+            <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; box-sizing: border-box;">
+            
+            <select id="selectProvinsi" name="provinsi" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; box-sizing: border-box;">
+                <option value="">Pilih Provinsi</option>
+            </select>
+            
+            <select id="selectKota" name="kota" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; box-sizing: border-box;" disabled>
+                <option value="">Pilih Kota/Kabupaten</option>
+            </select>
+            
+            <select id="selectKecamatan" name="kecamatan" required style="width:100%; padding:10px; margin-bottom:10px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; box-sizing: border-box;" disabled>
+                <option value="">Pilih Kecamatan</option>
+            </select>
+            
+            <select id="selectKelurahan" name="kelurahan" required style="width:100%; padding:10px; margin-bottom:20px; border-radius:8px; border:1px solid #333; background:#111; color:#fff; box-sizing: border-box;" disabled>
+                <option value="">Pilih Kelurahan</option>
+            </select>
 
-    <button type="submit" id="btnKirim" class="btn-converter" style="width:100%;">DAFTAR SEKARANG</button>
-</form>
+            <div style="display: flex; justify-content: center; width: 100%;">
+                <button type="submit" id="btnKirim" class="btn-converter" 
+                        style="width: 100%; max-width: 280px; padding: 12px 20px; background: linear-gradient(45deg, #d4af37, #f1c40f); border: none; border-radius: 10px; color: black; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);">
+                    DAFTAR SEKARANG
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 

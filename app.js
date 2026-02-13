@@ -1305,15 +1305,39 @@ if (searchInput) {
 }
 
     window.handleAuth = async () => {
-    console.log("Tombol login diklik");
-    alert("Apakah Anda Ingin login..."); // Alert untuk memastikan fungsi jalan
+    // 1. Inisialisasi Suara "Ting" (Base64 agar praktis)
+    const successSound = new Audio("https://www.myinstants.com/media/sounds/ding-sound-effect.mp3");
+
+    // 2. Tampilkan Popup Loading Jam Pasir
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'auth-overlay';
+    loadingOverlay.innerHTML = `
+        <div style="text-align:center;">
+            <div class="hourglass">⏳</div>
+            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
+                Menghubungkan ke Pi Network...
+            </p>
+        </div>
+    `;
+    document.body.appendChild(loadingOverlay);
 
     try {
         const scopes = ['username', 'payments'];
         const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
-        
-        // Update Tombol di pojok kanan atas
+
+        // 3. JIKA BERHASIL: Mainkan Suara & Tampilkan Animasi Gift
+        successSound.play().catch(e => console.log("Audio play blocked by browser"));
+
+        loadingOverlay.innerHTML = `
+            <div style="text-align:center; animation: fadeIn 0.5s;">
+                <img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHR0OHR2Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R4Z3R/3o7abKhOpu0NwenH3O/giphy.gif" class="congrats-gift">
+                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem;">LOGIN BERHASIL!</h2>
+                <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
+            </div>
+        `;
+
+        // Update UI tombol & profil
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1321,17 +1345,20 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        // Update di Halaman Profil
         if (document.getElementById('profile-username')) {
             document.getElementById('profile-username').innerText = `@${currentUser.username}`;
         }
-        if (document.getElementById('profile-address')) {
-            document.getElementById('profile-address').innerText = currentUser.uid;
-        }
 
-        alert("Berhasil Login: " + currentUser.username);
+        // Tutup otomatis setelah 3.5 detik
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '0';
+            loadingOverlay.style.transition = '0.5s';
+            setTimeout(() => loadingOverlay.remove(), 500);
+        }, 3500);
+
     } catch (err) { 
         console.error(err); 
+        loadingOverlay.remove();
         alert("Gagal Login: " + err.message); 
     }
 };

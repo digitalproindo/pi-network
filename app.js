@@ -1,11 +1,27 @@
+// --- INI BARIS 1 (DI LUAR DOMContentLoaded) ---
+const successSound = new Audio("https://www.myinstants.com/media/sounds/ding-sound-effect.mp3");
+successSound.load(); 
+
+const giftGif = new Image();
+giftGif.src = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif";
+
+let currentUser = null; // Pindahkan ke luar agar bisa diakses semua fungsi
+// ----------------------------------------------
+// Di dalam fungsi handleAuth Anda nanti:
+successSound.play().catch(() => {}); // Panggil variabel dari baris 1
+
+loadingOverlay.innerHTML = `
+    <div style="text-align:center;">
+        <img src="${giftGif.src}" style="width:220px; mix-blend-mode: screen;">
+        <h2>LOGIN BERHASIL!</h2>
+    </div>
+`
 document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
-    let currentUser = null;
     let cart = [];
-    
     let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
-
     const ADMIN_WA = "6281906066757"; 
+ 
 
 const productsData = [
     {

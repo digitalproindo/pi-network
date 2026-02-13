@@ -1313,109 +1313,62 @@ if (searchInput) {
 }
 
     // Fungsi Login dengan Pelacak
-// 1. Variabel Global
-let currentUser = null;
-
-// 2. Fungsi Render Produk dengan Proteksi Error
-function renderProducts(data, targetGridId) {
-    const grid = document.getElementById(targetGridId);
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    data.forEach(p => {
-        try {
-            const priceNum = parseFloat(p.price) || 0;
-            let imageHTML = "";
-            
-            // PROTEKSI: Pastikan imgs selalu array meskipun data produk salah
-            const imgs = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : ["https://via.placeholder.com/300"]);
-
-            if (imgs.length > 1) {
-                imageHTML = `
-                    <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden;">
-                        ${imgs.map((img, index) => `
-                            <img src="${img}" class="slide-${p.id}" 
-                                 style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;">
-                        `).join('')}
-                    </div>`;
-                
-                let current = 0;
-                setInterval(() => {
-                    const slides = document.querySelectorAll(`.slide-${p.id}`);
-                    if (slides.length > 1) {
-                        slides[current].style.display = 'none';
-                        current = (current + 1) % slides.length;
-                        slides[current].style.display = 'block';
-                    }
-                }, 3000);
-            } else {
-                imageHTML = `<img src="${imgs[0]}" style="width:100%; height:180px; object-fit:cover;">`;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="image-container" onclick="openProductDetail('${p.id}')">
-                    ${imageHTML}
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${p.name}</h3>
-                    <div class="price">${priceNum.toFixed(5)} π</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">Pesan</button>
-                </div>`;
-            grid.appendChild(card);
-        } catch (err) {
-            console.error("Error merender produk ID: " + p.id, err);
-        }
-    });
-}
-
-// 3. Fungsi Login Asli Anda
 window.handleAuth = async () => {
+    console.log("Mencoba Login...");
+    alert("Proses Login Dimulai..."); // Jika alert ini muncul, berarti tombol normal
+
     try {
         if (typeof Pi === 'undefined') {
-            alert("Pi SDK belum siap, silakan refresh");
+            alert("Error: Pi SDK tidak ditemukan!");
             return;
         }
+
         const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => console.log(p));
+        const auth = await Pi.authenticate(scopes, (p) => {
+            console.log("Incomplete Payment:", p);
+        });
+
         currentUser = auth.user;
-        
+        alert("Halo " + currentUser.username + ", Anda berhasil login!");
+
         // Update UI
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
+            loginBtn.style.background = "red";
             loginBtn.onclick = () => location.reload();
         }
-        alert("Berhasil Login: " + currentUser.username);
+
     } catch (err) {
-        alert("Gagal Login: " + err.message);
+        console.error(err);
+        alert("Login Gagal: " + err.message);
     }
 };
 
-// 4. Inisialisasi Utama
+// Pastikan Inisialisasi Berjalan Sempurna
 document.addEventListener('DOMContentLoaded', async () => {
-    // Render produk dulu agar tidak kosong
+    console.log("Halaman dimuat...");
+    
+    // 1. Render Produk (Pastikan data ada)
     if (typeof productsData !== 'undefined') {
         renderProducts(productsData, 'main-grid');
     }
 
-    // Inisialisasi Pi
+    // 2. Pasang Fungsi Klik ke Tombol (PENTING!)
+    const btn = document.getElementById('login-btn');
+    if (btn) {
+        btn.onclick = window.handleAuth;
+        console.log("Event listener login berhasil dipasang");
+    } else {
+        console.error("Tombol login-btn tidak ditemukan di HTML!");
+    }
+
+    // 3. Inisialisasi Pi
     try {
         if (typeof initPi === 'function') {
             await initPi();
         }
-    } catch (err) {
-        console.error("Init Pi Gagal", err);
-    }
-
-    // Pasang tombol login
-    const btn = document.getElementById('login-btn');
-    if (btn) {
-        // Kembalikan teks tombol jika tadinya "Maintenance"
-        if(btn.innerText.includes("Maintenance")) {
-            btn.innerText = "LOGIN KE PI NETWORK";
-        }
-        btn.onclick = window.handleAuth;
+    } catch (e) {
+        console.error("Init Pi Gagal", e);
     }
 });

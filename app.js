@@ -1352,10 +1352,14 @@ if (searchInput) {
         }
 
         setTimeout(() => {
-            loadingOverlay.style.opacity = '0';
-            loadingOverlay.style.transition = '0.5s';
-            setTimeout(() => loadingOverlay.remove(), 500);
-        }, 35000);
+    overlay.style.opacity = "0"; // Mulai memudar
+    overlay.style.transition = "opacity 0.4s ease"; // Efek halus saat hilang
+    
+    // Hapus total dari layar setelah efek pudar selesai (400ms kemudian)
+    setTimeout(() => { 
+        overlay.style.display = "none"; 
+    }, 400); 
+}, 3000);
 
     } catch (err) { 
         console.error(err); 

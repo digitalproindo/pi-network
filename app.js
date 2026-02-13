@@ -1305,57 +1305,62 @@ if (searchInput) {
 }
 
     window.handleAuth = async () => {
-    console.log("Tombol login diklik...");
-    
-    // Tampilkan popup loading
+    const successSound = new Audio("https://www.myinstants.com/media/sounds/ding-sound-effect.mp3");
+
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
     loadingOverlay.innerHTML = `
         <div style="text-align:center;">
             <div class="hourglass">⏳</div>
-            <p id="auth-status" style="margin-top:20px;">Menghubungkan ke Pi Network...</p>
+            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
+                Menghubungkan...
+            </p>
         </div>
     `;
     document.body.appendChild(loadingOverlay);
 
-    // Timeout: Jika 15 detik tidak ada respon, hapus overlay
-    const timer = setTimeout(() => {
-        if (loadingOverlay) {
-            loadingOverlay.remove();
-            alert("Koneksi Pi SDK lambat atau tidak merespon. Pastikan Anda di Pi Browser.");
-        }
-    }, 15000);
-
     try {
         const scopes = ['username', 'payments'];
-        
-        // Memanggil autentikasi
         const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-        
-        clearTimeout(timer); // Berhasil! Batalkan timer.
         currentUser = auth.user;
 
-        // Tampilkan Animasi Sukses (Ganti dengan GIF Anda)
-        const successUrl = "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif";
-        
+        successSound.play().catch(e => console.log("Audio play blocked"));
+
         loadingOverlay.innerHTML = `
-            <div style="text-align:center;">
-                <img src="${successUrl}" style="width:200px; mix-blend-mode: screen;">
-                <h2 style="color:#FFD700;">LOGIN BERHASIL!</h2>
-                <p>Halo, @${currentUser.username}</p>
+            <div style="text-align:center; animation: fadeIn 0.5s;">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif" 
+                     style="width:250px; mix-blend-mode: screen; filter: brightness(1.2) contrast(1.1);" 
+                     class="congrats-gift">
+                
+                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem; text-shadow: 0 0 10px rgba(255,215,0,0.5);">
+                    LOGIN BERHASIL!
+                </h2>
+                <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
             </div>
         `;
 
-        // Update UI (Sesuai kode sebelumnya)
-        // ... (Update tombol logout dan profil) ...
+        // Update UI
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.innerText = "LOGOUT";
+            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+            loginBtn.onclick = () => location.reload();
+        }
 
-        setTimeout(() => loadingOverlay.remove(), 4000);
+        if (document.getElementById('profile-username')) {
+            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        }
 
-    } catch (err) {
-        clearTimeout(timer);
+        setTimeout(() => {
+            loadingOverlay.style.opacity = '0';
+            loadingOverlay.style.transition = '0.5s';
+            setTimeout(() => loadingOverlay.remove(), 500);
+        }, 3500);
+
+    } catch (err) { 
+        console.error(err); 
         loadingOverlay.remove();
-        console.error("Auth Error:", err);
-        alert("Gagal Login: " + err.message);
+        alert("Gagal Login: " + err.message); 
     }
 };
 

@@ -1301,7 +1301,8 @@ if (searchInput) {
         } else {
             sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
-
+    });
+}
 
     // 1. Inisialisasi Variabel Global
 let currentUser = null;

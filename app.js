@@ -1305,27 +1305,44 @@ if (searchInput) {
 }
 
     window.handleAuth = async () => {
+    // 1. Suara
     const successSound = new Audio("https://www.myinstants.com/media/sounds/ding-sound-effect.mp3");
 
+    // 2. Overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
     loadingOverlay.innerHTML = `
         <div style="text-align:center;">
             <div class="hourglass">⏳</div>
-            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
+            <p id="status-text" style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
                 Menghubungkan...
             </p>
         </div>
     `;
     document.body.appendChild(loadingOverlay);
 
+    // Proteksi: Jika 15 detik tidak ada respon dari Pi, hapus overlay agar tidak stuck selamanya
+    const failSafe = setTimeout(() => {
+        if (document.body.contains(loadingOverlay)) {
+            loadingOverlay.remove();
+            alert("Koneksi ke Pi SDK lambat. Pastikan Anda berada di Pi Browser.");
+        }
+    }, 15000);
+
     try {
         const scopes = ['username', 'payments'];
+        
+        // Memanggil Autentikasi Pi
         const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+        
+        // Jika berhasil sampai sini, hapus failSafe
+        clearTimeout(failSafe);
         currentUser = auth.user;
 
+        // Mainkan Suara
         successSound.play().catch(e => console.log("Audio play blocked"));
 
+        // Update UI Berhasil (GIFT ANIMASI)
         loadingOverlay.innerHTML = `
             <div style="text-align:center; animation: fadeIn 0.5s;">
                 <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif" 
@@ -1339,7 +1356,7 @@ if (searchInput) {
             </div>
         `;
 
-        // Update UI
+        // Update Tombol Logout
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1347,20 +1364,24 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        if (document.getElementById('profile-username')) {
-            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        // Update Nama di Profil
+        const profileUser = document.getElementById('profile-username');
+        if (profileUser) {
+            profileUser.innerText = `@${currentUser.username}`;
         }
 
+        // Hilangkan popup setelah 3.5 detik (ANGKA SUDAH DIPERBAIKI)
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             loadingOverlay.style.transition = '0.5s';
-            setTimeout(() => loadingOverlay.remove(), 5000);
-        }, 35000);
+            setTimeout(() => loadingOverlay.remove(), 500);
+        }, 3500);
 
     } catch (err) { 
+        clearTimeout(failSafe);
         console.error(err); 
         loadingOverlay.remove();
-        alert("Gagal Login: " + err.message); 
+        alert("Gagal Login: " + (err.message || "User membatalkan login")); 
     }
 };
 

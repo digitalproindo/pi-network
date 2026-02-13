@@ -960,7 +960,15 @@ const productsData = [
                • <b>Layar:</b> C8 3000nits WQHD+ AMOLED<br>
                • <b>Charging:</b> 90W HyperCharge<br>
                • <b>Bahan:</b> Nano-tech Vegan Leather`
-    }
+    },
+    {
+        id: "jasa-45",
+        name: "Jasa Layanan Hukum",
+        category: "Jasa",
+        price: "0.1",
+        image: ["https://i.ibb.co.com/h1FJ4P52/Desain-tanpa-judul-20260210-133359-0000.png","https://i.ibb.co.com/QFqn4DF9/IMG-20260213-WA0005.jpg"],
+        description: "Melayani semua permasalahan Hukum"
+    },
 ];
 
 productsData.forEach(p => {
@@ -1304,16 +1312,20 @@ if (searchInput) {
     });
 }
 
-    window.handleAuth = async () => {
+    // Fungsi Login dengan Pelacak
+// 1. Inisialisasi Variabel Global
+let currentUser = null;
+
+// 2. Fungsi Login Anda yang Asli (Sudah diperbaiki strukturnya)
+window.handleAuth = async () => {
     console.log("Tombol login diklik");
-    alert("Apakah Anda Ingin login..."); // Alert untuk memastikan fungsi jalan
+    alert("Apakah Anda Ingin login...");
 
     try {
         const scopes = ['username', 'payments'];
         const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
         
-        // Update Tombol di pojok kanan atas
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1321,7 +1333,6 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        // Update di Halaman Profil
         if (document.getElementById('profile-username')) {
             document.getElementById('profile-username').innerText = `@${currentUser.username}`;
         }
@@ -1336,69 +1347,96 @@ if (searchInput) {
     }
 };
 
-    renderProducts(productsData, 'main-grid');
+// 3. Fungsi Render Produk dengan Fitur Slider (Anti-Gagal)
+function renderProducts(data, targetGridId) {
+    const grid = document.getElementById(targetGridId);
+    if (!grid) return;
+    grid.innerHTML = "";
 
-    // 2. Inisialisasi Pi SDK secara aman
+    data.forEach(p => {
+        const priceNum = parseFloat(p.price) || 0;
+        let imageHTML = "";
+        
+        // Memastikan dukungan untuk p.image (lama) dan p.images (baru/array)
+        const imgs = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : []);
+
+        if (imgs.length > 1) {
+            imageHTML = `
+                <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden; background: #eee;">
+                    ${imgs.map((img, index) => `
+                        <img src="${img}" class="slide-${p.id}" 
+                             style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:180px; object-fit:cover;">
+                    `).join('')}
+                </div>`;
+            
+            // Jalankan Slider
+            let current = 0;
+            setTimeout(() => {
+                setInterval(() => {
+                    const slides = document.querySelectorAll(`.slide-${p.id}`);
+                    if (slides.length > 1) {
+                        slides[current].style.display = 'none';
+                        current = (current + 1) % slides.length;
+                        slides[current].style.display = 'block';
+                    }
+                }, 3000);
+            }, 500);
+        } else {
+            const src = imgs[0] || 'https://via.placeholder.com/300';
+            imageHTML = `<img src="${src}" style="width:100%; height:180px; object-fit:cover;">`;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="image-container" onclick="openProductDetail('${p.id}')">
+                ${imageHTML}
+                <div class="xtra-label" style="background: ${p.category === 'Jasa' ? 'linear-gradient(45deg, #1a237e, #4a148c)' : ''}">
+                    <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
+                <div class="price">${priceNum.toFixed(5)} π</div>
+                <div class="card-bottom">
+                    <div class="rating-text">★ 5.0</div>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">Pesan</button>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
+}
+
+// 4. Jalankan saat halaman siap
+document.addEventListener('DOMContentLoaded', async () => {
+    // A. Render Produk
+    if (typeof productsData !== 'undefined') {
+        renderProducts(productsData, 'main-grid');
+    }
+
+    // B. Inisialisasi Pi SDK
     try {
-        await initPi();
+        if (typeof initPi === 'function') await initPi();
         console.log("Pi SDK siap digunakan");
     } catch (err) {
         console.error("Pi SDK gagal muat: ", err);
-        // Tetap biarkan aplikasi jalan meskipun SDK gagal
     }
 
-    // 3. Pasang fungsi klik pada tombol login
+    // C. Pasang Event Listener Login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
     }
-}); // Penutup DOMContentLoaded (pastikan tanda ini jangan dihapus)
+});
 
-// ... baris terakhir kode lama Anda ( }); )
-
-/**
- * FUNGSI NAVIGASI HAMBURGER MENU
- * Diletakkan di luar agar bisa dipanggil oleh onclick di HTML
- */
+// 5. Fungsi UI Lainnya (Sidebar, dll)
 function toggleMenu() {
     const nav = document.getElementById("sideNav");
-    
-    if (!nav) {
-        console.error("Elemen sideNav tidak ditemukan!");
-        return;
-    }
-
-    // Logika buka tutup berdasarkan lebar
-    if (nav.style.width === "250px") {
-        nav.style.width = "0px";
-    } else {
-        nav.style.width = "250px";
-    }
+    if (!nav) return;
+    nav.style.width = (nav.style.width === "250px") ? "0px" : "250px";
 }
 
 function toggleDropdown() {
     const dropdown = document.getElementById("aboutDropdown");
-    const btn = document.querySelector(".dropdown-btn");
-    
-    // Toggle tampilan (block/none)
-    if (dropdown.style.display === "block") {
-        dropdown.style.display = "none";
-        btn.classList.remove("active");
-    } else {
-        dropdown.style.display = "block";
-        btn.classList.add("active");
-    }
+    if (dropdown) dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
 }
-
-// Menutup menu jika user klik di luar area sidebar
-window.addEventListener('click', function(event) {
-    const nav = document.getElementById("sideNav");
-    const menuIcon = document.querySelector('.menu-icon');
-    
-    if (nav && nav.style.width === "250px") {
-        // Jika yang diklik bukan menu dan bukan tombol garis tiga
-        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-            nav.style.width = "0px";
-        }
-    }
-});

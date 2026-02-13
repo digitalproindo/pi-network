@@ -1017,24 +1017,21 @@ function renderProducts(data, targetGridId) {
 
     data.forEach(p => {
         const priceNum = parseFloat(p.price) || 0;
-        
-        // Cek format gambar
-        const isArray = Array.isArray(p.images);
-        const hasMultipleImages = isArray && p.images.length > 1;
 
+        // --- TEMPAT SCRIPT YANG ANDA TANYAKAN DIMULAI ---
         let imageHTML = "";
-        if (hasMultipleImages) {
+        if (p.images && Array.isArray(p.images) && p.images.length > 1) {
             imageHTML = `
-                <div class="slider-wrapper">
+                <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden;">
                     ${p.images.map((img, index) => `
                         <img src="${img}" class="slide-${p.id}" 
-                             style="display: ${index === 0 ? 'block' : 'none'}; width:100%; height:180px; object-fit:cover;">
+                             style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;">
                     `).join('')}
                 </div>`;
             
-            // Jalankan Slider
+            // Logika menjalankan slider otomatis
             let current = 0;
-            setTimeout(() => { // Gunakan timeout agar elemen masuk DOM dulu
+            setTimeout(() => {
                 setInterval(() => {
                     const slides = document.querySelectorAll(`.slide-${p.id}`);
                     if (slides.length > 0) {
@@ -1045,9 +1042,10 @@ function renderProducts(data, targetGridId) {
                 }, 3000);
             }, 100);
         } else {
-            const imgSrc = isArray ? p.images[0] : (p.image || p.images);
-            imageHTML = `<img src="${imgSrc}" style="width:100%; height:180px; object-fit:cover;">`;
+            const singleImg = p.image || (Array.isArray(p.images) ? p.images[0] : p.images) || 'https://via.placeholder.com/300';
+            imageHTML = `<img src="${singleImg}" style="width:100%; height:180px; object-fit:cover;">`;
         }
+        // --- TEMPAT SCRIPT YANG ANDA TANYAKAN BERAKHIR ---
 
         const card = document.createElement('div');
         card.className = 'product-card';
@@ -1056,7 +1054,7 @@ function renderProducts(data, targetGridId) {
                 ${imageHTML}
                 <div class="xtra-label" style="background: ${p.category === 'Jasa' ? 'linear-gradient(45deg, #1a237e, #4a148c)' : ''}">
                     <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
-                    <span class="ongkir-text">${p.category === 'Jasa' ? 'Konsultasi' : 'Gratis Ongkir+'}</span>
+                    <span class="ongkir-text">${p.category === 'Jasa' ? 'Layanan' : 'Gratis Ongkir+'}</span>
                 </div>
             </div>
             <div class="product-info">
@@ -1304,7 +1302,7 @@ window.openProductDetail = (productId) => {
                     <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
-        </div>`;
+        
         
     document.getElementById('product-detail-page').classList.remove('hidden');
 };

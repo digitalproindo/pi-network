@@ -960,7 +960,7 @@ const productsData = [
                • <b>Layar:</b> C8 3000nits WQHD+ AMOLED<br>
                • <b>Charging:</b> 90W HyperCharge<br>
                • <b>Bahan:</b> Nano-tech Vegan Leather`
-    },
+    }
 ];
 
 productsData.forEach(p => {
@@ -1304,28 +1304,16 @@ if (searchInput) {
     });
 }
 
-    // 1. Inisialisasi Variabel Global
-let currentUser = null;
-
-// 2. Fungsi Login ASLI Anda (Kembali ke versi normal yang Anda miliki)
-window.handleAuth = async () => {
+    window.handleAuth = async () => {
     console.log("Tombol login diklik");
-    alert("Proses Login Dimulai..."); 
+    alert("Apakah Anda Ingin login..."); // Alert untuk memastikan fungsi jalan
 
     try {
-        if (typeof Pi === 'undefined') {
-            alert("Pi SDK belum siap. Silakan refresh halaman.");
-            return;
-        }
-
         const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => {
-            console.log("Incomplete Payment:", p);
-        });
-
+        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
         
-        // Update UI Tombol
+        // Update Tombol di pojok kanan atas
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1333,102 +1321,77 @@ window.handleAuth = async () => {
             loginBtn.onclick = () => location.reload();
         }
 
-        // Update Profil
-        const pUsername = document.getElementById('profile-username');
-        if (pUsername) pUsername.innerText = `@${currentUser.username}`;
+        // Update di Halaman Profil
+        if (document.getElementById('profile-username')) {
+            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        }
+        if (document.getElementById('profile-address')) {
+            document.getElementById('profile-address').innerText = currentUser.uid;
+        }
 
         alert("Berhasil Login: " + currentUser.username);
-        
-        // Tutup modal jika ada
-        if (typeof closeLoginModal === 'function') closeLoginModal();
-
     } catch (err) { 
         console.error(err); 
         alert("Gagal Login: " + err.message); 
     }
 };
 
-// 3. Fungsi Render Produk dengan Slider (Tahan Error)
-function renderProducts(data, targetGridId) {
-    const grid = document.getElementById(targetGridId);
-    if (!grid) return;
-    grid.innerHTML = "";
+    renderProducts(productsData, 'main-grid');
 
-    data.forEach(p => {
-        try {
-            const priceNum = parseFloat(p.price) || 0;
-            
-            // Cek apakah menggunakan format images (array) atau image (string)
-            const imgs = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : ["https://via.placeholder.com/300"]);
-
-            let imageHTML = "";
-            if (imgs.length > 1) {
-                imageHTML = `
-                    <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden; background: #1a1a1a;">
-                        ${imgs.map((img, index) => `
-                            <img src="${img}" class="slide-${p.id}" 
-                                 style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:180px; object-fit:cover;">
-                        `).join('')}
-                    </div>`;
-                
-                // Interval Slider Otomatis
-                let current = 0;
-                setInterval(() => {
-                    const slides = document.querySelectorAll(`.slide-${p.id}`);
-                    if (slides.length > 1) {
-                        slides[current].style.display = 'none';
-                        current = (current + 1) % slides.length;
-                        slides[current].style.display = 'block';
-                    }
-                }, 3000);
-            } else {
-                imageHTML = `<img src="${imgs[0]}" style="width:100%; height:180px; object-fit:cover;">`;
-            }
-
-            const card = document.createElement('div');
-            card.className = 'product-card';
-            card.innerHTML = `
-                <div class="image-container" onclick="openProductDetail('${p.id}')">
-                    ${imageHTML}
-                    <div class="xtra-label" style="background: ${p.category === 'Jasa' ? '#4a148c' : ''}">
-                        <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <h3 class="product-name">${p.name}</h3>
-                    <div class="price">${priceNum.toFixed(5)} π</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">Detail</button>
-                </div>`;
-            grid.appendChild(card);
-        } catch (e) { console.error("Error render produk:", e); }
-    });
-}
-
-// 4. Inisialisasi Utama (DOM Ready)
-document.addEventListener('DOMContentLoaded', async () => {
-    // Render Produk
-    if (typeof productsData !== 'undefined') {
-        renderProducts(productsData, 'main-grid');
+    // 2. Inisialisasi Pi SDK secara aman
+    try {
+        await initPi();
+        console.log("Pi SDK siap digunakan");
+    } catch (err) {
+        console.error("Pi SDK gagal muat: ", err);
+        // Tetap biarkan aplikasi jalan meskipun SDK gagal
     }
 
-    // Pasang Event Login ke Tombol Pojok Kanan Atas
+    // 3. Pasang fungsi klik pada tombol login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
     }
-
-    // Inisialisasi Pi SDK
-    try {
-        if (typeof initPi === 'function') {
-            await initPi();
-        }
-    } catch (err) {
-        console.error("Pi SDK Error:", err);
-    }
 });
-
-// 5. Fungsi UI Lainnya
 function toggleMenu() {
     const nav = document.getElementById("sideNav");
-    if (nav) nav.style.width = (nav.style.width === "250px") ? "0px" : "250px";
+    
+    if (!nav) {
+        console.error("Elemen sideNav tidak ditemukan!");
+        return;
+    }
+
+    // Logika buka tutup berdasarkan lebar
+    if (nav.style.width === "250px") {
+        nav.style.width = "0px";
+    } else {
+        nav.style.width = "250px";
+    }
 }
+
+function toggleDropdown() {
+    const dropdown = document.getElementById("aboutDropdown");
+    const btn = document.querySelector(".dropdown-btn");
+    
+    // Toggle tampilan (block/none)
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        btn.classList.remove("active");
+    } else {
+        dropdown.style.display = "block";
+        btn.classList.add("active");
+    }
+}
+
+// Menutup menu jika user klik di luar area sidebar
+window.addEventListener('click', function(event) {
+    const nav = document.getElementById("sideNav");
+    const menuIcon = document.querySelector('.menu-icon');
+    
+    if (nav && nav.style.width === "250px") {
+        // Jika yang diklik bukan menu dan bukan tombol garis tiga
+        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
+            nav.style.width = "0px";
+        }
+    }
+});

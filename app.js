@@ -1331,7 +1331,7 @@ if (searchInput) {
 
         loadingOverlay.innerHTML = `
             <div style="text-align:center; animation: fadeIn 0.5s;">
-                <img src="https://www.gambaranimasi.org/data/media/707/animasi-bergerak-selamat-datang-0032.gif" class="congrats-gift">
+                <img src="https://www.gambaranimasi.org/data/media/707/animasi-bergerak-selamat-datang-0291.gif" class="congrats-gift">
                 <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem;">LOGIN BERHASIL!</h2>
                 <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
             </div>

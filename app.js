@@ -1315,7 +1315,7 @@ if (searchInput) {
         <div style="text-align:center;">
             <div class="hourglass">⏳</div>
             <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
-                Menghubungkan ke Pi Network...
+                Menghubungkan...
             </p>
         </div>
     `;
@@ -1331,7 +1331,7 @@ if (searchInput) {
 
         loadingOverlay.innerHTML = `
             <div style="text-align:center; animation: fadeIn 0.5s;">
-                <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYTVlZ256bXEzeWw2dW1idHY0ZXB0d2txZGZiaTB2b2xncTZxeTh4cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/hv14mGOF3MY7wDKPkE/giphy.gif" class="congrats-gift">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif" class="congrats-gift">
                 <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem;">LOGIN BERHASIL!</h2>
                 <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
             </div>

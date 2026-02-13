@@ -961,14 +961,6 @@ const productsData = [
                • <b>Charging:</b> 90W HyperCharge<br>
                • <b>Bahan:</b> Nano-tech Vegan Leather`
     },
-    {
-        id: "jasa-45",
-        name: "Jasa Layanan Hukum",
-        category: "Jasa",
-        price: "0.1",
-        image: ["https://i.ibb.co.com/h1FJ4P52/Desain-tanpa-judul-20260210-133359-0000.png","https://i.ibb.co.com/QFqn4DF9/IMG-20260213-WA0005.jpg"],
-        description: "Melayani semua permasalahan Hukum"
-    },
 ];
 
 productsData.forEach(p => {

@@ -1328,7 +1328,7 @@ if (searchInput) {
 
         loadingOverlay.innerHTML = `
             <div style="text-align:center; animation: fadeIn 0.5s;">
-                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif" 
+                <img src="https://www.gambaranimasi.org/data/media/707/animasi-bergerak-selamat-datang-0291.gif" 
                      style="width:250px; mix-blend-mode: screen; filter: brightness(1.2) contrast(1.1);" 
                      class="congrats-gift">
                 

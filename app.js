@@ -1313,7 +1313,6 @@ if (searchInput) {
 }
 
     // Fungsi Login dengan Pelacak
-// 1. Inisialisasi Variabel Global
 // 1. Variabel Global
 let currentUser = null;
 
@@ -1420,15 +1419,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         btn.onclick = window.handleAuth;
     }
 });
-
-// 5. Fungsi UI Lainnya (Sidebar, dll)
-function toggleMenu() {
-    const nav = document.getElementById("sideNav");
-    if (!nav) return;
-    nav.style.width = (nav.style.width === "250px") ? "0px" : "250px";
-}
-
-function toggleDropdown() {
-    const dropdown = document.getElementById("aboutDropdown");
-    if (dropdown) dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-}

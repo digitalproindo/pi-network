@@ -1354,8 +1354,8 @@ if (searchInput) {
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             loadingOverlay.style.transition = '0.5s';
-            setTimeout(() => loadingOverlay.remove(), 500);
-        }, 3500);
+            setTimeout(() => loadingOverlay.remove(), 5000);
+        }, 35000);
 
     } catch (err) { 
         console.error(err); 

@@ -1395,9 +1395,15 @@ function toggleDropdown() {
 window.addEventListener('click', function(event) {
     const nav = document.getElementById("sideNav");
     const menuIcon = document.querySelector('.menu-icon');
+    const searchInput = document.getElementById('search-input'); // Ambil elemen input
     
+    // 1. Jika yang diklik adalah input pencarian, jangan lakukan apa-apa
+    if (event.target === searchInput) {
+        return; 
+    }
+
+    // 2. Logika penutupan sidebar
     if (nav && nav.style.width === "250px") {
-        // Jika yang diklik bukan menu dan bukan tombol garis tiga
         if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
             nav.style.width = "0px";
         }

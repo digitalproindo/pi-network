@@ -620,10 +620,21 @@
     transform: scale(1.2); /* Ikon membesar sedikit saat di-hover */
     filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
 }
-    </style>
-</head>
-    </style>
 
+.search-container {
+            position: relative;
+            z-index: 999; 
+            pointer-events: auto !important;
+        }
+
+        #search-input {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            cursor: text;
+            position: relative;
+            z-index: 1000;
+        }
+    </style>
 </head>
 
 <body>
@@ -808,9 +819,9 @@
 
 
 <main id="page-cari" class="hidden">
-    <div class="search-wrapper">
-        <input type="text" id="search-input" placeholder="Cari produk premium..." autocomplete="off">
-    </div>
+    <div class="search-container">
+    <input type="text" id="search-input" placeholder="Cari produk premium...">
+</div>
     <div id="search-results" class="marketplace-grid">
         <p style="text-align: center; color: #94a3b8; padding: 40px;">Silakan masukkan nama produk...</p>
     </div>
@@ -972,12 +983,9 @@ function resetDropdown(target, label) {
     target.innerHTML = `<option value="">Pilih ${label}</option>`;
     target.disabled = true;
 }
+
+
 </script>
 
 </body>
 </html>
-
-
-
-
-

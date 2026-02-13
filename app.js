@@ -1312,63 +1312,94 @@ if (searchInput) {
     });
 }
 
-    // Fungsi Login dengan Pelacak
-window.handleAuth = async () => {
-    console.log("Mencoba Login...");
-    alert("Proses Login Dimulai..."); // Jika alert ini muncul, berarti tombol normal
+    window.handleAuth = async () => {
+    console.log("Tombol login diklik");
+    alert("Apakah Anda Ingin login..."); // Alert untuk memastikan fungsi jalan
 
     try {
-        if (typeof Pi === 'undefined') {
-            alert("Error: Pi SDK tidak ditemukan!");
-            return;
-        }
-
         const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => {
-            console.log("Incomplete Payment:", p);
-        });
-
+        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
-        alert("Halo " + currentUser.username + ", Anda berhasil login!");
-
-        // Update UI
+        
+        // Update Tombol di pojok kanan atas
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
-            loginBtn.style.background = "red";
+            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
             loginBtn.onclick = () => location.reload();
         }
 
-    } catch (err) {
-        console.error(err);
-        alert("Login Gagal: " + err.message);
+        // Update di Halaman Profil
+        if (document.getElementById('profile-username')) {
+            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        }
+        if (document.getElementById('profile-address')) {
+            document.getElementById('profile-address').innerText = currentUser.uid;
+        }
+
+        alert("Berhasil Login: " + currentUser.username);
+    } catch (err) { 
+        console.error(err); 
+        alert("Gagal Login: " + err.message); 
     }
 };
 
-// Pastikan Inisialisasi Berjalan Sempurna
-document.addEventListener('DOMContentLoaded', async () => {
-    console.log("Halaman dimuat...");
-    
-    // 1. Render Produk (Pastikan data ada)
-    if (typeof productsData !== 'undefined') {
-        renderProducts(productsData, 'main-grid');
-    }
+    renderProducts(productsData, 'main-grid');
 
-    // 2. Pasang Fungsi Klik ke Tombol (PENTING!)
-    const btn = document.getElementById('login-btn');
-    if (btn) {
-        btn.onclick = window.handleAuth;
-        console.log("Event listener login berhasil dipasang");
-    } else {
-        console.error("Tombol login-btn tidak ditemukan di HTML!");
-    }
-
-    // 3. Inisialisasi Pi
+    // 2. Inisialisasi Pi SDK secara aman
     try {
-        if (typeof initPi === 'function') {
-            await initPi();
+        await initPi();
+        console.log("Pi SDK siap digunakan");
+    } catch (err) {
+        console.error("Pi SDK gagal muat: ", err);
+        // Tetap biarkan aplikasi jalan meskipun SDK gagal
+    }
+
+    // 3. Pasang fungsi klik pada tombol login
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = window.handleAuth;
+    }
+});
+function toggleMenu() {
+    const nav = document.getElementById("sideNav");
+    
+    if (!nav) {
+        console.error("Elemen sideNav tidak ditemukan!");
+        return;
+    }
+
+    // Logika buka tutup berdasarkan lebar
+    if (nav.style.width === "250px") {
+        nav.style.width = "0px";
+    } else {
+        nav.style.width = "250px";
+    }
+}
+
+function toggleDropdown() {
+    const dropdown = document.getElementById("aboutDropdown");
+    const btn = document.querySelector(".dropdown-btn");
+    
+    // Toggle tampilan (block/none)
+    if (dropdown.style.display === "block") {
+        dropdown.style.display = "none";
+        btn.classList.remove("active");
+    } else {
+        dropdown.style.display = "block";
+        btn.classList.add("active");
+    }
+}
+
+// Menutup menu jika user klik di luar area sidebar
+window.addEventListener('click', function(event) {
+    const nav = document.getElementById("sideNav");
+    const menuIcon = document.querySelector('.menu-icon');
+    
+    if (nav && nav.style.width === "250px") {
+        // Jika yang diklik bukan menu dan bukan tombol garis tiga
+        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
+            nav.style.width = "0px";
         }
-    } catch (e) {
-        console.error("Init Pi Gagal", e);
     }
 });

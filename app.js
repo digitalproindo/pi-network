@@ -1301,22 +1301,30 @@ if (searchInput) {
         } else {
             sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
-    });
-}
 
-    // 1. Variabel Global
+
+    // 1. Inisialisasi Variabel Global
 let currentUser = null;
 
-// 2. Fungsi Login ASLI Anda (Tetap dipertahankan karena ini yang normal)
+// 2. Fungsi Login ASLI Anda (Kembali ke versi normal yang Anda miliki)
 window.handleAuth = async () => {
     console.log("Tombol login diklik");
-    alert("Apakah Anda Ingin login..."); 
+    alert("Proses Login Dimulai..."); 
 
     try {
+        if (typeof Pi === 'undefined') {
+            alert("Pi SDK belum siap. Silakan refresh halaman.");
+            return;
+        }
+
         const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+        const auth = await Pi.authenticate(scopes, (p) => {
+            console.log("Incomplete Payment:", p);
+        });
+
         currentUser = auth.user;
         
+        // Update UI Tombol
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1324,115 +1332,102 @@ window.handleAuth = async () => {
             loginBtn.onclick = () => location.reload();
         }
 
-        if (document.getElementById('profile-username')) {
-            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
-        }
-        if (document.getElementById('profile-address')) {
-            document.getElementById('profile-address').innerText = currentUser.uid;
-        }
+        // Update Profil
+        const pUsername = document.getElementById('profile-username');
+        if (pUsername) pUsername.innerText = `@${currentUser.username}`;
 
         alert("Berhasil Login: " + currentUser.username);
+        
+        // Tutup modal jika ada
+        if (typeof closeLoginModal === 'function') closeLoginModal();
+
     } catch (err) { 
         console.error(err); 
         alert("Gagal Login: " + err.message); 
     }
 };
 
-// 3. Fungsi Render Produk (Slider Baru yang sudah diperbaiki strukturnya)
+// 3. Fungsi Render Produk dengan Slider (Tahan Error)
 function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
 
     data.forEach(p => {
-        const priceNum = parseFloat(p.price) || 0;
-        let imageHTML = "";
-        
-        // Cek apakah menggunakan format images (array) atau image (string)
-        const imgs = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : ["https://via.placeholder.com/300"]);
-
-        if (imgs.length > 1) {
-            imageHTML = `
-                <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden; background: #222;">
-                    ${imgs.map((img, index) => `
-                        <img src="${img}" class="slide-${p.id}" 
-                             style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;">
-                    `).join('')}
-                </div>`;
+        try {
+            const priceNum = parseFloat(p.price) || 0;
             
-            let current = 0;
-            setInterval(() => {
-                const slides = document.querySelectorAll(`.slide-${p.id}`);
-                if (slides.length > 1) {
-                    slides[current].style.display = 'none';
-                    current = (current + 1) % slides.length;
-                    slides[current].style.display = 'block';
-                }
-            }, 3000);
-        } else {
-            imageHTML = `<img src="${imgs[0]}" style="width:100%; height:180px; object-fit:cover;">`;
-        }
+            // Cek apakah menggunakan format images (array) atau image (string)
+            const imgs = Array.isArray(p.images) ? p.images : (p.image ? [p.image] : ["https://via.placeholder.com/300"]);
 
-        const card = document.createElement('div');
-        card.className = 'product-card';
-        card.innerHTML = `
-            <div class="image-container" onclick="openProductDetail('${p.id}')">
-                ${imageHTML}
-                <div class="xtra-label" style="background: ${p.category === 'Jasa' ? '#4a148c' : ''}">
-                    <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
+            let imageHTML = "";
+            if (imgs.length > 1) {
+                imageHTML = `
+                    <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden; background: #1a1a1a;">
+                        ${imgs.map((img, index) => `
+                            <img src="${img}" class="slide-${p.id}" 
+                                 style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:180px; object-fit:cover;">
+                        `).join('')}
+                    </div>`;
+                
+                // Interval Slider Otomatis
+                let current = 0;
+                setInterval(() => {
+                    const slides = document.querySelectorAll(`.slide-${p.id}`);
+                    if (slides.length > 1) {
+                        slides[current].style.display = 'none';
+                        current = (current + 1) % slides.length;
+                        slides[current].style.display = 'block';
+                    }
+                }, 3000);
+            } else {
+                imageHTML = `<img src="${imgs[0]}" style="width:100%; height:180px; object-fit:cover;">`;
+            }
+
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.innerHTML = `
+                <div class="image-container" onclick="openProductDetail('${p.id}')">
+                    ${imageHTML}
+                    <div class="xtra-label" style="background: ${p.category === 'Jasa' ? '#4a148c' : ''}">
+                        <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
+                    </div>
                 </div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name">${p.name}</h3>
-                <div class="price">${priceNum.toFixed(5)} π</div>
-                <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">Pesan</button>
-            </div>`;
-        grid.appendChild(card);
+                <div class="product-info">
+                    <h3 class="product-name">${p.name}</h3>
+                    <div class="price">${priceNum.toFixed(5)} π</div>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">Detail</button>
+                </div>`;
+            grid.appendChild(card);
+        } catch (e) { console.error("Error render produk:", e); }
     });
 }
 
-// 4. Inisialisasi DOMContentLoaded (Pembuka yang benar)
+// 4. Inisialisasi Utama (DOM Ready)
 document.addEventListener('DOMContentLoaded', async () => {
-    
     // Render Produk
     if (typeof productsData !== 'undefined') {
         renderProducts(productsData, 'main-grid');
+    }
+
+    // Pasang Event Login ke Tombol Pojok Kanan Atas
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = window.handleAuth;
     }
 
     // Inisialisasi Pi SDK
     try {
         if (typeof initPi === 'function') {
             await initPi();
-            console.log("Pi SDK siap digunakan");
         }
     } catch (err) {
-        console.error("Pi SDK gagal muat: ", err);
-    }
-
-    // Pasang tombol login pojok kanan atas
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.onclick = window.handleAuth;
+        console.error("Pi SDK Error:", err);
     }
 });
 
-// 5. Fungsi Navigasi & UI (SideNav)
+// 5. Fungsi UI Lainnya
 function toggleMenu() {
     const nav = document.getElementById("sideNav");
     if (nav) nav.style.width = (nav.style.width === "250px") ? "0px" : "250px";
 }
-
-function toggleDropdown() {
-    const dropdown = document.getElementById("aboutDropdown");
-    if (dropdown) dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-}
-
-window.addEventListener('click', function(event) {
-    const nav = document.getElementById("sideNav");
-    const menuIcon = document.querySelector('.menu-icon');
-    if (nav && nav.style.width === "250px") {
-        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-            nav.style.width = "0px";
-        }
-    }
-});

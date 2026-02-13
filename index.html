@@ -973,29 +973,6 @@ function resetDropdown(target, label) {
     target.innerHTML = `<option value="">Pilih ${label}</option>`;
     target.disabled = true;
 }
-
-function startAutoSlideKategori() {
-    const scrollContainer = document.querySelector('.category-scroll');
-    let isMouseOver = false;
-
-    // Berhenti slide jika user menyentuh/meletakkan mouse di kategori
-    scrollContainer.addEventListener('mouseenter', () => isMouseOver = true);
-    scrollContainer.addEventListener('mouseleave', () => isMouseOver = false);
-
-    setInterval(() => {
-        if (!isMouseOver) {
-            const maxScrollLeft = scrollContainer.scrollWidth - scrollContainer.clientWidth;
-            if (scrollContainer.scrollLeft >= maxScrollLeft) {
-                scrollContainer.scrollTo({ left: 0, behavior: 'smooth' }); // Reset ke awal
-            } else {
-                scrollContainer.scrollBy({ left: 100, behavior: 'smooth' }); // Geser 100px
-            }
-        }
-    }, 3000); // Bergeser setiap 3 detik
-}
-
-// Jalankan fungsi setelah semua elemen dimuat
-document.addEventListener('DOMContentLoaded', startAutoSlideKategori);
 </script>
 
 </body>

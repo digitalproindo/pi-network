@@ -1352,14 +1352,17 @@ if (searchInput) {
         }
 
         setTimeout(() => {
-    overlay.style.opacity = "0"; // Mulai memudar
-    overlay.style.transition = "opacity 0.4s ease"; // Efek halus saat hilang
-    
-    // Hapus total dari layar setelah efek pudar selesai (400ms kemudian)
-    setTimeout(() => { 
-        overlay.style.display = "none"; 
-    }, 400); 
-}, 3000);
+            overlay.style.opacity = "0";
+            setTimeout(() => { 
+                overlay.style.display = "none"; 
+            }, 500); // Popup benar-benar hilang dari layar
+        }, 2500); // User hanya melihat kado selama 2,5 detik
+
+    } catch (err) {
+        overlay.style.display = "none";
+        console.error(err);
+    }
+};
 
     } catch (err) { 
         console.error(err); 

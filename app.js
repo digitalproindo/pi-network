@@ -1014,27 +1014,57 @@ function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
+
     data.forEach(p => {
-        const displayPrice = p.price.toFixed(5); 
-        const discountBadge = (p.discount && p.discount > 0) 
-            ? `<span class="discount-badge">-${p.discount}%</span>` 
-            : '';
+        // Konversi harga ke angka untuk memastikan .toFixed(5) bekerja
+        const priceNum = parseFloat(p.price) || 0;
+        const displayPrice = priceNum.toFixed(5); 
+
+        // LOGIKA SLIDER OTOMATIS
+        let imageHTML = "";
+        if (Array.isArray(p.images) && p.images.length > 1) {
+            // Jika gambar lebih dari satu, buat struktur slider
+            imageHTML = `
+                <div class="slider-wrapper" id="slider-${p.id}">
+                    ${p.images.map((img, index) => `
+                        <img src="${img}" class="slide-${p.id}" style="display: ${index === 0 ? 'block' : 'none'}; width:100%; height:100%; object-fit:cover;">
+                    `).join('')}
+                </div>`;
+            
+            // Jalankan interval slider (Ganti gambar setiap 3 detik)
+            let currentSlide = 0;
+            setInterval(() => {
+                const slides = document.querySelectorAll(`.slide-${p.id}`);
+                if (slides.length > 0) {
+                    slides[currentSlide].style.display = 'none';
+                    currentSlide = (currentSlide + 1) % slides.length;
+                    slides[currentSlide].style.display = 'block';
+                }
+            }, 3000);
+        } else {
+            // Jika gambar cuma satu (atau format lama p.image), tampilkan biasa
+            const singleImg = Array.isArray(p.images) ? p.images[0] : (p.image || p.images);
+            imageHTML = `<img src="${singleImg}" alt="${p.name}" style="width:100%; height:100%; object-fit:cover;">`;
+        }
 
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
-            <div class="image-container" onclick="openProductDetail('${p.id}')">
-                ${discountBadge} 
-                <img src="${p.images[0]}" alt="${p.name}">
-                <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
+            <div class="image-container" onclick="openProductDetail('${p.id}')" style="height:180px; overflow:hidden; position:relative;">
+                ${imageHTML}
+                <div class="xtra-label" style="background: ${p.category === 'Jasa' ? 'linear-gradient(45deg, #1a237e, #4a148c)' : ''}">
+                    <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
+                    <span class="ongkir-text">${p.category === 'Jasa' ? 'Konsultasi' : 'Gratis Ongkir+'}</span>
+                </div>
             </div>
             <div class="product-info">
                 <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
                 <div class="price">${displayPrice} π</div>
-                <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
                 <div class="card-bottom">
-                    <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                    <div class="rating-text"><span class="star">★</span> ${p.rating || '5.0'} | ${p.sold || '0'} terjual</div>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">
+                        ${p.category === 'Jasa' ? 'Pesan' : 'Beli'}
+                    </button>
                 </div>
             </div>`;
         grid.appendChild(card);

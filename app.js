@@ -1014,57 +1014,27 @@ function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
-
     data.forEach(p => {
-        const priceNum = parseFloat(p.price) || 0;
-
-        // --- TEMPAT SCRIPT YANG ANDA TANYAKAN DIMULAI ---
-        let imageHTML = "";
-        if (p.images && Array.isArray(p.images) && p.images.length > 1) {
-            imageHTML = `
-                <div class="slider-wrapper" style="position: relative; width: 100%; height: 180px; overflow: hidden;">
-                    ${p.images.map((img, index) => `
-                        <img src="${img}" class="slide-${p.id}" 
-                             style="display: ${index === 0 ? 'block' : 'none'}; position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover;">
-                    `).join('')}
-                </div>`;
-            
-            // Logika menjalankan slider otomatis
-            let current = 0;
-            setTimeout(() => {
-                setInterval(() => {
-                    const slides = document.querySelectorAll(`.slide-${p.id}`);
-                    if (slides.length > 0) {
-                        slides[current].style.display = 'none';
-                        current = (current + 1) % slides.length;
-                        slides[current].style.display = 'block';
-                    }
-                }, 3000);
-            }, 100);
-        } else {
-            const singleImg = p.image || (Array.isArray(p.images) ? p.images[0] : p.images) || 'https://via.placeholder.com/300';
-            imageHTML = `<img src="${singleImg}" style="width:100%; height:180px; object-fit:cover;">`;
-        }
-        // --- TEMPAT SCRIPT YANG ANDA TANYAKAN BERAKHIR ---
+        const displayPrice = p.price.toFixed(5); 
+        const discountBadge = (p.discount && p.discount > 0) 
+            ? `<span class="discount-badge">-${p.discount}%</span>` 
+            : '';
 
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
             <div class="image-container" onclick="openProductDetail('${p.id}')">
-                ${imageHTML}
-                <div class="xtra-label" style="background: ${p.category === 'Jasa' ? 'linear-gradient(45deg, #1a237e, #4a148c)' : ''}">
-                    <span class="xtra-text">${p.category === 'Jasa' ? 'LEGAL' : 'XTRA'}</span>
-                    <span class="ongkir-text">${p.category === 'Jasa' ? 'Layanan' : 'Gratis Ongkir+'}</span>
-                </div>
+                ${discountBadge} 
+                <img src="${p.images[0]}" alt="${p.name}">
+                <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
             </div>
             <div class="product-info">
                 <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-                <div class="price">${priceNum.toFixed(5)} π</div>
+                <div class="price">${displayPrice} π</div>
+                <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
                 <div class="card-bottom">
-                    <div class="rating-text">★ 5.0 | Terpercaya</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${priceNum}, '${p.name}')">
-                        ${p.category === 'Jasa' ? 'Pesan' : 'Beli'}
-                    </button>
+                    <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
                 </div>
             </div>`;
         grid.appendChild(card);
@@ -1261,28 +1231,27 @@ window.updateCartUI = () => {
 };
 
 window.openProductDetail = (productId) => {
-    const product = productsData.find(p => p.id == productId);
-    if (!product) return;
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
 
-    const modal = document.getElementById('product-detail-overlay');
+    // SEMBUNYIKAN NAVIGASI BAWAH
+    const bNav = document.querySelector('.bottom-nav');
+    if(bNav) bNav.style.display = 'none';
+
+    document.getElementById('product-detail-page').scrollTop = 0;
     
-    // Perbaikan: Cek apakah images itu array atau string
-    const detailImgSrc = Array.isArray(product.images) ? product.images[0] : (product.image || product.images);
+    document.getElementById('detail-content').innerHTML = `
+        <div style="background: white; min-height: 100vh; padding-bottom: 100px; font-family:'Inter', sans-serif; position: relative;">
+            
+            <div onclick="closeProductDetail()" style="position: fixed; top: 15px; left: 15px; z-index: 9999; background: #4a148c; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; cursor: pointer;">
+                <svg viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke:white; stroke-width:3;">
+                    <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </div>
 
-    document.getElementById('detail-img').src = detailImgSrc;
-    document.getElementById('detail-name').innerText = product.name;
-    document.getElementById('detail-desc').innerHTML = product.desc || product.description;
-    document.getElementById('detail-price').innerText = `${parseFloat(product.price).toFixed(5)} π`;
-
-    // Pasang fungsi beli di modal
-    const buyBtn = modal.querySelector('.btn-buy-now');
-    buyBtn.onclick = () => window.handlePayment(product.price, product.name);
-
-    modal.style.display = 'block';
-    
-    // Sembunyikan Navigasi Bawah & Header agar tidak tumpang tindih
-    document.querySelector('.bottom-nav').style.display = 'none';
-};
+            <div style="width: 100%; height: 320px; background: #f1f5f9; overflow: hidden; position: relative;">
+                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+            </div>
             
             <div style="padding: 20px; position: relative; z-index: 10; background: white; border-radius: 30px 30px 0 0; margin-top: -30px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
                 <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; font-weight: 800;">${p.name}</h2>
@@ -1302,7 +1271,7 @@ window.openProductDetail = (productId) => {
                     <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
-        
+        </div>`;
         
     document.getElementById('product-detail-page').classList.remove('hidden');
 };
@@ -1426,15 +1395,9 @@ function toggleDropdown() {
 window.addEventListener('click', function(event) {
     const nav = document.getElementById("sideNav");
     const menuIcon = document.querySelector('.menu-icon');
-    const searchInput = document.getElementById('search-input'); // Ambil elemen input
     
-    // 1. Jika yang diklik adalah input pencarian, jangan lakukan apa-apa
-    if (event.target === searchInput) {
-        return; 
-    }
-
-    // 2. Logika penutupan sidebar
     if (nav && nav.style.width === "250px") {
+        // Jika yang diklik bukan menu dan bukan tombol garis tiga
         if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
             nav.style.width = "0px";
         }

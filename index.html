@@ -650,31 +650,7 @@
 /* Animasi sederhana untuk label Jasa */
 .xtra-label {
     background: linear-gradient(45deg, #1a237e, #4a148c) !important;
-}  
-
-/* Pastikan kontainer memiliki tinggi agar gambar muncul */
-.slider-wrapper {
-    position: relative;
-    width: 100%;
-    height: 180px; /* Atur tinggi sesuai kebutuhan kartu Anda */
-    overflow: hidden;
-    background-color: #f0f0f0; /* Warna cadangan jika gambar loading */
-}
-
-.slider-wrapper img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none; /* Akan diatur oleh JS */
-}
-
-/* Pastikan gambar pertama selalu muncul saat pertama kali load */
-.slider-wrapper img:first-child {
-    display: block;
-}
+}        
     </style>
 </head>
 
@@ -853,6 +829,7 @@
     <div class="category-pill" onclick="filterCategory('Jasa', this)">💼 Jasa</div>
     <div class="category-pill" onclick="filterCategory('Makanan', this)">🍱 Makanan</div>
     <div class="category-pill" onclick="filterCategory('Minuman', this)">🥤 Minuman</div>
+
 </div>
 
      <div id="main-grid" class="marketplace-grid"></div>

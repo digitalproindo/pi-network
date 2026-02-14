@@ -1305,11 +1305,11 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
-    // 1. Inisialisasi Suara (Pastikan file sound-effect.mp3 ada di folder assets)
+    // 1. Inisialisasi Suara
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
-    // 2. Popup Overlay dengan Background Gelap Tetap Ada
+    // 2. Popup Overlay (Background Luar Gelap & Blur)
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
     loadingOverlay.style.cssText = `
@@ -1318,8 +1318,8 @@ if (searchInput) {
         align-items: center;
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.85); /* Background gelap transparan */
-        backdrop-filter: blur(8px); /* Efek blur di belakang popup */
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
         z-index: 9999;
         opacity: 1;
         transition: opacity 0.5s;
@@ -1340,23 +1340,35 @@ if (searchInput) {
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
 
-        // 3. JIKA BERHASIL: Putar Suara
-        successSound.play().catch(e => console.log("Audio play diblokir oleh browser"));
+        // 3. JIKA BERHASIL: Putar Suara & Ubah Tampilan menjadi Bingkai Emas
+        successSound.play().catch(e => console.log("Audio play diblokir"));
 
         loadingOverlay.innerHTML = `
-            <div style="text-align:center; animation: zoomIn 0.4s ease-out;">
+            <div style="
+                background-color: #0b2135; 
+                border: 4px solid #FFD700; 
+                border-radius: 20px;
+                padding: 25px;
+                text-align: center;
+                width: 85%;
+                max-width: 350px;
+                box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+                animation: zoomIn 0.4s ease-out;
+            ">
                 <img src="assets/Hello-GIF.gif" 
-                     style="width:220px; mix-blend-mode: screen; filter: brightness(1.2);" 
+                     style="width: 100%; border-radius: 10px; margin-bottom: 10px;" 
                      class="congrats-gift">
                 
-                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.6rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
                     LOGIN BERHASIL!
                 </h2>
-                <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
+                <p style="font-size:1.1rem; color:#fff; margin-bottom: 5px;">
+                    Selamat datang, <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
+                </p>
             </div>
         `;
 
-        // Update UI (Tombol Logout)
+        // Update UI Tombol Logout
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1364,11 +1376,11 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        // 4. Tutup otomatis dalam 3 detik (3000ms)
+        // 4. Tutup otomatis dalam 3.5 detik (Disesuaikan agar user bisa melihat bingkainya)
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             setTimeout(() => loadingOverlay.remove(), 500);
-        }, 3000);
+        }, 3500);
 
     } catch (err) { 
         console.error(err); 

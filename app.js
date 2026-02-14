@@ -1305,12 +1305,19 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
+    // --- PEMBERSIH: Hapus overlay jika sudah ada (mencegah popup ganda) ---
+    const existingOverlay = document.querySelector('.auth-overlay-active');
+    if (existingOverlay) {
+        existingOverlay.remove();
+    }
+
     // 1. Inisialisasi Suara
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
-    // 2. Popup Overlay
+    // 2. Buat Popup Overlay Baru
     const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'auth-overlay-active'; // Tambahkan class unik
     loadingOverlay.style.cssText = `
         display: flex; justify-content: center; align-items: center;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
@@ -1330,15 +1337,14 @@ if (searchInput) {
         const profileName = document.getElementById('profile-username');
         const profileAddress = document.getElementById('profile-address');
 
-        if (profileName) { 
-            profileName.innerText = currentUser.username; 
-        }
-        if (profileAddress) { 
-            profileAddress.innerText = currentUser.uid; // Memasukkan UID ke id="profile-address"
-        }
+        if (profileName) { profileName.innerText = currentUser.username; }
+        if (profileAddress) { profileAddress.innerText = currentUser.uid; }
         // --------------------------------------------------
 
         successSound.play().catch(e => console.log("Audio blocked"));
+
+        // --- BERSIHKAN JAM PASIR SEBELUM MENGISI BOX SUKSES ---
+        loadingOverlay.innerHTML = ''; 
 
         // Update Tampilan Box Sukses Presisi
         loadingOverlay.innerHTML = `

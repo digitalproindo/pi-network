@@ -1305,82 +1305,76 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
-    // 1. Gunakan Aset Lokal & Preload (Pastikan file sudah ada di folder assets)
-    const successSound = new Audio("assets/success-sound.mp3");
+    // 1. Inisialisasi Suara (Pastikan file sound-effect.mp3 ada di folder assets)
+    const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
-    
-    // Siapkan referensi gambar lokal agar muncul instan
-    const giftGifSrc = "assets/gift.gif"; 
 
-    // 2. Tampilkan Popup Loading Jam Pasir
+    // 2. Popup Overlay dengan Background Gelap Tetap Ada
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
-    loadingOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; opacity:1; transition: opacity 0.5s;";
+    loadingOverlay.style.cssText = `
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.85); /* Background gelap transparan */
+        backdrop-filter: blur(8px); /* Efek blur di belakang popup */
+        z-index: 9999;
+        opacity: 1;
+        transition: opacity 0.5s;
+    `;
+
     loadingOverlay.innerHTML = `
         <div style="text-align:center;">
             <div class="hourglass">⏳</div>
-            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
+            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px;">
                 Menghubungkan...
             </p>
         </div>
     `;
     document.body.appendChild(loadingOverlay);
 
-    // Proteksi agar tidak stuck selamanya (Timeout 15 detik)
-    const authTimeout = setTimeout(() => {
-        if (loadingOverlay) {
-            loadingOverlay.remove();
-            alert("Koneksi lambat. Refresh dan silahkan coba kembali");
-        }
-    }, 15000);
-
     try {
         const scopes = ['username', 'payments'];
-        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-        
-        clearTimeout(authTimeout); // Batalkan timeout karena berhasil
+        const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
 
-        // 3. JIKA BERHASIL: Mainkan Suara & Tampilkan Animasi Gift
-        successSound.play().catch(e => console.log("Audio play blocked"));
+        // 3. JIKA BERHASIL: Putar Suara
+        successSound.play().catch(e => console.log("Audio play diblokir oleh browser"));
 
         loadingOverlay.innerHTML = `
             <div style="text-align:center; animation: zoomIn 0.4s ease-out;">
-                <img src="${giftGifSrc}" 
+                <img src="assets/Hello-GIF.gif" 
                      style="width:220px; mix-blend-mode: screen; filter: brightness(1.2);" 
                      class="congrats-gift">
-                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem; text-shadow: 0 0 10px rgba(0,0,0,0.5);">
+                
+                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
                     LOGIN BERHASIL!
                 </h2>
                 <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
             </div>
         `;
 
-        // Update UI tombol & profil
-        if (document.getElementById('login-btn')) {
-            const btn = document.getElementById('login-btn');
-            btn.innerText = "LOGOUT";
-            btn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-            btn.onclick = () => location.reload();
-        }
-        
-        if (document.getElementById('profile-username')) {
-            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        // Update UI (Tombol Logout)
+        const loginBtn = document.getElementById('login-btn');
+        if (loginBtn) {
+            loginBtn.innerText = "LOGOUT";
+            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+            loginBtn.onclick = () => location.reload();
         }
 
-        // 4. PERBAIKAN DURASI: Tutup otomatis secara cepat (3 detik)
+        // 4. Tutup otomatis dalam 3 detik (3000ms)
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             setTimeout(() => loadingOverlay.remove(), 500);
-        }, 3000); // 3000ms = 3 detik (Pas untuk animasi)
+        }, 3000);
 
     } catch (err) { 
-        clearTimeout(authTimeout);
         console.error(err); 
         loadingOverlay.remove();
-        // Jangan tampilkan alert jika user hanya membatalkan (cancel)
         if (err.message !== "User cancelled login") {
-            alert("Gagal Login: " + err.message); 
+            alert("Gagal Login: " + err.message);
         }
     }
 };

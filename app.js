@@ -1305,11 +1305,9 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
-    // 1. Inisialisasi Suara
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
-    // 2. Popup Overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
     loadingOverlay.style.cssText = `
@@ -1330,52 +1328,49 @@ if (searchInput) {
     document.body.appendChild(loadingOverlay);
 
     try {
-        const scopes = ['username', 'payments'];
+        const scopes = ['username', 'payments', 'wallet_address']; // Tambahkan wallet_address jika diperlukan
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         
-        // --- LOGIKA UPDATE DATA ---
+        // 1. SIMPAN DATA KE VARIABEL GLOBAL
         currentUser = auth.user;
 
-        // Update Nama di Ikon Profil (Cari ID 'profile-username' atau sesuaikan dengan ID di index.html Anda)
-        const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+        // 2. UPDATE UI PROFIL (Username & UID)
+        // Update Nama
+        const profileDisplay = document.getElementById('profile-username');
         if (profileDisplay) {
             profileDisplay.innerText = currentUser.username;
         }
-        // ---------------------------
 
-        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Box
-        successSound.play().catch(e => console.log("Audio play blocked"));
+        // Update Wallet UID (Pastikan ID di index.html adalah 'wallet-uid')
+        const uidDisplay = document.getElementById('wallet-uid');
+        if (uidDisplay) {
+            // Kita potong UID agar tidak terlalu panjang (opsional)
+            uidDisplay.innerText = currentUser.uid; 
+        }
+
+        // 3. TAMPILKAN POPUP SUKSES
+        successSound.play().catch(e => console.log("Audio blocked"));
 
         loadingOverlay.innerHTML = `
             <div style="
-                background-color: #0b2135; 
-                border: 3px solid #FFD700; 
-                border-radius: 15px;
-                padding: 20px;
-                text-align: center;
-                width: 75%;
-                max-width: 300px;
+                background-color: #0b2135; border: 3px solid #FFD700; border-radius: 15px;
+                padding: 20px; text-align: center; width: 75%; max-width: 300px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
-                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-sizing: border-box;
+                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-sizing: border-box;
             ">
                 <div style="padding: 5px; margin-bottom: 10px;">
-                    <img src="assets/Hello-GIF.gif" 
-                         style="width: 100%; border-radius: 8px; display: block;" 
-                         class="congrats-gift">
+                    <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px; display: block;">
                 </div>
-                
                 <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-transform: uppercase;">
                     Login Berhasil!
                 </h2>
-                <p style="font-size:0.95rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
-                    Selamat datang, <br>
-                    <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
+                <p style="font-size:0.85rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
+                    Wallet UID Connected:<br>
+                    <span style="color:#4ade80; font-family: monospace; font-size: 0.7rem;">${currentUser.uid.substring(0, 15)}...</span>
                 </p>
             </div>
         `;
 
-        // Update Tombol Logout
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1383,7 +1378,6 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        // 4. Tutup otomatis dalam 3.5 detik
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             setTimeout(() => loadingOverlay.remove(), 500);
@@ -1392,9 +1386,7 @@ if (searchInput) {
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
-        if (err.message !== "User cancelled login") {
-            alert("Gagal Login: " + err.message);
-        }
+        alert("Gagal Login: " + err.message);
     }
 };
 

@@ -1309,20 +1309,14 @@ if (searchInput) {
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
-    // 2. Popup Overlay (Latar belakang pudar & blur)
+    // 2. Popup Overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
     loadingOverlay.style.cssText = `
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: fixed;
-        top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.8);
-        backdrop-filter: blur(8px);
-        z-index: 9999;
-        opacity: 1;
-        transition: opacity 0.5s;
+        display: flex; justify-content: center; align-items: center;
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+        z-index: 9999; opacity: 1; transition: opacity 0.5s;
     `;
 
     loadingOverlay.innerHTML = `
@@ -1338,9 +1332,18 @@ if (searchInput) {
     try {
         const scopes = ['username', 'payments'];
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+        
+        // --- LOGIKA UPDATE DATA ---
         currentUser = auth.user;
 
-        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Box Presisi
+        // Update Nama di Ikon Profil (Cari ID 'profile-username' atau sesuaikan dengan ID di index.html Anda)
+        const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+        if (profileDisplay) {
+            profileDisplay.innerText = currentUser.username;
+        }
+        // ---------------------------
+
+        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Box
         successSound.play().catch(e => console.log("Audio play blocked"));
 
         loadingOverlay.innerHTML = `
@@ -1350,8 +1353,8 @@ if (searchInput) {
                 border-radius: 15px;
                 padding: 20px;
                 text-align: center;
-                width: 75%; /* Lebih ramping agar tidak mepet layar */
-                max-width: 300px; /* Batas maksimal agar tetap simetris */
+                width: 75%;
+                max-width: 300px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
                 animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 box-sizing: border-box;
@@ -1372,7 +1375,7 @@ if (searchInput) {
             </div>
         `;
 
-        // Update UI Tombol
+        // Update Tombol Logout
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";

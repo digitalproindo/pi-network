@@ -1304,25 +1304,28 @@ if (searchInput) {
     });
 }
 
-   window.handleAuth = async () => {
-    // --- PEMBERSIH: Hapus overlay jika sudah ada (mencegah popup ganda) ---
-    const existingOverlay = document.querySelector('.auth-overlay-active');
-    if (existingOverlay) {
-        existingOverlay.remove();
-    }
+   // Tambahkan variabel pengunci di luar fungsi agar tidak ter-reset
+let isAuthProcessRunning = false;
 
-    // 1. Inisialisasi Suara
+window.handleAuth = async () => {
+    // 1. CEK LOCK: Jika sedang proses, jangan jalankan fungsi lagi
+    if (isAuthProcessRunning) return;
+    isAuthProcessRunning = true;
+
+    // 2. BERSIHKAN: Cari dan hapus paksa jika ada overlay yang tertinggal
+    const oldOverlays = document.querySelectorAll('.auth-overlay');
+    oldOverlays.forEach(el => el.remove());
+
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
-    // 2. Buat Popup Overlay Baru
     const loadingOverlay = document.createElement('div');
-    loadingOverlay.className = 'auth-overlay-active'; // Tambahkan class unik
+    loadingOverlay.className = 'auth-overlay'; // Beri class untuk identifikasi
     loadingOverlay.style.cssText = `
         display: flex; justify-content: center; align-items: center;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-        z-index: 9999; opacity: 1; transition: opacity 0.5s;
+        z-index: 99999; opacity: 1; transition: opacity 0.5s;
     `;
     loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
     document.body.appendChild(loadingOverlay);
@@ -1330,46 +1333,44 @@ if (searchInput) {
     try {
         const scopes = ['username', 'payments'];
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-        
         currentUser = auth.user;
 
-        // --- UPDATE DATA DI HALAMAN PROFIL (index.html) ---
+        // Update Data Profil
         const profileName = document.getElementById('profile-username');
         const profileAddress = document.getElementById('profile-address');
-
-        if (profileName) { profileName.innerText = currentUser.username; }
-        if (profileAddress) { profileAddress.innerText = currentUser.uid; }
-        // --------------------------------------------------
+        if (profileName) profileName.innerText = currentUser.username;
+        if (profileAddress) profileAddress.innerText = currentUser.uid;
 
         successSound.play().catch(e => console.log("Audio blocked"));
 
-        // --- BERSIHKAN JAM PASIR SEBELUM MENGISI BOX SUKSES ---
+        // 3. REFRESH KONTEN: Kosongkan overlay sebelum isi box sukses
         loadingOverlay.innerHTML = ''; 
 
-        // Update Tampilan Box Sukses Presisi
-        loadingOverlay.innerHTML = `
-            <div style="
-                background-color: #0b2135; 
-                border: 3px solid #FFD700; 
-                border-radius: 15px;
-                padding: 20px;
-                text-align: center;
-                width: 75%; 
-                max-width: 300px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
-                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-sizing: border-box;
-            ">
-                <div style="padding: 5px; margin-bottom: 10px;">
-                    <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px;">
-                </div>
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-transform: uppercase;">
-                    Login Berhasil!
-                </h2>
-                <p style="font-size:0.9rem; color:#fff;">Selamat datang, <br><strong>@${currentUser.username}</strong></p>
-            </div>
+        const successBox = document.createElement('div');
+        successBox.style.cssText = `
+            background-color: #0b2135; 
+            border: 3px solid #FFD700; 
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            width: 75%; 
+            max-width: 300px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-sizing: border-box;
         `;
+        successBox.innerHTML = `
+            <div style="padding: 5px; margin-bottom: 10px;">
+                <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px;">
+            </div>
+            <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-transform: uppercase;">
+                Login Berhasil!
+            </h2>
+            <p style="font-size:0.9rem; color:#fff;">Selamat datang, <br><strong>@${currentUser.username}</strong></p>
+        `;
+        loadingOverlay.appendChild(successBox);
 
+        // Update Tombol UI
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1379,12 +1380,16 @@ if (searchInput) {
 
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
-            setTimeout(() => loadingOverlay.remove(), 500);
-        }, 3500);
+            setTimeout(() => {
+                loadingOverlay.remove();
+                isAuthProcessRunning = false; // Buka kunci setelah selesai
+            }, 500);
+        }, 3000);
 
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
+        isAuthProcessRunning = false; // Buka kunci jika error
     }
 };
 

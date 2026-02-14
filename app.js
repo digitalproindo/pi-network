@@ -1330,7 +1330,7 @@ if (searchInput) {
     const authTimeout = setTimeout(() => {
         if (loadingOverlay) {
             loadingOverlay.remove();
-            alert("Koneksi lambat. Pastikan Anda di Pi Browser.");
+            alert("Koneksi lambat. Refresh dan silahkan coba kembali");
         }
     }, 15000);
 

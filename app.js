@@ -1305,54 +1305,77 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
+    // 1. Inisialisasi Suara
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
+    // 2. Popup Overlay
     const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'auth-overlay';
     loadingOverlay.style.cssText = `
         display: flex; justify-content: center; align-items: center;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
         z-index: 9999; opacity: 1; transition: opacity 0.5s;
     `;
-    loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
+
+    loadingOverlay.innerHTML = `
+        <div style="text-align:center;">
+            <div class="hourglass">⏳</div>
+            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.7rem;">
+                Menghubungkan...
+            </p>
+        </div>
+    `;
     document.body.appendChild(loadingOverlay);
 
     try {
         const scopes = ['username', 'payments'];
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         
+        // --- LOGIKA UPDATE DATA ---
         currentUser = auth.user;
 
-        // --- UPDATE DATA DI HALAMAN PROFIL ---
-        // 1. Update Nama di Profil
-        const profileName = document.getElementById('profile-username');
-        if (profileName) { profileName.innerText = currentUser.username; }
+        // Update Nama di Ikon Profil (Cari ID 'profile-username' atau sesuaikan dengan ID di index.html Anda)
+        const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+        if (profileDisplay) {
+            profileDisplay.innerText = currentUser.username;
+        }
+        // ---------------------------
 
-        // 2. Update UID di Profil
-        const profileUID = document.getElementById('profile-uid');
-        if (profileUID) { profileUID.innerText = currentUser.uid; }
-        // -------------------------------------
-
-        successSound.play().catch(e => console.log("Audio blocked"));
+        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Box
+        successSound.play().catch(e => console.log("Audio play blocked"));
 
         loadingOverlay.innerHTML = `
             <div style="
-                background-color: #0b2135; border: 3px solid #FFD700; border-radius: 15px;
-                padding: 20px; text-align: center; width: 75%; max-width: 300px;
+                background-color: #0b2135; 
+                border: 3px solid #FFD700; 
+                border-radius: 15px;
+                padding: 20px;
+                text-align: center;
+                width: 75%;
+                max-width: 300px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
-                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-sizing: border-box;
+                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-sizing: border-box;
             ">
                 <div style="padding: 5px; margin-bottom: 10px;">
-                    <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px;">
+                    <img src="assets/Hello-GIF.gif" 
+                         style="width: 100%; border-radius: 8px; display: block;" 
+                         class="congrats-gift">
                 </div>
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-transform: uppercase;">
+                
+                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-transform: uppercase;">
                     Login Berhasil!
                 </h2>
-                <p style="font-size:0.9rem; color:#fff;">Selamat datang, <br><strong>@${currentUser.username}</strong></p>
+                <p style="font-size:0.95rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
+                    Selamat datang, <br>
+                    <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
+                </p>
             </div>
         `;
 
+        // Update Tombol Logout
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1360,6 +1383,7 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
+        // 4. Tutup otomatis dalam 3.5 detik
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             setTimeout(() => loadingOverlay.remove(), 500);
@@ -1368,6 +1392,9 @@ if (searchInput) {
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
+        if (err.message !== "User cancelled login") {
+            alert("Gagal Login: " + err.message);
+        }
     }
 };
 

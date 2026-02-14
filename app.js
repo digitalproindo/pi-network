@@ -1325,7 +1325,14 @@ if (searchInput) {
         transition: opacity 0.5s;
     `;
 
-    loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
+    loadingOverlay.innerHTML = `
+        <div style="text-align:center;">
+            <div class="hourglass">⏳</div>
+            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.7rem;">
+                Menghubungkan...
+            </p>
+        </div>
+    `;
     document.body.appendChild(loadingOverlay);
 
     try {
@@ -1333,8 +1340,8 @@ if (searchInput) {
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
 
-        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Bingkai Presisi
-        successSound.play().catch(e => console.log("Audio diblokir browser"));
+        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Box Presisi
+        successSound.play().catch(e => console.log("Audio play blocked"));
 
         loadingOverlay.innerHTML = `
             <div style="
@@ -1343,23 +1350,24 @@ if (searchInput) {
                 border-radius: 15px;
                 padding: 20px;
                 text-align: center;
-                width: 75%; /* Diperkecil agar tidak mepet kanan-kiri */
-                max-width: 300px; /* Batas maksimal lebar agar tetap presisi */
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 215, 0, 0.2);
+                width: 75%; /* Lebih ramping agar tidak mepet layar */
+                max-width: 300px; /* Batas maksimal agar tetap simetris */
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
                 animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 box-sizing: border-box;
             ">
-                <div style="padding: 10px;">
+                <div style="padding: 5px; margin-bottom: 10px;">
                     <img src="assets/Hello-GIF.gif" 
                          style="width: 100%; border-radius: 8px; display: block;" 
                          class="congrats-gift">
                 </div>
                 
-                <h2 style="color:#FFD700; margin:10px 0 5px 0; font-weight:900; font-size:1.4rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">
-                    LOGIN BERHASIL!
+                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-transform: uppercase;">
+                    Login Berhasil!
                 </h2>
-                <p style="font-size:1rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
-                    Selamat datang, <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
+                <p style="font-size:0.95rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
+                    Selamat datang, <br>
+                    <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
                 </p>
             </div>
         `;
@@ -1372,7 +1380,7 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        // 4. Tutup otomatis (3.5 detik)
+        // 4. Tutup otomatis dalam 3.5 detik
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             setTimeout(() => loadingOverlay.remove(), 500);
@@ -1381,6 +1389,9 @@ if (searchInput) {
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
+        if (err.message !== "User cancelled login") {
+            alert("Gagal Login: " + err.message);
+        }
     }
 };
 

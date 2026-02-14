@@ -1309,7 +1309,7 @@ if (searchInput) {
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
-    // 2. Popup Overlay (Background Luar Gelap & Blur)
+    // 2. Popup Overlay (Latar belakang pudar & blur)
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
     loadingOverlay.style.cssText = `
@@ -1318,21 +1318,14 @@ if (searchInput) {
         align-items: center;
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.85);
+        background: rgba(0, 0, 0, 0.8);
         backdrop-filter: blur(8px);
         z-index: 9999;
         opacity: 1;
         transition: opacity 0.5s;
     `;
 
-    loadingOverlay.innerHTML = `
-        <div style="text-align:center;">
-            <div class="hourglass">⏳</div>
-            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px;">
-                Menghubungkan...
-            </p>
-        </div>
-    `;
+    loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
     document.body.appendChild(loadingOverlay);
 
     try {
@@ -1340,35 +1333,38 @@ if (searchInput) {
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
 
-        // 3. JIKA BERHASIL: Putar Suara & Ubah Tampilan menjadi Bingkai Emas
-        successSound.play().catch(e => console.log("Audio play diblokir"));
+        // 3. JIKA BERHASIL: Putar Suara & Tampilkan Bingkai Presisi
+        successSound.play().catch(e => console.log("Audio diblokir browser"));
 
         loadingOverlay.innerHTML = `
             <div style="
                 background-color: #0b2135; 
-                border: 4px solid #FFD700; 
-                border-radius: 20px;
-                padding: 25px;
+                border: 3px solid #FFD700; 
+                border-radius: 15px;
+                padding: 20px;
                 text-align: center;
-                width: 85%;
-                max-width: 350px;
-                box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
-                animation: zoomIn 0.4s ease-out;
+                width: 75%; /* Diperkecil agar tidak mepet kanan-kiri */
+                max-width: 300px; /* Batas maksimal lebar agar tetap presisi */
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 215, 0, 0.2);
+                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-sizing: border-box;
             ">
-                <img src="assets/Hello-GIF.gif" 
-                     style="width: 100%; border-radius: 10px; margin-bottom: 10px;" 
-                     class="congrats-gift">
+                <div style="padding: 10px;">
+                    <img src="assets/Hello-GIF.gif" 
+                         style="width: 100%; border-radius: 8px; display: block;" 
+                         class="congrats-gift">
+                </div>
                 
-                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.6rem; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">
+                <h2 style="color:#FFD700; margin:10px 0 5px 0; font-weight:900; font-size:1.4rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5);">
                     LOGIN BERHASIL!
                 </h2>
-                <p style="font-size:1.1rem; color:#fff; margin-bottom: 5px;">
+                <p style="font-size:1rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
                     Selamat datang, <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
                 </p>
             </div>
         `;
 
-        // Update UI Tombol Logout
+        // Update UI Tombol
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1376,7 +1372,7 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
-        // 4. Tutup otomatis dalam 3.5 detik (Disesuaikan agar user bisa melihat bingkainya)
+        // 4. Tutup otomatis (3.5 detik)
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
             setTimeout(() => loadingOverlay.remove(), 500);
@@ -1385,9 +1381,6 @@ if (searchInput) {
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
-        if (err.message !== "User cancelled login") {
-            alert("Gagal Login: " + err.message);
-        }
     }
 };
 

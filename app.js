@@ -1309,46 +1309,31 @@ if (searchInput) {
     successSound.load(); 
 
     const loadingOverlay = document.createElement('div');
-    loadingOverlay.className = 'auth-overlay';
     loadingOverlay.style.cssText = `
         display: flex; justify-content: center; align-items: center;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
         background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
         z-index: 9999; opacity: 1; transition: opacity 0.5s;
     `;
-
-    loadingOverlay.innerHTML = `
-        <div style="text-align:center;">
-            <div class="hourglass">⏳</div>
-            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.7rem;">
-                Menghubungkan...
-            </p>
-        </div>
-    `;
+    loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
     document.body.appendChild(loadingOverlay);
 
     try {
-        const scopes = ['username', 'payments', 'wallet_address']; // Tambahkan wallet_address jika diperlukan
+        const scopes = ['username', 'payments'];
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         
-        // 1. SIMPAN DATA KE VARIABEL GLOBAL
         currentUser = auth.user;
 
-        // 2. UPDATE UI PROFIL (Username & UID)
-        // Update Nama
-        const profileDisplay = document.getElementById('profile-username');
-        if (profileDisplay) {
-            profileDisplay.innerText = currentUser.username;
-        }
+        // --- UPDATE DATA DI HALAMAN PROFIL ---
+        // 1. Update Nama di Profil
+        const profileName = document.getElementById('profile-username');
+        if (profileName) { profileName.innerText = currentUser.username; }
 
-        // Update Wallet UID (Pastikan ID di index.html adalah 'wallet-uid')
-        const uidDisplay = document.getElementById('wallet-uid');
-        if (uidDisplay) {
-            // Kita potong UID agar tidak terlalu panjang (opsional)
-            uidDisplay.innerText = currentUser.uid; 
-        }
+        // 2. Update UID di Profil
+        const profileUID = document.getElementById('profile-uid');
+        if (profileUID) { profileUID.innerText = currentUser.uid; }
+        // -------------------------------------
 
-        // 3. TAMPILKAN POPUP SUKSES
         successSound.play().catch(e => console.log("Audio blocked"));
 
         loadingOverlay.innerHTML = `
@@ -1359,15 +1344,12 @@ if (searchInput) {
                 animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-sizing: border-box;
             ">
                 <div style="padding: 5px; margin-bottom: 10px;">
-                    <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px; display: block;">
+                    <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px;">
                 </div>
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-transform: uppercase;">
+                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-transform: uppercase;">
                     Login Berhasil!
                 </h2>
-                <p style="font-size:0.85rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
-                    Wallet UID Connected:<br>
-                    <span style="color:#4ade80; font-family: monospace; font-size: 0.7rem;">${currentUser.uid.substring(0, 15)}...</span>
-                </p>
+                <p style="font-size:0.9rem; color:#fff;">Selamat datang, <br><strong>@${currentUser.username}</strong></p>
             </div>
         `;
 
@@ -1386,7 +1368,6 @@ if (searchInput) {
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
-        alert("Gagal Login: " + err.message);
     }
 };
 

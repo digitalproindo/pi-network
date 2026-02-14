@@ -1304,66 +1304,41 @@ if (searchInput) {
     });
 }
 
-   window.handleAuth = async () => {
-    // 1. Inisialisasi Suara
-    const successSound = new Audio("assets/sound-effect.mp3");
-    successSound.load(); 
+    window.handleAuth = async () => {
+    // 1. Inisialisasi Suara "Ting" (Base64 agar praktis)
+    const successSound = new Audio("assets/success-sound.mp3");
+successSound.load();
 
-    // 2. Popup Overlay
+    // 2. Tampilkan Popup Loading Jam Pasir
     const loadingOverlay = document.createElement('div');
-    loadingOverlay.style.cssText = `
-        display: flex; justify-content: center; align-items: center;
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
-        z-index: 9999; opacity: 1; transition: opacity 0.5s;
+    loadingOverlay.className = 'auth-overlay';
+    loadingOverlay.innerHTML = `
+        <div style="text-align:center;">
+            <div class="hourglass">⏳</div>
+            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.8rem;">
+                Menghubungkan...
+            </p>
+        </div>
     `;
-    loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
     document.body.appendChild(loadingOverlay);
 
     try {
         const scopes = ['username', 'payments'];
-        const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
-        
+        const auth = await Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
 
-        // --- UPDATE DATA DI HALAMAN PROFIL (index.html) ---
-        const profileName = document.getElementById('profile-username');
-        const profileAddress = document.getElementById('profile-address');
+        // 3. JIKA BERHASIL: Mainkan Suara & Tampilkan Animasi Gift
+        successSound.play().catch(e => console.log("Audio play blocked by browser"));
 
-        if (profileName) { 
-            profileName.innerText = currentUser.username; 
-        }
-        if (profileAddress) { 
-            profileAddress.innerText = currentUser.uid; // Memasukkan UID ke id="profile-address"
-        }
-        // --------------------------------------------------
-
-        successSound.play().catch(e => console.log("Audio blocked"));
-
-        // Update Tampilan Box Sukses Presisi
         loadingOverlay.innerHTML = `
-            <div style="
-                background-color: #0b2135; 
-                border: 3px solid #FFD700; 
-                border-radius: 15px;
-                padding: 20px;
-                text-align: center;
-                width: 75%; 
-                max-width: 300px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
-                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                box-sizing: border-box;
-            ">
-                <div style="padding: 5px; margin-bottom: 10px;">
-                    <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px;">
-                </div>
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-transform: uppercase;">
-                    Login Berhasil!
-                </h2>
-                <p style="font-size:0.9rem; color:#fff;">Selamat datang, <br><strong>@${currentUser.username}</strong></p>
+            <div style="text-align:center; animation: fadeIn 0.5s;">
+                <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExeWRwb3d2OTRoMDM2bDlreDAwM3ZmajF3NjJwdXpicTdtbjB4cGEybCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xUPGGDNsLvqsBOhuU0/giphy.gif" class="congrats-gift">
+                <h2 style="color:#FFD700; margin:10px 0; font-weight:900; font-size:1.8rem;">LOGIN BERHASIL!</h2>
+                <p style="font-size:1.1rem; color:#fff;">Selamat datang, <span style="color:#ba68c8;">@${currentUser.username}</span></p>
             </div>
         `;
 
+        // Update UI tombol & profil
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
@@ -1371,14 +1346,21 @@ if (searchInput) {
             loginBtn.onclick = () => location.reload();
         }
 
+        if (document.getElementById('profile-username')) {
+            document.getElementById('profile-username').innerText = `@${currentUser.username}`;
+        }
+
+        // Tutup otomatis setelah 3.5 detik
         setTimeout(() => {
             loadingOverlay.style.opacity = '0';
+            loadingOverlay.style.transition = '0.5s';
             setTimeout(() => loadingOverlay.remove(), 500);
         }, 3500);
 
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
+        alert("Gagal Login: " + err.message); 
     }
 };
 

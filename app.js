@@ -1305,14 +1305,16 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
+    // 1. Inisialisasi Suara
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
+    // 2. Popup Overlay
     const loadingOverlay = document.createElement('div');
     loadingOverlay.style.cssText = `
         display: flex; justify-content: center; align-items: center;
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px);
         z-index: 9999; opacity: 1; transition: opacity 0.5s;
     `;
     loadingOverlay.innerHTML = `<div class="hourglass">⏳</div>`;
@@ -1324,24 +1326,33 @@ if (searchInput) {
         
         currentUser = auth.user;
 
-        // --- UPDATE DATA DI HALAMAN PROFIL ---
-        // 1. Update Nama di Profil
+        // --- UPDATE DATA DI HALAMAN PROFIL (index.html) ---
         const profileName = document.getElementById('profile-username');
-        if (profileName) { profileName.innerText = currentUser.username; }
+        const profileAddress = document.getElementById('profile-address');
 
-        // 2. Update UID di Profil
-        const profileUID = document.getElementById('profile-uid');
-        if (profileUID) { profileUID.innerText = currentUser.uid; }
-        // -------------------------------------
+        if (profileName) { 
+            profileName.innerText = currentUser.username; 
+        }
+        if (profileAddress) { 
+            profileAddress.innerText = currentUser.uid; // Memasukkan UID ke id="profile-address"
+        }
+        // --------------------------------------------------
 
         successSound.play().catch(e => console.log("Audio blocked"));
 
+        // Update Tampilan Box Sukses Presisi
         loadingOverlay.innerHTML = `
             <div style="
-                background-color: #0b2135; border: 3px solid #FFD700; border-radius: 15px;
-                padding: 20px; text-align: center; width: 75%; max-width: 300px;
+                background-color: #0b2135; 
+                border: 3px solid #FFD700; 
+                border-radius: 15px;
+                padding: 20px;
+                text-align: center;
+                width: 75%; 
+                max-width: 300px;
                 box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
-                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-sizing: border-box;
+                animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                box-sizing: border-box;
             ">
                 <div style="padding: 5px; margin-bottom: 10px;">
                     <img src="assets/Hello-GIF.gif" style="width: 100%; border-radius: 8px;">

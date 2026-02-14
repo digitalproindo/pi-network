@@ -1336,10 +1336,16 @@ if (searchInput) {
         // --- LOGIKA UPDATE DATA ---
         currentUser = auth.user;
 
-        // Update Nama di Ikon Profil (Cari ID 'profile-username' atau sesuaikan dengan ID di index.html Anda)
+        // Update Nama di Ikon Profil
         const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
         if (profileDisplay) {
             profileDisplay.innerText = currentUser.username;
+        }
+
+        // UPDATE WALLET UID DI HALAMAN PROFIL (Sesuai ID profile-address di index.html Anda)
+        const profileAddress = document.getElementById('profile-address');
+        if (profileAddress) {
+            profileAddress.innerText = currentUser.uid;
         }
         // ---------------------------
 

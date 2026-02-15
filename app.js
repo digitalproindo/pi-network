@@ -1037,10 +1037,8 @@ function renderProducts(data, targetGridId) {
     if (!currentUser) return alert("Silakan Login di Profil!");
     if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
 
-    // Logika tambahan untuk mendetailkan isi keranjang
     let detailedItemName = name;
     if (name === 'Total Keranjang' && cart.length > 0) {
-        // Mengambil semua nama produk di keranjang dan menggabungkannya
         const itemNames = cart.map(item => item.name).join(", ");
         detailedItemName = `Keranjang (${itemNames})`;
     }
@@ -1049,19 +1047,12 @@ function renderProducts(data, targetGridId) {
         await Pi.createPayment({
             amount: parseFloat(amount),
             memo: `Pembelian ${name}`,
-            metadata: { productName: detailedItemName }, // Gunakan nama yang lebih detail
+            metadata: { productName: detailedItemName },
         }, {
             onReadyForServerApproval: async (paymentId) => {
+                // Ganti dengan endpoint server Anda atau biarkan jika sudah ada
                 const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
                 return res.ok;
-            },
-            onReadyForServerCompletion: async (paymentId, txid) => {
-                const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
-                if (res.ok) { 
-                    // Kirim detailedItemName ke overlay sukses
-                    showSuccessOverlay(amount, detailedItemName, txid);
-                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
-                }
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
                 const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
@@ -1076,39 +1067,65 @@ function renderProducts(data, targetGridId) {
     } catch (err) { console.error(err); }
 };
 
-    function showSuccessOverlay(amount, name, txid) {
-        const overlay = document.createElement('div');
-        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
-        
-        const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK* %0A` +
-                              `*PT. DIGITAL PRO INDO*%0A` +
-                              `_______________________________%0A%0A` +
-                              `Halo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A` +
-                              ` *DETAIL TRANSAKSI:*%0A` +
-                              `• *Item:* ${name}%0A` +
-                              `• *Total:* ${amount} π%0A` +
-                              `• *Status:* Success (Pi Network)%0A` +
-                              `• *TXID:* \`${txid}\` %0A%0A` +
-                              ` *DATA PENGIRIMAN:*%0A` +
-                              `• *Penerima:* ${userAddress.nama}%0A` +
-                              `• *Telepon:* ${userAddress.telepon}%0A` +
-                              `• *Alamat:* ${userAddress.alamatLengkap}%0A%0A` +
-                              `_______________________________%0A` +
-                              ` *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+function showSuccessOverlay(amount, name, txid) {
+    // 1. TEMPATKAN URL APPS SCRIPT ANDA
+    const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 
-        overlay.innerHTML = `
-            <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-                <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                    <span style="font-size: 45px;">✅</span>
-                </div>
-                <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
-                <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; margin-top:20px;">
-                    KIRIM DATA KE WHATSAPP
-                </a>
-                <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
-            </div>`;
-        document.body.appendChild(overlay);
-    }
+    // 2. SIAPKAN DATA UNTUK EXCEL (Sesuai urutan: Tanggal, Penerima, Username, Item, Total, TXID, Alamat, Telepon)
+    const dataTransaksi = {
+        tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+        penerima: userAddress.nama,
+        username: currentUser.username,
+        item: name,
+        total: amount,
+        txid: txid,
+        alamat: userAddress.alamatLengkap,
+        telepon: userAddress.telepon
+    };
+
+    // 3. KIRIM KE EXCEL (DI LATAR BELAKANG)
+    fetch(excelWebhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataTransaksi)
+    }).catch(err => console.error("Gagal catat Excel:", err));
+
+    // --- TAMPILAN OVERLAY SEPERTI SEBELUMNYA ---
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
+    
+    // Format WhatsApp (Menggunakan draf Anda)
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK* %0A` +
+                          `*PT. DIGITAL PRO INDO*%0A` +
+                          `_______________________________%0A%0A` +
+                          `Halo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A` +
+                          ` *DETAIL TRANSAKSI:*%0A` +
+                          `• *Item:* ${name}%0A` +
+                          `• *Total:* ${amount} π%0A` +
+                          `• *Status:* Success (Pi Network)%0A` +
+                          `• *TXID:* \`${txid}\` %0A%0A` +
+                          ` *DATA PENGIRIMAN:*%0A` +
+                          `• *Penerima:* ${userAddress.nama}%0A` +
+                          `• *Telepon:* ${userAddress.telepon}%0A` +
+                          `• *Alamat:* ${userAddress.alamatLengkap}%0A%0A` +
+                          `_______________________________%0A` +
+                          ` *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+
+    overlay.innerHTML = `
+        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+            <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <span style="font-size: 45px;">✅</span>
+            </div>
+            <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
+            <p style="color:#64748b; margin-top:10px; font-size:0.9rem;">Data telah dicatat di sistem kami.</p>
+            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; margin-top:20px;">
+                KIRIM DATA KE WHATSAPP
+            </a>
+            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
 
     window.addToCart = (id) => {
     const p = productsData.find(x => x.id === id);

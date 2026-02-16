@@ -1076,13 +1076,16 @@ function renderProducts(data, targetGridId) {
 };
 
 // --- FUNGSI POPUP LOGIN KONSISTEN (GOLD THEME) ---
+// --- FUNGSI POPUP LOGIN KONSISTEN ---
 function showLoginPrompt() {
     const overlay = document.createElement('div');
     overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
     
     overlay.innerHTML = `
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
-            <div style="font-size: 50px; margin-bottom: 15px;">🔒</div>
+            <div style="margin-bottom: 15px;">
+                <video src="merah-putih.mp4" autoplay loop muted playsinline style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #FFD700;"></video>
+            </div>
             <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Selamat Datang</h2>
             <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace <br> DIGITAL PRO INDO</p>
             

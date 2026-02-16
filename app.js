@@ -1084,7 +1084,7 @@ function showLoginPrompt() {
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
             <div style="font-size: 50px; margin-bottom: 15px;">🔒</div>
             <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Selamat Datang</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace DIGITAL PRO INDO</p>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace <br> DIGITAL PRO INDO</p>
             
             <button onclick="this.parentElement.parentElement.remove(); window.handleAuth();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer; box-shadow: 0 5px 15px rgba(255,215,0,0.3);">
                 LOGIN SEKARANG

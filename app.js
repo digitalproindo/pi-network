@@ -1034,8 +1034,17 @@ function renderProducts(data, targetGridId) {
 }
 
     window.handlePayment = async (amount, name) => {
-    if (!currentUser) return alert("Silakan Login di Profil!");
-    if (!userAddress.nama) { alert("Isi alamat pengiriman dulu!"); window.showAddressForm(); return; }
+    // 1. POLESAN: Ganti alert login kaku dengan Modal Estetik
+    if (!currentUser) {
+        showLoginPrompt();
+        return;
+    }
+
+    // 2. POLESAN: Ganti alert alamat (Opsional, tapi disarankan agar konsisten)
+    if (!userAddress.nama) { 
+        showAddressPrompt(); 
+        return; 
+    }
 
     let detailedItemName = name;
     if (name === 'Total Keranjang' && cart.length > 0) {
@@ -1050,7 +1059,6 @@ function renderProducts(data, targetGridId) {
             metadata: { productName: detailedItemName },
         }, {
             onReadyForServerApproval: async (paymentId) => {
-                // Ganti dengan endpoint server Anda atau biarkan jika sudah ada
                 const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
                 return res.ok;
             },
@@ -1066,6 +1074,44 @@ function renderProducts(data, targetGridId) {
         });
     } catch (err) { console.error(err); }
 };
+
+// --- FUNGSI POPUP LOGIN KONSISTEN (GOLD THEME) ---
+function showLoginPrompt() {
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
+    
+    overlay.innerHTML = `
+        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
+            <div style="font-size: 50px; margin-bottom: 15px;">🔒</div>
+            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Akses Terbatas</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan hubungkan akun **Pi Network** Anda untuk melanjutkan pembelian produk premium.</p>
+            
+            <button onclick="this.parentElement.parentElement.remove(); window.handleAuth();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer; box-shadow: 0 5px 15px rgba(255,215,0,0.3);">
+                LOGIN SEKARANG
+            </button>
+            
+            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; font-size:0.85rem;">Mungkin Nanti</button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
+
+// --- FUNGSI POPUP ALAMAT KONSISTEN ---
+function showAddressPrompt() {
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
+    
+    overlay.innerHTML = `
+        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
+            <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
+            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Alamat Kosong</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
+            
+            <button onclick="this.parentElement.parentElement.remove(); window.showAddressForm();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer;">
+                LENGKAPI ALAMAT
+            </button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
 
 function showSuccessOverlay(amount, name, txid) {
     // 1. TEMPATKAN URL APPS SCRIPT ANDA

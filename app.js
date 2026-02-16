@@ -1076,21 +1076,20 @@ function renderProducts(data, targetGridId) {
 };
 
 // --- FUNGSI POPUP LOGIN KONSISTEN (GOLD THEME) ---
-function showLoginPrompt() {
-    const overlay = document.createElement('div');
-    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
-    
-    overlay.innerHTML = `
+overlay.innerHTML = `
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
-            <div style="font-size: 50px; margin-bottom: 15px;">🔒</div>
-            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Selamat Datang</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace <br> DIGITAL PRO INDO</p>
+            <div style="margin-bottom: 15px;">
+                <img src="merah-putih.mp4" 
+                     alt="Location Animation" 
+                     style="width: 80px; height: 80px; object-fit: contain;">
+            </div>
+
+            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Alamat Kosong</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
             
-            <button onclick="this.parentElement.parentElement.remove(); window.handleAuth();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer; box-shadow: 0 5px 15px rgba(255,215,0,0.3);">
-                LOGIN SEKARANG
+            <button onclick="this.parentElement.parentElement.remove(); window.showAddressForm();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer; text-transform:uppercase;">
+                LENGKAPI ALAMAT
             </button>
-            
-            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; font-size:0.85rem;">Mungkin Nanti</button>
         </div>`;
     document.body.appendChild(overlay);
 }

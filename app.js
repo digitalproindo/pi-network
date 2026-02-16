@@ -1118,7 +1118,7 @@ function showSuccessOverlay(amount, name, txid) {
                 <span style="font-size: 45px;">✅</span>
             </div>
             <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
-            <p style="color:#64748b; margin-top:10px; font-size:0.9rem;">Data telah dicatat di sistem kami.</p>
+            <p style="color:#64748b; margin-top:10px; font-size:0.9rem;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
             <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; margin-top:20px;">
                 KIRIM DATA KE WHATSAPP
             </a>

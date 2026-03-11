@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service - PT. Digital Pro Indo</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark-bg: #0a0a0a;
+            --card-bg: #141414;
+            --text-gray: #a0a0a0;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            font-family: 'Inter', -apple-system, sans-serif;
+            margin: 0;
+            color: #ffffff;
+            scroll-behavior: smooth;
+        }
+
+        /* Header & Navigation */
+        .header-premium {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #222;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 15px 0;
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 24px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            margin: 0;
+            text-transform: uppercase;
+        }
+
+        .logo span {
+            color: var(--gold);
+        }
+
+        /* Hero Section */
+        .tos-container {
+            padding: 80px 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-text {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        h1 {
+            font-size: clamp(2.2rem, 6vw, 3.5rem);
+            font-weight: 900;
+            margin-bottom: 10px;
+            letter-spacing: -1px;
+        }
+
+        .updated-date {
+            color: var(--gold);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Content Cards */
+        .tos-card {
+            background: var(--card-bg);
+            padding: clamp(25px, 5vw, 40px);
+            border-radius: 24px;
+            border: 1px solid #1f1f1f;
+            margin-bottom: 30px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .tos-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .tos-card h2 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .tos-card h2::before {
+            content: "";
+            width: 12px;
+            height: 12px;
+            background: var(--gold);
+            border-radius: 2px;
+        }
+
+        .tos-card p {
+            color: var(--text-gray);
+            line-height: 1.8;
+            font-size: 1.05rem;
+            margin: 0;
+        }
+
+        .back-btn {
+            color: #fff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 10px 20px;
+            border-radius: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: var(--gold);
+            color: #000;
+            border-color: var(--gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .tos-container { padding: 40px 20px; }
+            .header-container { flex-direction: column; gap: 15px; }
+            h1 { font-size: 2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header-premium">
+        <div class="header-container">
+            <h2 class="logo">PT. DIGITAL PRO <span>INDO</span></h2>
+            <a href="index.html" class="back-btn">← Kembali</a>
+        </div>
+    </header>
+
+    <div class="tos-container">
+        <div class="hero-text">
+            <h1>Terms of Service</h1>
+            <p class="updated-date">Terakhir Diperbarui: 11 Maret 2026</p>
+        </div>
+
+        <div class="tos-card">
+            <h2>Layanan Platform</h2>
+            <p>Marketplace ini saat ini beroperasi menggunakan <strong>Pi Testnet</strong>. Semua transaksi bersifat simulasi dan bertujuan untuk pengembangan ekosistem Pi Network sebelum fase Mainnet terbuka.</p>
+        </div>
+
+        <div class="tos-card">
+            <h2>Ketentuan Transaksi</h2>
+            <p>PT. Digital Pro Indo tidak bertanggung jawab atas kesalahan input data atau pengiriman Pi ke alamat wallet yang salah. Pastikan Anda melakukan verifikasi ganda sebelum mengonfirmasi pembayaran di blockchain.</p>
+        </div>
+
+        <div class="tos-card">
+            <h2>Kebijakan Pengiriman</h2>
+            <p>Waktu pengiriman produk fisik akan dikoordinasikan secara manual melalui Admin setelah bukti transaksi berhasil divalidasi pada Explorer Pi Network.</p>
+        </div>
+
+        <div class="tos-card">
+            <h2>Batasan Penggunaan</h2>
+            <p>Kami berhak melakukan penangguhan akses atau pembatalan transaksi apabila ditemukan aktivitas mencurigakan, manipulasi sistem, atau pelanggaran pedoman komunitas Pi Network.</p>
+        </div>
+
+        <footer style="margin-top: 100px; text-align: center; border-top: 1px solid #222; padding-top: 40px;">
+            <p style="color: #444; font-size: 0.9rem;">&copy; 2026 PT. Digital Pro Indo. Seluruh Hak Cipta Dilindungi.</p>
+        </footer>
+    </div>
+
+</body>
+</html>

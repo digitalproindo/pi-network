@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,7 +21,6 @@
             scroll-behavior: smooth;
         }
 
-        /* Header & Navigation */
         .header-premium {
             background: rgba(10, 10, 10, 0.8);
             backdrop-filter: blur(10px);
@@ -49,11 +48,8 @@
             text-transform: uppercase;
         }
 
-        .logo span {
-            color: var(--gold);
-        }
+        .logo span { color: var(--gold); }
 
-        /* Hero Section */
         .tos-container {
             padding: 80px 24px;
             max-width: 900px;
@@ -79,20 +75,16 @@
             letter-spacing: 3px;
         }
 
-        /* Content Cards */
         .tos-card {
             background: var(--card-bg);
             padding: clamp(25px, 5vw, 40px);
             border-radius: 24px;
             border: 1px solid #1f1f1f;
             margin-bottom: 30px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: 0.4s ease;
         }
 
-        .tos-card:hover {
-            border-color: var(--gold);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
+        .tos-card:hover { border-color: var(--gold); }
 
         .tos-card h2 {
             color: #fff;
@@ -116,7 +108,6 @@
             color: var(--text-gray);
             line-height: 1.8;
             font-size: 1.05rem;
-            margin: 0;
         }
 
         .back-btn {
@@ -130,17 +121,11 @@
             transition: 0.3s;
         }
 
-        .back-btn:hover {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-        }
+        .back-btn:hover { background: var(--gold); color: #000; }
 
-        /* Responsive */
         @media (max-width: 640px) {
             .tos-container { padding: 40px 20px; }
             .header-container { flex-direction: column; gap: 15px; }
-            h1 { font-size: 2rem; }
         }
     </style>
 </head>
@@ -149,38 +134,43 @@
     <header class="header-premium">
         <div class="header-container">
             <h2 class="logo">PT. DIGITAL PRO <span>INDO</span></h2>
-            <a href="index.html" class="back-btn">← Kembali</a>
+            <a href="index.html" class="back-btn">← Back</a>
         </div>
     </header>
 
     <div class="tos-container">
         <div class="hero-text">
             <h1>Terms of Service</h1>
-            <p class="updated-date">Terakhir Diperbarui: 11 Maret 2026</p>
+            <p class="updated-date">Last Updated: March 11, 2026</p>
         </div>
 
         <div class="tos-card">
-            <h2>Layanan Platform</h2>
-            <p>Marketplace ini saat ini beroperasi menggunakan <strong>Pi Testnet</strong>. Semua transaksi bersifat simulasi dan bertujuan untuk pengembangan ekosistem Pi Network sebelum fase Mainnet terbuka.</p>
+            <h2>1. Platform Service</h2>
+            <p>This marketplace currently operates on the <strong>Pi Testnet</strong>. All transactions are simulations intended for the development and testing of the Pi Network ecosystem prior to the Open Mainnet phase.</p>
         </div>
 
         <div class="tos-card">
-            <h2>Ketentuan Transaksi</h2>
-            <p>PT. Digital Pro Indo tidak bertanggung jawab atas kesalahan input data atau pengiriman Pi ke alamat wallet yang salah. Pastikan Anda melakukan verifikasi ganda sebelum mengonfirmasi pembayaran di blockchain.</p>
+            <h2>2. Transaction Policy</h2>
+            <p>PT. Digital Pro Indo is not responsible for incorrect data entry or the transfer of Pi to an incorrect wallet address. Users are required to double-verify all transaction details before confirming payments on the Pi blockchain.</p>
         </div>
 
         <div class="tos-card">
-            <h2>Kebijakan Pengiriman</h2>
-            <p>Waktu pengiriman produk fisik akan dikoordinasikan secara manual melalui Admin setelah bukti transaksi berhasil divalidasi pada Explorer Pi Network.</p>
+            <h2>3. Product Delivery</h2>
+            <p>Shipping and delivery of physical products will be coordinated manually via the Administrator after the transaction is successfully validated on the Pi Network Explorer.</p>
         </div>
 
         <div class="tos-card">
-            <h2>Batasan Penggunaan</h2>
-            <p>Kami berhak melakukan penangguhan akses atau pembatalan transaksi apabila ditemukan aktivitas mencurigakan, manipulasi sistem, atau pelanggaran pedoman komunitas Pi Network.</p>
+            <h2>4. Usage Limitations</h2>
+            <p>We reserve the right to suspend access or cancel transactions in the event of suspicious activity, system manipulation, or violations of the Pi Network community guidelines.</p>
+        </div>
+
+        <div class="tos-card">
+            <h2>5. Compliance</h2>
+            <p>This application complies with the Pi Network Developer guidelines. All transactions within this platform are processed exclusively using Pi.</p>
         </div>
 
         <footer style="margin-top: 100px; text-align: center; border-top: 1px solid #222; padding-top: 40px;">
-            <p style="color: #444; font-size: 0.9rem;">&copy; 2026 PT. Digital Pro Indo. Seluruh Hak Cipta Dilindungi.</p>
+            <p style="color: #444; font-size: 0.9rem;">&copy; 2026 PT. Digital Pro Indo. All Rights Reserved.</p>
         </footer>
     </div>
 

@@ -1,53 +1,40 @@
-// api/approve.js
 export default async function handler(req, res) {
-    // 1. Validasi Method
+    // Izinkan akses dari domain luar (CORS)
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
+    }
+
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: "Method Not Allowed" });
-    }
-
-    const { paymentId } = req.body;
-
-    // 2. Validasi Input
-    if (!paymentId) {
-        return res.status(400).json({ error: "Payment ID wajib diisi" });
-    }
-
-    // Cek apakah API Key tersedia di environment
-    if (!process.env.PI_API_KEY) {
-        console.error("ERROR: PI_API_KEY tidak ditemukan di Vercel Settings!");
-        return res.status(500).json({ error: "Konfigurasi server tidak lengkap" });
+        return res.status(405).json({ error: 'Metode tidak diizinkan' });
     }
 
     try {
-        console.log(`Mencoba menyetujui pembayaran di Server Pi: ${paymentId}`);
+        const { paymentId } = req.body;
+        if (!paymentId) {
+            return res.status(400).json({ error: 'Payment ID wajib diisi' });
+        }
 
-        // 3. Memanggil API Pi Network untuk 'approve'
-        const response = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
+        // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI DI SINI
+        const PI_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
+
+        // Kirim persetujuan ke server Pi Network
+        const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
             method: 'POST',
             headers: {
-                // Pastikan menggunakan awalan 'Key ' sebelum Secret Key
-                'Authorization': `Key ${process.env.PI_API_KEY.trim()}`, 
+                'Authorization': `Key ${PI_API_KEY}`,
                 'Content-Type': 'application/json'
             }
         });
 
-        const data = await response.json();
-
-        if (response.ok) {
-            console.log("Approval Berhasil!");
-            // Mengembalikan status 200 agar SDK membuka jendela dompet
-            return res.status(200).json(data);
-        } else {
-            // Jika Pi API menolak, log detailnya agar bisa diperbaiki
-            console.error("Ditolak oleh Pi API:", data);
-            return res.status(response.status).json({ 
-                error: "Ditolak oleh Pi Network", 
-                details: data 
-            });
-        }
+        const data = await piResponse.json();
+        return res.status(200).json(data);
 
     } catch (error) {
-        console.error("Kesalahan koneksi ke Server Pi:", error.message);
-        return res.status(500).json({ error: "Gagal terhubung ke server Pi Network" });
+        console.error("Error di approval:", error);
+        return res.status(500).json({ error: 'Gagal memproses approval ke Pi Server' });
     }
 }

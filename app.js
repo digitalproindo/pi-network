@@ -50,6 +50,9 @@ const ADMIN_WA = "6282191851112";
 // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI ANDA DI SINI
 const PI_SERVER_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
 
+// Jembatan Proxy pihak ketiga agar GitHub Pages diizinkan mengetuk Server Pi Network
+const PROXY_URL = "https://corsproxy.io/?"; 
+
 // ==========================================
 // 2. FUNGSI VISUAL UTAMA (ANTI-BLANK)
 // ==========================================
@@ -84,115 +87,45 @@ function renderKatalogPasar(arrayData, idTargetElemen) {
 }
 
 // ==========================================
-// 3. EVENT LIFECYCLE INITIALIZATION
+// 3. INISIALISASI HALAMAN
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Tampilkan produk detik pertama secara paksa agar tidak blank
     renderKatalogPasar(productsData, "main-grid");
     
-    // Konfigurasi Input Pencarian
-    const searchInput = document.getElementById("search-input");
-    if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
-            const keyword = e.target.value.toLowerCase().trim();
-            const hasilFilter = productsData.filter(p => p.name.toLowerCase().includes(keyword));
-            const containerHasil = document.getElementById("search-results");
-            
-            if (keyword === "") {
-                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#94a3b8;">Silakan masukkan nama produk...</p></div>`;
-            } else if (hasilFilter.length === 0) {
-                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#ef4444; font-weight:600;">Produk tidak ditemukan.</p></div>`;
-            } else {
-                renderKatalogPasar(hasilFilter, "search-results");
-            }
-        });
-    }
-
-    // Jalankan Pi SDK secara otomatis begitu window selesai memuat script eksternal
     if (window.Pi) {
-        mengaktifkanPiSDK();
-    } else {
-        window.addEventListener("load", () => {
-            if (window.Pi) mengaktifkanPiSDK();
-        });
+        try {
+            window.Pi.init({ version: "2.0", sandbox: true }); 
+            autentikasiPiOtomatis();
+        } catch (err) {
+            console.error("Gagal memuat Pi SDK:", err);
+        }
     }
 });
 
-function mengaktifkanPiSDK() {
-    try {
-        window.Pi.init({ version: "2.0", sandbox: true }); 
-        console.log("Pi SDK Client-Side Aktif!");
-        autentikasiPiOtomatis();
-    } catch (err) {
-        console.error("Gagal konfigurasi internal Pi SDK:", err);
-    }
-}
-
-// ==========================================
-// 4. AUTENTIKASI AKUN (LOGIN)
-// ==========================================
 function autentikasiPiOtomatis() {
     window.Pi.authenticate(['username', 'payments'], (payment) => {})
         .then((auth) => {
             currentUser = auth.user;
             const btnLogin = document.getElementById("login-btn");
             if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
-            
-            const profileUser = document.getElementById("profile-username");
-            const profileAddr = document.getElementById("profile-address");
-            if (profileUser) profileUser.innerText = auth.user.username;
-            if (profileAddr) profileAddr.innerText = auth.user.uid || "Pi Verified Client";
         })
-        .catch((err) => {
-            console.log("Menunggu login manual dari pembeli.");
-        });
+        .catch((err) => console.log("Menunggu login manual."));
 }
 
 window.handleSignIn = function() {
     if (!window.Pi) {
-        alert("Harap buka aplikasi ini langsung dari dalam Pi Browser.");
+        alert("Harap buka di Pi Browser.");
         return;
     }
     autentikasiPiOtomatis();
 };
 
 // ==========================================
-// 5. SISTEM NAVIGASI & DIALOG HALAMAN
-// ==========================================
-window.filterCategory = function(namaKategori, elemenPill) {
-    document.querySelectorAll(".category-pill").forEach(pill => pill.classList.remove("active"));
-    elemenPill.classList.add("active");
-
-    if (namaKategori === "all" || namaKategori === "Semua") {
-        renderKatalogPasar(productsData, "main-grid");
-    } else {
-        const dataDisaring = productsData.filter(p => p.category.toLowerCase() === namaKategori.toLowerCase());
-        const targetBeranda = document.getElementById("main-grid");
-        if (dataDisaring.length === 0) {
-            targetBeranda.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:250px; width:100%; grid-column:1/-1;"><p style="color:#94a3b8;">Kategori "${namaKategori}" segera hadir.</p></div>`;
-        } else {
-            renderKatalogPasar(dataDisaring, "main-grid");
-        }
-    }
-};
-
-window.switchPage = function(targetHalaman) {
-    document.getElementById("page-home").classList.add("hidden");
-    document.getElementById("page-cari").classList.add("hidden");
-    document.getElementById("page-keranjang").classList.add("hidden");
-    document.getElementById("page-profile").classList.add("hidden");
-    document.getElementById(`page-${targetHalaman}`).classList.remove("hidden");
-
-    document.querySelectorAll(".bottom-nav .nav-item").forEach(item => item.classList.remove("active"));
-    document.getElementById(`nav-${targetHalaman}`).classList.add("active");
-};
-
-// ==========================================
-// 6. LOGIKA TRANSAKSI LANGSUNG KE ENDPOINT PI NETWORK
+// 4. LOGIKA TRANSAKSI MENEMBUS CORS (KHUSUS GITHUB PAGES)
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Silakan ketuk tombol login akun Pi di bagian atas terlebih dahulu.");
+        alert("Peringatan: Silakan klik tombol login terlebih dahulu.");
         return;
     }
 
@@ -203,59 +136,52 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
         metadata: { product_name: namaBarang },
     }, {
-        // TAHAP APPROVAL LANGSUNG BYPASS
-        onReadyForServerApproval: (paymentId) => {
-            console.log("Mengirim konfirmasi persetujuan langsung ke Server Pi...");
+        // TAHAP A: Approval Menembus CORS Server Pi via Proxy
+        onReadyForServerApproval: async (paymentId) => {
+            console.log("Mengirim approval via Jembatan Proxy...");
+            const targetUrl = `${PROXY_URL}${encodeURIComponent(`https://api.minepi.com/v2/payments/${paymentId}/approve`)}`;
             
-            fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Key ${PI_SERVER_API_KEY}`,
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log("Approval Berhasil Diotorisasi:", data);
-            })
-            .catch(err => {
-                console.error("Eror saat menyetujui transaksi:", err);
-            });
+            try {
+                const response = await fetch(targetUrl, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Key ${PI_SERVER_API_KEY}`,
+                        "Content-Type": "application/json"
+                    }
+                });
+                const data = await response.json();
+                console.log("Jembatan Proxy Approval Sukses:", data);
+            } catch (err) {
+                console.error("Jembatan Proxy Approval Gagal:", err);
+            }
         },
         
-        // TAHAP COMPLETION LANGSUNG BYPASS
-        onReadyForServerCompletion: (paymentId, txid) => {
-            console.log("Menyelesaikan klaim koin ke Server Pi...");
+        // TAHAP B: Completion Menembus CORS Server Pi via Proxy
+        onReadyForServerCompletion: async (paymentId, txid) => {
+            console.log("Mengirim completion via Jembatan Proxy...");
+            const targetUrl = `${PROXY_URL}${encodeURIComponent(`https://api.minepi.com/v2/payments/${paymentId}/complete`)}`;
             
-            fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
-                method: "POST",
-                headers: {
-                    "Authorization": `Key ${PI_SERVER_API_KEY}`,
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ txid: txid })
-            })
-            .then(res => res.json())
-            .then(data => {
-                console.log("Klaim sukses tercatat di Blockchain:", data);
-                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+            try {
+                const response = await fetch(targetUrl, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Key ${PI_SERVER_API_KEY}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ txid: txid })
+                });
+                const data = await response.json();
+                console.log("Jembatan Proxy Completion Sukses:", data);
                 
-                // Kirim Bukti Nota ke Admin WhatsApp
+                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
                 const pesanWa = `Halo Admin, saya sudah bayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
                 window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
-            })
-            .catch(err => {
-                console.error("Eror saat menyelesaikan transaksi:", err);
-            });
+            } catch (err) {
+                console.error("Jembatan Proxy Completion Gagal:", err);
+            }
         },
         
-        onCancel: (paymentId) => {
-            alert("Pembayaran dibatalkan.");
-        },
-        
-        onError: (error, payment) => {
-            console.error("Payment Error:", error);
-            alert("Transaksi ditangguhkan. Pastikan saldo dompet koin Anda mencukupi.");
-        }
+        onCancel: (paymentId) => alert("Pembayaran dibatalkan."),
+        onError: (error, payment) => alert("Transaksi ditangguhkan. Periksa saldo dompet Anda.")
     });
 };

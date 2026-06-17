@@ -47,6 +47,9 @@ const productsData = [
 let currentUser = null;
 const ADMIN_WA = "6282191851112"; 
 
+// ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI ANDA DI SINI
+const PI_SERVER_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
+
 // ==========================================
 // 2. FUNGSI VISUAL UTAMA (ANTI-BLANK)
 // ==========================================
@@ -81,7 +84,7 @@ function renderKatalogPasar(arrayData, idTargetElemen) {
 }
 
 // ==========================================
-// 3. EVENT LIFECYCLE (PRODUK & SDK INITIALIZATION)
+// 3. EVENT LIFECYCLE INITIALIZATION
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     // Tampilkan produk detik pertama secara paksa agar tidak blank
@@ -105,7 +108,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Amankan inisialisasi Pi SDK menggunakan format modern
+    // Jalankan Pi SDK secara otomatis begitu window selesai memuat script eksternal
     if (window.Pi) {
         mengaktifkanPiSDK();
     } else {
@@ -118,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function mengaktifkanPiSDK() {
     try {
         window.Pi.init({ version: "2.0", sandbox: true }); 
-        console.log("Pi SDK Modern Aktif!");
+        console.log("Pi SDK Client-Side Aktif!");
         autentikasiPiOtomatis();
     } catch (err) {
         console.error("Gagal konfigurasi internal Pi SDK:", err);
@@ -141,7 +144,7 @@ function autentikasiPiOtomatis() {
             if (profileAddr) profileAddr.innerText = auth.user.uid || "Pi Verified Client";
         })
         .catch((err) => {
-            console.log("Menunggu login manual.");
+            console.log("Menunggu login manual dari pembeli.");
         });
 }
 
@@ -154,7 +157,7 @@ window.handleSignIn = function() {
 };
 
 // ==========================================
-// 5. SISTEM NAVIGASI & HALAMAN
+// 5. SISTEM NAVIGASI & DIALOG HALAMAN
 // ==========================================
 window.filterCategory = function(namaKategori, elemenPill) {
     document.querySelectorAll(".category-pill").forEach(pill => pill.classList.remove("active"));
@@ -185,7 +188,7 @@ window.switchPage = function(targetHalaman) {
 };
 
 // ==========================================
-// 5. PIPELINE EKSEKUSI PEMBAYARAN (ANTI-KEDALUWARSA)
+// 6. LOGIKA TRANSAKSI LANGSUNG KE ENDPOINT PI NETWORK
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
@@ -200,68 +203,58 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
         metadata: { product_name: namaBarang },
     }, {
-        // TAHAP A: Mengirim persetujuan ke backend Vercel dengan Async/Await ketat
-        onReadyForServerApproval: async (paymentId) => {
-            console.log("Mencoba mengirim Payment ID ke backend:", paymentId);
+        // TAHAP APPROVAL LANGSUNG BYPASS
+        onReadyForServerApproval: (paymentId) => {
+            console.log("Mengirim konfirmasi persetujuan langsung ke Server Pi...");
             
-            try {
-                const response = await fetch("/api/approval", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ paymentId: paymentId })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Server backend merespons dengan status: ${response.status}`);
+            fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Key ${PI_SERVER_API_KEY}`,
+                    "Content-Type": "application/json"
                 }
-
-                const data = await response.json();
-                console.log("Backend sukses memberikan approval ke Pi Network:", data);
-                // Setelah tahap ini sukses, loading berputar akan berhenti dan berganti ke layar frasa sandi
-                
-            } catch (err) {
-                console.error("Gagal melakukan approval di backend:", err);
-                alert("Gagal terhubung ke server approval. Silakan coba klik beli kembali.");
-            }
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Approval Berhasil Diotorisasi:", data);
+            })
+            .catch(err => {
+                console.error("Eror saat menyetujui transaksi:", err);
+            });
         },
         
-        // TAHAP B: Pengguna sukses mengisi frasa sandi, koin diklaim masuk ke dompet Anda
-        onReadyForServerCompletion: async (paymentId, txid) => {
-            console.log("Mencoba menyelesaikan transaksi untuk TXID:", txid);
+        // TAHAP COMPLETION LANGSUNG BYPASS
+        onReadyForServerCompletion: (paymentId, txid) => {
+            console.log("Menyelesaikan klaim koin ke Server Pi...");
             
-            try {
-                const response = await fetch("/api/complete", {
-                    method: "POST",
-                    headers: { 
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                });
-
-                const data = await response.json();
-                console.log("Transaksi berhasil diselesaikan secara penuh:", data);
-                
+            fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
+                method: "POST",
+                headers: {
+                    "Authorization": `Key ${PI_SERVER_API_KEY}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ txid: txid })
+            })
+            .then(res => res.json())
+            .then(data => {
+                console.log("Klaim sukses tercatat di Blockchain:", data);
                 alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
                 
-                // Buka WhatsApp Otomatis ke Admin
+                // Kirim Bukti Nota ke Admin WhatsApp
                 const pesanWa = `Halo Admin, saya sudah bayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
                 window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
-                
-            } catch (err) {
-                console.error("Gagal menyelesaikan klaim transaksi:", err);
-                alert("Transaksi di dompet Anda berhasil, namun gagal mencatat di server merchant. Harap hubungi Admin dengan menyertakan TXID Anda.");
-            }
+            })
+            .catch(err => {
+                console.error("Eror saat menyelesaikan transaksi:", err);
+            });
         },
         
         onCancel: (paymentId) => {
-            console.log("Pembayaran dibatalkan oleh pengguna:", paymentId);
             alert("Pembayaran dibatalkan.");
         },
         
         onError: (error, payment) => {
-            console.error("Payment Error dari Pi SDK:", error);
+            console.error("Payment Error:", error);
             alert("Transaksi ditangguhkan. Pastikan saldo dompet koin Anda mencukupi.");
         }
     });

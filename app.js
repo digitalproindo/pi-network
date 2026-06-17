@@ -90,37 +90,59 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// 3. FUNGSI VISUAL KATALOG
+// 3. EVENT LIFECYCLE INITIALIZATION (PERBAIKAN LOGIN)
 // ==========================================
-function renderKatalogPasar(arrayData, idTargetElemen) {
-    const wadahTampilan = document.getElementById(idTargetElemen);
-    if (!wadahTampilan) return;
-    wadahTampilan.innerHTML = "";
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Tampilkan produk ke layar secepat mungkin
+    try {
+        renderKatalogPasar(productsData, "main-grid");
+    } catch (e) {
+        console.error("Gagal menggambar produk:", e);
+    }
+    
+    // 2. Konfigurasi Input Pencarian
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+            const hasilFilter = productsData.filter(p => p.name.toLowerCase().includes(keyword));
+            const containerHasil = document.getElementById("search-results");
+            
+            if (keyword === "") {
+                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#94a3b8;">Silakan masukkan nama produk...</p></div>`;
+            } else if (hasilFilter.length === 0) {
+                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#ef4444; font-weight:600;">Produk tidak ditemukan.</p></div>`;
+            } else {
+                renderKatalogPasar(hasilFilter, "search-results");
+            }
+        });
+    }
 
-    arrayData.forEach(produk => {
-        wadahTampilan.innerHTML += `
-            <div class="product-card">
-                <div class="image-container">
-                    <span class="discount-badge">PROMO</span>
-                    <img src="${produk.images[0]}" alt="${produk.name}">
-                    <div class="xtra-label">
-                        <div class="xtra-text">PREMIUM</div>
-                        <div class="ongkir-text">Bebas Ongkir</div>
-                    </div>
-                </div>
-                <div class="product-info">
-                    <div class="free-ship-tag">⚡ Kualitas Tinggi</div>
-                    <div class="product-name">${produk.name}</div>
-                    <div class="price">${produk.price} Pi</div>
-                    <div class="card-bottom">
-                        <div class="rating-text"><span class="star">⭐</span> 5.0</div>
-                        <button class="btn-buy-now" onclick="eksekusiBeliKeAdmin('${produk.name}', '${produk.price}')">Beli</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
+    // 3. JALANKAN INISIALISASI PI SDK SECARA INSTAN TANPA JEDA TIMEOUT
+    if (window.Pi) {
+        mengaktifkanPiSDK();
+    } else {
+        // Jika skrip eksternal Pi lambat memuat, tunggu sampai window mendeteksinya
+        window.addEventListener("load", () => {
+            if (window.Pi) mengaktifkanPiSDK();
+        });
+    }
+});
+
+// Fungsi pembantu untuk mengaktifkan fitur Blockchain Pi
+function mengaktifkanPiSDK() {
+    try {
+        // Inisialisasi SDK resmi (sandbox: true untuk Pi Testnet)
+        window.Pi.init({ version: "2.0", sandbox: true }); 
+        console.log("Pi SDK Berhasil Diinisialisasi!");
+        
+        // Picu autentikasi otomatis agar user tidak perlu klik tombol login lagi jika sudah pernah masuk
+        autentikasiPiOtomatis();
+    } catch (err) {
+        console.error("Gagal konfigurasi internal Pi SDK:", err);
+    }
 }
+
 
 // ==========================================
 // 4. SISTEM NAVIGASI & DIALOG HALAMAN

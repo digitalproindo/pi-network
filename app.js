@@ -1,9 +1,6 @@
 // ==========================================
-// 1. VARIABEL GLOBAL & DATA PRODUK INSTAN
+// 1. DATA PRODUK MARKETPLACE (INSTAN & AMAN)
 // ==========================================
-let currentUser = null;
-const ADMIN_WA = "6282191851112"; 
-
 const productsData = [
     {
         id: "house-001",
@@ -47,16 +44,48 @@ const productsData = [
     }
 ];
 
+let currentUser = null;
+const ADMIN_WA = "6282191851112"; 
+
 // ==========================================
-// 2. AMANKAN URUTAN PEMUATAN HALAMAN (ANTI-BLANK)
+// 2. FUNGSI VISUAL UTAMA (ANTI-BLANK)
+// ==========================================
+function renderKatalogPasar(arrayData, idTargetElemen) {
+    const wadahTampilan = document.getElementById(idTargetElemen);
+    if (!wadahTampilan) return;
+    wadahTampilan.innerHTML = "";
+
+    arrayData.forEach(produk => {
+        wadahTampilan.innerHTML += `
+            <div class="product-card">
+                <div class="image-container">
+                    <span class="discount-badge">PROMO</span>
+                    <img src="${produk.images[0]}" alt="${produk.name}">
+                    <div class="xtra-label">
+                        <div class="xtra-text">PREMIUM</div>
+                        <div class="ongkir-text">Bebas Ongkir</div>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <div class="free-ship-tag">⚡ Kualitas Tinggi</div>
+                    <div class="product-name">${produk.name}</div>
+                    <div class="price">${produk.price} Pi</div>
+                    <div class="card-bottom">
+                        <div class="rating-text"><span class="star">⭐</span> 5.0</div>
+                        <button class="btn-buy-now" onclick="eksekusiBeliKeAdmin('${produk.name}', '${produk.price}')">Beli</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+}
+
+// ==========================================
+// 3. EVENT LIFECYCLE (PRODUK & SDK INITIALIZATION)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // KEWAJIBAN UTAMA: Gambar produk ke layar secepat mungkin tanpa menunggu apa pun
-    try {
-        renderKatalogPasar(productsData, "main-grid");
-    } catch (e) {
-        console.error("Gagal menggambar produk:", e);
-    }
+    // Tampilkan produk detik pertama secara paksa agar tidak blank
+    renderKatalogPasar(productsData, "main-grid");
     
     // Konfigurasi Input Pencarian
     const searchInput = document.getElementById("search-input");
@@ -76,76 +105,56 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Inisialisasi Pi SDK ditaruh paling belakangan agar tidak mengganggu visual utama
-    setTimeout(() => {
-        if (window.Pi) {
-            try {
-                window.Pi.init({ version: "2.0", sandbox: true }); 
-                autentikasiPiOtomatis();
-            } catch (err) {
-                console.error("Pi SDK crash tetapi visual diselamatkan:", err);
-            }
-        }
-    }, 1500);
-});
-
-// ==========================================
-// 3. EVENT LIFECYCLE INITIALIZATION (PERBAIKAN LOGIN)
-// ==========================================
-document.addEventListener("DOMContentLoaded", () => {
-    // 1. Tampilkan produk ke layar secepat mungkin
-    try {
-        renderKatalogPasar(productsData, "main-grid");
-    } catch (e) {
-        console.error("Gagal menggambar produk:", e);
-    }
-    
-    // 2. Konfigurasi Input Pencarian
-    const searchInput = document.getElementById("search-input");
-    if (searchInput) {
-        searchInput.addEventListener("input", (e) => {
-            const keyword = e.target.value.toLowerCase().trim();
-            const hasilFilter = productsData.filter(p => p.name.toLowerCase().includes(keyword));
-            const containerHasil = document.getElementById("search-results");
-            
-            if (keyword === "") {
-                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#94a3b8;">Silakan masukkan nama produk...</p></div>`;
-            } else if (hasilFilter.length === 0) {
-                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#ef4444; font-weight:600;">Produk tidak ditemukan.</p></div>`;
-            } else {
-                renderKatalogPasar(hasilFilter, "search-results");
-            }
-        });
-    }
-
-    // 3. JALANKAN INISIALISASI PI SDK SECARA INSTAN TANPA JEDA TIMEOUT
+    // Amankan inisialisasi Pi SDK menggunakan format modern
     if (window.Pi) {
         mengaktifkanPiSDK();
     } else {
-        // Jika skrip eksternal Pi lambat memuat, tunggu sampai window mendeteksinya
         window.addEventListener("load", () => {
             if (window.Pi) mengaktifkanPiSDK();
         });
     }
 });
 
-// Fungsi pembantu untuk mengaktifkan fitur Blockchain Pi
 function mengaktifkanPiSDK() {
     try {
-        // Inisialisasi SDK resmi (sandbox: true untuk Pi Testnet)
         window.Pi.init({ version: "2.0", sandbox: true }); 
-        console.log("Pi SDK Berhasil Diinisialisasi!");
-        
-        // Picu autentikasi otomatis agar user tidak perlu klik tombol login lagi jika sudah pernah masuk
+        console.log("Pi SDK Modern Aktif!");
         autentikasiPiOtomatis();
     } catch (err) {
         console.error("Gagal konfigurasi internal Pi SDK:", err);
     }
 }
 
+// ==========================================
+// 4. AUTENTIKASI AKUN (LOGIN)
+// ==========================================
+function autentikasiPiOtomatis() {
+    window.Pi.authenticate(['username', 'payments'], (payment) => {})
+        .then((auth) => {
+            currentUser = auth.user;
+            const btnLogin = document.getElementById("login-btn");
+            if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
+            
+            const profileUser = document.getElementById("profile-username");
+            const profileAddr = document.getElementById("profile-address");
+            if (profileUser) profileUser.innerText = auth.user.username;
+            if (profileAddr) profileAddr.innerText = auth.user.uid || "Pi Verified Client";
+        })
+        .catch((err) => {
+            console.log("Menunggu login manual.");
+        });
+}
+
+window.handleSignIn = function() {
+    if (!window.Pi) {
+        alert("Harap buka aplikasi ini langsung dari dalam Pi Browser.");
+        return;
+    }
+    autentikasiPiOtomatis();
+};
 
 // ==========================================
-// 4. SISTEM NAVIGASI & DIALOG HALAMAN
+// 5. SISTEM NAVIGASI & HALAMAN
 // ==========================================
 window.filterCategory = function(namaKategori, elemenPill) {
     document.querySelectorAll(".category-pill").forEach(pill => pill.classList.remove("active"));
@@ -176,35 +185,7 @@ window.switchPage = function(targetHalaman) {
 };
 
 // ==========================================
-// 5. AUTENTIKASI AKUN USER (LOGIN)
-// ==========================================
-function autentikasiPiOtomatis() {
-    window.Pi.authenticate(['username', 'payments'], function(payment) {})
-        .then(function(auth) {
-            currentUser = auth.user;
-            const btnLogin = document.getElementById("login-btn");
-            if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
-            
-            const profileUser = document.getElementById("profile-username");
-            const profileAddr = document.getElementById("profile-address");
-            if (profileUser) profileUser.innerText = auth.user.username;
-            if (profileAddr) profileAddr.innerText = auth.user.uid || "Pi Verified Client";
-        })
-        .catch(function(err) {
-            console.log("Menunggu masuk via tombol.");
-        });
-}
-
-window.handleSignIn = function() {
-    if (!window.Pi) {
-        alert("Buka aplikasi ini dari dalam Pi Browser untuk menghubungkan Dompet.");
-        return;
-    }
-    autentikasiPiOtomatis();
-};
-
-// ==========================================
-// 7. HUBUNGAN PEMBAYARAN BLOCKCHAIN (PERBAIKAN KADALUARSA)
+// 6. PIPELINE EKSEKUSI PEMBAYARAN MODERN
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
@@ -219,37 +200,23 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
         metadata: { product_name: namaBarang },
     }, {
-        // TAHAP A: Mengirim Payment ID ke backend Vercel secara akurat
-        onReadyForServerApproval: function(paymentId) {
-            console.log("Mengirim Payment ID ke server:", paymentId);
-            
+        // Menggunakan Arrow Function modern agar Vercel & Pi Browser sinkron tanpa eror parsing
+        onReadyForServerApproval: (paymentId) => {
+            console.log("Mengirim approval untuk Payment ID:", paymentId);
             fetch("/api/approval", {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({ paymentId: paymentId }) // Memastikan data terbungkus JSON murni
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId: paymentId })
             })
-            .then(res => {
-                if (!res.ok) throw new Error("Server backend menolak approval");
-                return res.json();
-            })
-            .then(data => {
-                console.log("Blockchain Pi memberikan lampu hijau:", data);
-                // Hitungan mundur otomatis berhenti di sini, pop-up sandi akan bertahan!
-            })
-            .catch(err => {
-                console.error("Gagal approval backend:", err);
-            });
+            .then(res => res.json())
+            .then(data => console.log("Backend menyetujui transaksi:", data))
+            .catch(err => console.error("Gagal approval backend:", err));
         },
         
-        // TAHAP B: Pengguna sukses mengisi frasa sandi, klaim koin masuk ke dompet Anda
-        onReadyForServerCompletion: function(paymentId, txid) {
+        onReadyForServerCompletion: (paymentId, txid) => {
             fetch("/api/complete", {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ paymentId: paymentId, txid: txid })
             })
             .then(res => res.json())
@@ -261,11 +228,11 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
             .catch(err => console.error("Gagal menyelesaikan transaksi:", err));
         },
         
-        onCancel: function(paymentId) {
+        onCancel: (paymentId) => {
             alert("Pembayaran dibatalkan.");
         },
         
-        onError: function(error, payment) {
+        onError: (error, payment) => {
             console.error("Payment Error:", error);
             alert("Transaksi ditangguhkan. Pastikan saldo dompet mencukupi.");
         }

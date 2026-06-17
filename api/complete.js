@@ -18,7 +18,7 @@ export default async function handler(req, res) {
         }
 
         // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI DI SINI
-        const PI_API_KEY = "MASUKKAN_SERVER_API_KEY_ANDA_DI_SINI"; 
+        const PI_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
 
         // Beritahu Pi Network bahwa transaksi telah selesai sepenuhnya di sisi merchant
         const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {

@@ -1,8 +1,8 @@
 export default async function handler(req, res) {
-    // Izinkan akses dari domain luar (CORS)
+    // Memberikan izin akses penuh ke Pi Browser (CORS)
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -15,14 +15,13 @@ export default async function handler(req, res) {
     try {
         const { paymentId } = req.body;
         if (!paymentId) {
-            return res.status(400).json({ error: 'Payment ID wajib diisi' });
+            return res.status(400).json({ error: 'Payment ID tidak ditemukan' });
         }
 
-        // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI DI SINI
-        const PI_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
+        // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI ANDA DI SINI
+        const PI_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw";
 
-        // Kirim persetujuan ke server Pi Network
-        const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
+        const response = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
             method: 'POST',
             headers: {
                 'Authorization': `Key ${PI_API_KEY}`,
@@ -30,11 +29,11 @@ export default async function handler(req, res) {
             }
         });
 
-        const data = await piResponse.json();
+        const data = await response.json();
         return res.status(200).json(data);
 
     } catch (error) {
-        console.error("Error di approval:", error);
-        return res.status(500).json({ error: 'Gagal memproses approval ke Pi Server' });
+        console.error("Error Approval:", error);
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

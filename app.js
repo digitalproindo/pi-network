@@ -204,11 +204,11 @@ window.handleSignIn = function() {
 };
 
 // ==========================================
-// 6. PIPELINE EKSEKUSI PEMBAYARAN BLOCKCHAIN
+// 7. HUBUNGAN PEMBAYARAN BLOCKCHAIN (PERBAIKAN KADALUARSA)
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Silakan klik tombol 'Login Pi' di bagian kanan atas terlebih dahulu.");
+        alert("Peringatan: Silakan ketuk tombol login akun Pi di bagian atas terlebih dahulu.");
         return;
     }
 
@@ -219,26 +219,42 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
         metadata: { product_name: namaBarang },
     }, {
+        // TAHAP A: Mengirim Payment ID ke backend Vercel secara akurat
         onReadyForServerApproval: function(paymentId) {
+            console.log("Mengirim Payment ID ke server:", paymentId);
+            
             fetch("/api/approval", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paymentId: paymentId })
+                headers: { 
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ paymentId: paymentId }) // Memastikan data terbungkus JSON murni
             })
-            .then(res => res.json())
-            .then(data => console.log("Approval terdaftar aman:", data))
-            .catch(err => console.error("Gagal approval:", err));
+            .then(res => {
+                if (!res.ok) throw new Error("Server backend menolak approval");
+                return res.json();
+            })
+            .then(data => {
+                console.log("Blockchain Pi memberikan lampu hijau:", data);
+                // Hitungan mundur otomatis berhenti di sini, pop-up sandi akan bertahan!
+            })
+            .catch(err => {
+                console.error("Gagal approval backend:", err);
+            });
         },
         
+        // TAHAP B: Pengguna sukses mengisi frasa sandi, klaim koin masuk ke dompet Anda
         onReadyForServerCompletion: function(paymentId, txid) {
             fetch("/api/complete", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { 
+                    "Content-Type": "application/json"
+                },
                 body: JSON.stringify({ paymentId: paymentId, txid: txid })
             })
             .then(res => res.json())
             .then(data => {
-                alert(`🎉 TRANSAKSI BERHASIL!\n\nKoin sejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
                 const pesanWa = `Halo Admin, saya sudah bayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
                 window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
             })
@@ -251,7 +267,7 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         
         onError: function(error, payment) {
             console.error("Payment Error:", error);
-            alert("Transaksi ditangguhkan. Pastikan saldo dompet Testnet Anda mencukupi.");
+            alert("Transaksi ditangguhkan. Pastikan saldo dompet mencukupi.");
         }
     });
 };

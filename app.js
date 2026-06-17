@@ -185,7 +185,7 @@ window.switchPage = function(targetHalaman) {
 };
 
 // ==========================================
-// 6. PIPELINE EKSEKUSI PEMBAYARAN MODERN
+// 5. PIPELINE EKSEKUSI PEMBAYARAN (ANTI-KEDALUWARSA)
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
@@ -200,41 +200,69 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
         metadata: { product_name: namaBarang },
     }, {
-        // Menggunakan Arrow Function modern agar Vercel & Pi Browser sinkron tanpa eror parsing
-        onReadyForServerApproval: (paymentId) => {
-            console.log("Mengirim approval untuk Payment ID:", paymentId);
-            fetch("/api/approval", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paymentId: paymentId })
-            })
-            .then(res => res.json())
-            .then(data => console.log("Backend menyetujui transaksi:", data))
-            .catch(err => console.error("Gagal approval backend:", err));
+        // TAHAP A: Mengirim persetujuan ke backend Vercel dengan Async/Await ketat
+        onReadyForServerApproval: async (paymentId) => {
+            console.log("Mencoba mengirim Payment ID ke backend:", paymentId);
+            
+            try {
+                const response = await fetch("/api/approval", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ paymentId: paymentId })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server backend merespons dengan status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log("Backend sukses memberikan approval ke Pi Network:", data);
+                // Setelah tahap ini sukses, loading berputar akan berhenti dan berganti ke layar frasa sandi
+                
+            } catch (err) {
+                console.error("Gagal melakukan approval di backend:", err);
+                alert("Gagal terhubung ke server approval. Silakan coba klik beli kembali.");
+            }
         },
         
-        onReadyForServerCompletion: (paymentId, txid) => {
-            fetch("/api/complete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paymentId: paymentId, txid: txid })
-            })
-            .then(res => res.json())
-            .then(data => {
+        // TAHAP B: Pengguna sukses mengisi frasa sandi, koin diklaim masuk ke dompet Anda
+        onReadyForServerCompletion: async (paymentId, txid) => {
+            console.log("Mencoba menyelesaikan transaksi untuk TXID:", txid);
+            
+            try {
+                const response = await fetch("/api/complete", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
+                });
+
+                const data = await response.json();
+                console.log("Transaksi berhasil diselesaikan secara penuh:", data);
+                
                 alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                
+                // Buka WhatsApp Otomatis ke Admin
                 const pesanWa = `Halo Admin, saya sudah bayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
                 window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
-            })
-            .catch(err => console.error("Gagal menyelesaikan transaksi:", err));
+                
+            } catch (err) {
+                console.error("Gagal menyelesaikan klaim transaksi:", err);
+                alert("Transaksi di dompet Anda berhasil, namun gagal mencatat di server merchant. Harap hubungi Admin dengan menyertakan TXID Anda.");
+            }
         },
         
         onCancel: (paymentId) => {
+            console.log("Pembayaran dibatalkan oleh pengguna:", paymentId);
             alert("Pembayaran dibatalkan.");
         },
         
         onError: (error, payment) => {
-            console.error("Payment Error:", error);
-            alert("Transaksi ditangguhkan. Pastikan saldo dompet mencukupi.");
+            console.error("Payment Error dari Pi SDK:", error);
+            alert("Transaksi ditangguhkan. Pastikan saldo dompet koin Anda mencukupi.");
         }
     });
 };

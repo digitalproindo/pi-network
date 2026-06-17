@@ -1,1683 +1,991 @@
-document.addEventListener("DOMContentLoaded", async () => {
- const Pi = window.Pi;
- let currentUser = null;
- let cart = [];
- 
- let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
-
- const ADMIN_WA = "6281906066757"; 
-
-const productsData = [
- {
- id: "house-001",
- category: "Rumah",
- name: "The Beverly Hills Modern Mansion",
- price: 0.25000,
- images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Luas Tanah:</b> 2.500 m²<br>
-               • <b>Kamar Tidur:</b> 7 Master Suite<br>
-               • <b>Fasilitas:</b> Infinity Pool, Home Cinema, Wine Cellar<br>
-               • <b>Lokasi:</b> Beverly Hills, California<br>
-               • <b>Garasi:</b> Kapasitas 10 Mobil Mewah
-
- },
- {
- id: "house-002",
- category: "Rumah",
- name: "Zen Waterfront Villa",
- price: 0.18000,
- images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Pemandangan:</b> Akses Langsung ke Danau Privasi<br>
-               • <b>Gaya:</b> Arsitektur Minimalis Modern<br>
-               • <b>Fasilitas:</b> Dermaga Pribadi, Spa & Sauna, Gym<br>
-               • <b>Sistem:</b> Full Smart Home Technology<br>
-               • <b>Keamanan:</b> Biometric Entry System
-
- },
- {
- id: "house-003",
- category: "Rumah",
- name: "Penthouse Skyline Duplex",
- price: 0.12000,
- images: ["https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Lantai:</b> Lantai 50 & 51 (Top Floor)<br>
-               • <b>Pemandangan:</b> 360° City Skyline View<br>
-               • <b>Interior:</b> Marmer Italia & Panel Emas<br>
-               • <b>Fasilitas:</b> Private Rooftop Garden & Jacuzzi<br>
-               • <b>Layanan:</b> 24/7 Concierge Service
-
- },
- {
- id: "house-005",
- category: "Rumah",
- name: "Tropical Cliffside Sanctuary",
- price: 0.15500,
- images: ["https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Lokasi:</b> Tebing Uluwatu, Bali<br>
-               • <b>Konsep:</b> Open Living Space with Ocean View<br>
-               • <b>Fasilitas:</b> Private Beach Access, Deck Yoga<br>
-               • <b>Struktur:</b> Kayu Ulin & Batu Alam Lokal<br>
-               • <b>Kamar:</b> 5 Suite dengan Semi-Outdoor Bathroom
-
- },
- {
- id: "house-008",
- category: "Rumah",
- name: "The Glass House Estate",
- price: 0.21000,
- images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Material Dominan:</b> Kaca Tempered & Baja Hitam<br>
-               • <b>Privasi:</b> Smart Glass (Bisa Buram Otomatis)<br>
-               • <b>Lansekap:</b> Koi Pond Keliling Bangunan<br>
-               • <b>Ruang:</b> Galeri Seni Pribadi & Studio Musik<br>
-               • <b>Luas:</b> Kavling Sudut 3.000 m²
-
- },
- {
- id: "house-009",
- category: "Rumah",
- name: "Mediterranean Seafront Palace",
- price: 0.28000,
- images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Lokasi:</b> French Riviera (Cote d'Azur)<br>
-               • <b>Atap:</b> Terakota Tradisional Spanyol<br>
-               • <b>Taman:</b> Kebun Zaitun & Citrus<br>
-               • <b>Fasilitas:</b> Lapangan Tenis Pribadi, Helipad<br>
-               • <b>Kamar Mandi:</b> Perlengkapan Emas 24 Karat
-
- },
- {
- id: "house-010",
- category: "Rumah",
- name: "The Urban Luxury Loft",
- price: 0.08800,
-
-images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Tipe:</b> Industrial Luxury Loft<br>
-               • <b>Tinggi Plafon:</b> 6 Meter (Double Height Ceiling)<br>
-               • <b>Fitur:</b> Tangga Melingkar Besi Kustom<br>
-               • <b>Lokasi:</b> Pusat Distrik Finansial<br>
-               • <b>Sistem:</b> Voice Controlled Home Automation
-
- },
- {
- id: "house-011",
- category: "Rumah",
- name: "The Floating Diamond Villa",
- price: 0.19500,
- images: ["https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Dimensi:</b> LB 550 m² (Struktur Terapung)<br>
-               • <b>Lokasi:</b> Maladewa (Private Lagoon)<br>
-               • <b>Fitur:</b> Kamar Tidur Bawah Laut, Dek Berjemur 360°<br>
-               • <b>Material:</b> Kaca Anti-Karat & Kayu Jati Reklamasi<br>
-               • <b>Energi:</b> Kemandirian Energi dengan Panel Surya Laut
-
- },
- {
- id: "house-013",
- category: "Rumah",
- name: "Cyber-Tech Underground Bunker",
- price: 0.16000,
- images: ["https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Dimensi:</b> LB 900 m² (Kedalaman 15 Meter)<br>
-               • <b>Keamanan:</b> Pintu Anti-Ledakan, Sistem Filtrasi Udara Nuklir<br>
-               • <b>Fasilitas:</b> Kebun Hidroponik Indoor, Simulator Golf<br>
-               • <b>Teknologi:</b> AI Butler terintegrasi ke seluruh ruangan<br>
-               • <b>Lantai:</b> Epoxy Resin Anti-Statis & Dinding Beton Ekspos
-
- },
- {
- id: "house-014",
- category: "Rumah",
- name: "Aspen Snow Peak Lodge",
- price: 0.13500,
- images: ["https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Dimensi:</b> LT 3.500 m² / LB 700 m²<br>
-               • <b>Lokasi:</b> Aspen, Colorado (Ski-in/Ski-out Access)<br>
-               • <b>Fitur:</b> Perapian Batu Alam Raksasa, Kolam Air Hangat Outdoor<br>
-               • <b>Material:</b> Kayu Pinus Tua & Batu Granit Pegunungan<br>
-               • <b>Ruangan:</b> Ruang Simpan Perlengkapan Ski Khusus
-
- },
- {
- id: "house-015",
- category: "Rumah",
- name: "Mediterranean Cliff Villa",
- price: 0.27000,
- images: ["https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Dimensi:</b> LT 2.200 m² / LB 950 m²<br>
-               • <b>Pemandangan:</b> Laut Mediterania (Amalfi Coast)<br>
-               • <b>Fasilitas:</b> Lift Tebing Pribadi, Bar Tepi Kolam, Bioskop Terbuka<br>
-               • <b>Interior:</b> Keramik Hand-Painted Italia & Furnitur Putih Bersih<br>
-               • <b>Lanskap:</b> Kebun Vertikal & Pohon Lemon
-
- },
- {
- id: "house-016",
- category: "Rumah",
- name: "The Brutalist Cube Estate",
- price: 0.11000,
- images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Dimensi:</b> LT 1.500 m² / LB 800 m²<br>
-               • <b>Gaya:</b> Brutalisme Kontemporer (Raw Concrete)<br>
-               • <b>Ruangan:</b> Studio Lukis & Ruang Musik Kedap Suara<br>
-               • <b>Fitur:</b> Skylight Masif di Tengah Rumah<br>
-               • <b>Sistem:</b> Smart Lighting System yang mengikuti ritme sirkadian
-
- },
- {
- id: "house-017",
- category: "Rumah",
- name: "Amazonian Eco-Mansion",
- price: 0.14500,
- images: ["https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=800&q=80"],
- desc: `• <b>Dimensi:</b> LT 10.000 m² / LB 650 m² (Floating on stilts)<br>
-
-• <b>Konsep:</b> Regenerative Architecture (Mandiri Air & Limbah)<br>
- • <b>Fitur:</b> Dinding Tanaman Hidup, Kolam Renang Air Hujan<br>
- • <b>Material:</b> Bambu Laminasi & Atap Daun Rumbia Sintetis<br>
-• <b>Lokasi:</b> Hutan Lindung Tropis
-
-    },
-    {
-        id: "house-019",
-        category: "Rumah",
-        name: "Dubai Sky-High Villa",
-        price: 0.35000,
-        images: ["https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Dimensi:</b> LB 1.100 m² (Penthouse 3 Lantai)<br>
- • <b>Fasilitas:</b> Kolam Renang Kaca Gantung, Helipad Gedung<br>
- • <b>Interior:</b> Aksen Emas 24K & Kristal Baccarat<br>
- • <b>Pemandangan:</b> Burj Khalifa & Palm Jumeirah<br>
-• <b>Layanan:</b> Private Chef & Sopir Rolls-Royce
-
-    },
-    {
-        id: "house-020",
-        category: "Rumah",
-        name: "The Vineyard Ranch Estate",
-        price: 0.17500,
-        images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Dimensi:</b> LT 15 Hektar / LB 1.300 m²<br>
- • <b>Fitur:</b> Perkebunan Anggur Pribadi, Pabrik Pengolahan Wine<br>
- • <b>Fasilitas:</b> Lapangan Berkuda, Kandang Kuda Premium<br>
- • <b>Interior:</b> Gaya Farmhouse Modern dengan Kayu Oak Ekspos<br>
- • <b>Dapur:</b> Outdoor BBQ Station & Pizza Wood-Oven`
- },
- { 
- id: 'p2', 
- name: "COCO Pro Kunyit", 
- price: 0.00006,
- discount: 5, 
- category: "Herbal", 
- images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], 
- desc: "Super food Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic, Immune support,High Antioksidant,Improved Digestion,Naturally Energizing.",
- rating: 5.0,
- sold: 3400,
- reviews: [
- { user: "Sehat_Sentosa", comment: "Asam lambung saya membaik, terima kasih!" },
- { user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }
- ]
- },
- { 
- id: 'p3', 
- name: "An-Nisa", 
- price: 0.00010,
- discount: 5, 
- category: "Herbal", 
- images: ["https://i.ibb.co.com/0jjhzJ7p/Desain-tanpa-judul-20260211-213452-0000.png"], 
- desc: "Keputihan, Gatal-gatal ,Membunuh bakteri, Melancarkan menstruasi, Mengatasi nyeri haid, Mencegah kanker rahim, Membasmi mioma / Kista, Merapatkan dan mengencangkan, Mengatasi semua problem kewanitaan,Memperbaiki dan memperbanyak hormon",
- rating: 5.0,
- sold: 3400,
- reviews: [
- { user: "Sehat_Sentosa", comment: "Asam lambung saya membaik, terima kasih!" },
- { user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }
- ]
- },
- { 
- id: 'p4', 
- name: "Ar-Rizal", 
- price: 0.00010,
- discount: 5, 
- category: "Herbal", 
- images: ["https://i.ibb.co.com/Ndjmbdbj/Desain-tanpa-judul-20260211-214933-0000.png"], 
- desc: "Mengencangkan Mr.P, Menguatkan Mr.P, Menguatkan Jantung, Meningkatkan gairah, Mengatasi ejakulasi dini, Suplemen terbaik buat Profil, Meningkatkan kwalitas Hormon, Memperlama hubungan Pasutri, Melancarkan sirkulasi darah ke alat vital, Meningkatkan dan memperbanyak kwalitas Hormon",
- rating: 5.0,
- sold: 3400,
- reviews: [
- { user: "Sehat_Sentosa", comment: "Asam lambung saya membaik, terima kasih!" },
- { user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }
- ]
- },
- 
- { 
- id: 'p3', 
- name: "Smart Home System Pro",
-
-price: 0.500, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"], 
- desc: "Paket instalasi smart home berbasis IoT. Kontrol rumah Anda dengan integrasi Pi Browser yang aman dan cepat.",
- rating: 4.8,
- sold: 52,
- reviews: [
- { user: "GadgetFreak", comment: "Instalasinya cepat dan fiturnya lengkap." }
- ]
- },
- { 
- id: 'p4', 
- name: "Premium Smartphone X", 
- price: 1.200, 
- category: "Elektronik", 
- images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"], 
- desc: "Gadget premium dengan performa tinggi. Kamera resolusi tinggi dan baterai tahan lama untuk penggunaan harian.",
- rating: 4.7,
- sold: 89,
- reviews: [
- { user: "MobilePhotography", comment: "Kameranya luar biasa jernih!" }
- ]
- },
- { 
- id: 'p5', 
- name: "Sofa Minimalis 2 Seater - Modern Grey", 
- price: 0.05, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"], 
- desc: "Sofa nyaman ukuran 150x80cm, cocok untuk ruang tamu kecil. Bahan kain breathable dan busa tahan kempes.",
- rating: 4.6,
- sold: 45,
- reviews: [
- { user: "InteriorLover", comment: "Warnanya elegan dan sangat empuk." }
- ]
- },
- { 
- id: 'p6', 
- name: "Nabidz Dessert ", 
- price: 0.00012,
- discount: 0,
- category: "Herbal", 
- images: ["https://i.ibb.co.com/qMCm0C7q/IMG-20260203-WA0004.jpg"], 
- desc: "Nabidz Dessert bahan baku buah anggur merah yang di fermentasi esterifikasi biokimia resep pribadi dan di padu dengan proses istihalah microbiome dan asam organik akan meningkatkan kualitas pencernaan dimana sistem imun 90% pada pencernaan.",
- rating: 4.9,
- sold: 21,
- reviews: [
- { user: "KayuSolid", comment: "Benar-benar kayu jati asli, berat dan kokoh." }
- ]
- },
- { 
- id: 'p7', 
- name: "Lampu Gantung Industrial - Model Black Dome", 
- price: 0.015, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80"], 
- desc: "Lampu dekoratif plafon, diameter 30cm untuk kesan estetik industrial di cafe atau rumah Anda.",
- rating: 4.5,
- sold: 110,
- reviews: [
- { user: "CafeOwner", comment: "Bikin suasana ruangan jadi keren!" }
- ]
- },
- { 
- id: 'p8', 
- name: "Rak Buku Kayu 5 Tingkat - Slim Design", 
- price: 0.03, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1594620302200-9a762244a156?w=500&q=80"], 
- desc: "Rak buku hemat ruang, tinggi 180cm lebar 40cm. Mudah dirakit dan sanggup menahan beban berat.",
- rating: 4.7,
- sold: 76,
- reviews: [
- { user: "BookWorm", comment: "Solusi buat yang punya banyak buku di ruangan sempit." }
- ]
- },
- { 
- id: 'p9', 
- name: "Karpet Bulu Lembut 160x210 - Creamy White", 
- price: 0.012, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?w=500&q=80"], 
- desc: "Karpet lantai premium, sangat lembut dan mudah dibersihkan. Memberikan kesan hangat pada kamar tidur.",
- rating: 4.8,
- sold: 230,
- reviews: [
- { user: "CozyHome", comment: "Bulunya tebal dan tidak mudah rontok." }
- ]
- },
- { 
- id: 'p10', 
- name: "Set Gorden Jendela - Model Smokering Minimalis", 
- price: 0.008, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"],
-
-desc: "Gorden blackout ukuran 140x220cm, tersedia berbagai warna. Menghalau sinar matahari hingga 90%.",
- rating: 4.6,
- sold: 150,
- reviews: [
- { user: "MamaRiri", comment: "Kainnya jatuh dan warnanya cantik." }
- ]
- },
- { 
- id: 'p11', 
- name: "Jam Dinding Kayu - Tipe Scandinavian", 
- price: 0.005, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=500&q=80"], 
- desc: "Jam dinding estetik diameter 35cm, mesin sweep movement (tidak berdetak). Tenang dan elegan.",
- rating: 4.7,
- sold: 310,
- reviews: [
- { user: "MinimalisArt", comment: "Sangat hening, cocok buat di kamar." }
- ]
- },
- { 
- id: 'p12', 
- name: "Tanaman Hias Artificial - Model Monstera Large", 
- price: 0.01, 
- category: "Rumah", 
- images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"], 
- desc: "Tanaman palsu mirip asli dengan pot keramik, tinggi 80cm. Memberikan kesan hijau tanpa perlu perawatan.",
- rating: 4.5,
- sold: 95,
- reviews: [
- { user: "PlantParent", comment: "Mirip aslinya kalau dilihat dari jauh." }
- ]
- },
- { 
- id: 'e1', 
- name: "Smartphone Pi-Phone X - 256GB Platinum", 
- price: 0.15, 
- category: "Elektronik", 
- images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80"], 
- desc: "Layar AMOLED 6.7 inci, RAM 12GB, Baterai 5000mAh. Support native Pi App ekosistem.",
- rating: 4.9,
- sold: 140,
- reviews: [
- { user: "TechReviewer", comment: "Performa kencang, support Pi OS dengan baik." }
- ]
- },
- { 
- id: 'e2', 
- name: "Wireless Earbuds Pro - Noise Cancelling", 
- price: 0.02, 
- category: "Elektronik", 
- images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"], 
- desc: "Audio High-Fidelity, tahan air IPX5. Baterai tahan hingga 24 jam dengan case pengisian.",
- rating: 4.7,
- sold: 420,
- reviews: [
- { user: "MusicLover", comment: "Bass-nya mantap, noise cancelling-nya oke." }
- ]
- },
- { 
- id: 'hb4', 
- name: "COCO Pro 10 ", 
- price: 0.00006, 
- category: "Herbal", 
- images: ["https://i.ibb.co.com/4nRdtBpb/IMG-20260203-WA0005.jpg"], 
- desc: "Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic, Immune support,High Antioksidant,Improved Digestion,Naturally Energizing.",
- rating: 5.0,
- sold: 1200,
- reviews: [
- { user: "Bunda_Ika", comment: "Anak-anak jadi jarang sakit minum ini." }
- ]
- },
- { 
- id: 'v1', 
- name: "Sedan Sport Luxury - Tipe S1", 
- price: 0.0005, 
- category: "Mobil", 
- images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], 
- desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof. Keamanan tingkat tinggi dengan smart driving assist.",
- rating: 5.0,
- sold: 3,
- reviews: [
- { user: "VVIP_Member", comment: "Mobil impian yang akhirnya terbeli dengan Pi." }
- ]
- },
- { 
- id: 'm1', 
- name: "Motor Sport 250cc - Black Matte", 
- price: 0.002, 
- category: "Motor", 
- images: ["https://i.ibb.co.com/spcrbbKT/Motor-250cc-Terbaik.jpg"], 
- desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern. Cocok untuk penggunaan dalam kota maupun touring.",
- rating: 4.8,
- sold: 12,
- reviews: [
- { user: "RiderPi", comment: "Tarikan enteng, tampilannya gahar banget." }
-
-]
- },
- { 
- id: 'm1_alt', 
- name: "Motor Sport 250cc - Kawasaki Ninja H2R", 
- price: 0.002, 
- category: "Motor", 
- images: ["https://i.ibb.co.com/Fkp8tHJH/58942-kawasaki-ninja-h2r-model-kit-motosiklet-112-39198-1.jpg"], 
- desc: "KAWASAKI NINJA H2R (Model 2026) Status: Motor produksi massal terkencang di dunia (Khusus sirkuit/Track Only).Harga: Rp1,1 Miliar - Rp1,5 Miliar.Mesin: 998cc, 4-Silinder Segaris, dengan teknologi Supercharger.Tenaga: 310 HP (Mencapai 326 HP dengan Ram Air).Top Speed: ±400 km/jam.Material: Bodi Full Carbon Fiber & Rangka Trellis Hijau Khas Kawasaki.Aerodinamika: Dilengkapi sayap karbon (winglets) untuk stabilitas di kecepatan tinggi.Kaki-kaki: Rem Brembo Stylema, Suspensi Öhlins TTX36, dan ban slick balap.",
- rating: 4.8,
- sold: 12,
- reviews: [
- { user: "RiderPi", comment: "Tarikan enteng, tampilannya gahar banget." }
- ]
- },
- {
- id: "bike-001",
- name: "Ducati Panigale V4 R",
- price: 0.01500,
- category: "Motor",
- images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Mesin:</b> 998cc Desmosedici Stradale V4 R<br>
-               • <b>Tenaga:</b> 218 HP @ 15.500 RPM<br>
-               • <b>Fitur:</b> Sayap Karbon (Aero Winglets), Öhlins Suspension<br>
-               • <b>Transmisi:</b> Ducati Quick Shift (DQS) Up/Down EVO 2<br>
-               • <b>Berat:</b> 172 kg (Dry Weight)
-
- },
- {
- id: "bike-002",
- name: "Kawasaki Ninja H2R (Track Only)",
- price: 0.01800,
- category: "Motor",
- images: ["https://i.ibb.co.com/jZ6LvJTB/Desain-tanpa-judul-20260207-131613-0000.png"],
-desc:
-• <b>Mesin:</b> 998cc In-line Four with Supercharger<br>
-               • <b>Tenaga:</b> 310 HP (Paling bertenaga di dunia)<br>
-               • <b>Top Speed:</b> 400+ km/jam<br>
-               • <b>Bodi:</b> Full Carbon Fiber Aerodynamic Bodywork<br>
-               • <b>Rem:</b> Brembo Stylema Monobloc Calipers
-
- },
- {
- id: "bike-003",
- name: "BMW M 1000 RR",
- price: 0.01250,
- category: "Motor",
- images: ["https://images.unsplash.com/photo-1615172282427-9a57ef2d142e?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Mesin:</b> 999cc Water-cooled Inline 4-Cylinder<br>
-               • <b>Fitur M:</b> Velg Karbon M, Kursi M, Knalpot Akrapovic Titanium<br>
-               • <b>Elektronik:</b> 7 Mode Berkendara (Rain hingga Race Pro 3)<br>
-               • <b>Akselerasi:</b> 0-100 km/jam dalam 3.1 detik<br>
-               • <b>Instrumen:</b> 6.5-inch TFT Display M Animation
-
- },
- {
- id: "bike-004",
- name: "Harley-Davidson CVO Road Glide",
- price: 0.01400,
- category: "Motor",
- images: ["https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Mesin:</b> Milwaukee-Eight® VVT 121 (1.977cc)<br>
-               • <b>Gaya:</b> Grand American Touring Luxury<br>
-               • <b>Infotainment:</b> Skyline™ OS with 12.3-inch Touchscreen<br>
-               • <b>Audio:</b> Rockford Fosgate Stage II Sound System<br>
-               • <b>Cat:</b> Hand-painted Custom Paint Finish
-
- },
- {
- id: "bike-005",
- name: "MV Agusta Rush 1000 cc",
- price: 0.01650,
- category: "Motor",
- images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
- desc: `• <b>Konsep:</b> Hyper-Naked Drag Bike Luxury<br>
- • <b>Mesin:</b> 998cc 16-valve DOHC Inline 4<br>
- • <b>Edisi:</b> Limited Edition (Hanya 300 unit di dunia)<br>
- • <b>Velg:</b> Forged Aluminium with Carbon Fiber Cover<br>
-
-• <b>Desain:</b> Knalpot Titanium SC-Project
-
-    },
-    {
-        id: "bike-006",
-        name: "Aprilia RSV4 Xtrenta",
-        price: 0.01900,
-        category: "Motor",
-        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
-        desc: 
-• <b>Teknologi:</b> MotoGP Derived Aerodynamics (Underwing)<br>
- • <b>Mesin:</b> 1.099cc V4 Longitudinal 65°<br>
- • <b>Tenaga:</b> 230 HP / Berat 166 kg<br>
- • <b>Sasis:</b> Frame Aluminium Adjustable<br>
-• <b>Filter Udara:</b> Sprint Filter Level MotoGP
-
-    },
-    {
-        id: "bike-007",
-        name: "Triumph Rocket 3 TFC",
-        price: 0.00950,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Mesin:</b> 2.458cc (Mesin motor terbesar di dunia)<br>
- • <b>Torsi:</b> 225 Nm (Akselerasi instan)<br>
- • <b>Material:</b> Carbon Fiber Bodywork & Arrow Silencers<br>
- • <b>Fitur:</b> Cornering ABS & Traction Control<br>
-• <b>Edisi:</b> Triumph Factory Custom (TFC)
-
-    },
-    {
-        id: "bike-008",
-        name: "Arch Motorcycle KRGT-1",
-        price: 0.02500,
-        category: "Motor",
-        images: ["https://i.ibb.co.com/d4dwYps4/Desain-tanpa-judul-20260207-132911-0000.png"],
-        desc: 
-• <b>Pembuat:</b> Co-founded by Keanu Reeves<br>
- • <b>Mesin:</b> 2.032cc S&S Cycle V-Twin<br>
- • <b>Produksi:</b> Bespoke (Dibuat sesuai pesanan pembeli)<br>
- • <b>Material:</b> Billet Aluminium Frame & Carbon Wheels<br>
-• <b>Suspensi:</b> Öhlins Arch Proprietary Tuning
-
-    },
-    {
-        id: "bike-010",
-        name: "Honda Gold Wing Tour DCT",
-        price: 0.00850,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Mesin:</b> 1.833cc Liquid-cooled 6-cylinder Boxer<br>
- • <b>Transmisi:</b> 7-speed Automatic Dual Clutch (DCT)<br>
- • <b>Kenyamanan:</b> Airbag, Walk Mode (Mundur), Apple CarPlay<br>
- • <b>Suspensi:</b> Double Wishbone Front Suspension<br>
-• <b>Kapasitas:</b> Bagasi Luas & Sandaran Punggung Elektrik
-
-    },
-    {
-        id: "car-001",
-        category: "Mobil",
-        name: "Toyota Fortuner 2.8 GR Sport 2024",
-        price: 0.15000,
-        discount: 5,
-        images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
-        desc: 
-
- <strong>Spesifikasi Utama:</strong><br>
- • Kondisi: Baru (Gress)<br>
- • Mesin: 2.800 cc Diesel Turbo (1GD-FTV)<br>
- • Transmisi: Otomatis 6-Speed<br>
- • Tenaga: 203.9 PS / 500 Nm<br>
- • Sistem Penggerak: 4x2 RWD<br><br>
- 
- <strong>Fitur Premium:</strong><br>
- • Full GR Sport Bodykit<br>
- • Wireless Charger & NFC<br>
- • Toyota Safety Sense (TSS)<br>
- • Kamera 360 & Power Backdoor dengan Kick Sensor<br><br>
- 
- <strong>Kelengkapan:</strong><br>
- Surat Lengkap (STNK & BPKB), Garansi Resmi Toyota 3 Tahun, Gratis Service & Oli.
-
-    },
-    {
-        id: "car-002",
-        category: "Mobil",
-        name: "Honda CR-V 2.0 RS e:HEV Hybrid 2024",
-        price: 0.18500,
-        discount: 10,
-        images: ["https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=1000&auto=format&fit=crop"],
-        desc: 
-
- <strong>Spesifikasi Utama:</strong><br>
- • Kondisi: Baru<br>
- • Mesin: 2.0L i-VTEC + Electric Motor (Hybrid)<br>
-
-• Transmisi: e-CVT<br>
- • Tenaga Gabungan: 207 PS<br>
- • Warna: Platinum White Pearl<br><br>
- 
- <strong>Fitur Unggulan:</strong><br>
- • Honda SENSING™ Lengkap<br>
- • Panoramic Sunroof<br>
- • BOSE Premium Sound System (12 Speakers)<br>
- • Interactive Head-up Display<br><br>
- 
- <strong>Catatan:</strong><br>
- Harga sudah termasuk BBN-KB (On The Road) dan asuransi all-risk 1 tahun.
-
-    },
-    {
-        id: "car-003",
-        category: "Mobil",
-        name: "Rolls-Royce Phantom Series II",
-        price: 0.15000,
-        images: ["https://i.ibb.co.com/7xshksJQ/Desain-tanpa-judul-20260207-114554-0000.png"],
-        desc: 
-• <b>Mesin:</b> 6.75L V12 Twin-Turbo<br>
- • <b>Tenaga:</b> 563 HP / 900 Nm<br>
- • <b>Interior:</b> Kustom Hand-Stitched Leather<br>
- • <b>Fitur:</b> Starlight Headliner, Magic Carpet Ride Suspension<br>
-• <b>Warna:</b> Midnight Sapphire with Silver Upper
-
-    },
-    {
-        id: "car-004",
-        category: "Mobil",
-        name: "Lamborghini Aventador SVJ",
-        price: 0.08500,
-        images: ["https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Mesin:</b> 6.5L V12 Naturally Aspirated<br>
- • <b>Akselerasi:</b> 0-100 km/h dalam 2.8 detik<br>
- • <b>Aerodinamis:</b> ALA 2.0 (Aerodinamica Lamborghini Attiva)<br>
- • <b>Sasis:</b> Full Carbon Fiber Monocoque<br>
-• <b>Transmisi:</b> 7-Speed ISR (Independent Shifting Rods)
-
-    },
-    {
-        id: "car-005",
-        category: "Mobil",
-        name: "Bentley Continental GT Mulliner",
-        price: 0.06500,
-        images: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Mesin:</b> 6.0L W12 TSI Twin-Turbo<br>
- • <b>Interior:</b> Diamond-in-Diamond Quilting<br>
- • <b>Fitur:</b> Bentley Rotating Display, Mulliner Clock<br>
- • <b>Velg:</b> 22-inch Mulliner Exclusive Wheels<br>
-• <b>Audio:</b> Naim for Bentley 2.200W Sound System
-
-    },
-    {
-        id: "car-006",
-        category: "Mobil",
-        name: "Ferrari SF90 Stradale",
-        price: 0.09200,
-        images: ["https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Sistem:</b> Plug-in Hybrid AWD<br>
- • <b>Mesin:</b> 4.0L V8 Turbo + 3 Motor Listrik<br>
- • <b>Total Tenaga:</b> 1.000 CV (986 HP)<br>
- • <b>Transmisi:</b> 8-Speed F1 Dual-Clutch<br>
-• <b>Top Speed:</b> 340 km/h
-
-    },
-    {
-        id: "car-007",
-        category: "Mobil",
-        name: "Mercedes-Maybach S-Class S680",
-        price: 0.04500,
-        images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Mesin:</b> 6.0L V12 Biturbo<br>
- • <b>Kursi:</b> Executive Rear Seats with Massage Function<br>
- • <b>Hiburan:</b> MBUX High-End Rear Seat Entertainment<br>
- • <b>Fitur:</b> Digital Light, Chauffeur Package<br>
-• <b>Audio:</b> Burmester 4D Surround Sound
-
-    },
-    {
-        id: "car-008",
-        category: "Mobil",
-        name: "Porsche 911 GT3 RS",
-        price: 0.05800,
-        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Mesin:</b> 4.0L Naturally Aspirated Boxer-6<br>
- • <b>RPM:</b> Redline di 9.000 RPM<br>
- • <b>Sayap:</b> Active Rear Wing with DRS (Drag Reduction System)<br>
-
-• <b>Berat:</b> Konstruksi CFRP Ringan (1.450 kg)<br>
-• <b>Sasis:</b> Rear-axle Steering & PASM Sport Tuning
-
-    },
-    {
-        id: "car-009",
-        category: "Mobil",
-        name: "Aston Martin DBS Volante",
-        price: 0.07200,
-        images: ["https://i.ibb.co.com/GvnNVhbt/Desain-tanpa-judul-20260207-115657-0000.png"],
-        desc: 
-• <b>Konfigurasi:</b> Convertible (Atap Terbuka)<br>
- • <b>Mesin:</b> 5.2L V12 Twin-Turbo<br>
- • <b>Tenaga:</b> 715 BHP / 900 Nm<br>
- • <b>Rem:</b> Carbon Ceramic Brake System<br>
-• <b>Atap:</b> 8-layer Insulated Fabric Roof
-
-    },
-    {
-        id: "car-0010",
-        category: "Mobil",
-        name: "Bugatti Chiron Super Sport",
-        price: 0.25000,
-        images: ["https://i.ibb.co.com/mFMXn0VQ/Desain-tanpa-judul-20260207-120754-0000.png"],
-        desc: 
-• <b>Mesin:</b> 8.0L W16 Quad-Turbocharged<br>
- • <b>Tenaga:</b> 1.600 PS (1.578 HP)<br>
- • <b>Ban:</b> Michelin Pilot Sport Cup 2 (Special Edition)<br>
- • <b>Bodi:</b> Longtail Aerodynamics Carbon Fiber<br>
-• <b>Akselerasi:</b> 0-200 km/h dalam 5.8 detik
-
-    },
-    {
-        id: "car-0011",
-        category: "Mobil",
-        name: "McLaren 720S Spider",
-        price: 0.06800,
-        images: ["https://i.ibb.co.com/KjcpvFzt/Desain-tanpa-judul-20260207-121412-0000.png"],
-        desc: 
-• <b>Mesin:</b> 4.0L V8 Twin-Turbo<br>
- • <b>Sasis:</b> Monocage II-S Carbon Fiber<br>
- • <b>Pintu:</b> Double-Hinged Dihedral Doors<br>
- • <b>Suspensi:</b> Proactive Chassis Control II<br>
-• <b>Interior:</b> Alcantara & Bridge of Weir Leather
-
-    },
-    {
-        id: "car-0012",
-        category: "Mobil",
-        name: "Range Rover SV Autobiography",
-        price: 0.04000,
-        images: ["https://i.ibb.co.com/zV8hJbjn/Desain-tanpa-judul-20260207-122051-0000.png"],
-        desc: 
-• <b>Tipe:</b> Long Wheelbase (LWB) Luxury SUV<br>
- • <b>Mesin:</b> 5.0L Supercharged V8<br>
- • <b>Belakang:</b> Hot Stone Massage Seats & Deployable Tables<br>
- • <b>Velg:</b> 23-inch Forged Wheels<br>
-• <b>Cat:</b> SV Bespoke Premium Palette
-
-    },
-    {
-        id: "gold-001",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 1 Gram",
-        price: 0.00015,
-        images: ["https://i.ibb.co.com/WW2GjHH3/Desain-tanpa-judul-20260207-134044-0000.png"],
-        desc: 
-• <b>Berat:</b> 1 Gram<br>
- • <b>Kemurnian:</b> 999.9 (24 Karat)<br>
- • <b>Sertifikat:</b> CertiCard (New Press)<br>
- • <b>Dimensi:</b> 13 x 7.8 x 0.5 mm<br>
-• <b>Fitur:</b> QR Code autentikasi aplikasi CertiEye
-
-    },
-    {
-        id: "gold-002",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 2 Gram",
-        price: 0.00029,
-        images: ["https://i.ibb.co.com/WWSt12zP/Desain-tanpa-judul-20260207-134711-0000.png"],
-        desc: 
-• <b>Berat:</b> 2 Gram<br>
- • <b>Kemurnian:</b> Fine Gold 999.9<br>
- • <b>Ketebalan:</b> 0.85 mm<br>
- • <b>Sertifikat:</b> Terintegrasi dalam kemasan CertiCard<br>
-• <b>Produksi:</b> PT Antam Tbk (Logam Mulia)
-
-    },
-    {
-        id: "gold-003",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 5 Gram",
-        price: 0.00072,
-        images: ["https://i.ibb.co.com/JW7Tk9kZ/Desain-tanpa-judul-20260207-141911-0000.png"],
-        desc: 
-• <b>Berat:</b> 5 Gram<br>
- • <b>Kemurnian:</b> 99.99% Emas Murni<br>
- • <b>Dimensi:</b> 20.5 x 12.3 mm<br>
- • <b>Keamanan:</b> Barcode unik pada kemasan<br>
- • <b>Investasi:</b> Likuiditas tinggi, mudah dijual kembali`
-
-},
- {
- id: "gold-004",
- category: "Emas",
- name: "Emas Antam Logam Mulia 10 Gram",
- price: 0.00142,
- images: ["https://i.ibb.co.com/qMTw7ZPb/Desain-tanpa-judul-20260207-142456-0000.png"],
-desc:
-• <b>Berat:</b> 10 Gram<br>
-               • <b>Kemurnian:</b> Au 999.9<br>
-               • <b>Desain:</b> Motif Klasik Antam<br>
-               • <b>Sertifikat:</b> LBMA (London Bullion Market Association)<br>
-               • <b>Kelengkapan:</b> Nota resmi pembelian digital
-
- },
- {
- id: "gold-005",
- category: "Emas",
- name: "Emas Antam Logam Mulia 25 Gram",
- price: 0.00350,
- images: ["https://i.ibb.co.com/K8jSt3G/Desain-tanpa-judul-20260207-145416-0000.png"],
-desc:
-• <b>Berat:</b> 25 Gram<br>
-               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
-               • <b>Dimensi:</b> 34 x 20.4 mm<br>
-               • <b>Sertifikat:</b> Akreditasi KAN (Komite Akreditasi Nasional)<br>
-               • <b>Proteksi:</b> Teknologi kemasan anti-pemalsuan
-
- },
- {
- id: "gold-006",
- category: "Emas",
- name: "Emas Antam Logam Mulia 50 Gram",
- price: 0.00690,
- images: ["https://i.ibb.co.com/GvbphD6M/Desain-tanpa-judul-20260207-143702-0000.png"],
-desc:
-• <b>Berat:</b> 50 Gram<br>
-               • <b>Bentuk:</b> Bar (Batangan)<br>
-               • <b>Kemurnian:</b> 24 Karat (99.99%)<br>
-               • <b>Sertifikat:</b> Global Standard LBMA<br>
-               • <b>Dimensi:</b> 42.5 x 25.5 mm
-
- },
- {
- id: "gold-007",
- category: "Emas",
- name: "Emas Antam Logam Mulia 100 Gram",
- price: 0.01370,
- images: ["https://i.ibb.co.com/PzwYFNZ8/Desain-tanpa-judul-20260207-150017-0000.png"],
-desc:
-• <b>Berat:</b> 100 Gram<br>
-               • <b>Kemurnian:</b> Au 999.9<br>
-               • <b>Sertifikat:</b> Terpisah (Sertifikat Kertas Klasik/CertiCard)<br>
-               • <b>Dimensi:</b> 50 x 30 mm<br>
-               • <b>Nilai:</b> Instrumen lindung nilai (Hedging) terbaik
-
- },
- {
- id: "gold-010",
- category: "Emas",
- name: "Emas Antam Logam Mulia 250 Gram",
- price: 0.03400,
- images: ["https://i.ibb.co.com/hx080kjJ/Desain-tanpa-judul-20260207-150526-0000.png"],
-desc:
-• <b>Berat:</b> 250 Gram<br>
-               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
-               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
-               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
-               • <b>Status:</b> Barang koleksi & Investasi institusi
-
- },
- {
- id: "gold-010",
- category: "Emas",
- name: "Emas Antam Logam Mulia 500 Gram",
- price: 0.06400,
- images: ["https://i.ibb.co.com/vvvCTrw1/Desain-tanpa-judul-20260207-151033-0000.png"],
-desc:
-• <b>Berat:</b> 250 Gram<br>
-               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
-               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
-               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
-               • <b>Status:</b> Barang koleksi & Investasi institusi
-
- },
- {
- id: "gold-010",
- category: "Emas",
- name: "Emas Antam Logam Mulia 500 Gram",
- price: 0.06400,
- images: ["https://i.ibb.co.com/vvvCTrw1/Desain-tanpa-judul-20260207-151033-0000.png"],
-desc:
-• <b>Berat:</b> 250 Gram<br>
-               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
-               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
-               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
-               • <b>Status:</b> Barang koleksi & Investasi institusi
-
- },
- {
- id: "gadget-001",
- category: "Gadget",
- name: "iPhone 15 Pro Max 512GB",
- price: 0.00250,
- images: ["https://i.ibb.co.com/kgxjnpyp/Desain-tanpa-judul-20260207-181545-0000.png"],
-
-desc:
-• <b>Layar:</b> 6.7" Super Retina XDR OLED<br>
-               • <b>Chipset:</b> A17 Pro (3nm)<br>
-               • <b>Kamera:</b> 48MP Utama, 5x Optical Zoom<br>
-               • <b>Material:</b> Titanium Grade 5<br>
-               • <b>Fitur:</b> Action Button, USB-C 3.0
-
- },
- {
- id: "gadget-002",
- category: "Gadget",
- name: "Samsung Galaxy S24 Ultra",
- price: 0.00235,
- images: ["https://i.ibb.co.com/RprpNpf6/Desain-tanpa-judul-20260207-182139-0000.png"],
-desc:
-• <b>Layar:</b> 6.8" Dynamic LTPO AMOLED 2X<br>
-               • <b>Stylus:</b> Built-in S Pen<br>
-               • <b>Kamera:</b> 200MP Quad Tele System<br>
-               • <b>AI:</b> Galaxy AI (Circle to Search, Live Translate)<br>
-               • <b>Baterai:</b> 5000mAh, 45W Fast Charging
-
- },
- {
- id: "gadget-003",
- category: "Gadget",
- name: "iPad Pro M2 12.9-inch Wi-Fi",
- price: 0.00180,
- images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Layar:</b> Liquid Retina XDR mini-LED<br>
-               • <b>Chip:</b> Apple M2 Chip 8-Core CPU<br>
-               • <b>Penyimpanan:</b> 256GB SSD<br>
-               • <b>Koneksi:</b> Wi-Fi 6E ultra-cepat<br>
-               • <b>Aksesori:</b> Mendukung Apple Pencil Gen 2
-
- },
- {
- id: "gadget-004",
- category: "Gadget",
- name: "Samsung Galaxy Z Fold 5 5G",
- price: 0.00310,
- images: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80"],
-desc:
-• <b>Layar Utama:</b> 7.6" Dynamic AMOLED (Foldable)<br>
-               • <b>Engsel:</b> Flex Hinge Zero Gap<br>
-               • <b>Multitasking:</b> Taskbar Pro & Drag-and-Drop<br>
-               • <b>Ketahanan:</b> IPX8 Water Resistant<br>
-               • <b>Processor:</b> Snapdragon 8 Gen 2 for Galaxy
-
- },
- {
- id: "gadget-005",
- category: "Gadget",
- name: "Google Pixel 8 Pro",
- price: 0.00165,
- images: ["https://i.ibb.co.com/4whjRRwC/Desain-tanpa-judul-20260207-182718-0000.png"],
-desc:
-• <b>Kamera:</b> Pro-level Triple Camera System<br>
-               • <b>Chipset:</b> Google Tensor G3 AI<br>
-               • <b>Fitur:</b> Best Take, Magic Editor AI<br>
-               • <b>Keamanan:</b> Titan M2 Security Chip<br>
-               • <b>OS:</b> Android Stock (Update 7 Tahun)
-
- },
- {
- id: "gadget-006",
- category: "Gadget",
- name: "Apple Watch Ultra 2",
- price: 0.00120,
- images: ["https://i.ibb.co.com/cX2449Wh/Desain-tanpa-judul-20260207-183059-0000.png"],
-desc:
-• <b>Body:</b> Aerospace Titanium 49mm<br>
-               • <b>Layar:</b> Kecerahan 3000 nits (Retina Always-on)<br>
-               • <b>Sensor:</b> Kedalaman air & Suhu tubuh<br>
-               • <b>Baterai:</b> Hingga 72 jam (Low Power Mode)<br>
-               • <b>Fitur:</b> Dual-frequency GPS
-
- },
- {
- id: "gadget-007",
- category: "Gadget",
- name: "MacBook Pro M3 14-inch",
- price: 0.00350,
- images: ["https://i.ibb.co.com/4gYFHqtP/Desain-tanpa-judul-20260207-183506-0000.png"],
-desc:
-• <b>Layar:</b> Liquid Retina XDR 120Hz<br>
-               • <b>Chip:</b> Apple M3 Chip (Next-gen GPU)<br>
-               • <b>Memori:</b> 16GB Unified Memory<br>
-               • <b>Audio:</b> 6-Speaker Sound System<br>
-               • <b>Baterai:</b> Daya tahan hingga 22 Jam
-
- },
- {
- id: "gadget-008",
- category: "Gadget",
- name: "Sony WH-1000XM5 ANC",
- price: 0.00065,
- images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=800&q=80"],
- desc: `• <b>Tipe:</b> Wireless Noise Cancelling Headphone<br>
-
-• <b>Audio:</b> High-Res Audio Wireless (LDAC)<br>
- • <b>Mic:</b> 8 Mikrofon untuk panggilan jernih<br>
- • <b>Fitur:</b> Speak-to-Chat, Spotify Tap<br>
-• <b>Baterai:</b> 30 Jam pemakaian terus menerus
-
-    },
-    {
-        id: "gadget-009",
-        category: "Gadget",
-        name: "Asus ROG Phone 8 Pro",
-        price: 0.00210,
-        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Layar:</b> 165Hz LTPO AMOLED Gaming Display<br>
- • <b>Gaming:</b> AirTrigger (Tombol ultrasonik)<br>
- • <b>Pendingin:</b> GameCool 8 Thermal System<br>
- • <b>RAM:</b> 24GB LPDDR5X<br>
-• <b>Fitur:</b> AniMe Vision (Display LED di bodi)
-
-    },
-    {
-        id: "gadget-010",
-        category: "Gadget",
-        name: "Xiaomi 14 Ultra Carbon",
-        price: 0.00195,
-        images: ["https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80"],
-        desc: 
-• <b>Kamera:</b> Leica Summilux Optical Lens<br>
- • <b>Sensor:</b> 1-inch Sony LYT-900 Utama<br>
- • <b>Layar:</b> C8 3000nits WQHD+ AMOLED<br>
- • <b>Charging:</b> 90W HyperCharge<br>
-• <b>Bahan:</b> Nano-tech Vegan Leather
-
-    }
-];
-
-productsData.forEach(p => {
-    if(!p.rating) p.rating = 4.8;
-    if(!p.sold) p.sold = Math.floor(Math.random() * 100) + 10;
-    if(!p.reviews) p.reviews = [{user: "Pembeli", comment: "Barang bagus sesuai pesanan."}];
-});
-
-    async function initPi() {
-        try {
-            await Pi.init({ version: "2.0", sandbox: false });
-        } catch (e) { console.error("Init Error:", e); }
-    }
-
-    window.showAddressForm = () => {
-        const overlay = document.createElement('div');
-        overlay.id = "address-overlay";
-        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
-        overlay.innerHTML = 
-
- <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative;">
- <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
- <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
- <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
- <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}"></div>
- <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea></div>
- <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
- </div>`;
- document.body.appendChild(overlay);
- };
-
-window.saveAddress = () => {
- userAddress = {
- nama: document.getElementById('ship-name').value,
- telepon: document.getElementById('ship-phone').value,
- alamatLengkap: document.getElementById('ship-address').value
- };
- if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
- document.getElementById('address-overlay').remove();
- alert("Alamat disimpan.");
- };
-
-function renderProducts(data, targetGridId) {
- const grid = document.getElementById(targetGridId);
- if (!grid) return;
- grid.innerHTML = "";
- data.forEach(p => {
- const displayPrice = p.price.toFixed(5); 
- const discountBadge = (p.discount && p.discount > 0) 
-?
-<span class="discount-badge">-${p.discount}%</span>
-
- : '';
-
- const card = document.createElement('div');
- card.className = 'product-card';
-card.innerHTML =
-
-            <div class="image-container" onclick="openProductDetail('${p.id}')">
-                ${discountBadge} 
-                <img src="${p.images[0]}" alt="${p.name}">
-                <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
-            </div>
-            <div class="product-info">
-                <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-                <div class="price">${displayPrice} π</div>
-                <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
-                <div class="card-bottom">
-                    <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
-                </div>
-            </div>
-;
- grid.appendChild(card);
- });
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Digital Pro Indo - Premium Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --pi-color: #4a148c; 
+            --pi-gold: #d4af37;
+            --pi-red: #ef4444;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f1f5f9;
+            --nav-bg: #ffffff;
+            --xtra-cyan: #00bfa5;
+            --discount-red: #ff4d4f;
+            --btn-purple: #9c27b0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-bottom: 100px;
+        }
+
+        .hidden { display: none !important; }
+
+        header {
+
+            background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
+
+            color: white; padding: 40px 20px 80px 20px; text-align: left;
+
+            border-bottom-left-radius: 35px; border-bottom-right-radius: 35px;
+
+            box-shadow: 0 10px 30px rgba(26, 0, 51, 0.4); position: relative; z-index: 1;
+
+        }
+
+        .header-content { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+
+        .brand-logo { 
+
+            width: 60px; height: 60px; border-radius: 50%; background: #fff; 
+
+            padding: 2px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+
+            object-fit: cover; border: 2px solid #d4af37; 
+
+        }
+
+        .header-ticker {
+
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px);
+
+            border-radius: 10px; padding: 5px 10px; margin-top: 10px;
+
+            border: 1px solid rgba(255, 255, 255, 0.2);
+
+        }
+
+        .auth-container { position: absolute; top: 15px; right: 15px; z-index: 20; }
+
+        .btn-auth { 
+
+            background: linear-gradient(to right, #d4af37, #f1c40f); 
+
+            color: #1a0033; border: none; padding: 6px 14px; 
+
+            border-radius: 8px; font-weight: 800; font-size: 0.65rem; 
+
+            cursor: pointer; text-transform: uppercase;
+
+        }
+
+
+
+        /* --- BANNER (BACK TO OLD STYLE) --- */
+
+        .banner-container {
+
+            padding: 15px 10px 0 10px; margin-top: -35px; 
+
+            position: relative; z-index: 15;
+
+        }
+
+        .banner-box {
+
+            width: 100%; height: 120px; background: #ddd; border-radius: 20px;
+
+            overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+
+            border: 2px solid rgba(255,255,255,0.2);
+
+        }
+
+
+
+        /* --- CATEGORY (BACK TO OLD STYLE) --- */
+
+        .category-scroll {
+
+            display: flex; overflow-x: auto; padding: 15px 20px; gap: 12px;
+
+            scrollbar-width: none; margin-top: 5px; position: relative; z-index: 10;
+
+        }
+
+        .category-scroll::-webkit-scrollbar { display: none; }
+
+        .category-pill {
+
+            flex: 0 0 auto; background: white; padding: 12px 20px; border-radius: 15px;
+
+            font-size: 0.8rem; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+
+            border: 1px solid #f1f5f9; cursor: pointer; transition: 0.3s;
+
+        }
+
+        .category-pill.active { background: var(--pi-color); color: white; border-color: var(--pi-color); }
+
+
+
+        /* --- MARKETPLACE GRID (STAY NEW STYLE) --- */
+
+        .marketplace-grid {
+
+            display: grid; grid-template-columns: repeat(2, 1fr);
+
+            gap: 12px; padding: 10px 15px;
+
+        }
+
+
+
+       /* --- FIX TOTAL BAGIAN ATAS KARTU --- */
+
+.product-card {
+
+    background: white;
+
+    border-radius: 12px;
+
+    overflow: hidden; /* Kunci agar gambar yang mentok tidak keluar dari lengkungan kartu */
+
+    display: flex;
+
+    flex-direction: column;
+
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+
+    border: 1px solid #edf2f7;
+
+    margin: 0; 
+
 }
 
- window.handlePayment = async (amount, name) => {
- // 1. POLESAN: Ganti alert login kaku dengan Modal Estetik
- if (!currentUser) {
- showLoginPrompt();
- return;
- }
 
- // 2. POLESAN: Ganti alert alamat (Opsional, tapi disarankan agar konsisten)
- if (!userAddress.nama) { 
- showAddressPrompt(); 
- return; 
- }
 
- let detailedItemName = name;
- if (name === 'Total Keranjang' && cart.length > 0) {
- const itemNames = cart.map(item => item.name).join(", ");
-detailedItemName =
-Keranjang (${itemNames})
-;
- }
+.image-container {
 
- try {
- await Pi.createPayment({
- amount: parseFloat(amount),
-memo:
-Pembelian ${name}
-,
- metadata: { productName: detailedItemName },
- }, {
- onReadyForServerApproval: async (paymentId) => {
- const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
- return res.ok;
- },
- onReadyForServerCompletion: async (paymentId, txid) => {
- const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
- if (res.ok) { 
- showSuccessOverlay(amount, detailedItemName, txid);
- if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
- }
- },
- onCancel: () => {},
- onError: (e, p) => { if(p) handleIncompletePayment(p); }
- });
- } catch (err) { console.error(err); }
-};
+    position: relative;
 
-// --- FUNGSI POPUP LOGIN KONSISTEN (GOLD THEME) ---
-// --- FUNGSI POPUP LOGIN KONSISTEN ---
-function showLoginPrompt() {
- const overlay = document.createElement('div');
+    width: 100%;
 
-overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
- 
-overlay.innerHTML =
+    height: 200px;
 
-        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
-            <div style="margin-bottom: 15px;">
-                <video src="assets/merah-putih.mp4" autoplay loop muted playsinline style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #FFD700;"></video>
-            </div>
-            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Selamat Datang</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace <br> DIGITAL PRO INDO</p>
-            
-            <button onclick="this.parentElement.parentElement.remove(); window.handleAuth();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer; box-shadow: 0 5px 15px rgba(255,215,0,0.3);">
-                LOGIN SEKARANG
-            </button>
-            
-            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; font-size:0.85rem;">Mungkin Nanti</button>
-        </div>
-;
- document.body.appendChild(overlay);
+    background: #f8f9fa;
+
+    overflow: hidden; /* Memotong bagian gambar yang berlebih */
+
+    margin: 0;
+
+    padding: 0;
+
 }
 
-function showAddressPrompt() {
- const overlay = document.createElement('div');
- overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
- 
-overlay.innerHTML =
 
-        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
-            <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
-            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Alamat Kosong</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
-            
-            <button onclick="this.parentElement.parentElement.remove(); window.showAddressForm();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer;">
-                LENGKAPI ALAMAT
-            </button>
-        </div>
-;
- document.body.appendChild(overlay);
+
+.image-container img {
+
+    width: 100%;
+
+    height: 100%;
+
+    object-fit: cover; /* INI KUNCINYA: Gambar akan rata kanan-kiri & atas-bawah */
+
+    object-position: center;
+
+    display: block;
+
 }
 
-function showSuccessOverlay(amount, name, txid) {
- const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
- const dataTransaksi = {
- tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
- penerima: userAddress.nama,
- username: currentUser.username,
- item: name,
- total: amount,
- txid: txid,
- alamat: userAddress.alamatLengkap,
- telepon: userAddress.telepon
- };
+.discount-badge {
 
- fetch(excelWebhookUrl, {
- method: 'POST',
- mode: 'no-cors',
- headers: { 'Content-Type': 'application/json' },
- body: JSON.stringify(dataTransaksi)
- }).catch(err => console.error("Gagal catat Excel:", err));
+    position: absolute;
 
-const overlay = document.createElement('div');
- overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
- 
-const pesanWhatsApp =
-*KONFIRMASI PEMBAYARAN PI NETWORK* %0A
-+
-*PT. DIGITAL PRO INDO*%0A
-+
-_______________________________%0A%0A
-+
-Halo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A
-+
- *DETAIL TRANSAKSI:*%0A
-+
-• *Item:* ${name}%0A
-+
-• *Total:* ${amount} π%0A
-+
-• *Status:* Success (Pi Network)%0A
-+
-• *TXID:* \
-${txid}\
- %0A%0A
-+
- *DATA PENGIRIMAN:*%0A
-+
-• *Penerima:* ${userAddress.nama}%0A
-+
-• *Telepon:* ${userAddress.telepon}%0A
-+
-• *Alamat:* ${userAddress.alamatLengkap}%0A%0A
-+
- ____
-_______________________________%0A
-+
- *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*
-;
+    top: 0;
 
-overlay.innerHTML =
+    right: 0;
 
-        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
-            <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
-                <span style="font-size: 45px;">✅</span>
-            </div>
-            <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
-            <p style="color:#64748b; margin-top:10px; font-size:0.9rem;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
-            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; margin-top:20px;">
-                KIRIM DATA KE WHATSAPP
-            </a>
-            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
-        </div>
-;
- document.body.appendChild(overlay);
+    background: #ff4d4f; /* Merah kontras */
+
+    color: white;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    padding: 4px 8px;
+
+    border-bottom-left-radius: 10px;
+
+    z-index: 10;
+
+    box-shadow: -1px 1px 4px rgba(0,0,0,0.1);
+
 }
 
- window.addToCart = (id) => {
- const p = productsData.find(x => x.id === id);
- if(p) { 
- cart.push(p); 
- alert("✅ Berhasil ditambah ke keranjang!"); 
- window.updateCartUI(); 
- }
-};
 
-window.removeFromCart = (index) => {
- cart.splice(index, 1); 
- window.updateCartUI(); 
-};
 
-window.updateCartUI = () => {
- const grid = document.getElementById('cart-items');
- if (!grid) return;
+/* Label XTRA di Pojok Kiri Bawah Gambar */
 
- if (cart.length === 0) {
- grid.innerHTML = `
- <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
- <div style="margin-bottom: 25px;">
- <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 120px; opacity: 0.8;">
- </div>
- 
- <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
- 
- <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
- Sepertinya Anda belum menambahkan produk premium ke keranjang.
+.xtra-label {
 
-</p>
- 
- <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3); transition: transform 0.2s;">
- Mulai Belanja
- </button>
+    position: absolute;
+
+    bottom: 0;
+
+    left: 0;
+
+    background: #00bfa5;
+
+    color: white;
+
+    padding: 2px 8px;
+
+    border-top-right-radius: 8px;
+
+    z-index: 10;
+
+    line-height: 1.2;
+
+}
+
+.xtra-text { font-size: 0.65rem; font-weight: 900; letter-spacing: 0.5px; }
+
+.ongkir-text { font-size: 0.55rem; font-weight: 600; }
+
+
+
+/* Badge Diskon: Pojok Kanan Atas Mentok */
+
+.discount-badge {
+
+    position: absolute; 
+
+    top: 0; 
+
+    right: 0;
+
+    background: var(--discount-red); 
+
+    color: white;
+
+    font-size: 0.75rem; 
+
+    font-weight: bold; 
+
+    padding: 5px 10px;
+
+    border-bottom-left-radius: 12px; 
+
+    z-index: 5;
+
+}
+
+.product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-name {
+            font-size: 0.85rem; font-weight: 500; color: #333; line-height: 1.3; 
+            height: 2.6em; overflow: hidden; display: -webkit-box; 
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+            margin-bottom: 5px; margin-top: 5px;
+}
+.price { font-weight: 800; color: #b71c1c; font-size: 1.1rem; margin-bottom: 5px; }
+        .free-ship-tag {
+            display: flex; align-items: center; gap: 4px; color: #00897b; 
+            font-size: 0.65rem; font-weight: 700; background: #e0f2f1; 
+            padding: 2px 6px; border-radius: 4px; width: fit-content; margin-bottom: 10px;
+}
+
+
+
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+
+        .rating-text { font-size: 0.65rem; color: #777; display: flex; align-items: center; gap: 2px; }
+
+        .star { color: #ffc107; font-size: 0.75rem; }
+
+
+
+        .btn-buy-now { 
+
+            background: var(--btn-purple); color: white; border: none; 
+
+            padding: 5px 15px; border-radius: 20px; font-weight: 700; 
+
+            font-size: 0.75rem; cursor: pointer;
+
+        }
+        #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
+        .profile-card { background: white; border-radius: 35px; padding: 35px 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+
+        .avatar-border { width: 100px; height: 100px; margin: 0 auto 20px; border: 4px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 4px; background: white; }
+
+        .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+
+        .uid-box { font-size: 0.7rem; color: var(--text-muted); background: #f1f5f9; padding: 12px; border-radius: 12px; word-break: break-all; margin: 20px 0; border: 1px solid #e2e8f0; }
+
+
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; padding: 10px 0 25px 0; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; cursor: pointer; }
+        .nav-item.active { color: var(--pi-color); }
+        .nav-icon { font-size: 1.3rem; }
+        .nav-text { font-size: 0.6rem; font-weight: 700; }
+
+        .whatsapp-float {
+            position: fixed; bottom: 100px; right: 20px; width: 55px; height: 55px; 
+            background-color: #25d366; border-radius: 50%; display: flex; 
+            align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); z-index: 1500;
+
+        }
+.search-wrapper {
+
+    display: flex;
+
+    justify-content: center; /* Membuat input berada di tengah */
+
+    padding: 20px 15px;      /* Memberi jarak atas dan samping */
+
+    width: 100%;
+
+    box-sizing: border-box;
+
+}
+
+
+
+#search-input {
+
+    width: 90%;             /* Tidak mentok ke pinggir */
+
+    max-width: 450px;       /* Lebar maksimal agar elegan di layar lebar */
+
+    padding: 14px 20px;
+
+    border-radius: 30px;    /* Bentuk kapsul yang premium */
+
+    border: 2px solid #e2e8f0;
+
+    outline: none;
+
+    font-size: 0.9rem;
+
+    background: #ffffff;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+
+    transition: all 0.3s ease;
+
+}
+
+
+
+#search-input:focus {
+
+    border-color: var(--pi-color);
+
+    box-shadow: 0 5px 20px rgba(74, 20, 140, 0.15);
+
+}
+
+/* --- HAMBURGER MENU STYLE --- */
+.menu-icon {
+    position: absolute;
+    top: 55px; /* Tepat di bawah tombol login */
+    right: 15px;
+    cursor: pointer;
+    z-index: 25;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+}
+
+.menu-icon span {
+    display: block;
+    width: 20px;
+    height: 2px;
+    background-color: white;
+    transition: 0.3s;
+}
+
+/* Sidebar Styling */
+.sidenav {
+    height: 100%;
+    width: 0; 
+    position: fixed;
+    z-index: 999999 !important;
+    top: 0;
+    right: 0;
+    background-color: #1a0033;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+}
+
+.sidenav a {
+    padding: 15px 25px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    color: white;
+    display: block;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 30px;
+}
+
+.menu-item-split {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.menu-item-split {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 15px; 
+    box-sizing: border-box;
+}
+
+.arrow-btn {
+    padding: 12px; 
+    background: none;
+    border: none;
+    color: #FFD700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-left: 1px solid rgba(255, 255, 255, 0.1); 
+    transition: 0.3s;
+    margin-left: 5px;
+}
+
+.menu-item-split a {
+    flex: 1;
+    padding: 18px 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.arrow {
+    font-size: 0.7rem;
+    margin-left: -2px; 
+}
+
+.dropdown-container {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding-left: 20px;
+}
+
+.dropdown-container a {
+    font-size: 0.9rem !important;
+    padding: 12px 25px !important;
+    border-bottom: none !important;
+    opacity: 0.7;
+}
+
+.arrow-btn.active .arrow {
+    transform: rotate(180deg);
+    color: #FFD700;
+}
+
+.sidenav {
+    height: 100%; width: 0; position: fixed; z-index: 999999 !important;
+    top: 0; right: 0; background: #05010d url('https://www.transparenttextures.com/patterns/stardust.png');
+    overflow-x: hidden; transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+    padding-top: 60px; box-shadow: -10px 0 30px rgba(0,0,0,0.8);
+    display: flex; flex-direction: column;
+}
+
+.sidenav a {
+    padding: 15px 25px; text-decoration: none; font-size: 1.1rem;
+    color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap; transition: 0.3s;
+}
+
+.sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; }
+
+.btn-converter {
+    margin: 10px 20px; 
+    /* Padding disesuaikan agar tinggi tombol proporsional */
+    padding: 12px 15px;
+    /* Lebar otomatis menyesuaikan sisa ruang sidebar */
+    width: calc(100% - 40px); 
+    
+    background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%);
+    color: #1a0033;
+    border: none;
+    border-radius: 12px; /* Border radius sedikit lebih lembut */
+    font-size: 1.05rem; /* Menyamakan ukuran font dengan menu (1.1rem) */
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start; /* Teks rata kiri agar sejajar dengan Beranda */
+    gap: 15px; /* Jarak ikon sama dengan menu lainnya */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    transition: 0.3s;
+    box-sizing: border-box;
+}
+
+.btn-converter:hover {
+    transform: translateX(5px); /* Efek geser ke kanan sama seperti link menu */
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.btn-converter span {
+    font-size: 1.2rem; /* Ukuran ikon disamakan */
+    display: inline-block;
+    width: 25px; /* Lebar area ikon tetap agar teks setelahnya sejajar */
+    text-align: center;
+}
+
+
+/* Modal Popup */
+.modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; z-index: 1000001;
+}
+.modal-content {
+    background: #1a0b2e; border: 2px solid #d4af37; padding: 40px;
+    border-radius: 25px; position: relative; text-align: center; width: 80%; max-width: 320px;
+}
+.close-modal { position: absolute; top: 15px; right: 15px; color: #d4af37; font-size: 28px; cursor: pointer; }
+
+
+.social-icon {
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-icon:hover {
+    transform: scale(1.2); /* Ikon membesar sedikit saat di-hover */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
+}
+
+.search-container {
+            position: relative;
+            z-index: 999; 
+            pointer-events: auto !important;
+        }
+
+        #search-input {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            cursor: text;
+            position: relative;
+            z-index: 1000;
+        }
+
+.slider-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+}
+
+.slider-container img {
+    transition: opacity 0.5s ease-in-out;
+}
+
+/* Animasi sederhana untuk label Jasa */
+.xtra-label {
+    background: linear-gradient(45deg, #1a237e, #4a148c) !important;
+}
+
+/* Overlay untuk Loading & Success */
+.auth-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 20000; color: white;
+}
+
+/* Animasi Jam Pasir */
+.hourglass {
+    font-size: 50px;
+    animation: flip 2s infinite;
+}
+
+@keyframes flip {
+    0% { transform: rotate(0); }
+    50% { transform: rotate(180deg); }
+    100% { transform: rotate(180deg); }
+}
+
+/* Animasi Gift/Congratulation */
+.congrats-gift {
+    width: 200px;
+    height: 200px;
+}
+    </style>
+</head>
+
+<body>
+
+<div id="sideNav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">&times;</a>
+    
+    <div class="menu-list" style="margin-top: 20px;">
+        <a href="home.html"><span>🏠</span> Beranda Web</a>
+        
+        <button class="btn-converter" onclick="openModal()">
+            <span>🔄</span> CONVERTER
+        </button>
+        
+        <a href="faq.html"><span>❓</span> FAQ / Bantuan</a>
+        
+        <a href="javascript:void(0)" onclick="openKomunitasModal()">
+            <span>🤝</span> Gabung Komunitas
+        </a>
+
+        <a href="privacypolicy.html"><span>🛡️</span> Privacy policy</a>
+
+        <a href="termsofservice.html"><span>📜</span> Terms of Service</a>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A5dmF4amZhczN1MWNzdzZlYTd1cHFlZTlpNTBiNXI3dXJ0ZWpsbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9k1173PdfJWRsoE/giphy.gif" 
+                 width="110" 
+                 style="opacity: 0.9;">
+        </div>
+
+        <div class="social-footer" style="margin-top: 20px; padding: 20px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3);">
+            <p style="font-size: 10px; color: #d4af37; margin-bottom: 12px; letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase;">FOLLOW US</p>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; max-width: 140px; margin: 0 auto; flex-wrap: nowrap;">
+                <a href="https://youtube.com/@username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="20" height="20">
+                </a>
+                <a href="https://facebook.com/username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" width="20" height="20">
+                </a>
+                <a href="https://instagram.com/username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="20" height="20">
+                </a>
+                <a href="https://x.com/username" target="_blank" style="display: flex; align-items: center;">
+                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white">
+                        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div> </div> <div id="comingSoonModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div style="font-size: 50px; margin-bottom: 10px;">🚀</div>
+        <h2 style="color: #d4af37; margin: 0; font-size: 1.5rem;">Coming Soon!</h2>
+        <p style="color: #fff; opacity: 0.8; font-size: 0.9rem; margin-top: 10px;">
+            Fitur Converter sedang dalam tahap pengembangan teknis.
+        </p>
+    </div>
 </div>
-;
-        return;
-    }
 
-    const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
-    grid.innerHTML = 
+<div id="komunitasModal" class="modal-overlay" style="display:none; align-items: center; justify-content: center; z-index: 3000;">
+    <div class="modal-content" style="
+        max-width: 350px; 
+        background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG10eHA4dm0wcGRuZDBuNHA5Z29kZmVxYWM5eGhnZjJ6cWk0NmFodiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7buijTqhjxjbEqjK/giphy.gif'); 
+        background-size: cover; 
+        background-position: center; 
+        border: 1px solid #d4af37; 
+        padding: 25px; 
+        border-radius: 20px; 
+        position: relative;
+        box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+    ">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.6); border-radius: 20px; z-index: 0;"></div>
 
- <div style="padding: 15px;">
- <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
- <div style="display:flex; align-items:center; gap:12px; text-align:left;">
- <span style="font-size:1.2rem;">📍</span>
- <div>
- <div style="font-size:0.7rem; color:#6748d7; font-weight:bold; text-transform:uppercase;">Alamat Pengiriman</div>
- <div style="font-size:0.85rem; font-weight:700; color:#1a1a1a;">
- ${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}
- </div>
- </div>
- </div>
- <span style="color:#6748d7; font-weight:bold;">></span>
- </div>
+        <div style="position: relative; z-index: 1;">
+            <span class="close-modal" onclick="closeKomunitasModal()" style="color: #fff;">&times;</span>
+            
+            <h2 style="color: #d4af37; margin-bottom: 10px; font-size: 1.3rem; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Gabung Komunitas</h2>
+            
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" 
+                     alt="Logo Komunitas" 
+                     style="width: 100%; max-width: 250px; height: auto; object-fit: contain;”>
+            </div>
+            
+            <form id="formKomunitas">
+                <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+                
+                <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+                
+                <select id="selectProvinsi" name="provinsi" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+                    <option value="">Pilih Provinsi</option>
+                </select>
+                
+                <select id="selectKota" name="kota" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled>
+                    <option value="">Pilih Kota/Kabupaten</option>
+                </select>
+                
+                <select id="selectKecamatan" name="kecamatan" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled>
+                    <option value="">Pilih Kecamatan</option>
+                </select>
+                
+                <select id="selectKelurahan" name="kelurahan" required style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled>
+                    <option value="">Pilih Kelurahan</option>
+                </select>
 
- <div id="cart-list">
-${cart.map((item, index) =>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <button type="submit" id="btnKirim" class="btn-converter" 
+                            style="width: 100%; max-width: 280px; padding: 15px 0; background: linear-gradient(45deg, #d4af37, #f1c40f); border: none; border-radius: 12px; color: black; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5); text-align: center; display: flex; align-items: center; justify-content: center;">
+                        DAFTAR SEKARANG
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
-                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; box-shadow: 0 4px 10px rgba(0,0,0,0.03); border: 1px solid #f1f5f9;">
-                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
-                        <div style="flex:1; text-align:left;">
-                            <div style="font-size:0.85rem; font-weight:700; color:#333; margin-bottom:4px; padding-right:25px; line-height:1.3;">${item.name}</div>
-                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
-                        </div>
-                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px; border: 1px solid #ffccc7;">✕</div>
-                    </div>
-                
-).join('')}
- </div>
+<header>
+    <div class="auth-container" style="position: absolute; top: 15px; right: 15px; z-index: 20;">
+        <button id="login-btn" class="btn-auth" onclick="openLoginModal()">Login</button>
+    </div>
 
- <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
- <div style="display:flex; justify-content:space-between; margin-bottom:10px; font-size:0.9rem; color:#64748b;">
- <span>Subtotal (${cart.length} Produk)</span>
- <span>π ${total}</span>
- </div>
- <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; color:#1a1a1a; border-top:2px solid #f8fafc; padding-top:15px;">
- <span>Total Tagihan</span>
- <span style="color:#b71c1c;">π ${total}</span>
- </div>
- <button class="btn-buy-now" style="width:100%; padding:16px; border-radius:16px; font-size:1.05rem; font-weight:800; border:none; box-shadow: 0 6px 15px rgba(103,72,215,0.3); background:#6748d7; color:white; cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">
- CHECKOUT SEKARANG 🚀
- </button>
- </div>
- </div>
- `;
-};
+    <div class="menu-icon" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
-window.switchPage = (pageId) => {
- ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
- const el = document.getElementById(p);
- if(el) el.classList.add('hidden');
- });
-const activePage = document.getElementById(
-page-${pageId}
-);
- if(activePage) activePage.classList.remove('hidden');
- document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-const activeNav = document.getElementById(
-nav-${pageId}
-);
- if(activeNav) activeNav.classList.add('active');
- if(pageId === 'home') renderProducts(productsData, 'main-grid');
-};
+    <div class="header-content" style="display: flex; align-items: center; gap: 12px;">
+        <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo" style="width: 45px; height: 45px; object-fit: contain;">
+        <div>
+            <h1 style="margin:0; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">
+                DIGITAL PRO <span style="color: #d4af37;">INDO</span>
+            </h1>
+            <p style="margin:0; opacity: 0.9; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+                Premium Marketplace
+            </p>
+        </div>
+    </div>
+    
+    <div class="header-ticker">
+        <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">
+            Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium.
+        </marquee>
+    </div>
+</header>
 
- window.closeProductDetail = () => {
- document.getElementById('product-detail-page').classList.add('hidden');
- };
+<div class="banner-container">
+    <div class="banner-box">
+        <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" style="width: 100%; height: 100%; object-fit: cover;" id="banner-img">
+    </div>
+</div>
 
- window.closeProductDetail = () => {
- document.getElementById('product-detail-page').classList.add('hidden');
- 
- const bNav = document.querySelector('.bottom-nav');
- if(bNav) {
- bNav.style.display = 'flex';
- }
-};
+<main id="page-home">
 
-window.openProductDetail = (productId) => {
- const p = productsData.find(x => x.id === productId);
- if (!p) return;
+        <div class="category-scroll">
+    <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
+    <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
+    <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
+    <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
+    <div class="category-pill" onclick="filterCategory('Emas', this)">🟡 Emas</div>
+    <div class="category-pill" onclick="filterCategory('Herbal', this)">🍃 Herbal</div>
+    <div class="category-pill" onclick="filterCategory('Gadget', this)">📱 Gadget</div>
+    <div class="category-pill" onclick="filterCategory('Elektronik', this)">🔌 Elektronik</div>
+    <div class="category-pill" onclick="filterCategory('Jasa', this)">💼 Jasa</div>
+    <div class="category-pill" onclick="filterCategory('Makanan', this)">🍱 Makanan</div>
+    <div class="category-pill" onclick="filterCategory('Minuman', this)">🥤 Minuman</div>
 
- const bNav = document.querySelector('.bottom-nav');
- if(bNav) bNav.style.display = 'none';
+</div>
 
- document.getElementById('product-detail-page').scrollTop = 0;
- 
-document.getElementById('detail-content').innerHTML =
+     <div id="main-grid" class="marketplace-grid"></div>
+    </main>
 
-        <div style="background: white; min-height: 100vh; padding-bottom: 100px; font-family:'Inter', sans-serif; position: relative;">
-            
-            <div onclick="closeProductDetail()" style="position: fixed; top: 15px; left: 15px; z-index: 9999; background: #4a148c; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; cursor: pointer;">
-                <svg viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke:white; stroke-width:3;">
-                    <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </div>
 
-            <div style="width: 100%; height: 320px; background: #f1f5f9; overflow: hidden; position: relative;">
-                <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
-            </div>
-            
-            <div style="padding: 20px; position: relative; z-index: 10; background: white; border-radius: 30px 30px 0 0; margin-top: -30px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
-                <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; font-weight: 800;">${p.name}</h2>
-                <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
-                
-                <div style="background: #fdfdfd; padding: 20px; border-radius: 20px; border: 1px solid #f1f5f9; margin-top: 15px;">
-                    <h4 style="margin: 0 0 10px 0; color: #4a148c; font-weight: 800; border-bottom: 2px solid #6748d7; width: fit-content; padding-bottom: 5px;">
-                        DETAIL SPESIFIKASI
-                    </h4>
-                    <div style="line-height: 1.8; color: #475569; font-size: 0.95rem;">
-                        ${p.desc}
-                    </div>
-                </div>
+<main id="page-cari" class="hidden">
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Cari produk premium...">
+    </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
-                    <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
-                </div>
-            </div>
-        </div>
-;
- 
- document.getElementById('product-detail-page').classList.remove('hidden');
-};
+    <div id="search-results" class="marketplace-grid">
+        <div id="search-placeholder" style="display: flex; justify-content: center; align-items: center; min-height: 300px; width: 100%; grid-column: 1 / -1;">
+            <p style="text-align: center; color: #94a3b8; font-size: 0.95rem;">
+                Silakan masukkan nama produk...
+            </p>
+        </div>
+    </div>
+</main>
 
-window.filterCategory = (category, element) => {
- const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
- renderProducts(filtered, 'main-grid');
- if (element) {
- document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
- element.classList.add('active');
- }
-};
+<main id="page-keranjang" class="hidden">
+    <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>
+    <div id="cart-items"></div>
+</main>
 
- async function handleIncompletePayment(p) {
- await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });
- }
+<main id="page-profile" class="hidden">
+    <div class="profile-card" style="margin-top: 60px;">
+        <div class="avatar-border">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+        </div>
+        <h2 id="profile-username" class="profile-username">User</h2>
+        <div class="uid-box">
+            <strong>Wallet UID:</strong><br>
+            <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
+        </div>
+        <div class="badge-verified">Status: Verified ✅</div>
+    </div>
+</main>
 
- const banners = ["https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", "https://i.ibb.co.com/Gvc69SRX/Salinan-dari-Salinan-dari-ORANG-PERTAMA-20260217-012738-0000.png", "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"];
- let idx = 0;
- setInterval(() => { 
- const img = document.getElementById('banner-img');
- if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
- }, 4000);
+<div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
+    <div id="detail-content"></div>
+</div>
 
-const searchInput = document.getElementById('search-input');
-if (searchInput) {
- searchInput.addEventListener('input', (e) => {
- const keyword = e.target.value.toLowerCase();
- const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
- const sResult = document.getElementById('search-results');
- if (keyword === "") {
-sResult.innerHTML =
-<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>
-;
- } else if (filtered.length > 0) {
- renderProducts(filtered, 'search-results');
- } else {
-sResult.innerHTML =
-<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>
-;
- }
- });
-}
+<a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">
+</a>
 
- window.handleAuth = async () => {
- const successSound = new Audio("assets/sound-effect.mp3");
- successSound.load(); 
+<nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+        <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
+    </div>
+    <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
+        <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
+    </div>
+    <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+        <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+        <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
+    </div>
+</nav>
 
- const loadingOverlay = document.createElement('div');
- loadingOverlay.className = 'auth-overlay';
-loadingOverlay.style.cssText =
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="app.js?v=4.2"></script>
+<script>
+    function toggleMenu() {
+        var sideNav = document.getElementById("sideNav");
+        sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
+    }
 
-        display: flex; justify-content: center; align-items: center;
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px);
-        z-index: 9999; opacity: 1; transition: opacity 0.5s;
-    
-;
+    function openModal() { document.getElementById("comingSoonModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
+    function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+    function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
 
-loadingOverlay.innerHTML =
+    // FUNGSI GABUNG KOMUNITAS (BARU)
+    function openKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "flex";
+        toggleMenu(); // Tutup sidebar setelah klik
+    }
+    function closeKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "none";
+    }
 
-        <div style="text-align:center;">
-            <div class="hourglass">⏳</div>
-            <p style="margin-top:20px; font-weight:bold; color:#f3e5f5; text-transform:uppercase; letter-spacing:2px; font-size:0.7rem;">
-                Menghubungkan...
-            </p>
-        </div>
-    
-;
- document.body.appendChild(loadingOverlay);
+    // LOGIKA KIRIM DATA KE GOOGLE SHEETS
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
+    const form = document.getElementById('formKomunitas');
 
- try {
- const scopes = ['username', 'payments'];
- const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
- 
- currentUser = auth.user;
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('btnKirim');
+        btn.innerText = "MENGIRIM...";
+        btn.disabled = true;
 
- const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
- if (profileDisplay) {
- profileDisplay.innerText = currentUser.username;
- }
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("Selamat! Anda telah bergabung dalam komunitas PT.DIGITAL PRO INDO.");
+                closeKomunitasModal();
+                form.reset();
+            })
+            .catch(error => alert("Error: Silakan coba lagi nanti."))
+            .finally(() => {
+                btn.innerText = "DAFTAR SEKARANG";
+                btn.disabled = false;
+            });
+    });
 
- const profileAddress = document.getElementById('profile-address');
- if (profileAddress) {
- profileAddress.innerText = currentUser.uid;
- }
- 
- successSound.play().catch(e => console.log("Audio play blocked"));
+    window.onclick = function(event) {
+        if (event.target.className === "modal-overlay") {
+            event.target.style.display = "none";
+        }
+    }
 
- loadingOverlay.innerHTML = `
- <div style="
- background-color: #0b2135; 
- border: 3px solid #FFD700; 
- border-radius: 15px;
- padding: 20px;
+    const provSelect = document.getElementById('selectProvinsi');
+const kotaSelect = document.getElementById('selectKota');
+const kecSelect = document.getElementById('selectKecamatan');
+const kelSelect = document.getElementById('selectKelurahan');
 
-text-align: center;
- width: 75%;
- max-width: 300px;
- box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px rgba(255, 215, 0, 0.2);
- animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
- box-sizing: border-box;
- ">
- <div style="padding: 5px; margin-bottom: 10px;">
- <img src="assets/Hello-GIF.gif" 
- style="width: 100%; border-radius: 8px; display: block;" 
- class="congrats-gift">
- </div>
- 
- <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-transform: uppercase;">
- Login Berhasil!
- </h2>
- <p style="font-size:0.95rem; color:#fff; margin-bottom: 5px; opacity: 0.9;">
- Selamat datang, <br>
- <span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span>
- </p>
- </div>
- `;
+// Load Provinsi
+fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+    .then(res => res.json())
+    .then(provinces => {
+        provinces.forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p.name;
+            opt.dataset.id = p.id;
+            opt.innerHTML = p.name;
+            provSelect.appendChild(opt);
+        });
+    });
 
- const loginBtn = document.getElementById('login-btn');
- if (loginBtn) {
- loginBtn.innerText = "LOGOUT";
- loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
- loginBtn.onclick = () => location.reload();
- }
-
- setTimeout(() => {
- loadingOverlay.style.opacity = '0';
- setTimeout(() => loadingOverlay.remove(), 500);
- }, 3500);
-
- } catch (err) { 
- console.error(err); 
- loadingOverlay.remove();
- if (err.message !== "User cancelled login") {
- alert("Gagal Login: " + err.message);
- }
- }
-};
-
- renderProducts(productsData, 'main-grid');
-
- // 2. Inisialisasi Pi SDK secara aman
- try {
- await initPi();
- console.log("Pi SDK siap digunakan");
- } catch (err) {
- console.error("Pi SDK gagal muat: ", err);
- // Tetap biarkan aplikasi jalan meskipun SDK gagal
- }
-
- // 3. Pasang fungsi klik pada tombol login
- const loginBtn = document.getElementById('login-btn');
- if (loginBtn) {
- loginBtn.onclick = window.handleAuth;
- }
+// Event saat Provinsi dipilih
+provSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kotaSelect, "Kota/Kabupaten");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kotaSelect, data));
 });
-function toggleMenu() {
- const nav = document.getElementById("sideNav");
- 
- if (!nav) {
- console.error("Elemen sideNav tidak ditemukan!");
- return;
- }
 
- // Logika buka tutup berdasarkan lebar
- if (nav.style.width === "250px") {
- nav.style.width = "0px";
- } else {
- nav.style.width = "250px";
- }
-}
-
-function toggleDropdown() {
- const dropdown = document.getElementById("aboutDropdown");
- const btn = document.querySelector(".dropdown-btn");
- 
- // Toggle tampilan (block/none)
- if (dropdown.style.display === "block") {
- dropdown.style.display = "none";
- btn.classList.remove("active");
- } else {
- dropdown.style.display = "block";
- btn.classList.add("active");
- }
-}
-
-// Menutup menu jika user klik di luar area sidebar
-window.addEventListener('click', function(event) {
- const nav = document.getElementById("sideNav");
- const menuIcon = document.querySelector('.menu-icon');
- 
- if (nav && nav.style.width === "250px") {
- // Jika yang diklik bukan menu dan bukan tombol garis tiga
- if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
- nav.style.width = "0px";
- }
- }
+// Event saat Kota dipilih
+kotaSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kecSelect, "Kecamatan");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kecSelect, data));
 });
+
+// Event saat Kecamatan dipilih
+kecSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kelSelect, "Kelurahan");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kelSelect, data));
+});
+
+function populate(target, data) {
+    target.disabled = false;
+    data.forEach(d => {
+        let opt = document.createElement('option');
+        opt.value = d.name;
+        opt.dataset.id = d.id;
+        opt.innerHTML = d.name;
+        target.appendChild(opt);
+    });
+}
+
+function resetDropdown(target, label) {
+    target.innerHTML = `<option value="">Pilih ${label}</option>`;
+    target.disabled = true;
+}
+
+
+</script>
+
+</body>
+</html>

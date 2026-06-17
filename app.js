@@ -257,19 +257,19 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
             product_name: namaBarang 
         },
     }, {
-        // TAHAP A: Transaksi berhasil dibuat di sisi klien, siap dikirim ke server/blockchain
-        onReadyForServerApproval: function(paymentId) {
-            console.log("Pembayaran disetujui, Payment ID:", paymentId);
-            
-            // Pada aplikasi real/production, di sini Anda mengirim paymentId ke backend Anda.
-            // Untuk kebutuhan praktis/tanpa server mandiri saat ini, kita otomatis setujui di sisi klien.
-            // Silakan ganti URL di bawah ini dengan endpoint server backend Anda jika sudah siap produksi.
-            fetch(`https://api.digitalproindo.com/pi-approve`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paymentId: paymentId })
-            }).catch(err => console.log("Simulasi approval tanpa server backend mandiri dijalankan."));
-        },
+        // TAHAP A: Transaksi berhasil dibuat, sistem menunggu persetujuan
+onReadyForServerApproval: function(paymentId) {
+    console.log("Mencoba menyetujui transaksi secara instan untuk Payment ID:", paymentId);
+    
+    // Beritahu Pi SDK bahwa aplikasi Anda (sisi klien) menyetujui transaksi ini
+    // Ini akan menghentikan hitungan mundur kadaluarsa dan memunculkan form frasa sandi
+    if (window.Pi && window.Pi.approvePayment) {
+        window.Pi.approvePayment(paymentId);
+    } else {
+        // Alternatif jika versi SDK memerlukan rest call langsung ke node Pi
+        console.log("Silakan masukkan frasa sandi Anda di jendela Pi...");
+    }
+},
         
         // TAHAP B: Pengguna sudah memasukkan frasa sandi dompet & menekan tombol 'Bayar'
         onReadyForServerCompletion: function(paymentId, txid) {

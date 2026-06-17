@@ -1,10 +1,14 @@
-// 1. VARIABEL GLOBAL UTAMA
+// ==========================================
+// 1. VARIABEL GLOBAL UTAMA MARKETPLACE
+// ==========================================
 let currentUser = null;
 let cart = [];
 let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
 const ADMIN_WA = "6281906066757"; 
 
-// 2. DATA PRODUK MARKETPLACE ANDA (Utuh Tanpa Perubahan)
+// ==========================================
+// 2. DATA PRODUK MARKETPLACE (Utuh Tanpa Perubahan)
+// ==========================================
 const productsData = [
     {
         id: "house-001",
@@ -358,10 +362,10 @@ const productsData = [
     {
         id: "bike-005",
         name: "MV Agusta Rush 1000 cc",
-        price: 0.01650,
+        price: 0.00950,
         category: "Motor",
-        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
-        desc: `• <b>Konsep:</b> Hyper-Naked Drag Bike Luxury<br>• <b>Mesin:</b> 998cc 16-valve DOHC Inline 4`
+        images: ["https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Mesin:</b> 2.458cc (Mesin motor terbesar di dunia)<br>• <b>Torsi:</b> 221 Nm`
     },
     {
         id: "bike-006",
@@ -381,110 +385,112 @@ const productsData = [
     }
 ];
 
-// 3. EVENT DETEKTOR UTAMA (Global Listener)
+// ==========================================
+// 3. EVENT DETECTOR (LANGSUNG RENDERING SEJAK AWAL)
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Sistem DOM Siap.");
+    console.log("DOM Berhasil Dimuat. Menggambar produk ke layar...");
     
-    // Memberikan jeda aman 1 detik agar WebView internal Pi Browser mengikat window.Pi dengan sempurna
-    setTimeout(() => {
-        inisialisasiAplikasiPi();
-    }, 1000);
+    // PERBAIKAN KRITIS: Segera gambar katalog produk agar marketplace TIDAK BLANK semenjak dibuka
+    eksekusiRenderKatalogAwal();
 
-    // SOLUSI TOMBOL LOGIN TIDAK BERFUNGSI: Menggunakan Global Click Listener
-    // Pendekatan ini mendeteksi klik pada elemen mana pun yang bertuliskan "LOGIN" atau "LOGIN PI"
-    document.addEventListener("click", (event) => {
-        const target = event.target;
-        
-        // Periksa apakah elemen yang diklik adalah tombol Login berdasarkan teks, id, atau class
+    // Berikan jeda waktu aman 1.5 detik untuk inisialisasi Pi SDK di latar belakang
+    setTimeout(() => {
+        jalankanInisialisasiPi();
+    }, 1500);
+
+    // Global Click Listener untuk tombol login fisik di HTML Anda
+    document.addEventListener("click", (e) => {
+        const target = e.target;
         if (
-            (target.innerText && target.innerText.includes("LOGIN")) ||
+            (target.innerText && target.innerText.toUpperCase().includes("LOGIN")) ||
             target.id === "login-btn" || 
             target.classList.contains("LOGIN") ||
             target.classList.contains("login-btn")
         ) {
-            console.log("Interaksi login manual terdeteksi via Global Listener.");
-            jalankanProsesAutentikasi(true);
+            console.log("Tombol login ditekan manual.");
+            prosesOtentikasiPiNetwork(true);
         }
     });
 });
 
-// 4. PENGECEKAN KESIAPAN SDK PI
-function inisialisasiAplikasiPi() {
+// ==========================================
+// 4. FUNCTION INISIALISASI SDK PI
+// ==========================================
+function jalankanInisialisasiPi() {
     if (window.Pi) {
         try {
-            // Inisialisasi resmi versi 2.0 untuk Jaringan Utama / Mainnet Production
+            // sandbox: false untuk produksi real-environment Mainnet Pi Browser
             window.Pi.init({ version: "2.0", sandbox: false });
-            console.log("Pi SDK berhasil terinisialisasi.");
+            console.log("Pi SDK v2.0 Terhubung.");
             
-            // Jalankan autentikasi otomatis pelan-pelan di latar belakang
-            jalankanProsesAutentikasi(false);
-        } catch (error) {
-            console.error("Gagal melakukan Pi.init:", error);
-            muatFungsiTokoLanjutan(); // Bypass aman agar tidak blank jika gagal init
+            // Lakukan login otomatis di background pelan-pelan
+            prosesOtentikasiPiNetwork(false);
+        } catch (err) {
+            console.error("Kesalahan fungsi Pi.init:", err);
         }
     } else {
-        console.warn("Aplikasi tidak dibuka di Pi Browser. Mode pratinjau diaktifkan.");
-        muatFungsiTokoLanjutan(); // Jalankan tampilan agar developer bisa tes di browser biasa
+        console.log("Aplikasi diakses dari luar Pi Browser (Mode Web Biasa).");
     }
 }
 
-// 5. INT LOGIKA JABAT TANGAN (AUTHENTICATE)
-function jalankanProsesAutentikasi(apakahKlikManual = false) {
+// ==========================================
+// 5. CORE LOGIN LOGIC (PROSES JABAT TANGAN SDK)
+// ==========================================
+function prosesOtentikasiPiNetwork(isManualClick = false) {
     if (!window.Pi) {
-        if (apakahKlikManual) alert("Gagal mendeteksi Jaringan Pi. Gunakan Pi Browser!");
+        if (isManualClick) alert("Gagal terhubung ke ekosistem Pi! Buka url website ini dari dalam aplikasi Pi Browser.");
         return;
     }
 
     const scopes = ['username', 'payments'];
 
     function onIncompletePaymentFound(payment) {
-        console.log("Invoice gantung terdeteksi:", payment);
+        console.log("Invoice gantung blockchain terdeteksi:", payment);
     }
 
     window.Pi.authenticate(scopes, onIncompletePaymentFound)
         .then(function(auth) {
-            console.log("Login Sukses! Username Pioneer:", auth.user.username);
+            console.log("Login Blockchain Sukses!", auth.user.username);
             currentUser = auth.user;
 
-            // 1. Ganti teks tombol login yang ada di HTML Anda secara otomatis menjadi nama pengguna
-            const semuaTombol = document.querySelectorAll("button, a, div");
+            // Mengubah semua teks tombol login secara dinamis menjadi USERNAME Pioneer
+            const semuaTombol = document.querySelectorAll("button, a, div, span");
             semuaTombol.forEach(el => {
-                if(el.innerText && el.innerText.includes("LOGIN")) {
+                if (el.innerText && el.innerText.toUpperCase().includes("LOGIN")) {
                     el.innerText = auth.user.username.toUpperCase();
                 }
             });
 
-            const tombolIdSpesifik = document.getElementById("login-btn");
-            if (tombolIdSpesifik) tombolIdSpesifik.innerText = auth.user.username.toUpperCase();
-
-            // 2. Sembunyikan layar pelindung (Page Login/Splash Screen) jika ada
-            const halamanLogin = document.getElementById('page-login') || document.querySelector('.page-login');
-            if (halamanLogin) {
-                halamanLogin.classList.add('hidden');
-                halamanLogin.style.display = 'none'; // Paksa sembunyi lewat style
+            // Sembunyikan Splash Page / Layar Login Pembatas (jika ada)
+            const splashScreen = document.getElementById('page-login') || document.querySelector('.page-login');
+            if (splashScreen) {
+                splashScreen.style.display = 'none';
+                splashScreen.classList.add('hidden');
             }
-
-            // 3. Render Toko & Tampilkan Produk
-            muatFungsiTokoLanjutan();
         })
         .catch(function(error) {
-            console.error("Error Autentikasi Pi Network:", error);
+            console.error("Kesalahan Otentikasi Pi SDK:", error);
             
-            if (apakahKlikManual) {
-                alert("Otentikasi Gagal! Pastikan Anda menyetujui izin akses di Pi Browser.");
+            // Alert popup hanya muncul jika user sengaja klik tombolnya dan gagal, tidak mengganggu saat load awal
+            if (isManualClick) {
+                alert("Otentikasi Gagal! Pastikan konfigurasi domain Anda di develop.pi sudah menyertakan atau melepaskan 'www.' sesuai URL yang diakses.");
             }
-            
-            // JALUR CADANGAN MUTLAK: Meskipun gagal/error, muat menu utama agar web TIDAK BLANK.
-            muatFungsiTokoLanjutan();
         });
 }
 
-// 6. FUNGSI PENYELAMAT DAN PENGGAMBAR ANTARMUKA (DOM RENDERER)
-function muatFungsiTokoLanjutan() {
-    console.log("Merender menu utama dan katalog produk...");
-    
-    // CATATAN UNTUK ANDA:
-    // Jika di bagian bawah kode asli Anda yang lama ada fungsi bernama:
-    // renderProducts() atau tampilkanKatalog() atau sejenisnya,
-    // SILAKAN KETIKKAN NAMA FUNGSINYA DI SINI agar produknya muncul otomatis.
+// ==========================================
+// 6. DETEKTOR OTOMATIS RENDER KATALOG TEMPLATE
+// ==========================================
+function eksekusiRenderKatalogAwal() {
+    // Mencari fungsi rendering bawaan HTML bawaan Anda sebelumnya secara otomatis
+    if (typeof renderProducts === "function") {
+        renderProducts('Semua');
+    } else if (typeof showProducts === "function") {
+        showProducts();
+    } else if (typeof displayProducts === "function") {
+        displayProducts('all');
+    } else {
+        console.warn("Fungsi render bawaan tidak terdeteksi otomatis secara global.");
+    }
 }

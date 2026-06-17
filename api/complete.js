@@ -1,43 +1,40 @@
-// api/complete.js
 export default async function handler(req, res) {
-    // 1. Validasi Method: Hanya menerima POST dari SDK
-    if (req.method !== 'POST') {
-        return res.status(405).json({ error: "Method Not Allowed" });
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+        return res.status(200).end();
     }
 
-    const { paymentId, txid } = req.body;
-
-    // 2. Validasi input: Membutuhkan Payment ID dan Transaction ID (TXID)
-    if (!paymentId || !txid) {
-        return res.status(400).json({ error: "Missing Payment ID or TXID" });
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Metode tidak diizinkan' });
     }
 
     try {
-        console.log(`Menyelesaikan transaksi: ${paymentId} dengan TXID: ${txid}`);
-
-        // 3. Memanggil API Pi Network untuk 'complete'
-        const response = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Key ${process.env.PI_API_KEY}`, // Menggunakan Secret Key yang sama
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ txid }) // Mengirimkan bukti TXID dari blockchain
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-            // Berhasil! Saldo user sekarang resmi berpindah ke dompet Anda
-            console.log("Transaksi Berhasil Diselesaikan!");
-            return res.status(200).json(data);
-        } else {
-            console.error("Gagal Complete dari API Pi:", data);
-            return res.status(response.status).json(data);
+        const { paymentId, txid } = req.body;
+        if (!paymentId || !txid) {
+            return res.status(400).json({ error: 'Payment ID dan TXID wajib diisi' });
         }
 
+        // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI DI SINI
+        const PI_API_KEY = "MASUKKAN_SERVER_API_KEY_ANDA_DI_SINI"; 
+
+        // Beritahu Pi Network bahwa transaksi telah selesai sepenuhnya di sisi merchant
+        const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Key ${PI_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ txid: txid })
+        });
+
+        const data = await piResponse.json();
+        return res.status(200).json(data);
+
     } catch (error) {
-        console.error("Server Error saat Completion:", error);
-        return res.status(500).json({ error: "Internal Server Error" });
+        console.error("Error di complete:", error);
+        return res.status(500).json({ error: 'Gagal memproses penyelesaian ke Pi Server' });
     }
 }

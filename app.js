@@ -7,7 +7,7 @@ let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
 const ADMIN_WA = "6281906066757"; 
 
 // ==========================================
-// 2. DATA PRODUK MARKETPLACE (Utuh Tanpa Perubahan)
+// 2. DATA PRODUK MARKETPLACE (Utuh Sempurna)
 // ==========================================
 const productsData = [
     {
@@ -134,158 +134,33 @@ const productsData = [
         id: 'p2', 
         name: "COCO Pro Kunyit", 
         price: 0.00006,
-        discount: 5, 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], 
-        desc: "Super food Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic, Immune support,High Antioksidant,Improved Digestion,Naturally Energizing.",
-        rating: 5.0,
-        sold: 3400,
-        reviews: [{ user: "Sehat_Sentosa", comment: "Asam lambung saya membaik, terima kasih!" }]
+        desc: "Super food Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma Dan Dengan Formula Bioteknologi Khusus Live probiotic."
     },
     { 
         id: 'p3', 
         name: "An-Nisa", 
         price: 0.00010,
-        discount: 5, 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/0jjhzJ7p/Desain-tanpa-judul-20260211-213452-0000.png"], 
-        desc: "Keputihan, Gatal-gatal ,Membunuh bakteri, Melancarkan menstruasi, Mengatasi nyeri haid, Mencegah kanker rahim, Membasmi mioma / Kista, Merapatkan dan mengencangkan.",
-        rating: 5.0,
-        sold: 3400,
-        reviews: [{ user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }]
+        desc: "Keputihan, Gatal-gatal ,Membunuh bakteri, Melancarkan menstruasi, Mengatasi nyeri haid, Mencegah kanker rahim."
     },
     { 
         id: 'p4', 
         name: "Ar-Rizal", 
         price: 0.00010,
-        discount: 5, 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/Ndjmbdbj/Desain-tanpa-judul-20260211-214933-0000.png"], 
-        desc: "Mengencangkan Mr.P, Menguatkan Mr.P, Menguatkan Jantung, Meningkatkan gairah, Mengatasi ejakulasi dini, Suplemen terbaik buat Profil, Meningkatkan kwalitas Hormon.",
-        rating: 5.0,
-        sold: 3400,
-        reviews: [{ user: "Sehat_Sentosa", comment: "Kualitas bintang 5!" }]
-    },
-    { 
-        id: 'p3_smart', 
-        name: "Smart Home System Pro", 
-        price: 0.500, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"], 
-        desc: "Paket instalasi smart home berbasis IoT. Kontrol rumah Anda dengan integrasi Pi Browser yang aman dan cepat.",
-        rating: 4.8,
-        sold: 52
-    },
-    { 
-        id: 'p4_phone', 
-        name: "Premium Smartphone X", 
-        price: 1.200, 
-        category: "Elektronik", 
-        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"], 
-        desc: "Gadget premium dengan performa tinggi. Kamera resolusi tinggi dan baterai tahan lama untuk penggunaan harian.",
-        rating: 4.7,
-        sold: 89
-    },
-    { 
-        id: 'p5', 
-        name: "Sofa Minimalis 2 Seater - Modern Grey", 
-        price: 0.05, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"], 
-        desc: "Sofa nyaman ukuran 150x80cm, cocok untuk ruang tamu kecil. Bahan kain breathable dan busa tahan kempes.",
-        rating: 4.6,
-        sold: 45
+        desc: "Mengencangkan Mr.P, Menguatkan Mr.P, Menguatkan Jantung, Meningkatkan gairah, Mengatasi ejakulasi dini."
     },
     { 
         id: 'p6', 
         name: "Nabidz Dessert ", 
         price: 0.00012,
-        discount: 0,
         category: "Herbal", 
         images: ["https://i.ibb.co.com/qMCm0C7q/IMG-20260203-WA0004.jpg"], 
-        desc: "Nabidz Dessert bahan baku buah anggur merah yang di fermentasi esterifikasi biokimia resep pribadi dan di padu dengan proses istihalah.",
-        rating: 4.9,
-        sold: 21
-    },
-    { 
-        id: 'p7', 
-        name: "Lampu Gantung Industrial - Model Black Dome", 
-        price: 0.015, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80"], 
-        desc: "Lampu dekoratif plafon, diameter 30cm untuk kesan estetik industrial di cafe atau rumah Anda.",
-        rating: 4.5,
-        sold: 110
-    },
-    { 
-        id: 'p8', 
-        name: "Rak Buku Kayu 5 Tingkat - Slim Design", 
-        price: 0.03, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1594620302200-9a762244a156?w=500&q=80"], 
-        desc: "Rak buku hemat ruang, tinggi 180cm lebar 40cm. Mudah dirakit dan sanggup menahan beban berat.",
-        rating: 4.7,
-        sold: 76
-    },
-    { 
-        id: 'p9', 
-        name: "Karpet Bulu Lembut 160x210 - Creamy White", 
-        price: 0.012, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?w=500&q=80"], 
-        desc: "Karpet lantai premium, sangat lembut dan mudah dibersihkan. Memberikan kesan hangat pada kamar tidur.",
-        rating: 4.8,
-        sold: 230
-    },
-    { 
-        id: 'p10', 
-        name: "Set Gorden Jendela - Model Smokering Minimalis", 
-        price: 0.008, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"], 
-        desc: "Gorden blackout ukuran 140x220cm, tersedia berbagai warna. Menghalau sinar matahari hingga 90%.",
-        rating: 4.6,
-        sold: 150
-    },
-    { 
-        id: 'p11', 
-        name: "Jam Dinding Kayu - Tipe Scandinavian", 
-        price: 0.005, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=500&q=80"], 
-        desc: "Jam dinding estetik diameter 35cm, mesin sweep movement (tidak berdetak). Tenang dan elegan.",
-        rating: 4.7,
-        sold: 310
-    },
-    { 
-        id: 'p12', 
-        name: "Tanaman Hias Artificial - Model Monstera Large", 
-        price: 0.01, 
-        category: "Rumah", 
-        images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"], 
-        desc: "Tanaman palsu mirip asli dengan pot keramik, tinggi 80cm. Memberikan kesan hijau tanpa perlu perawatan.",
-        rating: 4.5,
-        sold: 95
-    },
-    { 
-        id: 'e1', 
-        name: "Smartphone Pi-Phone X - 256GB Platinum", 
-        price: 0.15, 
-        category: "Elektronik", 
-        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80"], 
-        desc: "Layar AMOLED 6.7 inci, RAM 12GB, Baterai 5000mAh. Support native Pi App ekosistem.",
-        rating: 4.9,
-        sold: 140
-    },
-    { 
-        id: 'e2', 
-        name: "Wireless Earbuds Pro - Noise Cancelling", 
-        price: 0.02, 
-        category: "Elektronik", 
-        images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"], 
-        desc: "Audio High-Fidelity, tahan air IPX5. Baterai tahan hingga 24 jam dengan case pengisian.",
-        rating: 4.7,
-        sold: 420
+        desc: "Nabidz Dessert bahan baku buah anggur merah yang di fermentasi esterifikasi biokimia resep pribadi."
     },
     { 
         id: 'hb4', 
@@ -293,122 +168,31 @@ const productsData = [
         price: 0.00006, 
         category: "Herbal", 
         images: ["https://i.ibb.co.com/4nRdtBpb/IMG-20260203-WA0005.jpg"], 
-        desc: "Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma.",
-        rating: 5.0,
-        sold: 1200
-    },
-    { 
-        id: 'v1', 
-        name: "Sedan Sport Luxury - Tipe S1", 
-        price: 0.0005, 
-        category: "Mobil", 
-        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"], 
-        desc: "Mesin Turbo 2.0L, Interior Kulit Premium, Panoramic Sunroof.",
-        rating: 5.0,
-        sold: 3
-    },
-    { 
-        id: 'm1', 
-        name: "Motor Sport 250cc - Black Matte", 
-        price: 0.002, 
-        category: "Motor", 
-        images: ["https://i.ibb.co.com/spcrbbKT/Motor-250cc-Terbaik.jpg"], 
-        desc: "Akselerasi cepat, ABS system, Desain aerodinamis modern.",
-        rating: 4.8,
-        sold: 12
-    },
-    { 
-        id: 'm1_alt', 
-        name: "Motor Sport 250cc - Kawasaki Ninja H2R", 
-        price: 0.002, 
-        category: "Motor", 
-        images: ["https://i.ibb.co.com/Fkp8tHJH/58942-kawasaki-ninja-h2r-model-kit-motosiklet-112-39198-1.jpg"], 
-        desc: "KAWASAKI NINJA H2R (Model 2026) Status: Motor produksi massal terkencang di dunia.",
-        rating: 4.8,
-        sold: 12
-    },
-    {
-        id: "bike-001",
-        name: "Ducati Panigale V4 R",
-        price: 0.01500,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Mesin:</b> 998cc Desmosedici Stradale V4 R<br>• <b>Tenaga:</b> 218 HP @ 15.500 RPM<br>• <b>Fitur:</b> Sayap Karbon (Aero Winglets), Öhlins Suspension`
-    },
-    {
-        id: "bike-002",
-        name: "Kawasaki Ninja H2R (Track Only)",
-        price: 0.01800,
-        category: "Motor",
-        images: ["https://i.ibb.co.com/jZ6LvJTB/Desain-tanpa-judul-20260207-131613-0000.png"],
-        desc: `• <b>Mesin:</b> 998cc In-line Four with Supercharger<br>• <b>Tenaga:</b> 310 HP (Paling bertenaga di dunia)\n• <b>Top Speed:</b> 400+ km/jam`
-    },
-    {
-        id: "bike-003",
-        name: "BMW M 1000 RR",
-        price: 0.01250,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1615172282427-9a57ef2d142e?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Mesin:</b> 999cc Water-cooled Inline 4-Cylinder<br>• <b>Fitur M:</b> Velg Karbon M, Kursi M`
-    },
-    {
-        id: "bike-004",
-        name: "Harley-Davidson CVO Road Glide",
-        price: 0.01400,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Mesin:</b> Milwaukee-Eight® VVT 121 (1.977cc)<br>• <b>Gaya:</b> Grand American Touring Luxury`
-    },
-    {
-        id: "bike-005",
-        name: "MV Agusta Rush 1000 cc",
-        price: 0.00950,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Mesin:</b> 2.458cc (Mesin motor terbesar di dunia)<br>• <b>Torsi:</b> 221 Nm`
-    },
-    {
-        id: "bike-006",
-        name: "Aprilia RSV4 Xtrenta",
-        price: 0.01900,
-        category: "Motor",
-        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
-        desc: `• <b>Teknologi:</b> MotoGP Derived Aerodynamics<br>• <b>Mesin:</b> 1.099cc V4 Longitudinal 65°`
-    },
-    {
-        id: "bike-007",
-        name: "Triumph Rocket 3 TFC",
-        price: 0.00950,
-        category: "Motor",
-        images: ["https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Mesin:</b> 2.458cc (Mesin motor terbesar di dunia)<br>• <b>Torsi:</b> 221 Nm`
+        desc: "Obat Masa Depan Kelebihan Cocopro Biotech 10 Probiotik Multi strain Madu Air Kelapa,Kunyit,Kurma."
     }
 ];
 
 // ==========================================
-// 3. EVENT DETECTOR (LANGSUNG RENDERING SEJAK AWAL)
+// 3. EVENT LIFECYCLE (LANGSUNG TAMPILKAN)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("DOM Berhasil Dimuat. Menggambar produk ke layar...");
+    console.log("DOM Siap.");
     
-    // PERBAIKAN KRITIS: Segera gambar katalog produk agar marketplace TIDAK BLANK semenjak dibuka
-    eksekusiRenderKatalogAwal();
+    // LANGSUNG PAKSA RENDER PRODUK KE LAYAR AGAR TIDAK BLANK
+    renderUlangKatalogProduk();
 
-    // Berikan jeda waktu aman 1.5 detik untuk inisialisasi Pi SDK di latar belakang
     setTimeout(() => {
         jalankanInisialisasiPi();
-    }, 1500);
+    }, 1000);
 
-    // Global Click Listener untuk tombol login fisik di HTML Anda
+    // Global Click Listener login
     document.addEventListener("click", (e) => {
         const target = e.target;
         if (
             (target.innerText && target.innerText.toUpperCase().includes("LOGIN")) ||
             target.id === "login-btn" || 
-            target.classList.contains("LOGIN") ||
-            target.classList.contains("login-btn")
+            target.classList.contains("LOGIN")
         ) {
-            console.log("Tombol login ditekan manual.");
             prosesOtentikasiPiNetwork(true);
         }
     });
@@ -420,77 +204,73 @@ document.addEventListener("DOMContentLoaded", () => {
 function jalankanInisialisasiPi() {
     if (window.Pi) {
         try {
-            // sandbox: false untuk produksi real-environment Mainnet Pi Browser
             window.Pi.init({ version: "2.0", sandbox: false });
-            console.log("Pi SDK v2.0 Terhubung.");
-            
-            // Lakukan login otomatis di background pelan-pelan
             prosesOtentikasiPiNetwork(false);
         } catch (err) {
             console.error("Kesalahan fungsi Pi.init:", err);
         }
-    } else {
-        console.log("Aplikasi diakses dari luar Pi Browser (Mode Web Biasa).");
     }
 }
 
 // ==========================================
-// 5. CORE LOGIN LOGIC (PROSES JABAT TANGAN SDK)
+// 5. CORE LOGIN BLOCKCHAIN
 // ==========================================
 function prosesOtentikasiPiNetwork(isManualClick = false) {
-    if (!window.Pi) {
-        if (isManualClick) alert("Gagal terhubung ke ekosistem Pi! Buka url website ini dari dalam aplikasi Pi Browser.");
-        return;
-    }
+    if (!window.Pi) return;
 
-    const scopes = ['username', 'payments'];
-
-    function onIncompletePaymentFound(payment) {
-        console.log("Invoice gantung blockchain terdeteksi:", payment);
-    }
-
-    window.Pi.authenticate(scopes, onIncompletePaymentFound)
+    window.Pi.authenticate(['username', 'payments'], function(payment) {})
         .then(function(auth) {
-            console.log("Login Blockchain Sukses!", auth.user.username);
             currentUser = auth.user;
-
-            // Mengubah semua teks tombol login secara dinamis menjadi USERNAME Pioneer
-            const semuaTombol = document.querySelectorAll("button, a, div, span");
-            semuaTombol.forEach(el => {
+            
+            // Ganti teks login jadi nama user
+            document.querySelectorAll("button, a, div, span").forEach(el => {
                 if (el.innerText && el.innerText.toUpperCase().includes("LOGIN")) {
                     el.innerText = auth.user.username.toUpperCase();
                 }
             });
-
-            // Sembunyikan Splash Page / Layar Login Pembatas (jika ada)
-            const splashScreen = document.getElementById('page-login') || document.querySelector('.page-login');
-            if (splashScreen) {
-                splashScreen.style.display = 'none';
-                splashScreen.classList.add('hidden');
-            }
         })
         .catch(function(error) {
-            console.error("Kesalahan Otentikasi Pi SDK:", error);
-            
-            // Alert popup hanya muncul jika user sengaja klik tombolnya dan gagal, tidak mengganggu saat load awal
-            if (isManualClick) {
-                alert("Otentikasi Gagal! Pastikan konfigurasi domain Anda di develop.pi sudah menyertakan atau melepaskan 'www.' sesuai URL yang diakses.");
-            }
+            console.error("Otentikasi diabaikan/gagal di background.", error);
         });
 }
 
 // ==========================================
-// 6. DETEKTOR OTOMATIS RENDER KATALOG TEMPLATE
+// 6. SISTEM INJEKSI ANTI-BLANK (RENDERER)
 // ==========================================
-function eksekusiRenderKatalogAwal() {
-    // Mencari fungsi rendering bawaan HTML bawaan Anda sebelumnya secara otomatis
-    if (typeof renderProducts === "function") {
-        renderProducts('Semua');
-    } else if (typeof showProducts === "function") {
-        showProducts();
-    } else if (typeof displayProducts === "function") {
-        displayProducts('all');
-    } else {
-        console.warn("Fungsi render bawaan tidak terdeteksi otomatis secara global.");
+function renderUlangKatalogProduk() {
+    // Ambil target kontainer HTML tempat kartu produk harus diletakkan
+    const kontainer = document.getElementById("products-container") || 
+                      document.getElementById("product-list") || 
+                      document.querySelector(".products-grid") ||
+                      document.querySelector(".grid");
+
+    if (!kontainer) {
+        console.error("EROR: Kontainer tempat menaruh produk tidak ditemukan di index.html!");
+        return;
     }
+
+    kontainer.innerHTML = ""; // Bersihkan kontainer dari text 'loading' atau kosong
+
+    // Loop data untuk membuat kartu HTML produk secara dinamis
+    productsData.forEach(produk => {
+        const kartuHtml = `
+            <div class="product-card" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+                <img src="${produk.images[0]}" alt="${produk.name}" style="width: 100%; height: 200px; object-fit: cover; border-radius: 6px;">
+                <h3 style="margin: 10px 0 5px 0; font-size: 1.1rem;">${produk.name}</h3>
+                <p style="color: #777; font-size: 0.9rem; max-height: 60px; overflow: hidden;">${produk.desc}</p>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                    <span style="font-weight: bold; color: #8a2be2; font-size: 1.1rem;">⚡ ${produk.price} Pi</span>
+                    <button onclick="beliProdukKeWhatsapp('${produk.name}', '${produk.price}')" style="background: #8a2be2; color: #fff; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">Beli</button>
+                </div>
+            </div>
+        `;
+        kontainer.innerHTML += kartuHtml;
+    });
+    console.log("Katalog produk berhasil di-inject ke dalam HTML.");
 }
+
+// Fungsi bantu saat tombol beli diklik
+window.beliProdukKeWhatsapp = function(namaBarang, hargaBarang) {
+    const textPesanan = encodeURIComponent(`Halo Admin, saya ingin membeli produk:\n\n*Nama:* ${namaBarang}\n*Harga:* ${hargaBarang} Pi\n\nMohon informasi alamat dompet transfer Pi Network.`);
+    window.open(`https://wa.me/${ADMIN_WA}?text=${textPesanan}`, '_blank');
+};

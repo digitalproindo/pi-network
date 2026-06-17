@@ -239,24 +239,58 @@ window.handleSignIn = function() {
 // 8. ACTION TOMBOL BELI -> AUTOMATIC PI PAYMENT
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
-    // 1. Validasi awal jika user belum login/autentikasi via Pi Browser
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Anda harus masuk menggunakan Pi Browser dan memastikan akun Pi Anda terhubung untuk melakukan pembayaran blockchain.");
+        alert("Peringatan: Silakan login terlebih dahulu di Pi Browser.");
         return;
     }
 
-    // Konversi harga ke tipe Float untuk memastikan kalkulasi blockchain akurat
     const nominalBayar = parseFloat(hargaBarang);
 
-    // 2. Panggil API Pembuat Transaksi Dompet Pi Network
     window.Pi.createPayment({
         amount: nominalBayar,
-        memo: `Pembayaran Produk: ${namaBarang} - Digital Pro Indo`,
-        metadata: { 
-            product_id: "premium-prod-" + Math.floor(Math.random() * 100000),
-            product_name: namaBarang 
-        },
+        memo: `Pembayaran: ${namaBarang}`,
+        metadata: { product_name: namaBarang },
     }, {
+        // TAHAP 1: Panggil api/approval.js agar hitungan mundur berhenti
+        onReadyForServerApproval: function(paymentId) {
+            fetch("/api/approval", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId: paymentId })
+            })
+            .then(res => res.json())
+            .then(data => console.log("Lampu hijau dari Server API sukses:", data))
+            .catch(err => console.error("Gagal approval:", err));
+        },
+        
+        // TAHAP 2: Pembeli sukses input sandi, panggil api/complete.js untuk klaim koin
+        onReadyForServerCompletion: function(paymentId, txid) {
+            fetch("/api/complete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId: paymentId, txid: txid })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(`🎉 Transaksi Berhasil!\n\nKoin sejumlah ${nominalBayar} Pi sukses dikirim via Blockchain.`);
+                
+                // Redirect opsional ke WA sebagai nota bukti ke admin
+                const pesanWa = `Halo Admin, saya sudah membayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
+                window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
+            })
+            .catch(err => console.error("Gagal menyelesaikan transaksi:", err));
+        },
+        
+        onCancel: function(paymentId) {
+            alert("Pembayaran dibatalkan.");
+        },
+        
+        onError: function(error, payment) {
+            console.error("Payment Error:", error);
+            alert("Terjadi kesalahan teknis atau saldo tidak mencukupi.");
+        }
+    });
+};
         // TAHAP A: Transaksi berhasil dibuat, sistem menunggu persetujuan
 onReadyForServerApproval: function(paymentId) {
     console.log("Mencoba menyetujui transaksi secara instan untuk Payment ID:", paymentId);

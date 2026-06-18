@@ -1,5 +1,5 @@
 // ==========================================
-// 1. DATA PRODUK MARKETPLACE
+// 1. DATA PRODUK MARKETPLACE (TESTNET / MAINNET)
 // ==========================================
 const productsData = [
     {
@@ -48,12 +48,17 @@ let currentUser = null;
 const ADMIN_WA = "6282191851112"; 
 
 // ==========================================
-// 2. FUNGSI VISUAL UTAMA (RENDER PRODUK)
+// 2. FUNGSI RENDER UTAMA & FILTER KATEGORI
 // ==========================================
 function renderKatalogPasar(arrayData, idTargetElemen) {
     const wadahTampilan = document.getElementById(idTargetElemen);
     if (!wadahTampilan) return;
     wadahTampilan.innerHTML = "";
+
+    if (arrayData.length === 0) {
+        wadahTampilan.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #94a3b8;">Produk tidak ditemukan.</div>`;
+        return;
+    }
 
     arrayData.forEach(produk => {
         wadahTampilan.innerHTML += `
@@ -80,14 +85,44 @@ function renderKatalogPasar(arrayData, idTargetElemen) {
     });
 }
 
+// Fungsi filter kategori di halaman beranda
+window.filterCategory = function(category, element) {
+    document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
+    element.classList.add('active');
+    
+    if (category === 'all') {
+        renderKatalogPasar(productsData, "main-grid");
+    } else {
+        const filtered = productsData.filter(p => p.category === category);
+        renderKatalogPasar(filtered, "main-grid");
+    }
+};
+
 // ==========================================
-// 3. INISIALISASI HALAMAN & AUTENTIKASI PI
+// 3. LOGIKA NAVIGASI HALAMAN (BOTTOM NAV)
+// ==========================================
+window.switchPage = function(pageId) {
+    // Sembunyikan semua halaman utama
+    document.getElementById("page-home").classList.add("hidden");
+    document.getElementById("page-cari").classList.add("hidden");
+    document.getElementById("page-keranjang").classList.add("hidden");
+    document.getElementById("page-profile").classList.add("hidden");
+
+    // Tampilkan halaman yang dipilih
+    document.getElementById(`page-${pageId}`).classList.remove("hidden");
+
+    // Atur status aktif pada tombol menu bawah
+    document.querySelectorAll(".bottom-nav .nav-item").forEach(item => item.classList.remove("active"));
+    document.getElementById(`nav-${pageId}`).classList.add("active");
+};
+
+// ==========================================
+// 4. INISIALISASI & AUTENTIKASI PI SDK
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
-    // Jalankan render katalog agar halaman tidak blank
     renderKatalogPasar(productsData, "main-grid");
-    
-    // Inisialisasi Pi SDK jika dibuka di dalam Pi Browser
+    initSearchFeature();
+
     if (window.Pi) {
         try {
             window.Pi.init({ version: "2.0", sandbox: true }); 
@@ -102,17 +137,20 @@ function autentikasiPiOtomatis() {
     window.Pi.authenticate(['username', 'payments'], (payment) => {})
         .then((auth) => {
             currentUser = auth.user;
+            
+            // Update tombol login di header
             const btnLogin = document.getElementById("login-btn");
-            if (btnLogin) {
-                btnLogin.innerText = auth.user.username.toUpperCase();
-            }
+            if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
+            
+            // Update data di halaman profil
+            const profileUser = document.getElementById("profile-username");
+            const profileAddress = document.getElementById("profile-address");
+            if (profileUser) profileUser.innerText = auth.user.username.toUpperCase();
+            if (profileAddress) profileAddress.innerText = auth.user.uid || "Connected via Pi Browser";
         })
-        .catch((err) => {
-            console.log("Menunggu login manual atau user membatalkan.");
-        });
+        .catch((err) => console.log("Menunggu login manual atau otorisasi ditolak."));
 }
 
-// Fungsi tombol login manual jika klik profil/tombol login
 window.handleSignIn = function() {
     if (!window.Pi) {
         alert("Harap buka aplikasi ini di dalam Pi Browser.");
@@ -122,16 +160,49 @@ window.handleSignIn = function() {
 };
 
 // ==========================================
-// 4. LOGIKA TRANSAKSI DETEKSI DOMAIN OTOMATIS
+// 5. FITUR PENCARIAN (HALAMAN CARI)
+// ==========================================
+function initSearchFeature() {
+    const searchInput = document.getElementById("search-input");
+    if (!searchInput) return;
+
+    searchInput.addEventListener("input", (e) => {
+        const keyword = e.target.value.trim().toLowerCase();
+        const placeholder = document.getElementById("search-placeholder");
+
+        if (keyword === "") {
+            if (placeholder) placeholder.style.display = "flex";
+            renderKatalogPasar([], "search-results");
+            return;
+        }
+
+        if (placeholder) placeholder.style.display = "none";
+        const matchedProducts = productsData.filter(p => 
+            p.name.toLowerCase().includes(keyword) || 
+            p.category.toLowerCase().includes(keyword)
+        );
+        renderKatalogPasar(matchedProducts, "search-results");
+    });
+}
+
+// Keranjang belanja placeholder
+document.getElementById("cart-items").innerHTML = `
+    <div style="text-align: center; padding: 50px 20px; color: #94a3b8;">
+        <div style="font-size: 40px; margin-bottom: 10px;">🛒</div>
+        <p>Keranjang belanja Mainnet sedang disiapkan.</p>
+        <p style="font-size: 0.75rem; color: #64748b;">Silakan gunakan fitur beli instan pada halaman Beranda.</p>
+    </div>
+`;
+
+// ==========================================
+// 6. LOGIKA TRANSAKSI BLOKCHAIN PI (AUTOMATIC DETECT)
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Silakan login terlebih dahulu menggunakan akun Pi Anda.");
+        alert("Peringatan: Silakan klik tombol 'LOGIN PI' di pojok kanan atas terlebih dahulu.");
         return;
     }
     const nominalBayar = parseFloat(hargaBarang);
-    
-    // Mendeteksi otomatis domain aktif (baik .com maupun vercel.app)
     const BASE_BACKEND_URL = window.location.origin;
 
     window.Pi.createPayment({
@@ -141,78 +212,33 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     }, {
         onReadyForServerApproval: async (paymentId) => {
             try {
-                const response = await fetch(`${BASE_BACKEND_URL}/api/approval`, {
+                await fetch(`${BASE_BACKEND_URL}/api/approval`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ paymentId })
                 });
-                const data = await response.json();
-                console.log("Server merespons approval:", data);
             } catch (err) {
-                console.error("Gagal menjangkau backend approval:", err);
+                console.error("Gagal mengirim approval:", err);
             }
         },
         onReadyForServerCompletion: async (paymentId, txid) => {
             try {
-                const response = await fetch(`${BASE_BACKEND_URL}/api/complete`, {
+                await fetch(`${BASE_BACKEND_URL}/api/complete`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ paymentId, txid })
                 });
-                const data = await response.json();
-                console.log("Server merespons completion:", data);
                 
-                alert(`🎉 TRANSAKSI BERHASIL!\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
                 window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20Blockchain%20Pi!\n•%20Produk:%20${namaBarang}\n•%20TXID:%20${txid}`, '_blank');
             } catch (err) {
-                console.error("Gagal menyelesaikan klaim:", err);
+                console.error("Gagal mengirim completion:", err);
             }
         },
-        onCancel: () => {
-            console.log("Pembayaran dibatalkan oleh pengguna.");
-        },
+        onCancel: () => console.log("Pembayaran dibatalkan."),
         onError: (error) => {
             console.error("Payment Error:", error);
-            alert("Transaksi ditangguhkan. Periksa koneksi atau saldo dompet Anda.");
+            alert("Transaksi ditangguhkan. Periksa saldo dompet Anda.");
         }
     });
-};
-
-// ==========================================
-// 5. FUNGSI TOMBOL MENU LAINNYA (NAVIGASI)
-// ==========================================
-
-// Fungsi Tombol Cari (Kaca Pembesar)
-window.handleSearch = function() {
-    const kataKunci = prompt("Masukkan nama produk herbal atau rumah yang ingin Anda cari:");
-    if (kataKunci) {
-        const hasilFilter = productsData.filter(p => 
-            p.name.toLowerCase().includes(kataKunci.toLowerCase()) || 
-            p.category.toLowerCase().includes(kataKunci.toLowerCase())
-        );
-        if (hasilFilter.length > 0) {
-            renderKatalogPasar(hasilFilter, "main-grid");
-            alert(`Menampilkan ${hasilFilter.length} produk pencarian: "${kataKunci}"\n\n(Klik menu 'Beranda' atau segarkan halaman untuk mengembalikan semua produk)`);
-        } else {
-            alert(`Produk dengan kata kunci "${kataKunci}" tidak ditemukan.`);
-        }
-    }
-};
-
-// Fungsi Tombol Keranjang
-window.handleCart = function() {
-    alert("Fitur Keranjang Belanja Mainnet sedang disiapkan.\n\nSaat ini Anda bisa langsung melakukan pembelian instan secara aman dengan menekan tombol 'Beli' pada masing-masing produk.");
-};
-
-// Fungsi Tombol Profil / Akun
-window.handleProfile = function() {
-    if (currentUser) {
-        alert(`👤 INFORMASI AKUN PI NETWORK\n\n• Username: ${currentUser.username.toUpperCase()}\n• Status: Terautentikasi di Testnet/Mainnet\n\nSelamat berbelanja di Digital Pro Indo!`);
-    } else {
-        if (window.Pi) {
-            autentikasiPiOtomatis();
-        } else {
-            alert("Silakan buka aplikasi ini di dalam Pi Browser untuk memuat profil Anda.");
-        }
-    }
 };

@@ -134,30 +134,35 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function autentikasiPiOtomatis() {
-    window.Pi.authenticate(['username', 'payments'], (payment) => {})
+    window.Pi.authenticate(['username', 'payments'])
         .then((auth) => {
+
             currentUser = auth.user;
-            
-            // Update tombol login di header
+
+            console.log("Login berhasil:", auth.user);
+
             const btnLogin = document.getElementById("login-btn");
-            if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
-            
-            // Update data di halaman profil
+            if (btnLogin) {
+                btnLogin.innerText = auth.user.username.toUpperCase();
+            }
+
             const profileUser = document.getElementById("profile-username");
             const profileAddress = document.getElementById("profile-address");
-            if (profileUser) profileUser.innerText = auth.user.username.toUpperCase();
-            if (profileAddress) profileAddress.innerText = auth.user.uid || "Connected via Pi Browser";
-        })
-        .catch((err) => console.log("Menunggu login manual atau otorisasi ditolak."));
-}
 
-window.handleSignIn = function() {
-    if (!window.Pi) {
-        alert("Harap buka aplikasi ini di dalam Pi Browser.");
-        return;
-    }
-    autentikasiPiOtomatis();
-};
+            if (profileUser) {
+                profileUser.innerText = auth.user.username.toUpperCase();
+            }
+
+            if (profileAddress) {
+                profileAddress.innerText =
+                    auth.user.uid || "Connected via Pi Browser";
+            }
+
+        })
+        .catch((err) => {
+            console.error("Login Pi gagal:", err);
+        });
+}
 
 // ==========================================
 // 5. FITUR PENCARIAN (HALAMAN CARI)

@@ -843,5 +843,367 @@ const productsData = [
                • <b>Status:</b> Barang koleksi & Investasi institusi`
     },
     {
-Dan masih ada sambungannya dan saya akan mengirimkannya
+        id: "gadget-001",
+        category: "Gadget",
+        name: "iPhone 15 Pro Max 512GB",
+        price: 0.00250,
+        images: ["https://i.ibb.co.com/kgxjnpyp/Desain-tanpa-judul-20260207-181545-0000.png"],
+        desc: `• <b>Layar:</b> 6.7" Super Retina XDR OLED<br>
+               • <b>Chipset:</b> A17 Pro (3nm)<br>
+               • <b>Kamera:</b> 48MP Utama, 5x Optical Zoom<br>
+               • <b>Material:</b> Titanium Grade 5<br>
+               • <b>Fitur:</b> Action Button, USB-C 3.0`
+    },
+    {
+        id: "gadget-002",
+        category: "Gadget",
+        name: "Samsung Galaxy S24 Ultra",
+        price: 0.00235,
+        images: ["https://i.ibb.co.com/RprpNpf6/Desain-tanpa-judul-20260207-182139-0000.png"],
+        desc: `• <b>Layar:</b> 6.8" Dynamic LTPO AMOLED 2X<br>
+               • <b>Stylus:</b> Built-in S Pen<br>
+               • <b>Kamera:</b> 200MP Quad Tele System<br>
+               • <b>AI:</b> Galaxy AI (Circle to Search, Live Translate)<br>
+               • <b>Baterai:</b> 5000mAh, 45W Fast Charging`
+    },
+    {
+        id: "gadget-003",
+        category: "Gadget",
+        name: "iPad Pro M2 12.9-inch Wi-Fi",
+        price: 0.00180,
+        images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> Liquid Retina XDR mini-LED<br>
+               • <b>Chip:</b> Apple M2 Chip 8-Core CPU<br>
+               • <b>Penyimpanan:</b> 256GB SSD<br>
+               • <b>Koneksi:</b> Wi-Fi 6E ultra-cepat<br>
+               • <b>Aksesori:</b> Mendukung Apple Pencil Gen 2`
+    },
+    {
+        id: "gadget-004",
+        category: "Gadget",
+        name: "Samsung Galaxy Z Fold 5 5G",
+        price: 0.00310,
+        images: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar Utama:</b> 7.6" Dynamic AMOLED (Foldable)<br>
+               • <b>Engsel:</b> Flex Hinge Zero Gap<br>
+               • <b>Multitasking:</b> Taskbar Pro & Drag-and-Drop<br>
+               • <b>Ketahanan:</b> IPX8 Water Resistant<br>
+               • <b>Processor:</b> Snapdragon 8 Gen 2 for Galaxy`
+    },
+    {
+        id: "gadget-005",
+        category: "Gadget",
+        name: "Google Pixel 8 Pro",
+        price: 0.00165,
+        images: ["https://i.ibb.co.com/4whjRRwC/Desain-tanpa-judul-20260207-182718-0000.png"],
+        desc: `• <b>Kamera:</b> Pro-level Triple Camera System<br>
+               • <b>Chipset:</b> Google Tensor G3 AI<br>
+               • <b>Fitur:</b> Best Take, Magic Editor AI<br>
+               • <b>Keamanan:</b> Titan M2 Security Chip<br>
+               • <b>OS:</b> Android Stock (Update 7 Tahun)`
+    },
+    {
+        id: "gadget-006",
+        category: "Gadget",
+        name: "Apple Watch Ultra 2",
+        price: 0.00120,
+        images: ["https://i.ibb.co.com/cX2449Wh/Desain-tanpa-judul-20260207-183059-0000.png"],
+        desc: `• <b>Body:</b> Aerospace Titanium 49mm<br>
+               • <b>Layar:</b> Kecerahan 3000 nits (Retina Always-on)<br>
+               • <b>Sensor:</b> Kedalaman air & Suhu tubuh<br>
+               • <b>Baterai:</b> Hingga 72 jam (Low Power Mode)<br>
+               • <b>Fitur:</b> Dual-frequency GPS`
+    },
+    {
+        id: "gadget-007",
+        category: "Gadget",
+        name: "MacBook Pro M3 14-inch",
+        price: 0.00350,
+        images: ["https://i.ibb.co.com/4gYFHqtP/Desain-tanpa-judul-20260207-183506-0000.png"],
+        desc: `• <b>Layar:</b> Liquid Retina XDR 120Hz<br>
+               • <b>Chip:</b> Apple M3 Chip (Next-gen GPU)<br>
+               • <b>Memori:</b> 16GB Unified Memory<br>
+               • <b>Audio:</b> 6-Speaker Sound System<br>
+               • <b>Baterai:</b> Daya tahan hingga 22 Jam`
+    },
+    {
+        id: "gadget-008",
+        category: "Gadget",
+        name: "Sony WH-1000XM5 ANC",
+        price: 0.00065,
+        images: ["https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Tipe:</b> Wireless Noise Cancelling Headphone<br>
+               • <b>Audio:</b> High-Res Audio Wireless (LDAC)<br>
+               • <b>Mic:</b> 8 Mikrofon untuk panggilan jernih<br>
+               • <b>Fitur:</b> Speak-to-Chat, Spotify Tap<br>
+               • <b>Baterai:</b> 30 Jam pemakaian terus menerus`
+    },
+    {
+        id: "gadget-009",
+        category: "Gadget",
+        name: "Asus ROG Phone 8 Pro",
+        price: 0.00210,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Layar:</b> 165Hz LTPO AMOLED Gaming Display<br>
+               • <b>Gaming:</b> AirTrigger (Tombol ultrasonik)<br>
+               • <b>Pendingin:</b> GameCool 8 Thermal System<br>
+               • <b>RAM:</b> 24GB LPDDR5X<br>
+               • <b>Fitur:</b> AniMe Vision (Display LED di bodi)`
+    },
+    {
+        id: "gadget-010",
+        category: "Gadget",
+        name: "Xiaomi 14 Ultra Carbon",
+        price: 0.00195,
+        images: ["https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Kamera:</b> Leica Summilux Optical Lens<br>
+               • <b>Sensor:</b> 1-inch Sony LYT-900 Utama<br>
+               • <b>Layar:</b> C8 3000nits WQHD+ AMOLED<br>
+               • <b>Charging:</b> 90W HyperCharge<br>
+               • <b>Bahan:</b> Nano-tech Vegan Leather`
+    }
+];
+
+productsData.forEach(p => {
+    if(!p.rating) p.rating = 4.8;
+    if(!p.sold) p.sold = Math.floor(Math.random() * 100) + 10;
+    if(!p.reviews) p.reviews = [{user: "Pembeli", comment: "Barang bagus sesuai pesanan."}];
+});
+
+    async function initPi() {
+        try {
+            await Pi.init({ version: "2.0", sandbox: false });
+        } catch (e) { console.error("Init Error:", e); }
+    }
+
+    window.showAddressForm = () => {
+        const overlay = document.createElement('div');
+        overlay.id = "address-overlay";
+        overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
+        overlay.innerHTML = `
+            <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative;">
+                <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
+                <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
+                <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
+                <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}"></div>
+                <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea></div>
+                <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
+            </div>`;
+        document.body.appendChild(overlay);
+    };
+
+    window.saveAddress = () => {
+        userAddress = {
+            nama: document.getElementById('ship-name').value,
+            telepon: document.getElementById('ship-phone').value,
+            alamatLengkap: document.getElementById('ship-address').value
+        };
+        if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
+        document.getElementById('address-overlay').remove();
+        alert("Alamat disimpan.");
+    };
+
+function renderProducts(data, targetGridId) {
+    const grid = document.getElementById(targetGridId);
+    if (!grid) return;
+    grid.innerHTML = "";
+    data.forEach(p => {
+        const displayPrice = p.price.toFixed(5); 
+        const discountBadge = (p.discount && p.discount > 0) 
+            ? `<span class="discount-badge">-${p.discount}%</span>` 
+            : '';
+
+        const card = document.createElement('div');
+        card.className = 'product-card';
+        card.innerHTML = `
+            <div class="image-container" onclick="openProductDetail('${p.id}')">
+                ${discountBadge} 
+                <img src="${p.images[0]}" alt="${p.name}">
+                <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name" onclick="openProductDetail('${p.id}')">${p.name}</h3>
+                <div class="price">${displayPrice} π</div>
+                <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
+                <div class="card-bottom">
+                    <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                </div>
+            </div>`;
+        grid.appendChild(card);
+    });
+}
+
+    window.handlePayment = async (amount, name) => {
+    // 1. POLESAN: Ganti alert login kaku dengan Modal Estetik
+    if (!currentUser) {
+        showLoginPrompt();
+        return;
+    }
+
+    // 2. POLESAN: Ganti alert alamat (Opsional, tapi disarankan agar konsisten)
+    if (!userAddress.nama) { 
+        showAddressPrompt(); 
+        return; 
+    }
+
+    let detailedItemName = name;
+    if (name === 'Total Keranjang' && cart.length > 0) {
+        const itemNames = cart.map(item => item.name).join(", ");
+        detailedItemName = `Keranjang (${itemNames})`;
+    }
+
+    try {
+        await Pi.createPayment({
+            amount: parseFloat(amount),
+            memo: `Pembelian ${name}`,
+            metadata: { productName: detailedItemName },
+        }, {
+            onReadyForServerApproval: async (paymentId) => {
+                const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
+                return res.ok;
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+                const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
+                if (res.ok) { 
+                    showSuccessOverlay(amount, detailedItemName, txid);
+                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
+                }
+            },
+            onCancel: () => {},
+            onError: (e, p) => { if(p) handleIncompletePayment(p); }
+        });
+    } catch (err) { console.error(err); }
+};
+
+// --- FUNGSI POPUP LOGIN KONSISTEN (GOLD THEME) ---
+// --- FUNGSI POPUP LOGIN KONSISTEN ---
+function showLoginPrompt() {
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
+    
+    overlay.innerHTML = `
+        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
+            <div style="margin-bottom: 15px;">
+                <video src="assets/merah-putih.mp4" autoplay loop muted playsinline style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; border: 2px solid #FFD700;"></video>
+            </div>
+            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Selamat Datang</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace <br> DIGITAL PRO INDO</p>
+            
+            <button onclick="this.parentElement.parentElement.remove(); window.handleAuth();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer; box-shadow: 0 5px 15px rgba(255,215,0,0.3);">
+                LOGIN SEKARANG
+            </button>
+            
+            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; font-size:0.85rem;">Mungkin Nanti</button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
+
+function showAddressPrompt() {
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
+    
+    overlay.innerHTML = `
+        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); animation: zoomIn 0.3s ease;">
+            <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
+            <h2 style="color:#FFD700; margin:0; font-weight:800; font-size: 1.4rem; text-transform:uppercase;">Alamat Kosong</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem; line-height:1.4;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
+            
+            <button onclick="this.parentElement.parentElement.remove(); window.showAddressForm();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; font-size:1rem; cursor:pointer;">
+                LENGKAPI ALAMAT
+            </button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
+
+function showSuccessOverlay(amount, name, txid) {
+    const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    const dataTransaksi = {
+        tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+        penerima: userAddress.nama,
+        username: currentUser.username,
+        item: name,
+        total: amount,
+        txid: txid,
+        alamat: userAddress.alamatLengkap,
+        telepon: userAddress.telepon
+    };
+
+    fetch(excelWebhookUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(dataTransaksi)
+    }).catch(err => console.error("Gagal catat Excel:", err));
+
+    const overlay = document.createElement('div');
+    overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
+    
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK* %0A` +
+                          `*PT. DIGITAL PRO INDO*%0A` +
+                          `_______________________________%0A%0A` +
+                          `Halo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A` +
+                          ` *DETAIL TRANSAKSI:*%0A` +
+                          `• *Item:* ${name}%0A` +
+                          `• *Total:* ${amount} π%0A` +
+                          `• *Status:* Success (Pi Network)%0A` +
+                          `• *TXID:* \`${txid}\` %0A%0A` +
+                          ` *DATA PENGIRIMAN:*%0A` +
+                          `• *Penerima:* ${userAddress.nama}%0A` +
+                          `• *Telepon:* ${userAddress.telepon}%0A` +
+                          `• *Alamat:* ${userAddress.alamatLengkap}%0A%0A` +
+                          `_______________________________%0A` +
+                          ` *Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+
+    overlay.innerHTML = `
+        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(0,0,0,0.4);">
+            <div style="width: 80px; height: 80px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <span style="font-size: 45px;">✅</span>
+            </div>
+            <h2 style="color:#1a0033; margin:0; font-weight:800; font-size: 1.6rem;">Pembayaran Berhasil!</h2>
+            <p style="color:#64748b; margin-top:10px; font-size:0.9rem;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
+            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:flex; align-items:center; justify-content:center; gap:10px; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; font-size:1.05rem; margin-top:20px;">
+                KIRIM DATA KE WHATSAPP
+            </a>
+            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
+
+    window.addToCart = (id) => {
+    const p = productsData.find(x => x.id === id);
+    if(p) { 
+        cart.push(p); 
+        alert("✅ Berhasil ditambah ke keranjang!"); 
+        window.updateCartUI(); 
+    }
+};
+
+window.removeFromCart = (index) => {
+    cart.splice(index, 1); 
+    window.updateCartUI(); 
+};
+
+window.updateCartUI = () => {
+    const grid = document.getElementById('cart-items');
+    if (!grid) return;
+
+    if (cart.length === 0) {
+        grid.innerHTML = `
+            <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
+                <div style="margin-bottom: 25px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 120px; opacity: 0.8;">
+                </div>
+                
+                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
+                
+                <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
+                    Sepertinya Anda belum menambahkan produk premium ke keranjang.
+                </p>
+                
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3); transition: transform 0.2s;">
+                    Mulai Belanja
+                </button>
+            </div>`;
+  Dan masih ada sambungannya
     

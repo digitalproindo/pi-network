@@ -203,356 +203,164 @@ document.getElementById("cart-items").innerHTML = `
 // ==========================================
 window.eksekusiBeliKeAdmin = async function(namaBarang, hargaBarang) {
 
-
-
-    if (!window.Pi) {
-
-        alert("Harap buka aplikasi melalui Pi Browser.");
-
-        return;
-
-    }
-
-
-
-    if (!currentUser) {
-
-        alert("Silakan login Pi terlebih dahulu.");
-
-        return;
-
-    }
-
-
-
-    const nominalBayar = parseFloat(hargaBarang);
-
-
-
-    console.log("Memulai pembayaran:", namaBarang);
-
-    console.log("Nominal:", nominalBayar);
-
-
-
-    Pi.createPayment(
-
-        {
-
-            amount: nominalBayar,
-
-            memo: `Pembelian ${namaBarang}`,
-
-            metadata: {
-
-                product_name: namaBarang,
-
-                buyer: currentUser.username
-
-            }
-
-        },
-
-
-
-        {
-
-            onReadyForServerApproval: async function(paymentId) {
-
-
-
-                console.log(
-
-                    "Payment siap di-approve:",
-
-                    paymentId
-
-                );
-
-
-
-                try {
-
-
-
-                    const response = await fetch(
-
-                        "/api/approve",
-
-                        {
-
-                            method: "POST",
-
-                            headers: {
-
-                                "Content-Type": "application/json"
-
-                            },
-
-                            body: JSON.stringify({
-
-                                paymentId
-
-                            })
-
-                        }
-
-                    );
-
-
-
-                    const data = await response.json();
-
-
-
-                    console.log(
-
-                        "Approve Response:",
-
-                        data
-
-                    );
-
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-
-                            data.error || "Approval gagal"
-
-                        );
-
-                    }
-
-
-
-                } catch (err) {
-
-
-
-                    console.error(
-
-                        "Approval Error:",
-
-                        err
-
-                    );
-
-
-
-                    alert(
-
-                        "Gagal menyetujui pembayaran."
-
-                    );
-
-                }
-
-            },
-
-
-
-            onReadyForServerCompletion: async function(
-
-                paymentId,
-
-                txid
-
-            ) {
-
-
-
-                console.log(
-
-                    "Payment siap diselesaikan:",
-
-                    paymentId
-
-                );
-
-
-
-                console.log(
-
-                    "TXID:",
-
-                    txid
-
-                );
-
-
-
-                try {
-
-
-
-                    const response = await fetch(
-
-                        "/api/complete",
-
-                        {
-
-                            method: "POST",
-
-                            headers: {
-
-                                "Content-Type": "application/json"
-
-                            },
-
-                            body: JSON.stringify({
-
-                                paymentId,
-
-                                txid
-
-                            })
-
-                        }
-
-                    );
-
-
-
-                    const data = await response.json();
-
-
-
-                    console.log(
-
-                        "Complete Response:",
-
-                        data
-
-                    );
-
-
-
-                    if (!response.ok) {
-
-                        throw new Error(
-
-                            data.error || "Completion gagal"
-
-                        );
-
-                    }
-
-
-
-                    alert(
-
-                        `🎉 Pembayaran berhasil!\n\nProduk: ${namaBarang}\nJumlah: ${nominalBayar} Pi`
-
-                    );
-
-
-
-                    window.open(
-
-                        `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(
-
-                            `Halo Admin,
-
-
+    if (!window.Pi) {
+        alert("Harap buka aplikasi melalui Pi Browser.");
+        return;
+    }
+
+    if (!currentUser) {
+        alert("Silakan login Pi terlebih dahulu.");
+        return;
+    }
+
+    const nominalBayar = parseFloat(hargaBarang);
+
+    console.log("Memulai pembayaran:", namaBarang);
+    console.log("Nominal:", nominalBayar);
+
+    Pi.createPayment(
+        {
+            amount: nominalBayar,
+            memo: `Pembelian ${namaBarang}`,
+            metadata: {
+                product_name: namaBarang,
+                buyer: currentUser.username
+            }
+        },
+
+        {
+            onReadyForServerApproval: async function(paymentId) {
+
+                console.log("Payment siap di-approve:", paymentId);
+
+                try {
+
+                    const response = await fetch('/api/approve', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            paymentId: paymentId
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    console.log("Approve Response:", data);
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.error || "Approval gagal"
+                        );
+                    }
+
+                } catch (err) {
+
+                    console.error("Approval Error:", err);
+
+                    alert(
+                        "Gagal menyetujui pembayaran."
+                    );
+                }
+            },
+
+            onReadyForServerCompletion: async function(
+                paymentId,
+                txid
+            ) {
+
+                console.log(
+                    "Payment siap diselesaikan:",
+                    paymentId
+                );
+
+                console.log(
+                    "TXID:",
+                    txid
+                );
+
+                try {
+
+                    const response = await fetch('/api/complete', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            paymentId: paymentId,
+                            txid: txid
+                        })
+                    });
+
+                    const data = await response.json();
+
+                    console.log(
+                        "Complete Response:",
+                        data
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(
+                            data.error || "Completion gagal"
+                        );
+                    }
+
+                    alert(
+                        `🎉 Pembayaran berhasil!\n\nProduk: ${namaBarang}\nJumlah: ${nominalBayar} Pi`
+                    );
+
+                    window.open(
+                        `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(
+`Halo Admin,
 
 Saya telah melakukan pembayaran melalui Pi Network.
 
-
-
 Produk : ${namaBarang}
-
 Jumlah : ${nominalBayar} Pi
-
 TXID : ${txid}
 
-
-
 Mohon diproses.`
+                        )}`,
+                        '_blank'
+                    );
 
-                        )}`,
+                } catch (err) {
 
-                        "_blank"
+                    console.error(
+                        "Completion Error:",
+                        err
+                    );
 
-                    );
+                    alert(
+                        "Pembayaran berhasil di wallet tetapi gagal diproses server."
+                    );
+                }
+            },
 
+            onCancel: function(paymentId) {
 
+                console.log(
+                    "Pembayaran dibatalkan:",
+                    paymentId
+                );
 
-                } catch (err) {
+                alert(
+                    "Pembayaran dibatalkan."
+                );
+            },
 
+            onError: function(error) {
 
+                console.error(
+                    "Pi Payment Error:",
+                    error
+                );
 
-                    console.error(
-
-                        "Completion Error:",
-
-                        err
-
-                    );
-
-
-
-                    alert(
-
-                        "Pembayaran berhasil di wallet tetapi gagal diproses server."
-
-                    );
-
-                }
-
-            },
-
-
-
-            onCancel: function(paymentId) {
-
-
-
-                console.log(
-
-                    "Pembayaran dibatalkan:",
-
-                    paymentId
-
-                );
-
-
-
-                alert(
-
-                    "Pembayaran dibatalkan."
-
-                );
-
-            },
-
-
-
-            onError: function(error) {
-
-
-
-                console.error(
-
-                    "Pi Payment Error:",
-
-                    error
-
-                );
-
-
-
-                alert(
-
-                    "Terjadi kesalahan saat pembayaran."
-
-                );
-
-            }
-
-        }
-
-    );
-
+                alert(
+                    "Terjadi kesalahan saat pembayaran."
+                );
+            }
+        }
+    );
 };

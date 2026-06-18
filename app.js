@@ -130,28 +130,50 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     }
     const nominalBayar = parseFloat(hargaBarang);
 
+    // 🔗 PAKSA ALAMAT BACKEND KE VERCEL ASLI (SOLUSI KEDALUWARSA PINET.COM)
+    const BASE_BACKEND_URL = "https://pi-network-nu.vercel.app";
+
     window.Pi.createPayment({
         amount: nominalBayar,
         memo: `Bayar: ${namaBarang}`,
         metadata: { product_name: namaBarang },
     }, {
         onReadyForServerApproval: async (paymentId) => {
-            await fetch("/api/approval", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paymentId })
-            });
+            console.log("Mengirim approval ke backend Vercel asli...");
+            try {
+                const response = await fetch(`${BASE_BACKEND_URL}/api/approval`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paymentId })
+                });
+                const data = await response.json();
+                console.log("Server merespons approval:", data);
+            } catch (err) {
+                console.error("Gagal menjangkau backend approval:", err);
+            }
         },
         onReadyForServerCompletion: async (paymentId, txid) => {
-            await fetch("/api/complete", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ paymentId, txid })
-            });
-            alert("🎉 TRANSAKSI BERHASIL!");
-            window.open(`https://wa.me/${ADMIN_WA}?text=Sukses%20TXID:%20${txid}`, '_blank');
+            console.log("Mengirim completion ke backend Vercel asli...");
+            try {
+                const response = await fetch(`${BASE_BACKEND_URL}/api/complete`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paymentId, txid })
+                });
+                const data = await response.json();
+                console.log("Server merespons completion:", data);
+                
+                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20Blockchain%20Pi!\n•%20Produk:%20${namaBarang}\n•%20TXID:%20${txid}`, '_blank');
+            } catch (err) {
+                console.error("Gagal menyelesaikan klaim:", err);
+            }
         },
         onCancel: () => alert("Pembayaran dibatalkan."),
-        onError: () => alert("Transaksi ditangguhkan.")
+        onError: (error) => {
+            console.error("Payment Error:", error);
+            alert("Transaksi ditangguhkan. Periksa saldo dompet Anda.");
+        }
     });
 };
+

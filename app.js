@@ -130,8 +130,8 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     }
     const nominalBayar = parseFloat(hargaBarang);
 
-    // 🔗 PAKSA ALAMAT BACKEND KE VERCEL ASLI (SOLUSI KEDALUWARSA PINET.COM)
-    const BASE_BACKEND_URL = "https://pi-network-es72a8ity-dpis-projects-1805cf92.vercel.app";
+    // 🌐 TRICK OTOMATIS: Mendeteksi domain aktif secara instan tanpa hardcode manual
+    const BASE_BACKEND_URL = window.location.origin;
 
     window.Pi.createPayment({
         amount: nominalBayar,
@@ -139,7 +139,7 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         metadata: { product_name: namaBarang },
     }, {
         onReadyForServerApproval: async (paymentId) => {
-            console.log("Mengirim approval ke backend Vercel asli...");
+            console.log("Mengirim approval ke: " + BASE_BACKEND_URL);
             try {
                 const response = await fetch(`${BASE_BACKEND_URL}/api/approval`, {
                     method: "POST",
@@ -153,7 +153,6 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
             }
         },
         onReadyForServerCompletion: async (paymentId, txid) => {
-            console.log("Mengirim completion ke backend Vercel asli...");
             try {
                 const response = await fetch(`${BASE_BACKEND_URL}/api/complete`, {
                     method: "POST",
@@ -176,4 +175,5 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         }
     });
 };
+
 

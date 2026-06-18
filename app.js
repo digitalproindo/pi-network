@@ -327,7 +327,7 @@ window.eksekusiBeliKeAdmin = async function(namaBarang, hargaBarang) {
 
                 try {
 
-                    const response = await fetch('/api/approve', {
+                    const response = await fetch('/api/approval', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'

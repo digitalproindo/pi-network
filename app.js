@@ -1,189 +1,240 @@
 // ==========================================
-// 1. KONFIGURASI UTAMA & VARIABEL GLOBAL
+// 1. DATA PRODUK MARKETPLACE (INSTAN & AMAN)
 // ==========================================
-const ADMIN_WA = "6282191851112"; // Otomatis sinkron dengan tombol WA melayang Anda
-let currentUser = null;
-
-// Mock Data Produk Premium (Sesuaikan dengan isi marketplace Anda)
-const dataProduk = [
-    { id: 1, nama: "Emas Batangan Premium 10 Gram", harga: "5.00", kategori: "Emas", rating: "5.0", diskon: "10%", img: "https://images.unsplash.com/photo-1610375228911-872ab4b152ee?w=500" },
-    { id: 2, nama: "Mobil Listrik Sedan Modern", harga: "150.00", kategori: "Mobil", rating: "4.9", diskon: "Free Ship", img: "https://images.unsplash.com/photo-1563720223185-11003d516935?w=500" },
-    { id: 3, nama: "Sepeda Motor Matic 150cc", harga: "35.00", kategori: "Motor", rating: "4.8", diskon: null, img: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=500" }
+const productsData = [
+    {
+        id: "house-001",
+        category: "Rumah",
+        name: "The Beverly Hills Modern Mansion",
+        price: 0.25000,
+        images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"],
+        desc: `• Luas Tanah: 2.500 m²`
+    },
+    {
+        id: "house-002",
+        category: "Rumah",
+        name: "Zen Waterfront Villa",
+        price: 0.18000,
+        images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"],
+        desc: `• Gaya: Arsitektur Minimalis Modern`
+    },
+    { 
+        id: 'p2', 
+        name: "COCO Pro Kunyit", 
+        price: 0.00006,
+        category: "Herbal", 
+        images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"], 
+        desc: "Super food Obat Masa Depan Probiotik Multi strain Madu Air Kelapa."
+    },
+    { 
+        id: 'p3', 
+        name: "An-Nisa", 
+        price: 0.00010,
+        category: "Herbal", 
+        images: ["https://i.ibb.co.com/0jjhzJ7p/Desain-tanpa-judul-20260211-213452-0000.png"], 
+        desc: "Mengatasi keputihan, gatal-gatal, membunuh bakteri."
+    },
+    { 
+        id: 'p4', 
+        name: "Ar-Rizal", 
+        price: 0.00010,
+        category: "Herbal", 
+        images: ["https://i.ibb.co.com/Ndjmbdbj/Desain-tanpa-judul-20260211-214933-0000.png"], 
+        desc: "Menguatkan Jantung, Meningkatkan gairah vitalitas pria."
+    }
 ];
 
-// ==========================================
-// 2. INITIALISASI PI SDK
-// ==========================================
-const Pi = window.Pi;
-Pi.init({ version: "2.0", sandbox: true }); // Ubah sandbox ke false jika sudah siap migrasi ke Mainnet
+let currentUser = null;
+const ADMIN_WA = "6282191851112"; 
 
 // ==========================================
-// 3. LOGIKA OTENTIKASI & LOGIN USER
+// 2. FUNGSI VISUAL UTAMA (ANTI-BLANK)
 // ==========================================
-async function handleSignIn() {
-    try {
-        const scopes = ['username', 'payments', 'wallet_address'];
-        
-        // Meminta izin login dari Pi Browser
-        const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-        currentUser = auth.user;
-        
-        console.log("Login sukses:", currentUser);
+function renderKatalogPasar(arrayData, idTargetElemen) {
+    const wadahTampilan = document.getElementById(idTargetElemen);
+    if (!wadahTampilan) return;
+    wadahTampilan.innerHTML = "";
 
-        // Perbarui tampilan tombol login di header HTML
-        const loginBtn = document.getElementById("login-btn");
-        if (loginBtn) {
-            loginBtn.innerText = currentUser.username.toUpperCase();
-            loginBtn.style.background = "linear-gradient(to right, #00bfa5, #00897b)";
-            loginBtn.style.color = "white";
-        }
-
-        // Perbarui data halaman profil HTML
-        document.getElementById("profile-username").innerText = currentUser.username;
-        if(currentUser.uid) {
-            document.getElementById("profile-address").innerText = currentUser.uid;
-        }
-
-    } catch (error) {
-        console.error("Gagal melakukan otentikasi login Pi SDK:", error);
-        alert("Akses ditolak. Pastikan Anda memberikan izin otentikasi di Pi Browser.");
-    }
-}
-
-// Handler otomatis jika ada pembayaran lama yang menggantung di server Core Team
-function onIncompletePaymentFound(payment) {
-    console.log("Menemukan pembayaran tertunda yang belum selesai:", payment.identifier);
-    // Mengirim paksa sisa transaksi gantung ke backend complete untuk dibersihkan
-    fetch('https://www.ptdigitalproindo.com/api/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ paymentId: payment.identifier, txid: "INCOMPLETE_FLUSH" })
-    });
-}
-
-// ==========================================
-// 4. RENDER MARKETPLACE & NAVIGASI HALAMAN
-// ==========================================
-function renderProducts(products) {
-    const grid = document.getElementById("main-grid");
-    if (!grid) return;
-    grid.innerHTML = "";
-
-    products.forEach(p => {
-        const discBadge = p.diskon ? `<div class="discount-badge">${p.diskon}</div>` : '';
-        const card = `
+    arrayData.forEach(produk => {
+        wadahTampilan.innerHTML += `
             <div class="product-card">
                 <div class="image-container">
-                    ${discBadge}
-                    <img src="${p.img}" alt="${p.nama}">
+                    <span class="discount-badge">PROMO</span>
+                    <img src="${produk.images[0]}" alt="${produk.name}">
                     <div class="xtra-label">
-                        <span class="xtra-text">PREMIUM</span><br>
-                        <span class="ongkir-text">Bebas Ongkir</span>
+                        <div class="xtra-text">PREMIUM</div>
+                        <div class="ongkir-text">Bebas Ongkir</div>
                     </div>
                 </div>
                 <div class="product-info">
-                    <div class="product-name">${p.nama}</div>
-                    <div class="price">${p.harga} Pi</div>
-                    <div class="free-ship-tag">🚚 Garansi Aman</div>
+                    <div class="free-ship-tag">⚡ Kualitas Tinggi</div>
+                    <div class="product-name">${produk.name}</div>
+                    <div class="price">${produk.price} Pi</div>
                     <div class="card-bottom">
-                        <span class="rating-text"><span class="star">⭐</span> ${p.rating}</span>
-                        <button class="btn-buy-now" onclick="eksekusiBeliKeAdmin('${p.nama}', '${p.harga}')">Beli</button>
+                        <div class="rating-text"><span class="star">⭐</span> 5.0</div>
+                        <button class="btn-buy-now" onclick="eksekusiBeliKeAdmin('${produk.name}', '${produk.price}')">Beli</button>
                     </div>
                 </div>
             </div>
         `;
-        grid.innerHTML += card;
     });
 }
 
-function switchPage(pageId) {
-    const pages = ['home', 'cari', 'keranjang', 'profile'];
-    pages.forEach(p => {
-        const target = document.getElementById(`page-${p}`);
-        if(target) target.classList.add('hidden');
-        
-        const navItem = document.getElementById(`nav-${p}`);
-        if(navItem) navItem.classList.remove('active');
-    });
+// ==========================================
+// 3. EVENT LIFECYCLE (PRODUK & SDK INITIALIZATION)
+// ==========================================
+document.addEventListener("DOMContentLoaded", () => {
+    // Tampilkan produk detik pertama secara paksa agar tidak blank
+    renderKatalogPasar(productsData, "main-grid");
+    
+    // Konfigurasi Input Pencarian
+    const searchInput = document.getElementById("search-input");
+    if (searchInput) {
+        searchInput.addEventListener("input", (e) => {
+            const keyword = e.target.value.toLowerCase().trim();
+            const hasilFilter = productsData.filter(p => p.name.toLowerCase().includes(keyword));
+            const containerHasil = document.getElementById("search-results");
+            
+            if (keyword === "") {
+                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#94a3b8;">Silakan masukkan nama produk...</p></div>`;
+            } else if (hasilFilter.length === 0) {
+                containerHasil.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:300px; width:100%; grid-column:1/-1;"><p style="color:#ef4444; font-weight:600;">Produk tidak ditemukan.</p></div>`;
+            } else {
+                renderKatalogPasar(hasilFilter, "search-results");
+            }
+        });
+    }
 
-    document.getElementById(`page-${pageId}`).classList.remove('hidden');
-    document.getElementById(`nav-${pageId}`).classList.add('active');
-}
-
-function filterCategory(category, element) {
-    document.querySelectorAll('.category-pill').forEach(el => el.classList.remove('active'));
-    element.classList.add('active');
-
-    if (category === 'all') {
-        renderProducts(dataProduk);
+    // Amankan inisialisasi Pi SDK menggunakan format modern
+    if (window.Pi) {
+        mengaktifkanPiSDK();
     } else {
-        const filtered = dataProduk.filter(p => p.kategori === category);
-        renderProducts(filtered);
+        window.addEventListener("load", () => {
+            if (window.Pi) mengaktifkanPiSDK();
+        });
+    }
+});
+
+function mengaktifkanPiSDK() {
+    try {
+        window.Pi.init({ version: "2.0", sandbox: true }); 
+        console.log("Pi SDK Modern Aktif!");
+        autentikasiPiOtomatis();
+    } catch (err) {
+        console.error("Gagal konfigurasi internal Pi SDK:", err);
     }
 }
 
 // ==========================================
-// 5. EKSEKUSI PEMBAYARAN BLOCKCHAIN PI (SOLUSI FIX TIMEOUT)
+// 4. AUTENTIKASI AKUN (LOGIN)
 // ==========================================
-window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
-    if (!currentUser) {
-        alert("Silakan klik tombol 'LOGIN PI' di pojok kanan atas terlebih dahulu sebelum berbelanja.");
+function autentikasiPiOtomatis() {
+    window.Pi.authenticate(['username', 'payments'], (payment) => {})
+        .then((auth) => {
+            currentUser = auth.user;
+            const btnLogin = document.getElementById("login-btn");
+            if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
+            
+            const profileUser = document.getElementById("profile-username");
+            const profileAddr = document.getElementById("profile-address");
+            if (profileUser) profileUser.innerText = auth.user.username;
+            if (profileAddr) profileAddr.innerText = auth.user.uid || "Pi Verified Client";
+        })
+        .catch((err) => {
+            console.log("Menunggu login manual.");
+        });
+}
+
+window.handleSignIn = function() {
+    if (!window.Pi) {
+        alert("Harap buka aplikasi ini langsung dari dalam Pi Browser.");
         return;
     }
-    
+    autentikasiPiOtomatis();
+};
+
+// ==========================================
+// 5. SISTEM NAVIGASI & HALAMAN
+// ==========================================
+window.filterCategory = function(namaKategori, elemenPill) {
+    document.querySelectorAll(".category-pill").forEach(pill => pill.classList.remove("active"));
+    elemenPill.classList.add("active");
+
+    if (namaKategori === "all" || namaKategori === "Semua") {
+        renderKatalogPasar(productsData, "main-grid");
+    } else {
+        const dataDisaring = productsData.filter(p => p.category.toLowerCase() === namaKategori.toLowerCase());
+        const targetBeranda = document.getElementById("main-grid");
+        if (dataDisaring.length === 0) {
+            targetBeranda.innerHTML = `<div style="display:flex; justify-content:center; align-items:center; min-height:250px; width:100%; grid-column:1/-1;"><p style="color:#94a3b8;">Kategori "${namaKategori}" segera hadir.</p></div>`;
+        } else {
+            renderKatalogPasar(dataDisaring, "main-grid");
+        }
+    }
+};
+
+window.switchPage = function(targetHalaman) {
+    document.getElementById("page-home").classList.add("hidden");
+    document.getElementById("page-cari").classList.add("hidden");
+    document.getElementById("page-keranjang").classList.add("hidden");
+    document.getElementById("page-profile").classList.add("hidden");
+    document.getElementById(`page-${targetHalaman}`).classList.remove("hidden");
+
+    document.querySelectorAll(".bottom-nav .nav-item").forEach(item => item.classList.remove("active"));
+    document.getElementById(`nav-${targetHalaman}`).classList.add("active");
+};
+
+// ==========================================
+// 6. PIPELINE EKSEKUSI PEMBAYARAN MODERN
+// ==========================================
+window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
+    if (!window.Pi || !currentUser) {
+        alert("Peringatan: Silakan ketuk tombol login akun Pi di bagian atas terlebih dahulu.");
+        return;
+    }
+
     const nominalBayar = parseFloat(hargaBarang);
 
-    // Membuka Jaringan Pi Payment API v2
     window.Pi.createPayment({
         amount: nominalBayar,
-        memo: `Pembayaran: ${namaBarang}`,
+        memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
         metadata: { product_name: namaBarang },
     }, {
-        onReadyForServerApproval: async function(paymentId) {
-            console.log("Mengirim sinyal persetujuan ke server Vercel untuk ID:", paymentId);
-            try {
-                // ABSOLUTE URL: Menembak langsung domain SSL Vercel Anda tanpa tersangkut di pinet.com
-                const response = await fetch('https://www.ptdigitalproindo.com/api/approval', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ paymentId: paymentId })
-                });
-                const data = await response.json();
-                console.log("Server Vercel Berhasil Menyetujui:", data);
-            } catch (err) {
-                console.error("Gagal mengirim persetujuan ke backend:", err);
-            }
+        // Menggunakan Arrow Function modern agar Vercel & Pi Browser sinkron tanpa eror parsing
+        onReadyForServerApproval: (paymentId) => {
+            console.log("Mengirim approval untuk Payment ID:", paymentId);
+            fetch("/api/approval", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId: paymentId })
+            })
+            .then(res => res.json())
+            .then(data => console.log("Backend menyetujui transaksi:", data))
+            .catch(err => console.error("Gagal approval backend:", err));
         },
-        onReadyForServerCompletion: async function(paymentId, txid) {
-            console.log("Transaksi Blockchain Berhasil! TXID:", txid);
-            try {
-                const response = await fetch('https://www.ptdigitalproindo.com/api/complete', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                });
-                const data = await response.json();
-                console.log("Server Vercel Mencatat Completion:", data);
-                
-                alert(`🎉 TRANSAKSI BERHASIL!\n\nProduk: ${namaBarang}\nNominal: ${nominalBayar} Pi\n\nMenghubungkan Anda ke WhatsApp Admin.`);
-                
-                // Redirect otomatis menuju WhatsApp Admin untuk pengiriman barang fisik/jasa
-                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20membayar%20via%20Blockchain%20Pi%20Network!\n\n•%20Produk:%20${encodeURIComponent(namaBarang)}\n•%20Total:%20${nominalBayar}%20Pi\n•%20TXID:%20${txid}`, '_blank');
-            } catch (err) {
-                console.error("Gagal mengirim penyelesaian akhir ke backend:", err);
-            }
+        
+        onReadyForServerCompletion: (paymentId, txid) => {
+            fetch("/api/complete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId: paymentId, txid: txid })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                const pesanWa = `Halo Admin, saya sudah bayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
+                window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
+            })
+            .catch(err => console.error("Gagal menyelesaikan transaksi:", err));
         },
-        onCancel: function() { 
-            console.log("Pembayaran dibatalkan secara manual oleh pengguna."); 
+        
+        onCancel: (paymentId) => {
+            alert("Pembayaran dibatalkan.");
         },
-        onError: function(error) {
+        
+        onError: (error, payment) => {
             console.error("Payment Error:", error);
-            alert("Terjadi kendala jaringan dompet. Silakan periksa saldo Testnet Anda dan coba kembali.");
+            alert("Transaksi ditangguhkan. Pastikan saldo dompet mencukupi.");
         }
     });
 };
-
-// Start system saat dokumen siap
-document.addEventListener("DOMContentLoaded", () => {
-    renderProducts(dataProduk);
-});

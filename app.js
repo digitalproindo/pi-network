@@ -131,7 +131,7 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     const nominalBayar = parseFloat(hargaBarang);
 
     // 🔗 PAKSA ALAMAT BACKEND KE VERCEL ASLI (SOLUSI KEDALUWARSA PINET.COM)
-    const BASE_BACKEND_URL = "https://pi-network-nu.vercel.app";
+    const BASE_BACKEND_URL = "https://pi-network-es72a8ity-dpis-projects-1805cf92.vercel.app";
 
     window.Pi.createPayment({
         amount: nominalBayar,

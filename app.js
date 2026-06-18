@@ -1,5 +1,5 @@
 // ==========================================
-// 1. DATA PRODUK MARKETPLACE (INSTAN & AMAN)
+// 1. DATA PRODUK MARKETPLACE
 // ==========================================
 const productsData = [
     {
@@ -47,14 +47,8 @@ const productsData = [
 let currentUser = null;
 const ADMIN_WA = "6282191851112"; 
 
-// ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI ANDA DI SINI
-const PI_SERVER_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
-
-// Jembatan Proxy pihak ketiga agar GitHub Pages diizinkan mengetuk Server Pi Network
-const PROXY_URL = "https://corsproxy.io/?"; 
-
 // ==========================================
-// 2. FUNGSI VISUAL UTAMA (ANTI-BLANK)
+// 2. FUNGSI VISUAL UTAMA (RENDER PRODUK)
 // ==========================================
 function renderKatalogPasar(arrayData, idTargetElemen) {
     const wadahTampilan = document.getElementById(idTargetElemen);
@@ -87,11 +81,13 @@ function renderKatalogPasar(arrayData, idTargetElemen) {
 }
 
 // ==========================================
-// 3. INISIALISASI HALAMAN
+// 3. INISIALISASI HALAMAN & AUTENTIKASI PI
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
+    // Jalankan render katalog agar halaman tidak blank
     renderKatalogPasar(productsData, "main-grid");
     
+    // Inisialisasi Pi SDK jika dibuka di dalam Pi Browser
     if (window.Pi) {
         try {
             window.Pi.init({ version: "2.0", sandbox: true }); 
@@ -107,27 +103,35 @@ function autentikasiPiOtomatis() {
         .then((auth) => {
             currentUser = auth.user;
             const btnLogin = document.getElementById("login-btn");
-            if (btnLogin) btnLogin.innerText = auth.user.username.toUpperCase();
+            if (btnLogin) {
+                btnLogin.innerText = auth.user.username.toUpperCase();
+            }
         })
-        .catch((err) => console.log("Menunggu login manual."));
+        .catch((err) => {
+            console.log("Menunggu login manual atau user membatalkan.");
+        });
 }
 
+// Fungsi tombol login manual jika klik profil/tombol login
 window.handleSignIn = function() {
     if (!window.Pi) {
-        alert("Harap buka di Pi Browser.");
+        alert("Harap buka aplikasi ini di dalam Pi Browser.");
         return;
     }
     autentikasiPiOtomatis();
 };
 
+// ==========================================
+// 4. LOGIKA TRANSAKSI DETEKSI DOMAIN OTOMATIS
+// ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Silakan login terlebih dahulu.");
+        alert("Peringatan: Silakan login terlebih dahulu menggunakan akun Pi Anda.");
         return;
     }
     const nominalBayar = parseFloat(hargaBarang);
-
-    // 🌐 BERUBAH DI SINI: Otomatis mendeteksi domain tempat aplikasi dibuka
+    
+    // Mendeteksi otomatis domain aktif (baik .com maupun vercel.app)
     const BASE_BACKEND_URL = window.location.origin;
 
     window.Pi.createPayment({
@@ -158,20 +162,28 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
                 const data = await response.json();
                 console.log("Server merespons completion:", data);
                 
-                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
-                window.open(`https://wa.me/${ADMIN_WA}?text=Sukses%20TXID:%20${txid}`, '_blank');
+                alert(`🎉 TRANSAKSI BERHASIL!\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20Blockchain%20Pi!\n•%20Produk:%20${namaBarang}\n•%20TXID:%20${txid}`, '_blank');
             } catch (err) {
                 console.error("Gagal menyelesaikan klaim:", err);
             }
         },
-        onCancel: () => alert("Pembayaran dibatalkan."),
+        onCancel: () => {
+            console.log("Pembayaran dibatalkan oleh pengguna.");
+        },
         onError: (error) => {
             console.error("Payment Error:", error);
-            alert("Transaksi ditangguhkan.");
+            alert("Transaksi ditangguhkan. Periksa koneksi atau saldo dompet Anda.");
         }
     });
 };
 
-};
-
-
+// ==========================================
+// 5. FUNGSI TOMBOL MENU LAINNYA (NAVIGASI)
+// ==========================================
+// Menambahkan fungsi cadangan agar tombol menu atas tidak hang
+document.querySelectorAll('.footer-nav-item, .nav-item').forEach(item => {
+    item.addEventListener('click', () => {
+        console.log("Menu navigasi diklik.");
+    });
+});

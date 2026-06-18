@@ -281,8 +281,6 @@ function initSearchFeature() {
         renderKatalogPasar(matchedProducts, "search-results");
     });
 }
-
-// Keranjang belanja placeholder
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
         alert("Silakan klik tombol 'LOGIN PI' terlebih dahulu.");
@@ -293,24 +291,41 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
 
     window.Pi.createPayment({
         amount: nominalBayar,
-        memo: `Pembayaran: ${namaBarang}`,
+        memo: `Bayar: ${namaBarang}`,
         metadata: { product_name: namaBarang },
     }, {
-        // Biarkan sistem App Studio memproses persetujuan di latar belakang secara otomatis
-        onReadyForServerApproval: function(paymentId) {
-            console.log("Payment terdeteksi oleh App Studio: ", paymentId);
+        onReadyForServerApproval: async function(paymentId) {
+            console.log("Mengirim ke backend Vercel: ", paymentId);
+            try {
+                // Menembak backend lokal Vercel untuk memberikan persetujuan ke Core Team
+                const response = await fetch('/api/approval', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paymentId: paymentId })
+                });
+                const data = await response.json();
+                console.log("Approval Berhasil:", data);
+            } catch (err) {
+                console.error("Approval Gagal:", err);
+            }
         },
-        // Blok ini dipicu otomatis saat jaringan blockchain sukses melakukan transfer
-        onReadyForServerCompletion: function(paymentId, txid) {
-            alert(`🎉 TRANSAKSI SUKSES!\n\n${nominalBayar} Pi berhasil dikirim.`);
-            window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20App%20Studio!\n•%20TXID:%20${txid}`, '_blank');
+        onReadyForServerCompletion: async function(paymentId, txid) {
+            try {
+                const response = await fetch('/api/complete', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
+                });
+                const data = await response.json();
+                console.log("Completion Berhasil:", data);
+                
+                alert(`🎉 TRANSAKSI BERHASIL!\n\n${nominalBayar} Pi sukses ditransfer.`);
+                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20sukses%20bayar%20via%20Blockchain!\n•%20TXID:%20${txid}`, '_blank');
+            } catch (err) {
+                console.error("Completion Gagal:", err);
+            }
         },
-        onCancel: function() { 
-            console.log("Transaksi dibatalkan oleh pengguna."); 
-        },
-        onError: function(error) {
-            console.error("Payment Error:", error);
-            alert("Gagal memproses pembayaran. Periksa koneksi atau saldo Testnet Wallet Anda.");
-        }
+        onCancel: function() { console.log("Dibatalkan"); },
+        onError: function(error) { console.error("Eror:", error); }
     });
 };

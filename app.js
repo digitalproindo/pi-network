@@ -181,9 +181,38 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
 // ==========================================
 // 5. FUNGSI TOMBOL MENU LAINNYA (NAVIGASI)
 // ==========================================
-// Menambahkan fungsi cadangan agar tombol menu atas tidak hang
-document.querySelectorAll('.footer-nav-item, .nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-        console.log("Menu navigasi diklik.");
-    });
-});
+
+// Fungsi Tombol Cari (Kaca Pembesar)
+window.handleSearch = function() {
+    const kataKunci = prompt("Masukkan nama produk herbal atau rumah yang ingin Anda cari:");
+    if (kataKunci) {
+        const hasilFilter = productsData.filter(p => 
+            p.name.toLowerCase().includes(kataKunci.toLowerCase()) || 
+            p.category.toLowerCase().includes(kataKunci.toLowerCase())
+        );
+        if (hasilFilter.length > 0) {
+            renderKatalogPasar(hasilFilter, "main-grid");
+            alert(`Menampilkan ${hasilFilter.length} produk pencarian: "${kataKunci}"\n\n(Klik menu 'Beranda' atau segarkan halaman untuk mengembalikan semua produk)`);
+        } else {
+            alert(`Produk dengan kata kunci "${kataKunci}" tidak ditemukan.`);
+        }
+    }
+};
+
+// Fungsi Tombol Keranjang
+window.handleCart = function() {
+    alert("Fitur Keranjang Belanja Mainnet sedang disiapkan.\n\nSaat ini Anda bisa langsung melakukan pembelian instan secara aman dengan menekan tombol 'Beli' pada masing-masing produk.");
+};
+
+// Fungsi Tombol Profil / Akun
+window.handleProfile = function() {
+    if (currentUser) {
+        alert(`👤 INFORMASI AKUN PI NETWORK\n\n• Username: ${currentUser.username.toUpperCase()}\n• Status: Terautentikasi di Testnet/Mainnet\n\nSelamat berbelanja di Digital Pro Indo!`);
+    } else {
+        if (window.Pi) {
+            autentikasiPiOtomatis();
+        } else {
+            alert("Silakan buka aplikasi ini di dalam Pi Browser untuk memuat profil Anda.");
+        }
+    }
+};

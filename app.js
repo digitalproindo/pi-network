@@ -283,19 +283,9 @@ function initSearchFeature() {
 }
 
 // Keranjang belanja placeholder
-document.getElementById("cart-items").innerHTML = `
-    <div style="text-align: center; padding: 50px 20px; color: #94a3b8;">
-        <div style="font-size: 40px; margin-bottom: 10px;">🛒</div>
-        <p>Keranjang belanja Mainnet sedang disiapkan.</p>
-        <p style="font-size: 0.75rem; color: #64748b;">Silakan gunakan fitur beli instan pada halaman Beranda.</p>
-    </div>
-`;
-// ==========================================
-// 6. LOGIKA TRANSAKSI BLOKCHAIN PI (AUTOMATIC DETECT)
-// ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Silakan klik tombol 'LOGIN PI' di pojok kanan atas terlebih dahulu.");
+        alert("Silakan klik tombol 'LOGIN PI' terlebih dahulu.");
         return;
     }
     
@@ -303,47 +293,24 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
 
     window.Pi.createPayment({
         amount: nominalBayar,
-        memo: `Bayar: ${namaBarang}`,
+        memo: `Pembayaran: ${namaBarang}`,
         metadata: { product_name: namaBarang },
     }, {
-        onReadyForServerApproval: async function(paymentId) {
-            console.log("Mengirim persetujuan untuk Payment ID:", paymentId);
-            try {
-                // Menggunakan relative path agar aman dari kendala blokir CORS lintas domain
-                const response = await fetch('/api/approval', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ paymentId: paymentId })
-                });
-                const data = await response.json();
-                console.log("Persetujuan backend berhasil:", data);
-            } catch (err) {
-                console.error("Gagal verifikasi approval backend:", err);
-            }
+        // Biarkan sistem App Studio memproses persetujuan di latar belakang secara otomatis
+        onReadyForServerApproval: function(paymentId) {
+            console.log("Payment terdeteksi oleh App Studio: ", paymentId);
         },
-        onReadyForServerCompletion: async function(paymentId, txid) {
-            console.log("Menyelesaikan blockchain transaksi untuk TXID:", txid);
-            try {
-                const response = await fetch('/api/complete', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                });
-                const data = await response.json();
-                console.log("Penyelesaian backend berhasil:", data);
-                
-                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
-                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20Blockchain%20Pi!\n•%20Produk:%20${namaBarang}\n•%20TXID:%20${txid}`, '_blank');
-            } catch (err) {
-                console.error("Gagal mengirim completion backend:", err);
-            }
+        // Blok ini dipicu otomatis saat jaringan blockchain sukses melakukan transfer
+        onReadyForServerCompletion: function(paymentId, txid) {
+            alert(`🎉 TRANSAKSI SUKSES!\n\n${nominalBayar} Pi berhasil dikirim.`);
+            window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20App%20Studio!\n•%20TXID:%20${txid}`, '_blank');
         },
         onCancel: function() { 
-            console.log("Pembayaran dibatalkan oleh pengguna."); 
+            console.log("Transaksi dibatalkan oleh pengguna."); 
         },
         onError: function(error) {
             console.error("Payment Error:", error);
-            alert("Transaksi mengalami penangguhan. Periksa koneksi atau saldo dompet Anda.");
+            alert("Gagal memproses pembayaran. Periksa koneksi atau saldo Testnet Wallet Anda.");
         }
     });
 };

@@ -48,7 +48,7 @@ let currentUser = null;
 const ADMIN_WA = "6282191851112"; 
 
 // ⚠️ MASUKKAN SERVER API KEY DARI DEVELOP.PI ANDA DI SINI
-const PI_SERVER_API_KEY = "cnl1zvmm5qkvnhldauqwsizgq2refqy3ezz8qkhdmqzsl5szdzgcjmgfll5k5nwi"; 
+const PI_SERVER_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
 
 // Jembatan Proxy pihak ketiga agar GitHub Pages diizinkan mengetuk Server Pi Network
 const PROXY_URL = "https://corsproxy.io/?"; 

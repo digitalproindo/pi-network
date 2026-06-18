@@ -1,4 +1,3 @@
-Saya akan mengirimkan file script app.js saya.berikut dibawah ini isinya
 document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;

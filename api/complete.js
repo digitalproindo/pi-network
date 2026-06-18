@@ -1,35 +1,28 @@
-export default async function handler(req, res) {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+const axios = require('axios'); // Menggunakan require (CommonJS)
 
-    if (req.method === 'OPTIONS') return res.status(200).end();
-    if (req.method !== 'POST') return res.status(405).json({ error: 'Metode tidak diizinkan' });
+module.exports = async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Method tidak diizinkan' });
+    }
+    
+    const { paymentId, txid } = req.body;
+    const PI_API_KEY = process.env.PI_API_KEY;
 
     try {
-        const { paymentId, txid } = req.body;
-        // 🔑 SERVER API KEY MILIK ANDA
-        const PI_API_KEY = "7dhf4pgvicd3fjhjytlgjfj6connngc2ie5q6fc3utceubmrojatqxhqt06vbzxw"; 
-
-        const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Key ${PI_API_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ txid })
-        });
-
-        const responseText = await piResponse.text();
-        let data;
-        try {
-            data = JSON.parse(responseText);
-        } catch (e) {
-            return res.status(500).json({ error: "Format respon tidak valid", raw: responseText });
-        }
-
-        return res.status(200).json(data);
+        // Menyelesaikan transaksi di Blockchain Pi
+        const response = await axios.post(
+            `https://api.minepi.com/v2/payments/${paymentId}/complete`,
+            { txid: txid },
+            {
+                headers: { 
+                    'Authorization': `Key ${PI_API_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            }
+        );
+        return res.status(200).json(response.data);
     } catch (error) {
+        console.error("Eror Completion:", error.response ? error.response.data : error.message);
         return res.status(500).json({ error: error.message });
     }
-}
+};

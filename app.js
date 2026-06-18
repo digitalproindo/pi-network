@@ -120,9 +120,6 @@ window.handleSignIn = function() {
     autentikasiPiOtomatis();
 };
 
-// ==========================================
-// 4. LOGIKA TRANSAKSI MENEMBUS CORS (KHUSUS GITHUB PAGES)
-// ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
         alert("Peringatan: Silakan login terlebih dahulu.");
@@ -130,7 +127,7 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     }
     const nominalBayar = parseFloat(hargaBarang);
 
-    // 🌐 TRICK OTOMATIS: Mendeteksi domain aktif secara instan tanpa hardcode manual
+    // 🌐 BERUBAH DI SINI: Otomatis mendeteksi domain tempat aplikasi dibuka
     const BASE_BACKEND_URL = window.location.origin;
 
     window.Pi.createPayment({
@@ -139,7 +136,6 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         metadata: { product_name: namaBarang },
     }, {
         onReadyForServerApproval: async (paymentId) => {
-            console.log("Mengirim approval ke: " + BASE_BACKEND_URL);
             try {
                 const response = await fetch(`${BASE_BACKEND_URL}/api/approval`, {
                     method: "POST",
@@ -163,7 +159,7 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
                 console.log("Server merespons completion:", data);
                 
                 alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
-                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20Blockchain%20Pi!\n•%20Produk:%20${namaBarang}\n•%20TXID:%20${txid}`, '_blank');
+                window.open(`https://wa.me/${ADMIN_WA}?text=Sukses%20TXID:%20${txid}`, '_blank');
             } catch (err) {
                 console.error("Gagal menyelesaikan klaim:", err);
             }
@@ -171,9 +167,11 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
         onCancel: () => alert("Pembayaran dibatalkan."),
         onError: (error) => {
             console.error("Payment Error:", error);
-            alert("Transaksi ditangguhkan. Periksa saldo dompet Anda.");
+            alert("Transaksi ditangguhkan.");
         }
     });
+};
+
 };
 
 

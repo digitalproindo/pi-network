@@ -282,8 +282,8 @@ function initSearchFeature() {
     });
 }
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
-    if (!window.Pi || !currentUser) {
-        alert("Silakan klik tombol 'LOGIN PI' terlebih dahulu.");
+    if (!window.Pi) {
+        alert("Pi SDK tidak terdeteksi. Pastikan dibuka di Pi Browser.");
         return;
     }
     
@@ -291,41 +291,25 @@ window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
 
     window.Pi.createPayment({
         amount: nominalBayar,
-        memo: `Bayar: ${namaBarang}`,
+        memo: `Pembayaran Produk: ${namaBarang}`,
         metadata: { product_name: namaBarang },
     }, {
-        onReadyForServerApproval: async function(paymentId) {
-            console.log("Mengirim ke backend Vercel: ", paymentId);
-            try {
-                // Menembak backend lokal Vercel untuk memberikan persetujuan ke Core Team
-                const response = await fetch('/api/approval', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ paymentId: paymentId })
-                });
-                const data = await response.json();
-                console.log("Approval Berhasil:", data);
-            } catch (err) {
-                console.error("Approval Gagal:", err);
-            }
+        // Biarkan App Studio menyelesaikan approval secara otomatis lewat server internal mereka
+        onReadyForServerApproval: function(paymentId) {
+            console.log("App Studio memproses approval otomatis untuk ID:", paymentId);
         },
-        onReadyForServerCompletion: async function(paymentId, txid) {
-            try {
-                const response = await fetch('/api/complete', {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                });
-                const data = await response.json();
-                console.log("Completion Berhasil:", data);
-                
-                alert(`🎉 TRANSAKSI BERHASIL!\n\n${nominalBayar} Pi sukses ditransfer.`);
-                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20sukses%20bayar%20via%20Blockchain!\n•%20TXID:%20${txid}`, '_blank');
-            } catch (err) {
-                console.error("Completion Gagal:", err);
-            }
+        // Ketika blockchain sukses mentransfer koin Testnet Anda
+        onReadyForServerCompletion: function(paymentId, txid) {
+            alert(`🎉 PEMBAYARAN BERHASIL!\n\n${nominalBayar} Pi sukses dikirim.`);
+            // Mengarahkan otomatis ke WhatsApp Admin Anda
+            window.open(`https://wa.me/628xxxxxxx?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20App%20Studio!\n•%20TXID:%20${txid}`, '_blank');
         },
-        onCancel: function() { console.log("Dibatalkan"); },
-        onError: function(error) { console.error("Eror:", error); }
+        onCancel: function() { 
+            console.log("Transaksi dibatalkan oleh user."); 
+        },
+        onError: function(error) {
+            console.error("Payment Error:", error);
+            alert("Gagal memproses transaksi. Silakan periksa saldo dompet Testnet Anda.");
+        }
     });
 };

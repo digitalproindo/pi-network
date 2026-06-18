@@ -1,4 +1,4 @@
-Document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
     const Pi = window.Pi;
     let currentUser = null;
     let cart = [];
@@ -233,8 +233,9 @@ const productsData = [
             { user: "Rina_Store", comment: "Produk herbal terbaik tahun ini." }
         ]
     },
+    
     { 
-        id: 'p3_alt', 
+        id: 'p3', 
         name: "Smart Home System Pro", 
         price: 0.500, 
         category: "Rumah", 
@@ -247,7 +248,7 @@ const productsData = [
         ]
     },
     { 
-        id: 'p4_alt', 
+        id: 'p4', 
         name: "Premium Smartphone X", 
         price: 1.200, 
         category: "Elektronik", 
@@ -665,7 +666,7 @@ const productsData = [
         category: "Mobil",
         name: "Porsche 911 GT3 RS",
         price: 0.05800,
-        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"],
+        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"],
         desc: `• <b>Mesin:</b> 4.0L Naturally Aspirated Boxer-6<br>
                • <b>RPM:</b> Redline di 9.000 RPM<br>
                • <b>Sayap:</b> Active Rear Wing with DRS (Drag Reduction System)<br>
@@ -817,7 +818,19 @@ const productsData = [
                • <b>Status:</b> Barang koleksi & Investasi institusi`
     },
     {
-        id: "gold-011",
+        id: "gold-010",
+        category: "Emas",
+        name: "Emas Antam Logam Mulia 500 Gram",
+        price: 0.06400,
+        images: ["https://i.ibb.co.com/vvvCTrw1/Desain-tanpa-judul-20260207-151033-0000.png"],
+        desc: `• <b>Berat:</b> 250 Gram<br>
+               • <b>Bentuk:</b> Cast Bar (Emas Tuang)<br>
+               • <b>Kemurnian:</b> 999.9 Fine Gold<br>
+               • <b>Standar:</b> Akreditasi Internasional LBMA<br>
+               • <b>Status:</b> Barang koleksi & Investasi institusi`
+    },
+    {
+        id: "gold-010",
         category: "Emas",
         name: "Emas Antam Logam Mulia 500 Gram",
         price: 0.06400,
@@ -1021,11 +1034,13 @@ function renderProducts(data, targetGridId) {
 }
 
     window.handlePayment = async (amount, name) => {
+    // 1. POLESAN: Ganti alert login kaku dengan Modal Estetik
     if (!currentUser) {
         showLoginPrompt();
         return;
     }
 
+    // 2. POLESAN: Ganti alert alamat (Opsional, tapi disarankan agar konsisten)
     if (!userAddress.nama) { 
         showAddressPrompt(); 
         return; 
@@ -1060,6 +1075,8 @@ function renderProducts(data, targetGridId) {
     } catch (err) { console.error(err); }
 };
 
+// --- FUNGSI POPUP LOGIN KONSISTEN (GOLD THEME) ---
+// --- FUNGSI POPUP LOGIN KONSISTEN ---
 function showLoginPrompt() {
     const overlay = document.createElement('div');
     overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
@@ -1176,10 +1193,13 @@ window.updateCartUI = () => {
                 <div style="margin-bottom: 25px;">
                     <img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" alt="Cart" style="width: 120px; opacity: 0.8;">
                 </div>
+                
                 <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
+                
                 <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px; max-width:280px; margin-left:auto; margin-right:auto;">
                     Sepertinya Anda belum menambahkan produk premium ke keranjang.
                 </p>
+                
                 <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; font-size:1rem; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3); transition: transform 0.2s;">
                     Mulai Belanja
                 </button>
@@ -1247,7 +1267,12 @@ window.updateCartUI = () => {
 };
 
     window.closeProductDetail = () => {
+        document.getElementById('product-detail-page').classList.add('hidden');
+    };
+
+    window.closeProductDetail = () => {
     document.getElementById('product-detail-page').classList.add('hidden');
+    
     const bNav = document.querySelector('.bottom-nav');
     if(bNav) {
         bNav.style.display = 'flex';
@@ -1265,17 +1290,21 @@ window.openProductDetail = (productId) => {
     
     document.getElementById('detail-content').innerHTML = `
         <div style="background: white; min-height: 100vh; padding-bottom: 100px; font-family:'Inter', sans-serif; position: relative;">
+            
             <div onclick="closeProductDetail()" style="position: fixed; top: 15px; left: 15px; z-index: 9999; background: #4a148c; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.3); border: 2px solid white; cursor: pointer;">
                 <svg viewBox="0 0 24 24" style="width:28px; height:28px; fill:none; stroke:white; stroke-width:3;">
                     <path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
             </div>
+
             <div style="width: 100%; height: 320px; background: #f1f5f9; overflow: hidden; position: relative;">
                 <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover; display: block;">
             </div>
+            
             <div style="padding: 20px; position: relative; z-index: 10; background: white; border-radius: 30px 30px 0 0; margin-top: -30px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05);">
                 <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; font-weight: 800;">${p.name}</h2>
                 <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
+                
                 <div style="background: #fdfdfd; padding: 20px; border-radius: 20px; border: 1px solid #f1f5f9; margin-top: 15px;">
                     <h4 style="margin: 0 0 10px 0; color: #4a148c; font-weight: 800; border-bottom: 2px solid #6748d7; width: fit-content; padding-bottom: 5px;">
                         DETAIL SPESIFIKASI
@@ -1284,6 +1313,7 @@ window.openProductDetail = (productId) => {
                         ${p.desc}
                     </div>
                 </div>
+
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
                     <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
                     <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
@@ -1331,14 +1361,8 @@ if (searchInput) {
 }
 
    window.handleAuth = async () => {
-    // PERBAIKAN UTAMA: Penanganan audio dibungkus try-catch agar jika aset .mp3 tidak ada, baris kode login di bawahnya tidak macet.
-    try {
-        const successSound = new Audio("assets/sound-effect.mp3");
-        successSound.load();
-        window.currentSuccessSound = successSound;
-    } catch (audioErr) {
-        console.log("Audio file initialization skipped or failed:", audioErr);
-    }
+    const successSound = new Audio("assets/sound-effect.mp3");
+    successSound.load(); 
 
     const loadingOverlay = document.createElement('div');
     loadingOverlay.className = 'auth-overlay';
@@ -1375,9 +1399,7 @@ if (searchInput) {
             profileAddress.innerText = currentUser.uid;
         }
        
-        if (window.currentSuccessSound) {
-            window.currentSuccessSound.play().catch(e => console.log("Audio play blocked"));
-        }
+        successSound.play().catch(e => console.log("Audio play blocked"));
 
         loadingOverlay.innerHTML = `
             <div style="
@@ -1397,6 +1419,7 @@ if (searchInput) {
                          style="width: 100%; border-radius: 8px; display: block;" 
                          class="congrats-gift">
                 </div>
+                
                 <h2 style="color:#FFD700; margin:5px 0; font-weight:900; font-size:1.3rem; text-shadow: 0 2px 5px rgba(0,0,0,0.5); text-transform: uppercase;">
                     Login Berhasil!
                 </h2>
@@ -1430,26 +1453,30 @@ if (searchInput) {
 
     renderProducts(productsData, 'main-grid');
 
+    // 2. Inisialisasi Pi SDK secara aman
     try {
         await initPi();
         console.log("Pi SDK siap digunakan");
     } catch (err) {
         console.error("Pi SDK gagal muat: ", err);
+        // Tetap biarkan aplikasi jalan meskipun SDK gagal
     }
 
-    // Pemasangan fungsi klik tombol login utama
+    // 3. Pasang fungsi klik pada tombol login
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
     }
 });
-
 function toggleMenu() {
     const nav = document.getElementById("sideNav");
+    
     if (!nav) {
         console.error("Elemen sideNav tidak ditemukan!");
         return;
     }
+
+    // Logika buka tutup berdasarkan lebar
     if (nav.style.width === "250px") {
         nav.style.width = "0px";
     } else {
@@ -1460,6 +1487,8 @@ function toggleMenu() {
 function toggleDropdown() {
     const dropdown = document.getElementById("aboutDropdown");
     const btn = document.querySelector(".dropdown-btn");
+    
+    // Toggle tampilan (block/none)
     if (dropdown.style.display === "block") {
         dropdown.style.display = "none";
         btn.classList.remove("active");
@@ -1469,12 +1498,17 @@ function toggleDropdown() {
     }
 }
 
+// Menutup menu jika user klik di luar area sidebar
 window.addEventListener('click', function(event) {
     const nav = document.getElementById("sideNav");
     const menuIcon = document.querySelector('.menu-icon');
+    
     if (nav && nav.style.width === "250px") {
-        if (menuIcon && !nav.contains(event.target) && !menuIcon.contains(event.target)) {
+        // Jika yang diklik bukan menu dan bukan tombol garis tiga
+        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
             nav.style.width = "0px";
         }
     }
 });
+
+Tetapi tombol login tidak berfungsi

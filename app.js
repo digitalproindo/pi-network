@@ -293,166 +293,57 @@ document.getElementById("cart-items").innerHTML = `
 // ==========================================
 // 6. LOGIKA TRANSAKSI BLOKCHAIN PI (AUTOMATIC DETECT)
 // ==========================================
-window.eksekusiBeliKeAdmin = async function(namaBarang, hargaBarang) {
-
-    if (!window.Pi) {
-        alert("Harap buka aplikasi melalui Pi Browser.");
+window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
+    if (!window.Pi || !currentUser) {
+        alert("Peringatan: Silakan klik tombol 'LOGIN PI' di pojok kanan atas terlebih dahulu.");
         return;
     }
-
-    if (!currentUser) {
-        alert("Silakan login Pi terlebih dahulu.");
-        return;
-    }
-
+    
     const nominalBayar = parseFloat(hargaBarang);
 
-    console.log("Memulai pembayaran:", namaBarang);
-    console.log("Nominal:", nominalBayar);
-
-    Pi.createPayment(
-        {
-            amount: nominalBayar,
-            memo: `Pembelian ${namaBarang}`,
-            metadata: {
-                product_name: namaBarang,
-                buyer: currentUser.username
+    window.Pi.createPayment({
+        amount: nominalBayar,
+        memo: `Bayar: ${namaBarang}`,
+        metadata: { product_name: namaBarang },
+    }, {
+        onReadyForServerApproval: async function(paymentId) {
+            console.log("Mengirim persetujuan untuk Payment ID:", paymentId);
+            try {
+                // Menggunakan relative path agar aman dari kendala blokir CORS lintas domain
+                const response = await fetch('/api/approval', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paymentId: paymentId })
+                });
+                const data = await response.json();
+                console.log("Persetujuan backend berhasil:", data);
+            } catch (err) {
+                console.error("Gagal verifikasi approval backend:", err);
             }
         },
-
-        {
-            onReadyForServerApproval: async function(paymentId) {
-
-                console.log("Payment siap di-approve:", paymentId);
-
-                try {
-
-                    const response = await fetch('/api/approval', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            paymentId: paymentId
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    console.log("Approve Response:", data);
-
-                    if (!response.ok) {
-                        throw new Error(
-                            data.error || "Approval gagal"
-                        );
-                    }
-
-                } catch (err) {
-
-                    console.error("Approval Error:", err);
-
-                    alert(
-                        "Gagal menyetujui pembayaran."
-                    );
-                }
-            },
-
-            onReadyForServerCompletion: async function(
-                paymentId,
-                txid
-            ) {
-
-                console.log(
-                    "Payment siap diselesaikan:",
-                    paymentId
-                );
-
-                console.log(
-                    "TXID:",
-                    txid
-                );
-
-                try {
-
-                    const response = await fetch('/api/complete', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            paymentId: paymentId,
-                            txid: txid
-                        })
-                    });
-
-                    const data = await response.json();
-
-                    console.log(
-                        "Complete Response:",
-                        data
-                    );
-
-                    if (!response.ok) {
-                        throw new Error(
-                            data.error || "Completion gagal"
-                        );
-                    }
-
-                    alert(
-                        `🎉 Pembayaran berhasil!\n\nProduk: ${namaBarang}\nJumlah: ${nominalBayar} Pi`
-                    );
-
-                    window.open(
-                        `https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(
-`Halo Admin,
-
-Saya telah melakukan pembayaran melalui Pi Network.
-
-Produk : ${namaBarang}
-Jumlah : ${nominalBayar} Pi
-TXID : ${txid}
-
-Mohon diproses.`
-                        )}`,
-                        '_blank'
-                    );
-
-                } catch (err) {
-
-                    console.error(
-                        "Completion Error:",
-                        err
-                    );
-
-                    alert(
-                        "Pembayaran berhasil di wallet tetapi gagal diproses server."
-                    );
-                }
-            },
-
-            onCancel: function(paymentId) {
-
-                console.log(
-                    "Pembayaran dibatalkan:",
-                    paymentId
-                );
-
-                alert(
-                    "Pembayaran dibatalkan."
-                );
-            },
-
-            onError: function(error) {
-
-                console.error(
-                    "Pi Payment Error:",
-                    error
-                );
-
-                alert(
-                    "Terjadi kesalahan saat pembayaran."
-                );
+        onReadyForServerCompletion: async function(paymentId, txid) {
+            console.log("Menyelesaikan blockchain transaksi untuk TXID:", txid);
+            try {
+                const response = await fetch('/api/complete', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ paymentId: paymentId, txid: txid })
+                });
+                const data = await response.json();
+                console.log("Penyelesaian backend berhasil:", data);
+                
+                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
+                window.open(`https://wa.me/${ADMIN_WA}?text=Halo%20Admin,%20saya%20sudah%20bayar%20via%20Blockchain%20Pi!\n•%20Produk:%20${namaBarang}\n•%20TXID:%20${txid}`, '_blank');
+            } catch (err) {
+                console.error("Gagal mengirim completion backend:", err);
             }
+        },
+        onCancel: function() { 
+            console.log("Pembayaran dibatalkan oleh pengguna."); 
+        },
+        onError: function(error) {
+            console.error("Payment Error:", error);
+            alert("Transaksi mengalami penangguhan. Periksa koneksi atau saldo dompet Anda.");
         }
-    );
+    });
 };

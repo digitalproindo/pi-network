@@ -119,50 +119,142 @@ window.switchPage = function(pageId) {
 // ==========================================
 // 4. INISIALISASI & AUTENTIKASI PI SDK
 // ==========================================
+
 document.addEventListener("DOMContentLoaded", () => {
+
     renderKatalogPasar(productsData, "main-grid");
     initSearchFeature();
 
-    if (window.Pi) {
-        try {
-            window.Pi.init({ version: "2.0", sandbox: true }); 
-            autentikasiPiOtomatis();
-        } catch (err) {
-            console.error("Gagal memuat Pi SDK:", err);
-        }
+    // Hindari error jika elemen cart-items belum ada
+    const cartItems = document.getElementById("cart-items");
+
+    if (cartItems) {
+        cartItems.innerHTML = `
+            <div style="text-align:center;padding:50px 20px;color:#94a3b8;">
+                <div style="font-size:40px;margin-bottom:10px;">🛒</div>
+                <p>Keranjang belanja Mainnet sedang disiapkan.</p>
+                <p style="font-size:0.75rem;color:#64748b;">
+                    Silakan gunakan fitur beli instan pada halaman Beranda.
+                </p>
+            </div>
+        `;
+    }
+
+    if (!window.Pi) {
+        console.log("Pi SDK tidak ditemukan.");
+        return;
+    }
+
+    try {
+
+        window.Pi.init({
+            version: "2.0",
+            sandbox: true
+        });
+
+        console.log("Pi SDK berhasil dimuat");
+
+    } catch (err) {
+
+        console.error(
+            "Gagal menginisialisasi Pi SDK:",
+            err
+        );
     }
 });
 
+
+// ==========================================
+// LOGIN PI
+// ==========================================
+
 function autentikasiPiOtomatis() {
-    window.Pi.authenticate(['username', 'payments'])
-        .then((auth) => {
 
-            currentUser = auth.user;
+    if (!window.Pi) {
 
-            console.log("Login berhasil:", auth.user);
+        alert(
+            "Aplikasi harus dibuka melalui Pi Browser."
+        );
 
-            const btnLogin = document.getElementById("login-btn");
-            if (btnLogin) {
-                btnLogin.innerText = auth.user.username.toUpperCase();
-            }
+        return;
+    }
 
-            const profileUser = document.getElementById("profile-username");
-            const profileAddress = document.getElementById("profile-address");
+    window.Pi.authenticate(
+        ['username', 'payments']
+    )
 
-            if (profileUser) {
-                profileUser.innerText = auth.user.username.toUpperCase();
-            }
+    .then((auth) => {
 
-            if (profileAddress) {
-                profileAddress.innerText =
-                    auth.user.uid || "Connected via Pi Browser";
-            }
+        currentUser = auth.user;
 
-        })
-        .catch((err) => {
-            console.error("Login Pi gagal:", err);
-        });
+        console.log(
+            "Login berhasil:",
+            auth.user
+        );
+
+        const btnLogin =
+            document.getElementById("login-btn");
+
+        if (btnLogin) {
+
+            btnLogin.innerText =
+                auth.user.username.toUpperCase();
+        }
+
+        const profileUser =
+            document.getElementById(
+                "profile-username"
+            );
+
+        const profileAddress =
+            document.getElementById(
+                "profile-address"
+            );
+
+        if (profileUser) {
+
+            profileUser.innerText =
+                auth.user.username.toUpperCase();
+        }
+
+        if (profileAddress) {
+
+            profileAddress.innerText =
+                auth.user.uid ||
+                "Connected via Pi Browser";
+        }
+
+        alert(
+            "Login Pi berhasil!"
+        );
+    })
+
+    .catch((err) => {
+
+        console.error(
+            "Login Pi gagal:",
+            err
+        );
+
+        alert(
+            "Login Pi gagal. Silakan coba lagi."
+        );
+    });
 }
+
+
+// ==========================================
+// TOMBOL LOGIN PI
+// ==========================================
+
+window.handleSignIn = function() {
+
+    console.log(
+        "Tombol Login Diklik"
+    );
+
+    autentikasiPiOtomatis();
+};
 
 // ==========================================
 // 5. FITUR PENCARIAN (HALAMAN CARI)

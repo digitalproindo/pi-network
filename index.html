@@ -361,8 +361,207 @@
         <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium.</marquee>
     </div>
 </header>
-
+ 
 <div class="banner-container">
     <div class="banner-box">
-        <img src 
-Saya akan mengirimkan sambungannya
+        <img src="https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png" style="width: 100%; height: 100%; object-fit: cover;" id="banner-img">
+    </div>
+</div>
+
+<main id="page-home">
+
+        <div class="category-scroll">
+    <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
+    <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
+    <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
+    <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
+    <div class="category-pill" onclick="filterCategory('Emas', this)">🟡 Emas</div>
+    <div class="category-pill" onclick="filterCategory('Herbal', this)">🍃 Herbal</div>
+    <div class="category-pill" onclick="filterCategory('Gadget', this)">📱 Gadget</div>
+    <div class="category-pill" onclick="filterCategory('Elektronik', this)">🔌 Elektronik</div>
+    <div class="category-pill" onclick="filterCategory('Jasa', this)">💼 Jasa</div>
+    <div class="category-pill" onclick="filterCategory('Makanan', this)">🍱 Makanan</div>
+    <div class="category-pill" onclick="filterCategory('Minuman', this)">🥤 Minuman</div>
+
+</div>
+
+     <div id="main-grid" class="marketplace-grid"></div>
+    </main>
+
+
+<main id="page-cari" class="hidden">
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Cari produk premium...">
+    </div>
+
+    <div id="search-results" class="marketplace-grid">
+        <div id="search-placeholder" style="display: flex; justify-content: center; align-items: center; min-height: 300px; width: 100%; grid-column: 1 / -1;">
+            <p style="text-align: center; color: #94a3b8; font-size: 0.95rem;">
+                Silakan masukkan nama produk...
+            </p>
+        </div>
+    </div>
+</main>
+
+<main id="page-keranjang" class="hidden">
+    <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>
+    <div id="cart-items"></div>
+</main>
+
+<main id="page-profile" class="hidden">
+    <div class="profile-card" style="margin-top: 60px;">
+        <div class="avatar-border">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+        </div>
+        <h2 id="profile-username" class="profile-username">User</h2>
+        <div class="uid-box">
+            <strong>Wallet UID:</strong><br>
+            <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
+        </div>
+        <div class="badge-verified">Status: Verified ✅</div>
+    </div>
+</main>
+
+<div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
+    <div id="detail-content"></div>
+</div>
+
+<a href="https://wa.me/6282191851112" class="whatsapp-float" target="_blank">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30">
+</a>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+        <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
+    </div>
+    <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
+        <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
+    </div>
+    <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+        <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+        <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
+    </div>
+</nav>
+
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="app.js?v=4.2"></script>
+<script>
+    function toggleMenu() {
+        var sideNav = document.getElementById("sideNav");
+        sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
+    }
+
+    function openModal() { document.getElementById("comingSoonModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
+    function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+    function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
+
+    // FUNGSI GABUNG KOMUNITAS (BARU)
+    function openKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "flex";
+        toggleMenu(); // Tutup sidebar setelah klik
+    }
+    function closeKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "none";
+    }
+
+    // LOGIKA KIRIM DATA KE GOOGLE SHEETS
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
+    const form = document.getElementById('formKomunitas');
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        const btn = document.getElementById('btnKirim');
+        btn.innerText = "MENGIRIM...";
+        btn.disabled = true;
+
+        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
+            .then(response => {
+                alert("Selamat! Anda telah bergabung dalam komunitas PT.DIGITAL PRO INDO.");
+                closeKomunitasModal();
+                form.reset();
+            })
+            .catch(error => alert("Error: Silakan coba lagi nanti."))
+            .finally(() => {
+                btn.innerText = "DAFTAR SEKARANG";
+                btn.disabled = false;
+            });
+    });
+
+    window.onclick = function(event) {
+        if (event.target.className === "modal-overlay") {
+            event.target.style.display = "none";
+        }
+    }
+
+    const provSelect = document.getElementById('selectProvinsi');
+const kotaSelect = document.getElementById('selectKota');
+const kecSelect = document.getElementById('selectKecamatan');
+const kelSelect = document.getElementById('selectKelurahan');
+
+// Load Provinsi
+fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+    .then(res => res.json())
+    .then(provinces => {
+        provinces.forEach(p => {
+            let opt = document.createElement('option');
+            opt.value = p.name;
+            opt.dataset.id = p.id;
+            opt.innerHTML = p.name;
+            provSelect.appendChild(opt);
+        });
+    });
+
+// Event saat Provinsi dipilih
+provSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kotaSelect, "Kota/Kabupaten");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kotaSelect, data));
+});
+
+// Event saat Kota dipilih
+kotaSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kecSelect, "Kecamatan");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kecSelect, data));
+});
+
+// Event saat Kecamatan dipilih
+kecSelect.addEventListener('change', function() {
+    const id = this.options[this.selectedIndex].dataset.id;
+    resetDropdown(kelSelect, "Kelurahan");
+    if(!id) return;
+    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`)
+        .then(res => res.json())
+        .then(data => populate(kelSelect, data));
+});
+
+function populate(target, data) {
+    target.disabled = false;
+    data.forEach(d => {
+        let opt = document.createElement('option');
+        opt.value = d.name;
+        opt.dataset.id = d.id;
+        opt.innerHTML = d.name;
+        target.appendChild(opt);
+    });
+}
+
+function resetDropdown(target, label) {
+    target.innerHTML = `<option value="">Pilih ${label}</option>`;
+    target.disabled = true;
+}
+
+
+</script>
+
+</body>
+</html>

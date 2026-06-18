@@ -125,63 +125,33 @@ window.handleSignIn = function() {
 // ==========================================
 window.eksekusiBeliKeAdmin = function(namaBarang, hargaBarang) {
     if (!window.Pi || !currentUser) {
-        alert("Peringatan: Silakan klik tombol login terlebih dahulu.");
+        alert("Peringatan: Silakan login terlebih dahulu.");
         return;
     }
-
     const nominalBayar = parseFloat(hargaBarang);
 
     window.Pi.createPayment({
         amount: nominalBayar,
-        memo: `Bayar: ${namaBarang} - Digital Pro Indo`,
+        memo: `Bayar: ${namaBarang}`,
         metadata: { product_name: namaBarang },
     }, {
-        // TAHAP A: Approval Menembus CORS Server Pi via Proxy
         onReadyForServerApproval: async (paymentId) => {
-            console.log("Mengirim approval via Jembatan Proxy...");
-            const targetUrl = `${PROXY_URL}${encodeURIComponent(`https://api.minepi.com/v2/payments/${paymentId}/approve`)}`;
-            
-            try {
-                const response = await fetch(targetUrl, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Key ${PI_SERVER_API_KEY}`,
-                        "Content-Type": "application/json"
-                    }
-                });
-                const data = await response.json();
-                console.log("Jembatan Proxy Approval Sukses:", data);
-            } catch (err) {
-                console.error("Jembatan Proxy Approval Gagal:", err);
-            }
+            await fetch("/api/approval", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId })
+            });
         },
-        
-        // TAHAP B: Completion Menembus CORS Server Pi via Proxy
         onReadyForServerCompletion: async (paymentId, txid) => {
-            console.log("Mengirim completion via Jembatan Proxy...");
-            const targetUrl = `${PROXY_URL}${encodeURIComponent(`https://api.minepi.com/v2/payments/${paymentId}/complete`)}`;
-            
-            try {
-                const response = await fetch(targetUrl, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Key ${PI_SERVER_API_KEY}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ txid: txid })
-                });
-                const data = await response.json();
-                console.log("Jembatan Proxy Completion Sukses:", data);
-                
-                alert(`🎉 TRANSAKSI BERHASIL!\n\nSejumlah ${nominalBayar} Pi sukses ditransfer.`);
-                const pesanWa = `Halo Admin, saya sudah bayar via Blockchain Pi!\n• *Produk:* ${namaBarang}\n• *TXID:* ${txid}`;
-                window.open(`https://wa.me/${ADMIN_WA}?text=${encodeURIComponent(pesanWa)}`, '_blank');
-            } catch (err) {
-                console.error("Jembatan Proxy Completion Gagal:", err);
-            }
+            await fetch("/api/complete", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ paymentId, txid })
+            });
+            alert("🎉 TRANSAKSI BERHASIL!");
+            window.open(`https://wa.me/${ADMIN_WA}?text=Sukses%20TXID:%20${txid}`, '_blank');
         },
-        
-        onCancel: (paymentId) => alert("Pembayaran dibatalkan."),
-        onError: (error, payment) => alert("Transaksi ditangguhkan. Periksa saldo dompet Anda.")
+        onCancel: () => alert("Pembayaran dibatalkan."),
+        onError: () => alert("Transaksi ditangguhkan.")
     });
 };

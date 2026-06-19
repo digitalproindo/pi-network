@@ -4,28 +4,28 @@
     // 1. Masukkan Gaya Tampilan (CSS) langsung ke dokumen
     const style = document.createElement('style');
     style.innerHTML = `
-        .bot-widget-toggle {
+                .bot-widget-toggle {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
+            bottom: 90px;          /* Tetap di atas navbar bawah */
+            left: 20px;            /* BERGESER KE KIRI */
             background: #5a2d82;
             color: white;
-            width: 60px;
-            height: 60px;
+            width: 50px;           /* Sedikit disesuaikan ukurannya agar simetris dengan WA */
+            height: 50px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 20px;
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0,0,0,0.2);
             z-index: 9999;
             transition: all 0.3s ease;
         }
-        .bot-widget-container {
+                .bot-widget-container {
             position: fixed;
-            bottom: 90px;
-            right: 20px;
+            bottom: 155px;         /* Menyesuaikan posisi di atas tombol */
+            left: 20px;            /* BERGESER KE KIRI */
             width: 360px;
             max-width: 90%;
             background: #ffffff;
@@ -34,7 +34,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             z-index: 9999;
-            display: none; /* Tersembunyi di awal */
+            display: none; 
             flex-direction: column;
         }
         .bot-header { background: #5a2d82; color: white; padding: 14px; display: flex; align-items: center; justify-content: space-between; }

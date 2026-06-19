@@ -20,7 +20,7 @@ module.exports = async function handler(req, res) {
 
     try {
         // 3. Mengirimkan TXID transaksi blockchain ke server Pi untuk menyelesaikan pembayaran
-        const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/complete`, {
+        const piResponse = await fetch(`https://api.tesnet.minepi.com/v2/payments/${paymentId}/complete`, {
             method: 'POST',
             headers: {
                 'Authorization': `Key ${PI_API_KEY}`,

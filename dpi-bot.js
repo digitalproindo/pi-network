@@ -106,7 +106,7 @@
             </div>
             <div class="action-buttons">
                 <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-magnifying-glass"></i> Lacak Pesanan</button>
-                <button class="action-btn btn-wa" onclick="window.open('https://wa.me/628123456789', '_blank')"><i class="fa-brands fa-whatsapp"></i> WA Admin</button>
+                <button class="action-btn btn-wa" onclick="window.open('https://wa.me/6281906066757', '_blank')"><i class="fa-brands fa-whatsapp"></i> WA Admin</button>
             </div>
             <div class="bot-input-area">
                 <input type="text" id="botUserInput" placeholder="Ketik pesan...">

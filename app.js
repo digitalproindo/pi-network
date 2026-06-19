@@ -797,14 +797,18 @@ window.handlePayment = async (amount, name) => {
     }
 
     try {
+                // 1. TAMBAHKAN METADATA DEVELOPER DOMAIN
         await window.Pi.createPayment({
             amount: parseFloat(amount),
             memo: `Pembelian ${name}`,
-            metadata: { productName: detailedItemName },
+            metadata: { 
+                productName: detailedItemName,
+                developer_domain: "www.ptdigitalproindo.com" // Wajib masukkan domain Vercel asli Anda disini
+            },
         }, {
             onReadyForServerApproval: async (paymentId) => {
-                // SOLUSI: Menggunakan rute relatif kembali agar sinkron dengan pinet.com
-                const res = await fetch('/api/approval', { 
+                // 2. GUNAKAN URL ABSOLUT (PENUH) AGAR TIDAK TERSESAT DI PINET.COM
+                const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({paymentId}) 
@@ -812,8 +816,8 @@ window.handlePayment = async (amount, name) => {
                 return res.ok;
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
-                // SOLUSI: Menggunakan rute relatif kembali
-                const res = await fetch('/api/complete', { 
+                // GUNAKAN URL ABSOLUT (PENUH)
+                const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({paymentId, txid}) 

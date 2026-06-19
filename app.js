@@ -554,27 +554,28 @@ productsData.forEach(p => {
 });
 
 // =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (DENGAN LOGIN OTOMATIS)
 // =========================================================================
 async function initPi() {
     try {
         if (window.Pi) {
-            // 1. Inisialisasi SDK dengan mode Sandbox aktif
+            // Aktifkan mode sandbox: true untuk pengujian testnet
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
-            // 2. Paksa login otomatis agar lolos verifikasi robot App Studio
+            // Paksa login otomatis demi verifikasi Robot App Studio
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
                     currentUser = auth.user;
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
-                    // Update tampilan teks username jika elemennya ada
                     const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
                     if (profileDisplay) profileDisplay.innerText = currentUser.username;
 
-                    // Ubah tombol login navigasi menjadi LOGOUT jika sudah berhasil masuk
+                    const profileAddress = document.getElementById('profile-address');
+                    if (profileAddress) profileAddress.innerText = currentUser.uid;
+
                     const loginBtn = document.getElementById('login-btn');
                     if (loginBtn) {
                         loginBtn.innerText = "LOGOUT";
@@ -591,7 +592,13 @@ async function initPi() {
     }
 }
 
-
+async function handleIncompletePayment(p) {
+    await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
+    });
+}
 
 // =========================================================================
 // 4. RENDERING & UI FUNCTIONS
@@ -656,7 +663,6 @@ window.openProductDetail = (productId) => {
                 </div>
             </div>
         </div>`;
-    document.getElementById('product-detail-page').remove('hidden');
     document.getElementById('product-detail-page').classList.remove('hidden');
 };
 
@@ -822,17 +828,15 @@ window.handlePayment = async (amount, name) => {
     }
 
     try {
-                // 1. TAMBAHKAN METADATA DEVELOPER DOMAIN
         await window.Pi.createPayment({
             amount: parseFloat(amount),
             memo: `Pembelian ${name}`,
             metadata: { 
                 productName: detailedItemName,
-                developer_domain: "www.ptdigitalproindo.com" // Wajib masukkan domain Vercel asli Anda disini
+                developer_domain: "www.ptdigitalproindo.com"
             },
         }, {
             onReadyForServerApproval: async (paymentId) => {
-                // 2. GUNAKAN URL ABSOLUT (PENUH) AGAR TIDAK TERSESAT DI PINET.COM
                 const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -841,7 +845,6 @@ window.handlePayment = async (amount, name) => {
                 return res.ok;
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
-                // GUNAKAN URL ABSOLUT (PENUH)
                 const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -852,8 +855,6 @@ window.handlePayment = async (amount, name) => {
                     if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                 }
             },
-
-
             onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
             onError: (error, payment) => { 
                 console.error("Payment Error:", error); 
@@ -863,7 +864,7 @@ window.handlePayment = async (amount, name) => {
     } catch (err) { 
         console.error("Execution Error:", err); 
     }
-}; // <-- Sekarang fungsinya tertutup dengan sempurna di sini
+};
 
 function showSuccessOverlay(amount, name, txid) {
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
@@ -898,7 +899,7 @@ function showSuccessOverlay(amount, name, txid) {
 }
 
 // =========================================================================
-// 7. PI AUTHENTICATION SYSTEMS
+// 7. PI AUTHENTICATION SYSTEMS (MANUAL LOGIN BUTTON)
 // =========================================================================
 window.handleAuth = async () => {
     const successSound = new Audio("assets/sound-effect.mp3");
@@ -935,9 +936,7 @@ window.handleAuth = async () => {
             loginBtn.onclick = () => location.reload();
         }
 
-        setTimeout(() => {
-            loadingOverlay.remove();
-        }, 3000);
+        setTimeout(() => { loadingOverlay.remove(); }, 3000);
 
     } catch (err) { 
         console.error(err); 
@@ -972,10 +971,8 @@ window.toggleDropdown = () => {
 // 9. CORE PIPELINE (DOM LOAD INITIALIZATION)
 // =========================================================================
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Jalankan render produk pertama kali
     renderProducts(productsData, 'main-grid');
 
-    // 2. Pasang event search input secara aman
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -993,7 +990,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 3. Pasang Klik Event Close di luar Sidebar
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1004,7 +1000,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 4. Jalankan Banner Corousel
     const banners = [
         "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1017,10 +1012,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // 5. Sambungkan Pi SDK
+    // Sambungkan Pi SDK & Memicu Autentikasi Otomatis
     await initPi();
 
-    // 6. Ikat Tombol Login agar aktif
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;

@@ -796,36 +796,37 @@ window.handlePayment = async (amount, name) => {
         detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
     }
 
-    try {
-                window.Pi.createPayment({
-            amount: parseFloat(amount),
-            memo: `Pembelian ${name}`,
-            metadata: { productName: detailedItemName },
-        }, {
-            onReadyForServerApproval: async (paymentId) => {
-                // UBAH: Gunakan URL domain Vercel lengkap + sesuaikan nama file (approval)
-                const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({paymentId}) 
-                });
-                return res.ok;
-            },
-            onReadyForServerCompletion: async (paymentId, txid) => {
-                // UBAH: Gunakan URL domain Vercel lengkap
-                const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({paymentId, txid}) 
-                });
-                if (res.ok) { 
-                    showSuccessOverlay(amount, detailedItemName, txid);
-                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
-                }
-            },
-            onCancel: () => {},
-            onError: (e, p) => { if(p) handleIncompletePayment(p); }
-        });
+            try {
+            await window.Pi.createPayment({
+                amount: parseFloat(amount),
+                memo: `Pembelian ${name}`,
+                metadata: { productName: detailedItemName },
+            }, {
+                onReadyForServerApproval: async (paymentId) => {
+                    const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify({paymentId}) 
+                    });
+                    return res.ok;
+                },
+                onReadyForServerCompletion: async (paymentId, txid) => {
+                    const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify({paymentId, txid}) 
+                    });
+                    if (res.ok) { 
+                        showSuccessOverlay(amount, detailedItemName, txid);
+                        if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
+                    }
+                },
+                onCancel: () => {},
+                onError: (e, p) => { if(p) handleIncompletePayment(p); }
+            });
+        } catch (err) { 
+            console.error(err); 
+        }
 
 
 function showSuccessOverlay(amount, name, txid) {

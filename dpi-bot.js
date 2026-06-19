@@ -1,16 +1,14 @@
-// --- KODE UTAMA SCRIPT BOT OTOMATIS DIGITAL PRO INDO ---
-
 (function() {
-    // 1. Masukkan Gaya Tampilan (CSS) langsung ke dokumen
+    // 1. Injeksi Gaya Tampilan (CSS) - Posisi Kiri Sesuai Revisi Anda
     const style = document.createElement('style');
     style.innerHTML = `
-                .bot-widget-toggle {
+        .bot-widget-toggle {
             position: fixed;
-            bottom: 90px;          /* Tetap di atas navbar bawah */
-            left: 20px;            /* BERGESER KE KIRI */
+            bottom: 90px;
+            left: 20px;
             background: #5a2d82;
             color: white;
-            width: 50px;           /* Sedikit disesuaikan ukurannya agar simetris dengan WA */
+            width: 50px;
             height: 50px;
             border-radius: 50%;
             display: flex;
@@ -22,10 +20,10 @@
             z-index: 9999;
             transition: all 0.3s ease;
         }
-                .bot-widget-container {
+        .bot-widget-container {
             position: fixed;
-            bottom: 155px;         /* Menyesuaikan posisi di atas tombol */
-            left: 20px;            /* BERGESER KE KIRI */
+            bottom: 155px;
+            left: 20px;
             width: 360px;
             max-width: 90%;
             background: #ffffff;
@@ -43,7 +41,7 @@
         .bot-info h4 { margin: 0; font-size: 14px; }
         .bot-info span { font-size: 11px; opacity: 0.8; display: flex; align-items: center; gap: 4px; }
         .status-dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block; }
-        .bot-chat-body { height: 300px; padding: 14px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 10px; }
+        .bot-chat-body { height: 260px; padding: 14px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 10px; }
         .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
         .msg-bot { background: #eedfff; color: #333; align-self: flex-start; border-top-left-radius: 0px; }
         .msg-user { background: #5a2d82; color: white; align-self: flex-end; border-top-right-radius: 0px; }
@@ -56,15 +54,13 @@
         .bot-input-area { display: flex; padding: 10px 14px; background: white; border-top: 1px solid #eee; gap: 8px; }
         .bot-input-area input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 13px; }
         .btn-send { background: #5a2d82; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
-        /* Form Lacak Pesanan yang bisa disembunyikan/munculkan */
-        .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; }
+        .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
         .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; }
         .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
     `;
     document.head.appendChild(style);
 
-    // 2. Tambahkan FontAwesome secara otomatis jika belum ada di web Anda
+    // 2. Load FontAwesome untuk Ikon
     if (!document.getElementById('font-awesome-bot')) {
         const fa = document.createElement('link');
         fa.id = 'font-awesome-bot';
@@ -73,7 +69,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot ke halaman web
+    // 3. Inject Struktur HTML Widget Bot
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -95,14 +91,14 @@
                 </div>
             </div>
             <div class="lacak-input-container" id="lacakForm">
-                <input type="text" id="noInvoice" placeholder="Masukkan nomor invoice / resi...">
-                <button onclick="prosesCekLacak()">Cek</button>
-                <span onclick="tutupLacak()" style="cursor:pointer; margin-left:5px; color:red;"><i class="fa-solid fa-xmark"></i></span>
+                <input type="text" id="noInvoice" placeholder="Masukkan nomor invoice...">
+                <button id="btnProsesLacak">Cek</button>
+                <span id="btnTutupLacak" style="cursor:pointer; margin-left:5px; color:red;"><i class="fa-solid fa-xmark"></i></span>
             </div>
             <div class="faq-section">
-                <button class="faq-btn" data-q="Cara beli asset?">Cara beli asset?</button>
-                <button class="faq-btn" data-q="Metode pembayaran?">Metode pembayaran?</button>
-                <button class="faq-btn" data-q="Legalitas perusahaan?">Legalitas Perusahaan?</button>
+                <button class="faq-btn" data-reply="Sistem kami terhubung otomatis dengan Pi SDK. Cukup pilih produk aset digital atau properti yang Anda inginkan, klik 'Beli', lalu selesaikan pembayaran aman lewat jendela pop-up dompet Pi Browser Anda.">Cara beli asset?</button>
+                <button class="faq-btn" data-reply="Saat ini kami melayani transaksi komersial eksklusif menggunakan koin di jaringan Pi Testnet sebagai simulasi validasi ekosistem sebelum berlanjut penuh ke fase Open Mainnet.">Metode pembayaran?</button>
+                <button class="faq-btn" data-reply="PT. Digital Pro Indo adalah platform e-commerce dan marketplace berbadan hukum resmi di Indonesia yang terdaftar sah dalam jajaran utilitas Pi Developer Studio.">Legalitas Perusahaan?</button>
             </div>
             <div class="action-buttons">
                 <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-magnifying-glass"></i> Lacak Pesanan</button>
@@ -119,7 +115,7 @@
     botWrapper.innerHTML = botHtml;
     document.body.appendChild(botWrapper);
 
-    // 4. Logika dan Fungsi Interaksi Javascript Bot
+    // 4. Inisialisasi Elemen & Logika Event Listener (DIREVISI AGAR DIJAMIN AKTIF)
     const botToggle = document.getElementById('botToggle');
     const botContainer = document.getElementById('botContainer');
     const botMinimize = document.getElementById('botMinimize');
@@ -128,18 +124,17 @@
     const botBtnSend = document.getElementById('botBtnSend');
     const btnMenuLacak = document.getElementById('btnMenuLacak');
     const lacakForm = document.getElementById('lacakForm');
+    const btnProsesLacak = document.getElementById('btnProsesLacak');
+    const btnTutupLacak = document.getElementById('btnTutupLacak');
 
     // Buka Tutup Widget Chat
-    botToggle.onclick = () => {
+    botToggle.addEventListener('click', () => {
         botContainer.style.display = botContainer.style.display === 'flex' ? 'none' : 'flex';
         botChatBody.scrollTop = botChatBody.scrollHeight;
-    };
-    botMinimize.onclick = () => { botContainer.style.display = 'none'; };
-    document.querySelector('.bot-header .fa-xmark').onclick = () => {
-    botContainer.style.display = 'none';
-};
-  
-    // Fungsi Tambah Gelembung Pesan
+    });
+    botMinimize.addEventListener('click', () => { botContainer.style.display = 'none'; });
+
+    // Fungsi Pengiriman Pesan
     function appendBotMsg(text, sender) {
         const bubble = document.createElement('div');
         bubble.className = `msg-bubble msg-${sender}`;
@@ -148,65 +143,62 @@
         botChatBody.scrollTop = botChatBody.scrollHeight;
     }
 
-    // Aksi Tombol Kirim Teks Manual
     function eksekusiKirim() {
         const text = botUserInput.value.trim();
         if(!text) return;
+        
         appendBotMsg(text, 'user');
         botUserInput.value = '';
 
         setTimeout(() => {
-            let balasan = "Pertanyaan Anda telah kami rekam. Untuk bantuan kilat, Anda bisa menekan tombol **WA Admin**.";
+            let balasan = "Pertanyaan Anda telah kami rekam. Untuk bantuan respon kilat langsung terhubung manusia, silakan klik tombol **WA Admin** di bawah ini.";
             const low = text.toLowerCase();
             if(low.includes('beli') || low.includes('cara')) {
-                balasan = "Untuk membeli aset/produk, silakan pilih barang, klik tombol **Beli**, lalu masukkan frasa dompet Pi Anda dengan aman pada pop-up sistem.";
-            } else if(low.includes('pi') || low.includes('koin')) {
-                balasan = "Aplikasi ini memproses transaksi eksklusif menggunakan Koin Pi Network.";
+                balasan = "Untuk membeli aset/produk, pilih produk pilihan Anda, tekan tombol **Beli**, lalu masukkan frasa sandi dompet Pi Anda dengan aman pada jendela pop-up Pi SDK.";
+            } else if(low.includes('pi') || low.includes('koin') || low.includes('bayar')) {
+                balasan = "Aplikasi PT. Digital Pro Indo menggunakan integrasi Pi Network API untuk memproses alat pembayaran sah internal ekosistem.";
             }
             appendBotMsg(balasan, 'bot');
         }, 800);
     }
 
-    botBtnSend.onclick = eksekusiKirim;
-    botUserInput.onkeypress = (e) => { if(e.key === 'Enter') eksekusiKirim(); };
+    // Event Listener Tombol Kirim Manual & Tombol Enter
+    botBtnSend.addEventListener('click', eksekusiKirim);
+    botUserInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') eksekusiKirim(); });
 
-    // Handler Tombol FAQ Otomatis
+    // Event Listener Tombol FAQ Otomatis
     document.querySelectorAll('.faq-btn').forEach(btn => {
-        btn.onclick = () => {
-            const q = btn.getAttribute('data-q');
-            appendBotMsg(q, 'user');
+        btn.addEventListener('click', function() {
+            const pertanyaan = this.innerText;
+            const jawaban = this.getAttribute('data-reply');
+            
+            appendBotMsg(pertanyaan, 'user');
             setTimeout(() => {
-                let a = "Terima kasih telah bertanya.";
-                if(q.includes('beli')) a = "Sistem kami terhubung otomatis dengan Pi SDK. Cukup klik 'Beli' pada produk pilihan Anda.";
-                if(q.includes('pembayaran')) a = "Saat ini kami menerima koin di jaringan Testnet untuk uji kelayakan menuju Mainnet resmi.";
-                if(q.includes('Legalitas')) a = "PT. Digital Pro Indo adalah platform berbadan hukum resmi yang terdaftar di ekosistem Pi Developer Studio.";
-                appendBotMsg(a, 'bot');
-            }, 600);
-        };
+                appendBotMsg(jawaban, 'bot');
+            }, 500);
+        });
     });
 
-    // Fitur Menu Lacak Pesanan (Persis Gambar Ke-2 Anda)
-    btnMenuLacak.onclick = () => {
-    lacakForm.style.display = 'flex';
-};
-document.querySelector('.lacak-input-container button').onclick = () => {
-    prosesCekLacak();
-};
-document.querySelector('.lacak-input-container span').onclick = () => {
-    lacakForm.style.display = 'none';
-};
+    // Logika Pengendalian Fitur Menu Lacak Pesanan
+    btnMenuLacak.addEventListener('click', () => {
+        lacakForm.style.display = 'flex';
+    });
+    
+    btnTutupLacak.addEventListener('click', () => {
+        lacakForm.style.display = 'none';
+    });
 
-function prosesCekLacak() {
-
+    btnProsesLacak.addEventListener('click', () => {
         const inv = document.getElementById('noInvoice').value.trim();
         if(!inv) return;
-        appendBotMsg(`Melacak nomor pesanan: ${inv}`, 'user');
+        
+        appendBotMsg(`Melacak nomor invoice: <strong>${inv}</strong>`, 'user');
         lacakForm.style.display = 'none';
+        
         setTimeout(() => {
-            appendBotMsg(`Sistem mendeteksi transaksi <strong>${inv}</strong> sedang dalam antrean verifikasi Blockchain Pi Network. Mohon tunggu beberapa saat.`, 'bot');
+            appendBotMsg(`Sistem mendeteksi transaksi properti/produk dengan invoice <strong>${inv}</strong> saat ini sedang dalam antrean verifikasi enkripsi Blockchain Pi Network.`, 'bot');
             document.getElementById('noInvoice').value = '';
         }, 800);
-    };
+    });
 
 })();
- 

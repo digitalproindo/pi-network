@@ -559,11 +559,10 @@ productsData.forEach(p => {
 async function initPi() {
     try {
         if (window.Pi) {
-            await window.Pi.init({ version: "2.0", sandbox: false });
+            await window.Pi.init({ version: "2.0", sandbox: true });
         }
     } catch (e) { console.error("Init Error:", e); }
 }
-
 async function handleIncompletePayment(p) {
     // Ubah rute relatif menjadi URL absolut Vercel Anda agar tidak tersesat
     await fetch('https://www.ptdigitalproindo.com/api/complete', { 

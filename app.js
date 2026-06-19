@@ -797,17 +797,27 @@ window.handlePayment = async (amount, name) => {
     }
 
     try {
-        await window.Pi.createPayment({
+                window.Pi.createPayment({
             amount: parseFloat(amount),
             memo: `Pembelian ${name}`,
             metadata: { productName: detailedItemName },
         }, {
             onReadyForServerApproval: async (paymentId) => {
-                const res = await fetch('/api/approve', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId}) });
+                // UBAH: Gunakan URL domain Vercel lengkap + sesuaikan nama file (approval)
+                const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({paymentId}) 
+                });
                 return res.ok;
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
-                const res = await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId, txid}) });
+                // UBAH: Gunakan URL domain Vercel lengkap
+                const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({paymentId, txid}) 
+                });
                 if (res.ok) { 
                     showSuccessOverlay(amount, detailedItemName, txid);
                     if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
@@ -816,8 +826,7 @@ window.handlePayment = async (amount, name) => {
             onCancel: () => {},
             onError: (e, p) => { if(p) handleIncompletePayment(p); }
         });
-    } catch (err) { console.error(err); }
-};
+
 
 function showSuccessOverlay(amount, name, txid) {
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";

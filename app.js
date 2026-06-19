@@ -796,14 +796,13 @@ window.handlePayment = async (amount, name) => {
         detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
     }
 
-            try {
-            await window.Pi.createPayment({
-                amount: parseFloat(amount),
-                memo: `Pembelian ${name}`,
-                metadata: { productName: detailedItemName },
-            }, {
-                            onReadyForServerApproval: async (paymentId) => {
-                // DIPERBAIKI: Menggunakan /api/approval (sesuai nama file Anda di Vercel)
+    try {
+        await window.Pi.createPayment({
+            amount: parseFloat(amount),
+            memo: `Pembelian ${name}`,
+            metadata: { productName: detailedItemName },
+        }, {
+            onReadyForServerApproval: async (paymentId) => {
                 const res = await fetch('/api/approval', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -812,7 +811,6 @@ window.handlePayment = async (amount, name) => {
                 return res.ok;
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
-                // Tetap menggunakan rute relatif ke file complete.js Anda
                 const res = await fetch('/api/complete', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
@@ -823,9 +821,16 @@ window.handlePayment = async (amount, name) => {
                     if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                 }
             },
-
-
-
+            onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
+            onError: (error, payment) => { 
+                console.error("Payment Error:", error); 
+                if(payment) handleIncompletePayment(payment); 
+            }
+        });
+    } catch (err) { 
+        console.error("Execution Error:", err); 
+    }
+}; // <-- Sekarang fungsinya tertutup dengan sempurna di sini
 
 function showSuccessOverlay(amount, name, txid) {
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";

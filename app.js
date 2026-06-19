@@ -802,7 +802,7 @@ window.handlePayment = async (amount, name) => {
             memo: `Pembelian ${name}`,
             metadata: { productName: detailedItemName },
         }, {
-                                    onReadyForServerApproval: async (paymentId) => {
+            onReadyForServerApproval: async (paymentId) => {
                 // SOLUSI: Menggunakan rute relatif kembali agar sinkron dengan pinet.com
                 const res = await fetch('/api/approval', { 
                     method: 'POST', 

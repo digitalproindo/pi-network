@@ -565,8 +565,14 @@ async function initPi() {
 }
 
 async function handleIncompletePayment(p) {
-    await fetch('/api/complete', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({paymentId: p.identifier, txid: p.transaction.txid}) });
+    // Ubah rute relatif menjadi URL absolut Vercel Anda agar tidak tersesat
+    await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
+    });
 }
+
 
 // =========================================================================
 // 4. RENDERING & UI FUNCTIONS

@@ -101,8 +101,8 @@
                 <button class="faq-btn" data-reply="PT. Digital Pro Indo adalah platform e-commerce dan marketplace berbadan hukum resmi di Indonesia yang terdaftar sah dalam jajaran utilitas Pi Developer Studio.">Legalitas Perusahaan?</button>
             </div>
             <div class="action-buttons">
-                <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-magnifying-glass"></i> Lacak Pesanan</button>
-                <button class="action-btn btn-wa" onclick="window.open('https://wa.me/6281906066757', '_blank')"><i class="fa-brands fa-whatsapp"></i> WA Admin</button>
+                <button class="action-btn btn-wa" onclick="window.open('https://wa.me/6281906066757?text=Halo%20Admin%20PT.%20Digital%20Pro%20Indo%2C%20saya%20ingin%20bertanya%20mengenai%20produk%20atau%20aset%20properti%20yang%20ada%20di%20marketplace.', '_blank')"><i class="fa-brands fa-whatsapp"></i> WA Admin</button>
+
             </div>
             <div class="bot-input-area">
                 <input type="text" id="botUserInput" placeholder="Ketik pesan...">

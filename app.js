@@ -559,18 +559,38 @@ productsData.forEach(p => {
 async function initPi() {
     try {
         if (window.Pi) {
+            // 1. Inisialisasi SDK dengan mode Sandbox aktif
             await window.Pi.init({ version: "2.0", sandbox: true });
+            console.log("Pi SDK Berhasil Diinisialisasi");
+
+            // 2. Paksa login otomatis agar lolos verifikasi robot App Studio
+            const scopes = ['username', 'payments'];
+            window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
+                .then(function(auth) {
+                    currentUser = auth.user;
+                    console.log("Login otomatis sukses! Pengguna:", currentUser.username);
+
+                    // Update tampilan teks username jika elemennya ada
+                    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+                    if (profileDisplay) profileDisplay.innerText = currentUser.username;
+
+                    // Ubah tombol login navigasi menjadi LOGOUT jika sudah berhasil masuk
+                    const loginBtn = document.getElementById('login-btn');
+                    if (loginBtn) {
+                        loginBtn.innerText = "LOGOUT";
+                        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+                        loginBtn.onclick = () => location.reload();
+                    }
+                })
+                .catch(function(error) {
+                    console.error("Gagal Autentikasi Otomatis:", error);
+                });
         }
-    } catch (e) { console.error("Init Error:", e); }
+    } catch (e) { 
+        console.error("Init Error:", e); 
+    }
 }
-async function handleIncompletePayment(p) {
-    // Ubah rute relatif menjadi URL absolut Vercel Anda agar tidak tersesat
-    await fetch('https://www.ptdigitalproindo.com/api/complete', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
-    });
-}
+
 
 
 // =========================================================================

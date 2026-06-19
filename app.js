@@ -802,8 +802,9 @@ window.handlePayment = async (amount, name) => {
             memo: `Pembelian ${name}`,
             metadata: { productName: detailedItemName },
         }, {
-            onReadyForServerApproval: async (paymentId) => {
-                const res = await fetch('/api/approval', { 
+                        onReadyForServerApproval: async (paymentId) => {
+                // PAKSA menembak langsung ke server Vercel Anda agar tidak tersesat di pinet.com
+                const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({paymentId}) 
@@ -811,7 +812,8 @@ window.handlePayment = async (amount, name) => {
                 return res.ok;
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
-                const res = await fetch('/api/complete', { 
+                // PAKSA menembak langsung ke server Vercel Anda
+                const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
                     method: 'POST', 
                     headers: {'Content-Type': 'application/json'}, 
                     body: JSON.stringify({paymentId, txid}) 
@@ -821,6 +823,7 @@ window.handlePayment = async (amount, name) => {
                     if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
                 }
             },
+
             onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
             onError: (error, payment) => { 
                 console.error("Payment Error:", error); 

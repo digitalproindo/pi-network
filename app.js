@@ -802,26 +802,28 @@ window.handlePayment = async (amount, name) => {
                 memo: `Pembelian ${name}`,
                 metadata: { productName: detailedItemName },
             }, {
-                onReadyForServerApproval: async (paymentId) => {
-    // Gunakan rute relatif kembali agar tidak memicu pemblokiran halaman oleh Pi
-    const res = await fetch('/api/approval', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({paymentId}) 
-    });
-    return res.ok;
-},
-onReadyForServerCompletion: async (paymentId, txid) => {
-    const res = await fetch('/api/complete', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({paymentId, txid}) 
-    });
-    if (res.ok) { 
-        showSuccessOverlay(amount, detailedItemName, txid);
-        if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
-    }
-},
+                            onReadyForServerApproval: async (paymentId) => {
+                // DIPERBAIKI: Menggunakan /api/approval (sesuai nama file Anda di Vercel)
+                const res = await fetch('/api/approval', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({paymentId}) 
+                });
+                return res.ok;
+            },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+                // Tetap menggunakan rute relatif ke file complete.js Anda
+                const res = await fetch('/api/complete', { 
+                    method: 'POST', 
+                    headers: {'Content-Type': 'application/json'}, 
+                    body: JSON.stringify({paymentId, txid}) 
+                });
+                if (res.ok) { 
+                    showSuccessOverlay(amount, detailedItemName, txid);
+                    if(name === 'Total Keranjang') { cart = []; updateCartUI(); }
+                }
+            },
+
 
 
 

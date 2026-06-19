@@ -21,7 +21,7 @@ module.exports = async function handler(req, res) {
 
       try {
     // 2. Mengirimkan sinyal persetujuan resmi ke server Pi Network Core Team
-    const piResponse = await fetch(`https://api.minepi.com/v2/payments/${paymentId}/approve`, {
+    const piResponse = await fetch(`https://api.tesnet.minepi.com/v2/payments/${paymentId}/approve`, {
       method: 'POST',
       headers: {
         'Authorization': `Key ${PI_API_KEY}`,

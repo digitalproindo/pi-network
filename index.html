@@ -359,8 +359,36 @@
     </div>
     <div class="header-ticker">
         <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium.</marquee>
+        
+        <div style="width: 100%; background: rgba(0, 0, 0, 0.3); border-top: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding: 6px 0; overflow: hidden; margin-top: 6px;">
+            <div style="display: flex; white-space: nowrap; gap: 35px; padding-left: 15px; animation: tickerScroll 25s linear infinite;">
+                
+                <div style="display: flex; align-items: center; gap: 6px; color: #ffffff; font-size: 12px;">
+                    <span style="color: #dfcbf2; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;"><i class="fa-solid fa-users"></i> Pengunjung:</span>
+                    <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-visitor">1.245</span>
+                    <span style="color: #2ecc71; font-size: 10px;">▲ Live</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 6px; color: #ffffff; font-size: 12px;">
+                    <span style="color: #dfcbf2; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;"><i class="fa-solid fa-file-code"></i> Total Tesnet:</span>
+                    <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-testnet">4.892 Tx</span>
+                    <span style="color: #2ecc71; font-size: 10px;">▲ +1.2%</span>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 6px; color: #ffffff; font-size: 12px;">
+                    <span style="color: #dfcbf2; text-transform: uppercase; font-size: 10px; letter-spacing: 0.5px;"><i class="fa-solid fa-vault"></i> Total Staking:</span>
+                    <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-staking">638.95 Pi</span>
+                    <span style="color: #f1c40f; font-size: 10px;">★ Boosted</span>
+                </div>
+                
+            </div>
+        </div>
+
     </div>
 </header>
+
+<script src="/dpi-stats.js"></script>
+
 <script src="/dpi-stats.js"></script> 
 <div class="banner-container">
     <div class="banner-box">

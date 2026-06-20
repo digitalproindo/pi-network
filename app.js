@@ -631,7 +631,7 @@ productsData.forEach(p => {
 });
 
 // =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES (DENGAN LOGIN OTOMATIS & ANTI-MACET)
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
 // =========================================================================
 async function initPi() {
     // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
@@ -639,11 +639,11 @@ async function initPi() {
         if (!currentUser) {
             console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
             currentUser = {
-                uid: "testnet-user-12345",
+                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
                 username: "Pi_Tester_Indo"
             };
             
-            // Terapkan data ke antarmuka aplikasi secara instan
+            // Terapkan data ke profil UI secara instan
             terapkanDataUserKeUI(currentUser.username, currentUser.uid);
         }
     }, 3000); 
@@ -655,15 +655,15 @@ async function initPi() {
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
-            // Paksa login otomatis demi verifikasi Robot App Studio
+            // Ambil scope 'username' dan 'payments' untuk membaca data user & dompet
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
-                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi sukses merespon cepat
-                    currentUser = auth.user;
+                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
+                    currentUser = auth.user; // Berisi data user asli dari Pi Browser (username & uid)
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
-                    // Terapkan data asli pengguna Pi ke antarmuka aplikasi
+                    // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 })
                 .catch(function(error) {
@@ -675,14 +675,22 @@ async function initPi() {
     }
 }
 
-// Fungsi pembantu untuk memperbarui tampilan teks & tombol setelah masuk sistem
+// Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
 function terapkanDataUserKeUI(username, uid) {
+    // 1. Menampilkan Nama Akun User Pi
     const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-    if (profileDisplay) profileDisplay.innerText = username;
+    if (profileDisplay) {
+        profileDisplay.innerText = username;
+    }
 
+    // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
     const profileAddress = document.getElementById('profile-address');
-    if (profileAddress) profileAddress.innerText = uid;
+    if (profileAddress) {
+        // Menampilkan UID lengkap atau bisa disingkat agar rapi di layar HP
+        profileAddress.innerText = uid; 
+    }
 
+    // 3. Mengubah Status Tombol Login Menjadi Logout
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";

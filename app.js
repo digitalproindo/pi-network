@@ -893,28 +893,77 @@ function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
 
 // 2. Fungsi Utama saat Tombol Simpan Alamat di-Klik (Menggantikan Fungsi Lama)
 window.saveAddress = () => {
+    // --- MEMAKSA AUDIO BERBUNYI SAAT TOMBOL DIKLIK (MENGHINDARI BLOKIR BROWSER) ---
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Memaksa resume jika audio context dalam keadaan tertidur (suspended)
+        if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
+        const isFormValid = document.getElementById('ship-name').value && document.getElementById('ship-address').value;
+
+        if (isFormValid) {
+            // Suara "Clink" Koin Transaksi Sukses (Dua nada tinggi beruntun)
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(987.77, audioCtx.currentTime); // Nada B5
+            osc.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08); // Nada C6 (Efek Clink)
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime); // Volume dinaikkan menjadi 0.3
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.35);
+        } else {
+            // Suara Peringatan Kesalahan (Satu nada bass tebal)
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(160, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.4, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.4);
+        }
+    } catch (e) {
+        console.log("Audio di-block atau tidak didukung:", e);
+    }
+    // -------------------------------------------------------------------------
+
+    // Logika pengumpulan data form alamat pengiriman
     userAddress = {
         nama: document.getElementById('ship-name').value,
         telepon: document.getElementById('ship-phone').value,
         alamatLengkap: document.getElementById('ship-address').value
     };
     
-    // Peringatan jika data nama atau alamat kosong
+    // Validasi pengecekan isi form
     if(!userAddress.nama || !userAddress.alamatLengkap) {
         return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
     }
     
-    // Hapus form overlay pengisian alamat
+    // Hapus tampilan form input alamat dari layar
     const addressOverlay = document.getElementById('address-overlay');
     if(addressOverlay) {
         addressOverlay.remove();
     }
     
-    // Munculkan Pop-up Digital Sukses
+    // Munculkan Pop-up Kustom Digital
     tampilkanDpiAlert(
         "ALAMAT DIKUNCI SUKSES", 
         "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo."
     );
+    
+    if(typeof window.updateCartUI === 'function') {
+        window.updateCartUI();
+    }
+};
+
     
     // Perbarui antarmuka keranjang belanja
     if(typeof window.updateCartUI === 'function') {

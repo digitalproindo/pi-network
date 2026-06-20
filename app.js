@@ -952,8 +952,8 @@ window.updateCartUI = () => {
         </div>`;
 };
 
-// =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS (VERSI UTUH & STABIL)
+                    // =========================================================================
+// 5. CART & SHIPPING ADDRESS ACTIONS (VERSI UTUH, PREMIUM & STABIL)
 // =========================================================================
 window.showAddressForm = () => {
     const overlay = document.createElement('div');
@@ -963,10 +963,10 @@ window.showAddressForm = () => {
         <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative; font-family:'Inter', sans-serif;">
             <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
             <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
-            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
-            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}"></div>
-            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea></div>
-            <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
+            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama || ''}"></div>
+            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon || ''}"></div>
+            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap || ''}</textarea></div>
+            <button onclick="window.saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
         </div>`;
     document.body.appendChild(overlay);
 };
@@ -1015,8 +1015,8 @@ window.addToCart = (id) => {
                 transform: translate(-50%, -100%) scale(0.8);
                 background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
                 color: white; padding: 25px; border-radius: 16px;
-                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
-                border: 2px solid #d4af37; z-index: 200005;
+                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
+                border: 2px solid #d4af37; z-index: 210000;
                 display: flex; flex-direction: column; align-items: center; gap: 12px;
                 opacity: 0; pointer-events: none;
                 transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -1030,7 +1030,7 @@ window.addToCart = (id) => {
                 <div id="dp-popup-title" style="font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
                 <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
                 <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
-                <button onclick="closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
+                <button onclick="window.closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
             `;
             document.body.appendChild(popupContainer);
         } else {
@@ -1044,7 +1044,7 @@ window.addToCart = (id) => {
             popupContainer.style.pointerEvents = 'auto';
         }, 10);
         
-        window.cartAutoCloseTimer = setTimeout(closeDigitalProPopup, 4000); 
+        window.cartAutoCloseTimer = setTimeout(window.closeDigitalProPopup, 4000); 
     }
 };
 
@@ -1093,7 +1093,7 @@ window.updateCartUI = () => {
                         <div style="font-size:0.85rem; font-weight:700;">${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}</div>
                     </div>
                 </div>
-                <span>></span>
+                <span>&gt;</span>
             </div>
             <div>
                 ${cart.map((item, index) => `
@@ -1114,6 +1114,7 @@ window.updateCartUI = () => {
             </div>
         </div>`;
 };
+
 
 // =========================================================================
 // MODIFIKASI FORM ALAMAT DIGITAL PREMIUM (GANTI TOTAL DI APP.JS)

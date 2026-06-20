@@ -1,16 +1,18 @@
 (function() {
-    // 1. Desain Gaya Tampilan Bursa Saham (CSS)
+    // 1. Desain Gaya Tampilan Bursa Saham (CSS Tanpa Auto-Positioning)
     const style = document.createElement('style');
     style.innerHTML = `
         .dpi-ticker-wrapper {
             width: 100%;
-            background: #2d124d; /* Ungu gelap elegan khas premium bursa */
+            background: #2d124d; /* Ungu gelap elegan bursa */
             border-top: 1px solid #5a2d82;
             border-bottom: 1px solid #5a2d82;
             padding: 8px 0;
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
         .dpi-ticker-container {
             display: flex;
@@ -28,21 +30,20 @@
             font-weight: 500;
         }
         .dpi-stat-label {
-            color: #bfa3db; /* Ungu muda untuk label text */
+            color: #bfa3db;
             text-transform: uppercase;
             font-size: 11px;
             letter-spacing: 0.5px;
         }
         .dpi-stat-value {
-            font-family: 'Courier New', Courier, monospace; /* Font angka ala bursa */
+            font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            color: #2ecc71; /* Hijau menyala default bursa naik */
+            color: #2ecc71;
         }
         .dpi-stat-arrow {
             color: #2ecc71;
             font-size: 11px;
         }
-        /* Animasi berjalan jika data memanjang pada layar handphone kecil */
         @keyframes tickerScroll {
             0% { transform: translate3d(0, 0, 0); }
             100% { transform: translate3d(-30%, 0, 0); }
@@ -51,7 +52,6 @@
     document.head.appendChild(style);
 
     // 2. Struktur HTML Komponen Statistik
-    // Koin staking disesuaikan dengan data riil testnet Anda (638.95 Pi)
     const tickerHtml = `
         <div class="dpi-ticker-container">
             <div class="dpi-stat-item">
@@ -72,39 +72,26 @@
         </div>
     `;
 
-    // 3. Injeksi Otomatis Komponen ke bawah Kolom Running Text
-    // Skrip mendeteksi kontainer setelah input pencarian atau running text di app Anda
-    const targetContainer = document.querySelector('.bot-widget-toggle') ? null : document.body; 
-    
-    const tickerWrapper = document.createElement('div');
-    tickerWrapper.className = 'dpi-ticker-wrapper';
-    tickerWrapper.id = 'dpiLiveTicker';
-    tickerWrapper.innerHTML = tickerHtml;
+    // 3. Render Langsung di Tempat Script Dipanggil (REVISI UTAMA)
+    // Menggunakan document.write agar posisinya terkunci pas di baris HTML tempat Anda menaruh script
+    document.write(\`<div class="dpi-ticker-wrapper" id="dpiLiveTicker">\${tickerHtml}</div>\`);
 
-    // Menaruh elemen secara presisi di layout atas web
-    const headerElement = document.querySelector('main') || document.body.firstChild;
-    if (headerElement && headerElement.parentNode) {
-        headerElement.parentNode.insertBefore(tickerWrapper, headerElement);
-    }
-
-    // 4. Logika Perubahan Data Real-Time Simulasi Bursa (Live-time update)
+    // 4. Logika Perubahan Data Real-Time Berkedip
     setInterval(() => {
-        // Simulasi fluktuasi pengunjung (+/- random)
         const visitorEl = document.getElementById('stats-visitor');
         if(visitorEl) {
             let currentVisitor = parseInt(visitorEl.innerText.replace(/,/g, ''));
-            currentVisitor += Math.floor(Math.random() * 5) - 2; // Naik turun acak
+            currentVisitor += Math.floor(Math.random() * 5) - 2;
             visitorEl.innerText = currentVisitor.toLocaleString('id-ID');
         }
 
-        // Simulasi hitungan transaksi transaksi testnet yang masuk ke blockchain
         const testnetEl = document.getElementById('stats-testnet');
         if(testnetEl) {
             let currentTx = parseInt(testnetEl.innerText);
-            if(Math.random() > 0.6) { // Peluang transaksi bertambah
+            if(Math.random() > 0.6) {
                 currentTx += 1;
                 testnetEl.innerText = currentTx + " Tx";
             }
         }
-    }, 3000); // Diperbarui setiap 3 detik secara live otomatis
+    }, 3000);
 })();

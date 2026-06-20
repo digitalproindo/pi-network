@@ -2,51 +2,55 @@
     // 1. Desain Gaya Tampilan Bursa Saham Bersih & Tegas (Mencegah Tertindih)
     var style = document.createElement('style');
     style.innerHTML = 
+(function() {
+    // 1. Desain Gaya Tampilan Bursa Saham Bersih & Tegas
+    var style = document.createElement('style');
+    style.innerHTML = 
         '.dpi-ticker-wrapper {' +
-        '    width: 100%;' +
-        '    background: #2d124d;' +
-        '    border-top: 1px solid #5a2d82;' +
-        '    border-bottom: 1px solid #5a2d82;' +
-        '    padding: 10px 0;' +
-        '    overflow: hidden;' +
-        '    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;' +
-        '    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);' +
-        '    display: block !important;' + /* Memaksa elemen berbentuk blok utuh */
-        '    clear: both !important;' +     /* Memutus tumpang tindih elemen float */
+        '    width: 100% !important;' +
+        '    background: #2d124d !important;' + 
+        '    border-top: 1px solid #5a2d82 !important;' +
+        '    border-bottom: 1px solid #5a2d82 !important;' +
+        '    padding: 10px 0 !important;' +
+        '    overflow: hidden !important;' +
+        '    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;' +
+        '    box-shadow: inset 0 0 10px rgba(0,0,0,0.5) !important;' +
+        '    display: block !important;' + 
+        '    clear: both !important;' +     
         '    position: relative !important;' +
-        '    z-index: 100 !important;' +    /* Memastikan berada di lapisan atas banner */
-        '    margin-top: 0px;' +
-        '    margin-bottom: 10px;' +        /* Memberi jarak aman dengan banner di bawahnya */
-        '}' +
+        '    z-index: 999 !important;' +    /* Memastikan teks bursa berada di lapisan paling depan */
+        '    margin-top: 0px !important;' +
+        '    margin-bottom: 0px !important;' +
+        '} ' +
         '.dpi-ticker-container {' +
-        '    display: flex;' +
-        '    white-space: nowrap;' +
-        '    gap: 40px;' +
-        '    padding-left: 15px;' +
-        '    animation: tickerScroll 25s linear infinite;' +
+        '    display: flex !important;' +
+        '    white-space: nowrap !important;' +
+        '    gap: 40px !important;' +
+        '    padding-left: 15px !important;' +
+        '    animation: tickerScroll 25s linear infinite !important;' +
         '}' +
         '.dpi-stat-item {' +
-        '    display: flex;' +
-        '    align-items: center;' +
-        '    gap: 8px;' +
-        '    color: #ffffff;' +
-        '    font-size: 13px;' +
-        '    font-weight: 500;' +
+        '    display: flex !important;' +
+        '    align-items: center !important;' +
+        '    gap: 8px !important;' +
+        '    color: #ffffff !important;' +
+        '    font-size: 13px !important;' +
+        '    font-weight: 500 !important;' +
         '}' +
         '.dpi-stat-label {' +
-        '    color: #bfa3db;' +
-        '    text-transform: uppercase;' +
-        '    font-size: 11px;' +
-        '    letter-spacing: 0.5px;' +
+        '    color: #bfa3db !important;' +
+        '    text-transform: uppercase !important;' +
+        '    font-size: 11px !important;' +
+        '    letter-spacing: 0.5px !important;' +
         '}' +
         '.dpi-stat-value {' +
-        '    font-family: "Courier New", Courier, monospace;' +
-        '    font-weight: bold;' +
-        '    color: #2ecc71;' +
+        '    font-family: "Courier New", Courier, monospace !important;' +
+        '    font-weight: bold !important;' +
+        '    color: #2ecc71 !important;' +
         '}' +
         '.dpi-stat-arrow {' +
-        '    color: #2ecc71;' +
-        '    font-size: 11px;' +
+        '    color: #2ecc71 !important;' +
+        '    font-size: 11px !important;' +
         '}' +
         '@keyframes tickerScroll {' +
         '    0% { transform: translate3d(0, 0, 0); }' +
@@ -74,7 +78,7 @@
         '    </div>' +
         '</div>';
 
-    // 3. Injeksi Elemen Secara Kokoh di Tempat Pemanggilan Script
+    // 3. Injeksi Kontainer ke DOM
     var tickerContainer = document.createElement('div');
     tickerContainer.className = 'dpi-ticker-wrapper';
     tickerContainer.id = 'dpiLiveTicker';
@@ -84,12 +88,23 @@
     if (currentScript) {
         currentScript.parentNode.insertBefore(tickerContainer, currentScript);
     } else {
-        // Fallback jika browser lama tidak mendukung document.currentScript
         var marqueeContainer = document.querySelector('.marquee-container');
         if (marqueeContainer) {
             marqueeContainer.parentNode.insertBefore(tickerContainer, marqueeContainer.nextSibling);
         }
     }
+
+    // 5. REVISI UTAMA: Paksa Banner Memberikan Ruang Kosong (Mencegah Tabrakan Vertikal)
+    // Fungsi ini berjalan setelah halaman selesai dimuat sepenuhnya
+    window.addEventListener('load', function() {
+        var bannerContainer = document.querySelector('.banner-container');
+        if (bannerContainer) {
+            // Memberikan jarak atas yang besar agar banner turun dari area bursa teks
+            bannerContainer.style.setProperty('margin-top', '15px', 'important');
+            bannerContainer.style.setProperty('position', 'relative', 'important');
+            bannerContainer.style.setProperty('clear', 'both', 'important');
+        }
+    });
 
     // 4. Logika Perubahan Data Real-Time Berkedip
     setInterval(function() {

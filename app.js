@@ -1081,7 +1081,7 @@ window.handleLogin = async () => {
 };
 
 // =========================================================================
-// 8. SIDEBAR MENU & BANNER LOGIC
+// 8. SIDEBAR MENU & BANNER LOGIC (KODE PERBAIKAN)
 // =========================================================================
 window.toggleMenu = () => {
     const nav = document.getElementById("sideNav");
@@ -1089,22 +1089,36 @@ window.toggleMenu = () => {
     nav.style.width = (nav.style.width === "250px") ? "0px" : "250px";
 };
 
-window.toggleDropdown = () => {
-    const dropdown = document.getElementById("dropdown-container");
-    if (!dropdown) return;
-    dropdown.style.display = (dropdown.style.display === "block") ? "none" : "block";
-};
+// PERBAIKAN: Deteksi klik luar agar tidak menutup paksa saat memilih kategori
+window.addEventListener('click', function(event) {
+    const nav = document.getElementById("sideNav");
+    const menuIcon = document.querySelector('.menu-icon');
+    
+    // Pastikan navigasi sedang terbuka
+    if (nav && nav.style.width === "250px") {
+        // PERBAIKAN: Jika yang diklik adalah bagian dari sidebar atau tombol menu, JANGAN ditutup
+        if (nav.contains(event.target) || (menuIcon && menuIcon.contains(event.target))) {
+            return; // Biarkan menu tetap terbuka atau memproses kategori
+        }
+        
+        // Tutup hanya jika benar-benar mengklik area kosong di luar sidebar
+        nav.style.width = "0px";
+    }
+});
 
-window.filterCategory = (category) => {
-    window.switchPage('home');
-    window.toggleMenu();
-    if (category === 'semua') {
+// Fungsi filter produk berdasarkan kategori (Pastikan fungsi ini ada dan dipanggil di elemen HTML)
+window.filterCategory = (categoryName) => {
+    if (categoryName === 'Semua') {
         renderProducts(productsData, 'main-grid');
     } else {
-        const filtered = productsData.filter(p => p.category.toLowerCase() === category.toLowerCase());
+        const filtered = productsData.filter(p => p.category.toLowerCase() === categoryName.toLowerCase());
         renderProducts(filtered, 'main-grid');
     }
+    // Opsional: Tutup sidebar secara halus SETELAH kategori dipilih
+    const nav = document.getElementById("sideNav");
+    if (nav) nav.style.width = "0px";
 };
+
 
 // =========================================================================
 // 9. SEARCH BAR RUNTIME METHOD

@@ -790,22 +790,136 @@ window.filterCategory = (category, element) => {
 };
 
 // =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS
+// 5. CART & SHIPPING ADDRESS ACTIONS (MODIFIED FOR DIGITAL PRO POPUP)
 // =========================================================================
-window.showAddressForm = () => {
-    const overlay = document.createElement('div');
-    overlay.id = "address-overlay";
-    overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
-    overlay.innerHTML = `
-        <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative;">
-            <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
-            <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
-            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
-            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}"></div>
-            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea></div>
-            <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
-        </div>`;
-    document.body.appendChild(overlay);
+window.addToCart = (id) => {
+    const p = productsData.find(x => x.id === id);
+    if(p) { 
+        cart.push(p); 
+        
+        // --- START OF DIGITAL PRO MODIFICATION ---
+        // Instead of standard alert, use custom stylized overlay.
+        
+        // 1. Create a container for the custom popup if it doesn't exist
+        let popupContainer = document.getElementById('digital-pro-popup-container');
+        if (!popupContainer) {
+            popupContainer = document.createElement('div');
+            popupContainer.id = 'digital-pro-popup-container';
+            popupContainer.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -100%) scale(0.8); /* Center and scaled down */
+                background: linear-gradient(135deg, #4a148c, #6a1b9a); /* Rich, deep gradients */
+                color: white;
+                padding: 30px;
+                border-radius: 20px;
+                box-shadow: 0 10px 40px rgba(74, 20, 140, 0.5); /* Deep shadow */
+                border: 2px solid #6748d7; /* Highlight border */
+                z-index: 20002;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Smooth, bouncy entry */
+                max-width: 90%;
+                width: 320px;
+                font-family: 'Inter', sans-serif;
+            `;
+            
+            // 2. Add content elements: Icon, Text, Image
+            popupContainer.innerHTML = `
+                <div style="
+                    background: rgba(255, 255, 255, 0.1); 
+                    width: 60px; height: 60px; 
+                    border-radius: 50%; 
+                    display: flex; 
+                    justify-content: center; 
+                    align-items: center; 
+                    border: 2px solid #b39ddb;
+                    box-shadow: 0 0 15px rgba(179, 157, 219, 0.4);
+                    margin-bottom: 5px;
+                ">
+                    <svg viewBox="0 0 24 24" style="width:36px; height:36px; fill:none; stroke:#b39ddb; stroke-width:2.5;">
+                        <path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </div>
+                <div id="dp-popup-title" style="font-size: 1.1rem; font-weight: 800; color: #b39ddb; text-transform: uppercase; letter-spacing: 1px;">
+                    Success!
+                </div>
+                <img id="dp-popup-img" src="${p.images[0]}" style="
+                    width: 90px; height: 90px; 
+                    object-fit: cover; 
+                    border-radius: 15px; 
+                    border: 3px solid #6748d7;
+                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                    margin: 5px 0;
+                ">
+                <div id="dp-popup-text" style="
+                    font-size: 0.9rem; 
+                    text-align: center; 
+                    color: #fff; 
+                    line-height: 1.4;
+                    font-weight: 500;
+                    margin-bottom: 10px;
+                ">
+                    The Beverly Hills Modern Mansion has been securely added to your digital portfolio.
+                </div>
+                <button onclick="closeDigitalProPopup()" style="
+                    background: transparent; 
+                    color: #b39ddb; 
+                    border: 2px solid #b39ddb;
+                    padding: 12px 30px; 
+                    border-radius: 25px; 
+                    font-weight: 700; 
+                    cursor: pointer;
+                    transition: background 0.3s, color 0.3s;
+                "
+                onmouseover="this.style.background='#b39ddb'; this.style.color='#4a148c'"
+                onmouseout="this.style.background='transparent'; this.style.color='#b39ddb'"
+                >
+                    ACKNOWLEDGE
+                </button>
+            `;
+            
+            document.body.appendChild(popupContainer);
+        } else {
+            // Update the existing popup container with new product details
+            document.getElementById('dp-popup-img').src = p.images[0];
+            document.getElementById('dp-popup-text').innerHTML = `${p.name} has been securely added to your digital portfolio.`;
+        }
+        
+        // 3. Show the custom popup with animation
+        popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+        popupContainer.style.opacity = '1';
+        popupContainer.style.pointerEvents = 'auto';
+        
+        // 4. Auto-close function for an even smoother experience
+        setTimeout(closeDigitalProPopup, 4000); 
+        
+        // --- END OF DIGITAL PRO MODIFICATION ---
+        
+        // Standard cart update and alert are commented out
+        // cart.push(p); 
+        // alert("✅ Berhasil ditambah ke keranjang!"); 
+        // window.updateCartUI(); 
+    }
+};
+
+// Helper function to close the digital pro popup
+window.closeDigitalProPopup = () => {
+    let popupContainer = document.getElementById('digital-pro-popup-container');
+    if (popupContainer) {
+        // Reverse animation for closing
+        popupContainer.style.transform = 'translate(-50%, -100%) scale(0.8)';
+        popupContainer.style.opacity = '0';
+        popupContainer.style.pointerEvents = 'none';
+        
+        // Standard cart UI update called after the animation finishes
+        setTimeout(() => { window.updateCartUI(); }, 400); 
+    }
 };
 
 // =========================================================================

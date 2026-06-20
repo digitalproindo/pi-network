@@ -1,8 +1,6 @@
 // =========================================================================
-// MODIFIKASI FORM ALAMAT DIGITAL PREMIUM (GANTI TOTAL DI APP.JS)
+// POP-UP KUSTOM DIGITAL PREMIUM (TAMBAHKAN KODE INI DI BARISaling ATAS)
 // =========================================================================
-
-// 1. Fungsi Pembuat Elemen Pop-up Digital Kustom
 function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
     if (!document.getElementById('dpiModalStyle')) {
         const modalStyle = document.createElement('style');
@@ -77,36 +75,14 @@ function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
     });
 }
 
-// 2. Fungsi Utama saat Tombol Simpan Alamat di-Klik (Menggantikan Fungsi Lama)
-window.saveAddress = () => {
-    userAddress = {
-        nama: document.getElementById('ship-name').value,
-        telepon: document.getElementById('ship-phone').value,
-        alamatLengkap: document.getElementById('ship-address').value
-    };
-    
-    // Peringatan jika data nama atau alamat kosong
-    if(!userAddress.nama || !userAddress.alamatLengkap) {
-        return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
-    }
-    
-    // Hapus form overlay pengisian alamat
-    const addressOverlay = document.getElementById('address-overlay');
-    if(addressOverlay) {
-        addressOverlay.remove();
-    }
-    
-    // Munculkan Pop-up Digital Sukses
-    tampilkanDpiAlert(
-        "ALAMAT DIKUNCI SUKSES", 
-        "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo."
-    );
-    
-    // Perbarui antarmuka keranjang belanja
-    if(typeof window.updateCartUI === 'function') {
-        window.updateCartUI();
-    }
-};
+// =========================================================================
+// 1. GLOBAL STATE & CONFIGURATION (KODE ASLI BAWAAN ANDA SEBELUMNYA)
+// =========================================================================
+let currentUser = null;
+let cart = [];
+let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
+const ADMIN_WA = "6281906066757"; 
+
 
 // =========================================================================
 // 1. GLOBAL STATE & CONFIGURATION

@@ -777,17 +777,116 @@ window.showAddressForm = () => {
     document.body.appendChild(overlay);
 };
 
+// =========================================================================
+// MODIFIKASI FORM ALAMAT DIGITAL PREMIUM (GANTI TOTAL DI APP.JS)
+// =========================================================================
+
+// 1. Fungsi Pembuat Elemen Pop-up Digital Kustom
+function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
+    if (!document.getElementById('dpiModalStyle')) {
+        const modalStyle = document.createElement('style');
+        modalStyle.id = 'dpiModalStyle';
+        modalStyle.innerHTML = `
+            .dpi-custom-modal-overlay {
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(13, 3, 26, 0.85); backdrop-filter: blur(8px);
+                display: flex; justify-content: center; align-items: center; z-index: 100000;
+                opacity: 0; transition: opacity 0.3s ease;
+            }
+            .dpi-custom-modal-box {
+                background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
+                border: 2px solid var(--border-color, #d4af37); border-radius: 16px;
+                width: 85%; max-width: 320px; padding: 25px; text-align: center;
+                box-shadow: 0 10px 30px rgba(212, 175, 55, 0.25);
+                transform: scale(0.8); transition: transform 0.3s ease;
+            }
+            .dpi-custom-modal-overlay.show { opacity: 1; }
+            .dpi-custom-modal-overlay.show .dpi-custom-modal-box { transform: scale(1); }
+            .dpi-modal-icon-container {
+                width: 60px; height: 60px; background: var(--bg-icon, rgba(212, 175, 55, 0.1));
+                border: 2px dashed var(--border-icon, #d4af37); border-radius: 50%;
+                display: flex; justify-content: center; align-items: center; margin: 0 auto 15px auto;
+                animation: pulseGold 2s infinite;
+            }
+            .dpi-modal-icon-container i { font-size: 26px; color: var(--border-icon, #d4af37); }
+            .dpi-modal-title { color: #ffffff; font-size: 15px; font-weight: 700; margin-bottom: 8px; letter-spacing: 0.5px; }
+            .dpi-modal-text { color: #dfcbf2; font-size: 12px; line-height: 1.5; margin-bottom: 20px; }
+            .dpi-modal-btn {
+                background: var(--bg-btn, linear-gradient(90deg, #d4af37 0%, #b89324 100%)); color: var(--text-btn, #1a0033);
+                border: none; padding: 11px 24px; font-size: 12px; font-weight: 700; border-radius: 25px;
+                cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            }
+            @keyframes pulseGold {
+                0% { box-shadow: 0 0 0 0 var(--pulse-color, rgba(212, 175, 55, 0.4)); }
+                70% { box-shadow: 0 0 0 10px rgba(212, 175, 55, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+            }
+        `;
+        document.head.appendChild(modalStyle);
+    }
+
+    const overlay = document.createElement('div');
+    overlay.className = 'dpi-custom-modal-overlay';
+    
+    if (tipe === 'peringatan') {
+        overlay.style.setProperty('--border-color', '#ff4d4d');
+        overlay.style.setProperty('--bg-icon', 'rgba(255, 77, 77, 0.1)');
+        overlay.style.setProperty('--border-icon', '#ff4d4d');
+        overlay.style.setProperty('--bg-btn', '#ff4d4d');
+        overlay.style.setProperty('--text-btn', '#ffffff');
+        overlay.style.setProperty('--pulse-color', 'rgba(255, 77, 77, 0.4)');
+    }
+
+    const ikon = tipe === 'peringatan' ? 'fa-triangle-exclamation' : 'fa-circle-check';
+
+    overlay.innerHTML = `
+        <div class="dpi-custom-modal-box">
+            <div class="dpi-modal-icon-container"><i class="fa-solid ${ikon}"></i></div>
+            <div class="dpi-modal-title">${judul}</div>
+            <div class="dpi-modal-text">${pesan}</div>
+            <button class="dpi-modal-btn" id="closeDpiModalBtn">KONFIRMASI</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+    setTimeout(() => overlay.classList.add('show'), 10);
+
+    document.getElementById('closeDpiModalBtn').addEventListener('click', function() {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.remove(), 300);
+    });
+}
+
+// 2. Fungsi Utama saat Tombol Simpan Alamat di-Klik (Menggantikan Fungsi Lama)
 window.saveAddress = () => {
     userAddress = {
         nama: document.getElementById('ship-name').value,
         telepon: document.getElementById('ship-phone').value,
         alamatLengkap: document.getElementById('ship-address').value
     };
-    if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
-    document.getElementById('address-overlay').remove();
-    alert("Alamat disimpan.");
-    window.updateCartUI();
+    
+    // Peringatan jika data nama atau alamat kosong
+    if(!userAddress.nama || !userAddress.alamatLengkap) {
+        return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
+    }
+    
+    // Hapus form overlay pengisian alamat
+    const addressOverlay = document.getElementById('address-overlay');
+    if(addressOverlay) {
+        addressOverlay.remove();
+    }
+    
+    // Munculkan Pop-up Digital Sukses
+    tampilkanDpiAlert(
+        "ALAMAT DIKUNCI SUKSES", 
+        "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo."
+    );
+    
+    // Perbarui antarmuka keranjang belanja
+    if(typeof window.updateCartUI === 'function') {
+        window.updateCartUI();
+    }
 };
+
 
 window.addToCart = (id) => {
     const p = productsData.find(x => x.id === id);

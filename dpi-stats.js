@@ -1,42 +1,39 @@
 (function() {
-    // 1. Desain Gaya Tampilan Bursa Saham Bersih & Tegas
+    // 1. Desain Gaya Tampilan Menyatu dengan Hero (CSS)
     var style = document.createElement('style');
     style.innerHTML = 
         '.dpi-ticker-wrapper {' +
         '    width: 100% !important;' +
-        '    background: #2d124d !important;' + 
-        '    border-top: 1px solid #5a2d82 !important;' +
-        '    border-bottom: 1px solid #5a2d82 !important;' +
-        '    padding: 10px 0 !important;' +
+        '    background: rgba(45, 18, 77, 0.4) !important;' + /* Semi-transparan agar menyatu dengan warna ungu hero Anda */
+        '    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;' +
+        '    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;' +
+        '    padding: 6px 0 !important;' +
         '    overflow: hidden !important;' +
         '    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;' +
-        '    box-shadow: inset 0 0 10px rgba(0,0,0,0.5) !important;' +
         '    display: block !important;' + 
         '    clear: both !important;' +     
         '    position: relative !important;' +
-        '    z-index: 999 !important;' +    /* Memastikan teks bursa berada di lapisan paling depan */
-        '    margin-top: 0px !important;' +
-        '    margin-bottom: 0px !important;' +
-        '} ' +
+        '    margin-top: 8px !important;' +   /* Jarak pas di bawah running text */
+        '    margin-bottom: 5px !important;' +
+        '}' +
         '.dpi-ticker-container {' +
         '    display: flex !important;' +
         '    white-space: nowrap !important;' +
-        '    gap: 40px !important;' +
+        '    gap: 35px !important;' +
         '    padding-left: 15px !important;' +
         '    animation: tickerScroll 25s linear infinite !important;' +
         '}' +
         '.dpi-stat-item {' +
         '    display: flex !important;' +
         '    align-items: center !important;' +
-        '    gap: 8px !important;' +
+        '    gap: 6px !important;' +
         '    color: #ffffff !important;' +
-        '    font-size: 13px !important;' +
-        '    font-weight: 500 !important;' +
+        '    font-size: 12px !important;' +
         '}' +
         '.dpi-stat-label {' +
-        '    color: #bfa3db !important;' +
+        '    color: #dfcbf2 !important;' + /* Warna teks label diselaraskan dengan tema ungu premium */
         '    text-transform: uppercase !important;' +
-        '    font-size: 11px !important;' +
+        '    font-size: 10px !important;' +
         '    letter-spacing: 0.5px !important;' +
         '}' +
         '.dpi-stat-value {' +
@@ -46,11 +43,7 @@
         '}' +
         '.dpi-stat-arrow {' +
         '    color: #2ecc71 !important;' +
-        '    font-size: 11px !important;' +
-        '}' +
-        '@keyframes tickerScroll {' +
-        '    0% { transform: translate3d(0, 0, 0); }' +
-        '    100% { transform: translate3d(-30%, 0, 0); }' +
+        '    font-size: 10px !important;' +
         '}';
     document.head.appendChild(style);
 
@@ -74,36 +67,37 @@
         '    </div>' +
         '</div>';
 
-    // 3. Injeksi Kontainer ke DOM
-    var tickerContainer = document.createElement('div');
-    tickerContainer.className = 'dpi-ticker-wrapper';
-    tickerContainer.id = 'dpiLiveTicker';
-    tickerContainer.innerHTML = tickerHtml;
-
-    var currentScript = document.currentScript;
-    if (currentScript) {
-        currentScript.parentNode.insertBefore(tickerContainer, currentScript);
-    } else {
-        var marqueeContainer = document.querySelector('.marquee-container');
-        if (marqueeContainer) {
-            marqueeContainer.parentNode.insertBefore(tickerContainer, marqueeContainer.nextSibling);
-        }
+    // 3. Logika Memasukkan Komponen Tepat ke dalam Elemen Kotak Ungu Marquee (Hero)
+    var marqueeContainer = document.querySelector('.marquee-container');
+    if (marqueeContainer) {
+        var tickerContainer = document.createElement('div');
+        tickerContainer.className = 'dpi-ticker-wrapper';
+        tickerContainer.id = 'dpiLiveTicker';
+        tickerContainer.innerHTML = tickerHtml;
+        
+        // Memasukkan indikator tepat di bawah tag marquee di dalam kotak ungu yang sama
+        marqueeContainer.appendChild(tickerContainer);
     }
-
-    // 5. REVISI UTAMA: Paksa Banner Memberikan Ruang Kosong (Mencegah Tabrakan Vertikal)
-    // Fungsi ini berjalan setelah halaman selesai dimuat sepenuhnya
-    window.addEventListener('load', function() {
-        var bannerContainer = document.querySelector('.banner-container');
-        if (bannerContainer) {
-            // Memberikan jarak atas yang besar agar banner turun dari area bursa teks
-            bannerContainer.style.setProperty('margin-top', '15px', 'important');
-            bannerContainer.style.setProperty('position', 'relative', 'important');
-            bannerContainer.style.setProperty('clear', 'both', 'important');
-        }
-    });
 
     // 4. Logika Perubahan Data Real-Time Berkedip
     setInterval(function() {
+        var visitorEl = document.getElementById('stats-visitor');
+        if(visitorEl) {
+            var currentVisitor = parseInt(visitorEl.innerText.replace(/\./g, ''));
+            currentVisitor += Math.floor(Math.random() * 5) - 2;
+            visitorEl.innerText = currentVisitor.toLocaleString('id-ID');
+        }
+
+        var testnetEl = document.getElementById('stats-testnet');
+        if(testnetEl) {
+            var currentTx = parseInt(testnetEl.innerText);
+            if(Math.random() > 0.6) {
+                currentTx += 1;
+                testnetEl.innerText = currentTx + " Tx";
+            }
+        }
+    }, 3000);
+})();
         var visitorEl = document.getElementById('stats-visitor');
         if(visitorEl) {
             var currentVisitor = parseInt(visitorEl.innerText.replace(/\./g, ''));

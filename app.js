@@ -838,37 +838,15 @@ window.addToCart = (id) => {
                     display: flex; 
                     justify-content: center; 
                     align-items: center; 
-                    border: 2px solid #b39ddb;
-                    box-shadow: 0 0 15px rgba(179, 157, 219, 0.4);
-                    margin-bottom: 5px;
-                ">
-                    <svg viewBox="0 0 24 24" style="width:36px; height:36px; fill:none; stroke:#b39ddb; stroke-width:2.5;">
-                        <path d="M5 12l5 5L20 7" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <div id="dp-popup-title" style="font-size: 1.1rem; font-weight: 800; color: #b39ddb; text-transform: uppercase; letter-spacing: 1px;">
 // =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS (MODIFIKASI DIGITAL PRO + SUARA CLINK)
-// =========================================================================
-window.addToCart = (id) => {
-    const p = productsData.find(x => x.id === id);
-    if(p) { 
-        cart.push(p); 
-        
-        // --- FITUR AUDIO: EFEK SUARA CLINK KOIN INSTAN ---
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            const osc = audioCtx.createOscillator();
-// =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS
+// 5. CART & SHIPPING ADDRESS ACTIONS (VERSI UTUH & STABIL)
 // =========================================================================
 window.showAddressForm = () => {
     const overlay = document.createElement('div');
     overlay.id = "address-overlay";
     overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
     overlay.innerHTML = `
-        <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative;">
+        <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative; font-family:'Inter', sans-serif;">
             <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
             <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
             <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
@@ -877,6 +855,150 @@ window.showAddressForm = () => {
             <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
         </div>`;
     document.body.appendChild(overlay);
+};
+
+window.saveAddress = () => {
+    userAddress = {
+        nama: document.getElementById('ship-name').value,
+        telepon: document.getElementById('ship-phone').value,
+        alamatLengkap: document.getElementById('ship-address').value
+    };
+    if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
+    document.getElementById('address-overlay').remove();
+    alert("Alamat disimpan.");
+    window.updateCartUI();
+};
+
+window.addToCart = (id) => {
+    const p = productsData.find(x => x.id === id);
+    if(p) { 
+        cart.push(p); 
+        
+        // --- FITUR AUDIO: EFEK SUARA CLINK KOIN DIGITAL INSTAN ---
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); // Nada Tinggi C6
+            osc.frequency.setValueAtTime(1396.91, audioCtx.currentTime + 0.07); // Nada F6 (Dentingan)
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        } catch (e) { console.log("Audio block:", e); }
+        
+        // --- PEMBUATAN OVERLAY POP-UP DIGITAL PRO PREMIUM ---
+        let popupContainer = document.getElementById('digital-pro-popup-container');
+        if (!popupContainer) {
+            popupContainer = document.createElement('div');
+            popupContainer.id = 'digital-pro-popup-container';
+            popupContainer.style.cssText = `
+                position: fixed; top: 50%; left: 50%;
+                transform: translate(-50%, -100%) scale(0.8);
+                background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
+                color: white; padding: 25px; border-radius: 16px;
+                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+                border: 2px solid #d4af37; z-index: 200005;
+                display: flex; flex-direction: column; align-items: center; gap: 12px;
+                opacity: 0; pointer-events: none;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                max-width: 85%; width: 310px; text-align: center; font-family: 'Inter', sans-serif;
+            `;
+            
+            popupContainer.innerHTML = `
+                <div style="background: rgba(212, 175, 55, 0.1); width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px dashed #d4af37; margin-bottom: 2px;">
+                    <span style="font-size: 24px; color: #d4af37;">🛒</span>
+                </div>
+                <div id="dp-popup-title" style="font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
+                <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
+                <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
+                <button onclick="closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
+            `;
+            document.body.appendChild(popupContainer);
+        } else {
+            document.getElementById('dp-popup-img').src = p.images[0];
+            document.getElementById('dp-popup-text').innerHTML = `${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.`;
+        }
+        
+        setTimeout(() => {
+            popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+            popupContainer.style.opacity = '1';
+            popupContainer.style.pointerEvents = 'auto';
+        }, 10);
+        
+        window.cartAutoCloseTimer = setTimeout(closeDigitalProPopup, 4000); 
+    }
+};
+
+window.closeDigitalProPopup = () => {
+    clearTimeout(window.cartAutoCloseTimer);
+    let popupContainer = document.getElementById('digital-pro-popup-container');
+    if (popupContainer) {
+        popupContainer.style.transform = 'translate(-50%, -100%) scale(0.8)';
+        popupContainer.style.opacity = '0';
+        popupContainer.style.pointerEvents = 'none';
+        
+        if(typeof window.updateCartUI === 'function') {
+            window.updateCartUI();
+        }
+    }
+};
+
+window.removeFromCart = (index) => {
+    cart.splice(index, 1); 
+    window.updateCartUI(); 
+};
+
+window.updateCartUI = () => {
+    const grid = document.getElementById('cart-items');
+    if (!grid) return;
+
+    if (cart.length === 0) {
+        grid.innerHTML = `
+            <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
+                <div style="margin-bottom: 25px;"><img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8;"></div>
+                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
+                <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px;">Sepertinya Anda belum menambahkan produk premium.</p>
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; cursor:pointer;">Mulai Belanja</button>
+            </div>`;
+        return;
+    }
+
+    const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
+    grid.innerHTML = `
+        <div style="padding: 15px; font-family:'Inter', sans-serif;">
+            <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
+                <div style="display:flex; align-items:center; gap:12px; text-align:left;">
+                    <span>📍</span>
+                    <div>
+                        <div style="font-size:0.7rem; color:#6748d7; font-weight:bold;">ALAMAT PENGIRIMAN</div>
+                        <div style="font-size:0.85rem; font-weight:700;">${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}</div>
+                    </div>
+                </div>
+                <span>></span>
+            </div>
+            <div>
+                ${cart.map((item, index) => `
+                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; border: 1px solid #f1f5f9;">
+                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
+                        <div style="flex:1; text-align:left;">
+                            <div style="font-size:0.85rem; font-weight:700; color:#333;">${item.name}</div>
+                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
+                        </div>
+                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px;">✕</div>
+                    </div>
+                `).join('')}
+            </div>
+            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#64748b;"><span>Subtotal (${cart.length} Produk)</span><span>π ${total}</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; border-top:2px solid #f8fafc; padding-top:15px;"><span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span></div>
+                <button style="width:100%; padding:16px; border-radius:16px; background:#6748d7; color:white; font-weight:800; border:none; cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG 🚀</button>
+            </div>
+        </div>`;
 };
 
 // =========================================================================

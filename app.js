@@ -847,80 +847,89 @@ window.addToCart = (id) => {
                     </svg>
                 </div>
                 <div id="dp-popup-title" style="font-size: 1.1rem; font-weight: 800; color: #b39ddb; text-transform: uppercase; letter-spacing: 1px;">
-                    Success!
-                </div>
-                <img id="dp-popup-img" src="${p.images[0]}" style="
-                    width: 90px; height: 90px; 
-                    object-fit: cover; 
-                    border-radius: 15px; 
-                    border: 3px solid #6748d7;
-                    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-                    margin: 5px 0;
-                ">
-                <div id="dp-popup-text" style="
-                    font-size: 0.9rem; 
-                    text-align: center; 
-                    color: #fff; 
-                    line-height: 1.4;
-                    font-weight: 500;
-                    margin-bottom: 10px;
-                ">
-                    The Beverly Hills Modern Mansion has been securely added to your digital portfolio.
-                </div>
-                <button onclick="closeDigitalProPopup()" style="
-                    background: transparent; 
-                    color: #b39ddb; 
-                    border: 2px solid #b39ddb;
-                    padding: 12px 30px; 
-                    border-radius: 25px; 
-                    font-weight: 700; 
-                    cursor: pointer;
-                    transition: background 0.3s, color 0.3s;
-                "
-                onmouseover="this.style.background='#b39ddb'; this.style.color='#4a148c'"
-                onmouseout="this.style.background='transparent'; this.style.color='#b39ddb'"
-                >
-                    ACKNOWLEDGE
-                </button>
+// =========================================================================
+// 5. CART & SHIPPING ADDRESS ACTIONS (MODIFIKASI DIGITAL PRO + SUARA CLINK)
+// =========================================================================
+window.addToCart = (id) => {
+    const p = productsData.find(x => x.id === id);
+    if(p) { 
+        cart.push(p); 
+        
+        // --- FITUR AUDIO: EFEK SUARA CLINK KOIN INSTAN ---
+        try {
+            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); // Nada C6 Tinggi
+            osc.frequency.setValueAtTime(1396.91, audioCtx.currentTime + 0.07); // Nada F6 (Efek Koin Masuk)
+            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.3);
+        } catch (e) { console.log("Audio block:", e); }
+        // -------------------------------------------------
+        
+        let popupContainer = document.getElementById('digital-pro-popup-container');
+        if (!popupContainer) {
+            popupContainer = document.createElement('div');
+            popupContainer.id = 'digital-pro-popup-container';
+            popupContainer.style.cssText = `
+                position: fixed; top: 50%; left: 50%;
+                transform: translate(-50%, -100%) scale(0.8);
+                background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
+                color: white; padding: 25px; border-radius: 16px;
+                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.25);
+                border: 2px solid #d4af37; z-index: 100005;
+                display: flex; flex-direction: column; align-items: center; gap: 12px;
+                opacity: 0; pointer-events: none;
+                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                max-width: 85%; width: 310px; text-align: center;
             `;
             
+            popupContainer.innerHTML = `
+                <div style="background: rgba(212, 175, 55, 0.1); width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px dashed #d4af37; margin-bottom: 2px;">
+                    <i class="fa-solid fa-basket-shopping" style="font-size: 22px; color: #d4af37;"></i>
+                </div>
+                <div id="dp-popup-title" style="font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
+                <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
+                <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
+                <button onclick="closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
+            `;
             document.body.appendChild(popupContainer);
         } else {
-            // Update the existing popup container with new product details
             document.getElementById('dp-popup-img').src = p.images[0];
-            document.getElementById('dp-popup-text').innerHTML = `${p.name} has been securely added to your digital portfolio.`;
+            document.getElementById('dp-popup-text').innerHTML = `${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.`;
         }
         
-        // 3. Show the custom popup with animation
-        popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
-        popupContainer.style.opacity = '1';
-        popupContainer.style.pointerEvents = 'auto';
+        setTimeout(() => {
+            popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+            popupContainer.style.opacity = '1';
+            popupContainer.style.pointerEvents = 'auto';
+        }, 10);
         
-        // 4. Auto-close function for an even smoother experience
-        setTimeout(closeDigitalProPopup, 4000); 
-        
-        // --- END OF DIGITAL PRO MODIFICATION ---
-        
-        // Standard cart update and alert are commented out
-        // cart.push(p); 
-        // alert("✅ Berhasil ditambah ke keranjang!"); 
-        // window.updateCartUI(); 
+        // Otomatis menutup dalam 4 detik jika tidak diklik
+        window.cartAutoCloseTimer = setTimeout(closeDigitalProPopup, 4000); 
     }
 };
 
-// Helper function to close the digital pro popup
 window.closeDigitalProPopup = () => {
+    clearTimeout(window.cartAutoCloseTimer);
     let popupContainer = document.getElementById('digital-pro-popup-container');
     if (popupContainer) {
-        // Reverse animation for closing
         popupContainer.style.transform = 'translate(-50%, -100%) scale(0.8)';
         popupContainer.style.opacity = '0';
         popupContainer.style.pointerEvents = 'none';
         
-        // Standard cart UI update called after the animation finishes
-        setTimeout(() => { window.updateCartUI(); }, 400); 
+        if(typeof window.updateCartUI === 'function') {
+            window.updateCartUI();
+        }
     }
 };
+
 
 // =========================================================================
 // MODIFIKASI FORM ALAMAT DIGITAL PREMIUM (GANTI TOTAL DI APP.JS)

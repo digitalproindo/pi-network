@@ -1,7 +1,41 @@
-// =========================================================================
-// POP-UP KUSTOM DIGITAL PREMIUM (TAMBAHKAN KODE INI DI BARISaling ATAS)
-// =========================================================================
+// 1. Fungsi Pembuat Elemen Pop-up Digital Kustom dengan Efek Suara "Clink" Digital
 function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
+    // --- FITUR AUDIO: EFEK SUARA CLINK DIGITAL ---
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        if (tipe === 'sukses') {
+            // Suara "Clink" Koin Emas Kembar (Nada Tinggi Cepat)
+            const osc1 = audioCtx.createOscillator();
+            const gain1 = audioCtx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(987.77, audioCtx.currentTime); // Nada B5
+            osc1.frequency.setValueAtTime(1318.51, audioCtx.currentTime + 0.08); // Nada C6 (Naik cepat)
+            gain1.gain.setValueAtTime(0.2, audioCtx.currentTime);
+            gain1.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+            osc1.start();
+            osc1.stop(audioCtx.currentTime + 0.3);
+        } else {
+            // Suara Peringatan Error (Nada Bass Rendah Ganda)
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.type = 'triangle';
+            osc2.frequency.setValueAtTime(150, audioCtx.currentTime);
+            osc2.frequency.setValueAtTime(110, audioCtx.currentTime + 0.1);
+            gain2.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain2.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.start();
+            osc2.stop(audioCtx.currentTime + 0.4);
+        }
+    } catch (e) {
+        console.log("Audio tidak didukung atau diblokir oleh interaksi browser.");
+    }
+    // ---------------------------------------------
+
     if (!document.getElementById('dpiModalStyle')) {
         const modalStyle = document.createElement('style');
         modalStyle.id = 'dpiModalStyle';
@@ -74,6 +108,7 @@ function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
         setTimeout(() => overlay.remove(), 300);
     });
 }
+
 
 // =========================================================================
 // 1. GLOBAL STATE & CONFIGURATION

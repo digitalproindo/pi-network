@@ -1,10 +1,10 @@
 (function() {
-    // 1. Desain Gaya Tampilan Menyatu dengan Hero (CSS)
+    // 1. Desain Gaya Tampilan Menyatu dalam Kotak Hero Ungu (CSS Aman & Responsif)
     var style = document.createElement('style');
     style.innerHTML = 
         '.dpi-ticker-wrapper {' +
         '    width: 100% !important;' +
-        '    background: rgba(45, 18, 77, 0.4) !important;' + /* Semi-transparan agar menyatu dengan warna ungu hero Anda */
+        '    background: rgba(0, 0, 0, 0.25) !important;' + /* Semi-transparan agar menyatu dengan warna ungu gradasi Anda */
         '    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;' +
         '    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;' +
         '    padding: 6px 0 !important;' +
@@ -13,8 +13,8 @@
         '    display: block !important;' + 
         '    clear: both !important;' +     
         '    position: relative !important;' +
-        '    margin-top: 8px !important;' +   /* Jarak pas di bawah running text */
-        '    margin-bottom: 5px !important;' +
+        '    margin-top: 5px !important;' +   /* Menempel rapi di bawah baris running text */
+        '    margin-bottom: 2px !important;' +
         '}' +
         '.dpi-ticker-container {' +
         '    display: flex !important;' +
@@ -31,7 +31,7 @@
         '    font-size: 12px !important;' +
         '}' +
         '.dpi-stat-label {' +
-        '    color: #dfcbf2 !important;' + /* Warna teks label diselaraskan dengan tema ungu premium */
+        '    color: #dfcbf2 !important;' + 
         '    text-transform: uppercase !important;' +
         '    font-size: 10px !important;' +
         '    letter-spacing: 0.5px !important;' +
@@ -44,6 +44,10 @@
         '.dpi-stat-arrow {' +
         '    color: #2ecc71 !important;' +
         '    font-size: 10px !important;' +
+        '}' +
+        '@keyframes tickerScroll {' +
+        '    0% { transform: translate3d(0, 0, 0); }' +
+        '    100% { transform: translate3d(-30%, 0, 0); }' +
         '}';
     document.head.appendChild(style);
 
@@ -67,15 +71,20 @@
         '    </div>' +
         '</div>';
 
-    // 3. Logika Memasukkan Komponen Tepat ke dalam Elemen Kotak Ungu Marquee (Hero)
+    // 3. Logika Injeksi Aman & Membuka Kunci Tinggi Kontainer Marquee (REVISI JUARA)
     var marqueeContainer = document.querySelector('.marquee-container');
     if (marqueeContainer) {
+        // PERBAIKAN: Paksa kontainer ungu induk agar tingginya otomatis mengikuti isi dan tidak memotong elemen
+        marqueeContainer.style.setProperty('height', 'auto', 'important');
+        marqueeContainer.style.setProperty('overflow', 'visible', 'important');
+        marqueeContainer.style.setProperty('padding-bottom', '5px', 'important');
+
         var tickerContainer = document.createElement('div');
         tickerContainer.className = 'dpi-ticker-wrapper';
         tickerContainer.id = 'dpiLiveTicker';
         tickerContainer.innerHTML = tickerHtml;
         
-        // Memasukkan indikator tepat di bawah tag marquee di dalam kotak ungu yang sama
+        // Masukkan elemen bursa di bagian paling bawah di dalam kotak ungu hero tersebut
         marqueeContainer.appendChild(tickerContainer);
     }
 
@@ -98,12 +107,6 @@
         }
     }, 3000);
 })();
-        var visitorEl = document.getElementById('stats-visitor');
-        if(visitorEl) {
-            var currentVisitor = parseInt(visitorEl.innerText.replace(/\./g, ''));
-            currentVisitor += Math.floor(Math.random() * 5) - 2;
-            visitorEl.innerText = currentVisitor.toLocaleString('id-ID');
-        }
 
         var testnetEl = document.getElementById('stats-testnet');
         if(testnetEl) {

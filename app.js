@@ -76,15 +76,6 @@ function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
 }
 
 // =========================================================================
-// 1. GLOBAL STATE & CONFIGURATION (KODE ASLI BAWAAN ANDA SEBELUMNYA)
-// =========================================================================
-let currentUser = null;
-let cart = [];
-let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
-const ADMIN_WA = "6281906066757"; 
-
-
-// =========================================================================
 // 1. GLOBAL STATE & CONFIGURATION
 // =========================================================================
 let currentUser = null;

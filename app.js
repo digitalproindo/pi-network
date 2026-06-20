@@ -860,76 +860,24 @@ window.addToCart = (id) => {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
             const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); // Nada C6 Tinggi
-            osc.frequency.setValueAtTime(1396.91, audioCtx.currentTime + 0.07); // Nada F6 (Efek Koin Masuk)
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.3);
-        } catch (e) { console.log("Audio block:", e); }
-        // -------------------------------------------------
-        
-        let popupContainer = document.getElementById('digital-pro-popup-container');
-        if (!popupContainer) {
-            popupContainer = document.createElement('div');
-            popupContainer.id = 'digital-pro-popup-container';
-            popupContainer.style.cssText = `
-                position: fixed; top: 50%; left: 50%;
-                transform: translate(-50%, -100%) scale(0.8);
-                background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
-                color: white; padding: 25px; border-radius: 16px;
-                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.25);
-                border: 2px solid #d4af37; z-index: 100005;
-                display: flex; flex-direction: column; align-items: center; gap: 12px;
-                opacity: 0; pointer-events: none;
-                transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                max-width: 85%; width: 310px; text-align: center;
-            `;
-            
-            popupContainer.innerHTML = `
-                <div style="background: rgba(212, 175, 55, 0.1); width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px dashed #d4af37; margin-bottom: 2px;">
-                    <i class="fa-solid fa-basket-shopping" style="font-size: 22px; color: #d4af37;"></i>
-                </div>
-                <div id="dp-popup-title" style="font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
-                <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
-                <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
-                <button onclick="closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
-            `;
-            document.body.appendChild(popupContainer);
-        } else {
-            document.getElementById('dp-popup-img').src = p.images[0];
-            document.getElementById('dp-popup-text').innerHTML = `${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.`;
-        }
-        
-        setTimeout(() => {
-            popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
-            popupContainer.style.opacity = '1';
-            popupContainer.style.pointerEvents = 'auto';
-        }, 10);
-        
-        // Otomatis menutup dalam 4 detik jika tidak diklik
-        window.cartAutoCloseTimer = setTimeout(closeDigitalProPopup, 4000); 
-    }
+// =========================================================================
+// 5. CART & SHIPPING ADDRESS ACTIONS
+// =========================================================================
+window.showAddressForm = () => {
+    const overlay = document.createElement('div');
+    overlay.id = "address-overlay";
+    overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
+    overlay.innerHTML = `
+        <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative;">
+            <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
+            <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
+            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama}"></div>
+            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon}"></div>
+            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap}</textarea></div>
+            <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
+        </div>`;
+    document.body.appendChild(overlay);
 };
-
-window.closeDigitalProPopup = () => {
-    clearTimeout(window.cartAutoCloseTimer);
-    let popupContainer = document.getElementById('digital-pro-popup-container');
-    if (popupContainer) {
-        popupContainer.style.transform = 'translate(-50%, -100%) scale(0.8)';
-        popupContainer.style.opacity = '0';
-        popupContainer.style.pointerEvents = 'none';
-        
-        if(typeof window.updateCartUI === 'function') {
-            window.updateCartUI();
-        }
-    }
-};
-
 
 // =========================================================================
 // MODIFIKASI FORM ALAMAT DIGITAL PREMIUM (GANTI TOTAL DI APP.JS)

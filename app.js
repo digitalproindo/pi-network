@@ -864,29 +864,28 @@ window.saveAddress = () => {
         alamatLengkap: document.getElementById('ship-address').value
     };
     
-    // 1. MODIFIKASI POP-UP PERINGATAN (JIKA DATA KOSONG)
+    // Peringatan jika data nama atau alamat kosong
     if(!userAddress.nama || !userAddress.alamatLengkap) {
         return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
     }
     
-    document.getElementById('address-overlay').remove();
+    // Hapus form overlay pengisian alamat
+    const addressOverlay = document.getElementById('address-overlay');
+    if(addressOverlay) {
+        addressOverlay.remove();
+    }
     
-    // 2. MODIFIKASI POP-UP SUKSES DIGITAL PREMIUM
+    // Munculkan Pop-up Digital Sukses
     tampilkanDpiAlert(
         "ALAMAT DIKUNCI SUKSES", 
         "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo."
     );
-    
-    window.updateCartUI();
-};
-
     
     // Perbarui antarmuka keranjang belanja
     if(typeof window.updateCartUI === 'function') {
         window.updateCartUI();
     }
 };
-
 
 window.addToCart = (id) => {
     const p = productsData.find(x => x.id === id);

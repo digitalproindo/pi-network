@@ -1,5 +1,5 @@
 (function() {
-    // 1. Desain Gaya Tampilan Bursa Saham (CSS)
+    // 1. Desain Gaya Tampilan Bursa Saham Bersih & Tegas (Mencegah Tertindih)
     var style = document.createElement('style');
     style.innerHTML = 
         '.dpi-ticker-wrapper {' +
@@ -7,12 +7,16 @@
         '    background: #2d124d;' +
         '    border-top: 1px solid #5a2d82;' +
         '    border-bottom: 1px solid #5a2d82;' +
-        '    padding: 8px 0;' +
+        '    padding: 10px 0;' +
         '    overflow: hidden;' +
         '    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;' +
         '    box-shadow: inset 0 0 10px rgba(0,0,0,0.5);' +
-        '    margin-top: 5px;' +
-        '    margin-bottom: 5px;' +
+        '    display: block !important;' + /* Memaksa elemen berbentuk blok utuh */
+        '    clear: both !important;' +     /* Memutus tumpang tindih elemen float */
+        '    position: relative !important;' +
+        '    z-index: 100 !important;' +    /* Memastikan berada di lapisan atas banner */
+        '    margin-top: 0px;' +
+        '    margin-bottom: 10px;' +        /* Memberi jarak aman dengan banner di bawahnya */
         '}' +
         '.dpi-ticker-container {' +
         '    display: flex;' +
@@ -50,17 +54,17 @@
         '}';
     document.head.appendChild(style);
 
-    // 2. Struktur HTML Komponen Statistik (Menggunakan kutip standar)
+    // 2. Struktur HTML Komponen Statistik
     var tickerHtml = 
         '<div class="dpi-ticker-container">' +
         '    <div class="dpi-stat-item">' +
         '        <span class="dpi-stat-label"><i class="fa-solid fa-users"></i> Pengunjung:</span>' +
-        '        <span class="dpi-stat-value" id="stats-visitor">1,245</span>' +
+        '        <span class="dpi-stat-value" id="stats-visitor">1.245</span>' +
         '        <span class="dpi-stat-arrow">▲ Live</span>' +
         '    </div>' +
         '    <div class="dpi-stat-item">' +
         '        <span class="dpi-stat-label"><i class="fa-solid fa-file-code"></i> Total Tesnet:</span>' +
-        '        <span class="dpi-stat-value" id="stats-testnet">4,892 Tx</span>' +
+        '        <span class="dpi-stat-value" id="stats-testnet">4.892 Tx</span>' +
         '        <span class="dpi-stat-arrow">▲ +1.2%</span>' +
         '    </div>' +
         '    <div class="dpi-stat-item">' +
@@ -70,18 +74,21 @@
         '    </div>' +
         '</div>';
 
-    // 3. Membuat Elemen Container Secara Aman Tanpa document.write Berbahaya
+    // 3. Injeksi Elemen Secara Kokoh di Tempat Pemanggilan Script
     var tickerContainer = document.createElement('div');
     tickerContainer.className = 'dpi-ticker-wrapper';
     tickerContainer.id = 'dpiLiveTicker';
     tickerContainer.innerHTML = tickerHtml;
 
-    // Masukkan ke dalam DOM tepat di mana file script ini dipanggil di index.html
     var currentScript = document.currentScript;
     if (currentScript) {
         currentScript.parentNode.insertBefore(tickerContainer, currentScript);
     } else {
-        document.body.appendChild(tickerContainer);
+        // Fallback jika browser lama tidak mendukung document.currentScript
+        var marqueeContainer = document.querySelector('.marquee-container');
+        if (marqueeContainer) {
+            marqueeContainer.parentNode.insertBefore(tickerContainer, marqueeContainer.nextSibling);
+        }
     }
 
     // 4. Logika Perubahan Data Real-Time Berkedip

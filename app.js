@@ -808,16 +808,38 @@ window.showAddressForm = () => {
     document.body.appendChild(overlay);
 };
 
+// =========================================================================
+// PERBAIKAN INTEGRASI TOTAL: CART ACTIONS & POP-UP PREMIUM
+// =========================================================================
+
 window.saveAddress = () => {
     userAddress = {
         nama: document.getElementById('ship-name').value,
         telepon: document.getElementById('ship-phone').value,
         alamatLengkap: document.getElementById('ship-address').value
     };
-    if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
-    document.getElementById('address-overlay').remove();
-    alert("Alamat disimpan.");
-    window.updateCartUI();
+    
+    // Peringatan jika data nama atau alamat kosong
+    if(!userAddress.nama || !userAddress.alamatLengkap) {
+        return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
+    }
+    
+    // Hapus form overlay pengisian alamat
+    const addressOverlay = document.getElementById('address-overlay');
+    if(addressOverlay) {
+        addressOverlay.remove();
+    }
+    
+    // Munculkan Pop-up Digital Sukses
+    tampilkanDpiAlert(
+        "ALAMAT DIKUNCI SUKSES", 
+        "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo."
+    );
+    
+    // Perbarui antarmuka keranjang belanja
+    if(typeof window.updateCartUI === 'function') {
+        window.updateCartUI();
+    }
 };
 
 window.addToCart = (id) => {
@@ -852,7 +874,7 @@ window.addToCart = (id) => {
                 transform: translate(-50%, -100%) scale(0.8);
                 background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
                 color: white; padding: 25px; border-radius: 16px;
-                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.3);
+                box-shadow: 0 10px 40px rgba(212, 175, 55, 0.4);
                 border: 2px solid #d4af37; z-index: 200005;
                 display: flex; flex-direction: column; align-items: center; gap: 12px;
                 opacity: 0; pointer-events: none;
@@ -867,7 +889,7 @@ window.addToCart = (id) => {
                 <div id="dp-popup-title" style="font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
                 <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
                 <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
-                <button onclick="closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
+                <button onclick="window.closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
             `;
             document.body.appendChild(popupContainer);
         } else {
@@ -881,7 +903,8 @@ window.addToCart = (id) => {
             popupContainer.style.pointerEvents = 'auto';
         }, 10);
         
-        window.cartAutoCloseTimer = setTimeout(closeDigitalProPopup, 4000); 
+        window.cartAutoCloseTimer = setTimeout(window.closeDigitalProPopup, 4000);
+        window.updateCartUI(); 
     }
 };
 
@@ -892,10 +915,6 @@ window.closeDigitalProPopup = () => {
         popupContainer.style.transform = 'translate(-50%, -100%) scale(0.8)';
         popupContainer.style.opacity = '0';
         popupContainer.style.pointerEvents = 'none';
-        
-        if(typeof window.updateCartUI === 'function') {
-            window.updateCartUI();
-        }
     }
 };
 

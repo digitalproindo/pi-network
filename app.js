@@ -1,5 +1,5 @@
 // =========================================================================
-// POP-UP KUSTOM DIGITAL PREMIUM (TAMBAHKAN KODE INI DI BARISaling ATAS)
+// POP-UP KUSTOM DIGITAL PREMIUM (DIBERSIHKAN DARI DUPLIKASI)
 // =========================================================================
 function tampilkanDpiAlert(judul, pesan, tipe = 'sukses') {
     if (!document.getElementById('dpiModalStyle')) {
@@ -500,111 +500,35 @@ const productsData = [
         price: 0.05800,
         images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80"],
         desc: `• <b>Mesin:</b> 4.0L Naturally Aspirated Boxer-6<br>• <b>Sayap:</b> Active Rear Wing with DRS`
-    },
-    {
-        id: "gold-001",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 1 Gram",
-        price: 0.00014,
-        images: ["https://i.ibb.co.com/k69gC61Q/Desain-tanpa-judul-20260207-142013-0000.png"],
-        desc: `• <b>Berat:</b> 1 Gram<br>• <b>Sertifikat:</b> LBMA Protected New Press`
-    },
-    {
-        id: "gold-002",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 5 Gram",
-        price: 0.00069,
-        images: ["https://i.ibb.co.com/8g2X0BTr/Desain-tanpa-judul-20260207-142828-0000.png"],
-        desc: `• <b>Berat:</b> 5 Gram<br>• <b>Kemurnian:</b> Fine Gold 999.9`
-    },
-    {
-        id: "gold-003",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 10 Gram",
-        price: 0.00138,
-        images: ["https://i.ibb.co.com/v4XyYwF5/Desain-tanpa-judul-20260207-143301-0000.png"],
-        desc: `• <b>Berat:</b> 10 Gram<br>• <b>Produksi:</b> PT Antam Tbk`
-    },
-    {
-        id: "gold-005",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 25 Gram",
-        price: 0.00345,
-        images: ["https://i.ibb.co.com/NdcSMZfR/Desain-tanpa-judul-20260207-144415-0000.png"],
-        desc: `• <b>Berat:</b> 25 Gram<br>• <b>Kondisi:</b> Segel Minted Bar UTUH`
-    },
-    {
-        id: "gold-006",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 50 Gram",
-        price: 0.00690,
-        images: ["https://i.ibb.co.com/GvbphD6M/Desain-tanpa-judul-20260207-143702-0000.png"],
-        desc: `• <b>Berat:</b> 5 Gram<br>• <b>Kemurnian:</b> 24 Karat (99.99%)`
-    },
-    {
-        id: "gold-007",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 100 Gram",
-        price: 0.01370,
-        images: ["https://i.ibb.co.com/PzwYFNZ8/Desain-tanpa-judul-20260207-150017-0000.png"],
-        desc: `• <b>Berat:</b> 100 Gram<br>• <b>Nilai:</b> Instrumen lindung nilai terbaik`
-    },
-    {
-        id: "gold-010",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 250 Gram",
-        price: 0.03400,
-        images: ["https://i.ibb.co.com/hx080kjJ/Desain-tanpa-judul-20260207-150526-0000.png"],
-        desc: `• <b>Berat:</b> 250 Gram<br>• <b>Bentuk:</b> Cast Bar (Emas Tuang)`
-    },
-    {
-        id: "gold-011",
-        category: "Emas",
-        name: "Emas Antam Logam Mulia 500 Gram",
-        price: 0.06400,
-        images: ["https://i.ibb.co.com/vvvCTrw1/Desain-tanpa-judul-20260207-151033-0000.png"],
-        desc: `• <b>Berat:</b> 500 Gram<br>• <b>Sertifikasi:</b> London Bullion Market Association`
     }
 ];
 
 // =========================================================================
-// 3. PI SDK CORE INTEGRATION
+// 3. PI NETWORK BLOCKCHAIN INTEGRATION (LOGIN OTOMATIS DAN PEMBAYARAN)
 // =========================================================================
 window.onload = function() {
     initPi();
+    if(document.getElementById('main-grid')) {
+        renderProducts(productsData, 'main-grid');
+    }
 };
 
 async function initPi() {
     try {
         if (window.Pi) {
-            window.Pi.init({ version: "2.0", sandbox: false });
-            console.log("Pi SDK Terpanggil dengan Sukses");
+            const scopes = ['username', 'payments', 'wallet_address'];
             
-            // Panggil fungsi login otomatis dari Pi Browser
-            authenticatePiUser();
-        } else {
-            console.warn("Pi SDK tidak terdeteksi. Pastikan dibuka di dalam Pi Browser.");
+            // PROSES AUTHENTICATE LOGIN OTOMATIS UTAMA
+            window.Pi.authenticate(scopes, onIncompletePaymentFound)
+                .then(function(auth) {
+                    currentUser = auth.user;
+                    console.log("Login Sukses Otomatis:", currentUser.username);
+                    terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+                })
+                .catch(function(error) {
+                    console.error("Gagal Autentikasi Otomatis:", error);
+                });
         }
-    } catch (e) {
-        console.error("Gagal inisialisasi Pi SDK:", e);
-    }
-}
-
-async function authenticatePiUser() {
-    try {
-        const scopes = ['username', 'payments', 'wallet_address'];
-        
-        window.Pi.authenticate(scopes, onIncompletePaymentFound)
-        .then(function(auth) {
-            currentUser = auth.user;
-            console.log("Autentikasi Pi Berhasil:", currentUser);
-            
-            // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
-            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-        })
-        .catch(function(error) {
-            console.error("Gagal Autentikasi Otomatis:", error);
-        });
     } catch (e) {
         console.error("Init Error:", e);
     }
@@ -615,18 +539,21 @@ function terapkanDataUserKeUI(username, uid) {
     if (profileDisplay) {
         profileDisplay.innerText = username;
     }
-
     const profileAddress = document.getElementById('profile-address');
     if (profileAddress) {
         profileAddress.innerText = uid;
     }
-
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
         loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
         loginBtn.onclick = () => location.reload();
     }
+}
+
+function onIncompletePaymentFound(payment) {
+    console.log("Incomplete Payment ditemukan:", payment);
+    handleIncompletePayment(payment);
 }
 
 async function handleIncompletePayment(p) {
@@ -656,14 +583,15 @@ function renderProducts(data, targetGridId) {
                 <div class="xtra-label"><span class="xtra-text">XTRA</span><span class="ongkir-text">Gratis Ongkir+</span></div>
             </div>
             <div class="product-info">
-                <h3 class="product-title" onclick="openProductDetail('${p.id}')">${p.name}</h3>
-                <div class="product-meta">
-                    <span class="price-symbol">π</span>
-                    <span class="product-price">${displayPrice}</span>
-                </div>
-                <div style="display: flex; gap: 8px; margin-top: 12px;">
-                    <button class="action-btn detail-btn" onclick="openProductDetail('${p.id}')">Detail</button>
-                    <button class="action-btn cart-btn" onclick="window.addToCart('${p.id}')"><i class="fa-solid fa-cart-plus"></i></button>
+                <div class="product-title" onclick="openProductDetail('${p.id}')">${p.name}</div>
+                <div class="product-footer">
+                    <div class="price-container">
+                        <span class="pi-symbol">π</span>
+                        <span class="product-price">${displayPrice}</span>
+                    </div>
+                    <button class="add-to-cart-btn" onclick="window.addToCart('${p.id}')">
+                        <i class="fa-solid fa-basket-shopping"></i>
+                    </button>
                 </div>
             </div>
         `;
@@ -674,22 +602,15 @@ function renderProducts(data, targetGridId) {
 window.openProductDetail = (id) => {
     const p = productsData.find(x => x.id === id);
     if (!p) return;
-
-    let overlay = document.getElementById('product-detail-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.id = 'product-detail-overlay';
-        overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; display:flex; flex-direction:column; justify-content:flex-end;";
-        document.body.appendChild(overlay);
-    }
-
+    const overlay = document.createElement('div');
+    overlay.id = 'detail-overlay';
+    overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.8); z-index:10002; display:flex; flex-direction:column; justify-content:flex-end;";
     overlay.innerHTML = `
-        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;" onclick="document.getElementById('product-detail-overlay').remove()"></div>
-        <div style="position: relative; width: 100%; height: 45vh; background: #000;">
-            <div onclick="document.getElementById('product-detail-overlay').remove()" style="position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; background: rgba(0,0,0,0.6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 1.2rem; cursor: pointer; z-index: 10;">✕</div>
+        <div onclick="document.getElementById('detail-overlay').remove()" style="position:absolute; top:20px; right:20px; width:40px; height:40px; background:rgba(255,255,255,0.2); backdrop-filter:blur(5px); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:20px; font-weight:bold; cursor:pointer; z-index:2;">✕</div>
+        <div style="width:100%; height:45%; background:#f8fafc; overflow:hidden; position:relative;">
             <img src="${p.images[0]}" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
-        <div style="padding: 20px; background: white; border-radius: 30px 30px 0 0; margin-top: -30px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); z-index: 2; overflow-y: auto; max-height: 55vh;">
+        <div style="padding: 20px; background: white; border-radius: 30px 30px 0 0; margin-top: -30px; box-shadow: 0 -10px 20px rgba(0,0,0,0.05); max-height:60%; overflow-y:auto;">
             <h2 style="margin: 0; font-size: 1.4rem; color:#1a1a1a; font-weight: 800;">${p.name}</h2>
             <div style="font-size: 2.2rem; font-weight: 900; color: #b71c1c; margin: 10px 0;">π ${p.price.toFixed(5)}</div>
             <div style="background: #fdfdfd; padding: 20px; border-radius: 20px; border: 1px solid #f1f5f9; margin-top: 15px;">
@@ -697,76 +618,71 @@ window.openProductDetail = (id) => {
                 <div style="line-height: 1.8; color: #475569; font-size: 0.95rem;">${p.desc}</div>
             </div>
             <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px; padding-bottom: 20px;">
-                <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.3);">BELI SEKARANG</button>
+                <button onclick="window.addToCart('${p.id}'); document.getElementById('detail-overlay').remove();" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
+                <button onclick="document.getElementById('detail-overlay').remove(); window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 15px rgba(103,72,215,0.4);">BELI SEKARANG</button>
             </div>
-        </div>
-    `;
+        </div>`;
+    document.body.appendChild(overlay);
 };
 
 // =========================================================================
-// 5. SHOPPING CART FUNCTION SYSTEM (SISTEM PREMIUM ANTI DOUBLE OVERRIDE)
+// 5. ALAMAT PENGIRIMAN & LOGIKA KERANJANG
 // =========================================================================
+window.saveAddress = () => {
+    userAddress = {
+        nama: document.getElementById('ship-name').value,
+        telepon: document.getElementById('ship-phone').value,
+        alamatLengkap: document.getElementById('ship-address').value
+    };
+    if(!userAddress.nama || !userAddress.alamatLengkap) {
+        return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
+    }
+    const addressOverlay = document.getElementById('address-overlay');
+    if(addressOverlay) addressOverlay.remove();
+    tampilkanDpiAlert("ALAMAT DIKUNCI SUKSES", "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo.");
+    window.updateCartUI();
+};
+
 window.addToCart = (id) => {
     const p = productsData.find(x => x.id === id);
     if(p) {
         cart.push(p);
-        
-        // --- FITUR AUDIO: EFEK SUARA CLINK KOIN DIGITAL INSTAN ---
         try {
             const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
+            if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
             osc.type = 'sine';
-            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); // Nada Tinggi C6
-            osc.frequency.setValueAtTime(1396.91, audioCtx.currentTime + 0.07); // Nada F6 (Dentingan)
+            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(1396.91, audioCtx.currentTime + 0.07);
             gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start();
             osc.stop(audioCtx.currentTime + 0.3);
-        } catch (e) {
-            console.log("Audio block:", e);
-        }
+        } catch (e) { console.log(e); }
 
-        // --- PEMBUATAN OVERLAY POP-UP DIGITAL PRO PREMIUM ---
         let popupContainer = document.getElementById('digital-pro-popup-container');
         if (!popupContainer) {
             popupContainer = document.createElement('div');
             popupContainer.id = 'digital-pro-popup-container';
-            popupContainer.style.cssText = `
-                position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%) scale(0.8);
-                background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%);
-                border: 2px solid #d4af37; border-radius: 20px; padding: 20px; text-align: center;
-                z-index: 110000; width: 80%; max-width: 290px; opacity: 0; pointer-events: none;
-                box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3); transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-                font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; gap: 12px;
-            `;
+            popupContainer.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%) scale(0.8); background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%); border: 2px solid #d4af37; border-radius: 20px; width: 85%; max-width: 300px; padding: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 100005; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; flex-direction: column; align-items: center; gap: 10px; font-family: 'Inter', sans-serif;`;
             popupContainer.innerHTML = `
-                <div style="width: 45px; height: 45px; background: rgba(212, 175, 55, 0.1); border: 1px dashed #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-basket-shopping" style="color: #d4af37; font-size: 18px;"></i>
-                </div>
-                <div style="color: #ffffff; font-size: 13px; font-weight: 800; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
+                <div style="color: #ffffff; font-size: 14px; font-weight: 800; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
                 <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
                 <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
-                <button onclick="window.closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
-            `;
+                <button onclick="window.closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button> `;
             document.body.appendChild(popupContainer);
         } else {
             document.getElementById('dp-popup-img').src = p.images[0];
             document.getElementById('dp-popup-text').innerHTML = `${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.`;
         }
-
         setTimeout(() => {
             popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
             popupContainer.style.opacity = '1';
             popupContainer.style.pointerEvents = 'auto';
         }, 10);
-
         window.cartAutoCloseTimer = setTimeout(window.closeDigitalProPopup, 4000);
         window.updateCartUI();
     }
@@ -796,57 +712,60 @@ window.updateCartUI = () => {
                 <div style="margin-bottom: 25px;"><img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8;"></div>
                 <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
                 <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px;">Sepertinya Anda belum menambahkan produk premium.</p>
-                <button onclick="window.switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; cursor:pointer; box-shadow: 0 10px 20px rgba(103,72,215,0.25);">Mulai Belanja 🛍️</button>
+                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; cursor:pointer;">Mulai Belanja 🛍️</button>
             </div>`;
         return;
     }
-
     let total = 0;
-    let html = `<div style="display:flex; flex-direction:column; gap:16px; padding:8px 0; font-family:'Inter', sans-serif;">`;
-    
+    let itemsHTML = "";
     cart.forEach((item, index) => {
         total += item.price;
-        html += `
-            <div style="display:flex; gap:16px; background:white; padding:16px; border-radius:20px; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); align-items:center;">
-                <img src="${item.images[0]}" style="width:85px; height:85px; object-fit:cover; border-radius:14px; background:#f8fafc;">
+        itemsHTML += `
+            <div style="display:flex; gap:15px; padding:20px; background:white; border-radius:20px; box-shadow:0 4px 12px rgba(0,0,0,0.03); align-items:center; position:relative;">
+                <img src="${item.images[0]}" style="width:85px; height:85px; object-fit:cover; border-radius:15px;">
                 <div style="flex:1;">
-                    <h4 style="margin:0 0 6px 0; color:#1a1a1a; font-size:0.95rem; font-weight:700; line-height:1.4;">${item.name}</h4>
-                    <div style="color:#b71c1c; font-weight:800; font-size:1.1rem; display:flex; align-items:center; gap:4px;"><span>π</span><span>${item.price.toFixed(5)}</span></div>
+                    <h4 style="margin:0; color:#1a1a1a; font-size:0.95rem; font-weight:700; max-width:85%;">${item.name}</h4>
+                    <div style="color:#b71c1c; font-weight:800; font-size:1.1rem; margin-top:8px;">π ${item.price.toFixed(5)}</div>
                 </div>
-                <button onclick="window.removeFromCart(${index})" style="background:#fef2f2; color:#ef4444; border:none; width:40px; height:40px; border-radius:12px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.1rem;"><i class="fa-regular fa-trash-can"></i></button>
+                <div onclick="window.removeFromCart(${index})" style="position:absolute; top:20px; right:20px; color:#94a3b8; cursor:pointer;"><i class="fa-solid fa-trash-can"></i></div>
             </div>`;
     });
-
-    html += `</div>`;
+    let addressSectionHTML = `
+        <div style="background:#f8fafc; padding:20px; border-radius:20px; border:1px dashed #cbd5e1; margin-bottom:20px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <h4 style="margin:0; color:#4a148c; font-weight:800;"><i class="fa-solid fa-location-dot"></i> ALAMAT PENGIRIMAN</h4>
+                <button onclick="window.openAddressModal()" style="background:none; border:none; color:#6748d7; font-weight:700; cursor:pointer;">${userAddress.nama ? 'Ubah' : '+ Atur'}</button>
+            </div>
+            ${userAddress.nama ? `<p style="margin:0; color:#334155; font-size:0.9rem; line-height:1.5;"><b>${userAddress.nama}</b> (${userAddress.telepon})<br>${userAddress.alamatLengkap}</p>` : `<p style="margin:0; color:#64748b; font-size:0.9rem;">Belum ada alamat pengiriman diatur.</p>`}
+        </div>`;
     
-    let addressSection = "";
-    if (userAddress.nama) {
-        addressSection = `
-            <div style="background:#f8fafc; padding:20px; border-radius:20px; border:1px solid #e2e8f0; margin-bottom:25px; position:relative;">
-                <h4 style="margin:0 0 10px 0; color:#1a1a1a; font-weight:800; font-size:0.95rem; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-location-dot" style="color:#6748d7;"></i> ALAMAT PENGIRIMAN</h4>
-                <div style="font-size:0.9rem; color:#334155; line-height:1.6; font-weight:600;">${userAddress.nama} (${userAddress.telepon})</div>
-                <div style="font-size:0.85rem; color:#64748b; line-height:1.5; margin-top:4px;">${userAddress.alamatLengkap}</div>
-                <button onclick="window.showAddressModal()" style="position:absolute; top:15px; right:15px; background:none; border:none; color:#6748d7; font-weight:700; font-size:0.85rem; cursor:pointer; text-decoration:underline;">Ubah</button>
-            </div>`;
-    } else {
-        addressSection = `
-            <div style="background:#fffbeb; padding:20px; border-radius:20px; border:1px dashed #fcd34d; text-align:center; margin-bottom:25px;">
-                <p style="margin:0 0 12px 0; color:#78350f; font-size:0.9rem; font-weight:500;">Alamat pengiriman belum diatur.</p>
-                <button onclick="window.showAddressModal()" style="background:#d97706; color:white; border:none; padding:10px 24px; border-radius:12px; font-weight:700; font-size:0.85rem; cursor:pointer;">+ Atur Alamat Pengiriman</button>
-            </div>`;
-    }
-
     grid.innerHTML = `
-        <div style="display:grid; grid-template-columns:1fr; gap:24px; padding:10px 0;">
-            ${html}
-            <div style="background:white; padding:24px; border-radius:24px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.05);">
-                ${addressSection}
-                <h3 style="margin:0 0 20px 0; color:#1a1a1a; font-size:1.1rem; font-weight:800;">Ringkasan Pembayaran</h3>
+        <div style="display:grid; gap:20px; padding:20px; padding-bottom:120px; font-family:'Inter', sans-serif; background:#fdfdfd;">
+            <h2 style="margin:0; font-size:1.5rem; font-weight:800; color:#1a1a1a;">Keranjang Belanja</h2>
+            ${addressSectionHTML}
+            <div style="display:grid; gap:15px;">${itemsHTML}</div>
+            <div style="background:white; padding:20px; border-radius:25px; box-shadow:0 -5px 20px rgba(0,0,0,0.02); margin-top:10px;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#64748b;"><span>Subtotal (${cart.length} Produk)</span><span>π ${total.toFixed(5)}</span></div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; border-top:2px solid #f8fafc; padding-top:15px;"><span>Total Tagihan</span><span style="color:#b71c1c;">π ${total.toFixed(5)}</span></div>
                 <button style="width:100%; padding:16px; border-radius:16px; background:#6748d7; color:white; font-weight:800; border:none; cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG 🚀</button>
             </div>
         </div>`;
+};
+
+window.openAddressModal = () => {
+    const overlay = document.createElement('div');
+    overlay.id = 'address-overlay';
+    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
+    overlay.innerHTML = `
+        <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative; font-family:'Inter', sans-serif;">
+            <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
+            <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
+            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama || ''}"></div>
+            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon || ''}"></div>
+            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap || ''}</textarea></div>
+            <button onclick="window.saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">SIMPAN ALAMAT</button>
+        </div>`;
+    document.body.appendChild(overlay);
 };
 
 window.switchPage = (pageId) => {
@@ -867,65 +786,78 @@ window.switchPage = (pageId) => {
 // =========================================================================
 function showLoginPrompt() {
     const overlay = document.createElement('div');
+    overlay.id = 'login-prompt-overlay';
     overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px);";
     overlay.innerHTML = `
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
             <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Selamat Datang</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan belanja produk premium di ekosistem digital kami.</p>
-            <button onclick="document.getElementById('login-btn').click(); this.parentElement.parentElement.remove();" style="background:linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color:#0b2135; border:none; width:100%; padding:14px; border-radius:15px; font-weight:800; font-size:1rem; cursor:pointer;">LOGIN AKUN PI NOW</button>
-        </div>
-    `;
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan pembelian premium aman menggunakan Pi Coin.</p>
+            <button onclick="document.getElementById('login-prompt-overlay').remove(); initPi();" style="width:100%; padding:15px; background:linear-gradient(to right, #FFD700, #FFA500); border:none; border-radius:15px; font-weight:800; color:#0b2135; cursor:pointer; font-size:0.95rem; box-shadow:0 5px 15px rgba(255,215,0,0.3);">LOGIN PI NETWORK</button>
+        </div>`;
     document.body.appendChild(overlay);
 }
 
-window.handlePayment = (amount, name) => {
+window.handlePayment = (amount, itemName) => {
     if (!currentUser) {
         showLoginPrompt();
         return;
     }
-    if(!userAddress.nama || !userAddress.alamatLengkap) {
-        return tampilkanDpiAlert("ALAMAT KOSONG", "Silakan atur alamat pengiriman Anda terlebih dahulu sebelum memproses pembayaran blockchain.", "peringatan");
+    if (!userAddress.nama || !userAddress.alamatLengkap) {
+        return tampilkanDpiAlert("ALAMAT KOSONG", "Silakan atur alamat pengiriman terlebih dahulu di halaman keranjang digital.", "peringatan");
     }
+    
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(13,3,26,0.9); z-index:150000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:'Inter',sans-serif;";
+    loadingOverlay.innerHTML = `
+        <div style="width:50px; height:50px; border:5px dashed #d4af37; border-radius:50%; animation:spin 1.5s linear infinite; margin-bottom:20px;"></div>
+        <div style="font-weight:700; color:#ffffff; letter-spacing:1px; margin-bottom:5px;">MEMPROSES TRANSAKSI BLOCKCHAIN</div>
+        <div style="font-size:12px; color:#dfcbf2;">Mohon tunggu sebentar di Pi Browser...</div>
+        <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+    `;
+    document.body.appendChild(loadingOverlay);
 
     try {
-        const detailedItemName = (name === 'Total Keranjang') ? `Checkout ${cart.length} Produk Premium` : name;
+        const detailedItemName = itemName === 'Total Keranjang' ? cart.map(i => i.name).join(', ') : itemName;
         
         window.Pi.createPayment({
             amount: amount,
-            memo: `Pembayaran: ${detailedItemName} - Oleh @${currentUser.username}`,
-            metadata: { 
-                itemName: detailedItemName, 
-                buyer: currentUser.username,
-                penerima: userAddress.nama,
-                telepon: userAddress.telepon,
-                alamat: userAddress.alamatLengkap
-            }
+            memo: `Pembayaran ${itemName} - PT Digital Pro Indo`,
+            metadata: { item_ids: itemName, buyer: currentUser.username },
         }, {
             onReadyForServerApproval: (paymentId) => {
-                console.log("Payment Ready For Approval. ID:", paymentId);
                 fetch('https://www.ptdigitalproindo.com/api/approve', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ paymentId: paymentId })
-                });
+                }).then(() => console.log("Approved on server"));
             },
             onReadyForServerCompletion: (paymentId, txid) => {
-                console.log("Payment Ready For Completion. TxID:", txid);
                 fetch('https://www.ptdigitalproindo.com/api/complete', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ paymentId: paymentId, txid: txid })
-                });
+                }).then(res => res.json())
+                  .then(() => {
+                      loadingOverlay.remove();
+                      showSuccessOverlay(amount, detailedItemName, txid);
+                      if(itemName === 'Total Keranjang') {
+                          cart = [];
+                          window.updateCartUI();
+                      }
+                  });
             },
             onCancel: () => {
+                loadingOverlay.remove();
                 console.log("Pembayaran dibatalkan pembeli");
             },
             onError: (error, payment) => {
+                loadingOverlay.remove();
                 console.error("Payment Error:", error);
                 if(payment) handleIncompletePayment(payment);
             }
         });
     } catch (err) {
+        loadingOverlay.remove();
         console.error("Execution Error:", err);
     }
 };
@@ -942,146 +874,30 @@ function showSuccessOverlay(amount, name, txid) {
         alamat: userAddress.alamatLengkap,
         telepon: userAddress.telepon
     };
-
     fetch(excelWebhookUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataTransaksi)
-    })
-    .catch(err => console.error("Gagal catat Excel:", err));
+    }).catch(err => console.error("Gagal catat Excel:", err));
 
     const overlay = document.createElement('div');
     overlay.style = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
-    
-    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${name}%0A• *Total:* π ${amount}%0A• *TxID:* ${txid}%0A%0A*DATA PENGIRIMAN:*%0A• *Nama:* ${userAddress.nama}%0A• *No. HP/WA:* ${userAddress.telepon}%0A• *Alamat Lengkap:* ${userAddress.alamatLengkap}%0A%0A*AKUN PI NETWORK:*%0A• *Username:* @${currentUser.username}%0A_______________________________%0AMohon segera diproses, Terima kasih.`;
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${name}%0A• *Total:* π ${amount.toFixed(5)}%0A• *TXID:* ${txid}%0A%0A*DATA PENGIRIMAN:*%0A• *Nama Akun Pi:* ${currentUser.username}%0A• *Nama Penerima:* ${userAddress.nama}%0A• *No HP/WA:* ${userAddress.telepon}%0A• *Alamat Lengkap:* ${userAddress.alamatLengkap}%0A_______________________________%0A%0AMohon segera diproses kirim ya min, Terima kasih!`;
     
     overlay.innerHTML = `
-        <div style="background:linear-gradient(135deg, #111827 0%, #1f2937 100%); border:2px solid #22c55e; padding:30px 20px; border-radius:24px; max-width:340px; width:100%; text-align:center; color:white; font-family:'Inter', sans-serif; box-shadow: 0 20px 40px rgba(34,197,94,0.15);">
-            <div style="width:65px; height:65px; background:rgba(34,197,94,0.1); border:2px dashed #22c55e; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;"><i class="fa-solid fa-circle-check" style="color:#22c55e; font-size:32px;"></i></div>
-            <h2 style="margin:0 0 8px 0; color:#22c55e; font-weight:800; font-size:1.3rem;">PEMBAYARAN SUKSES!</h2>
-            <p style="color:#9ca3af; font-size:0.85rem; margin:0 0 20px 0; line-height:1.5;">Transaksi terverifikasi di Mainnet Pi Blockchain Network.</p>
-            <div style="background:rgba(255,255,255,0.03); padding:15px; border-radius:14px; text-align:left; font-size:0.8rem; margin-bottom:25px; border:1px solid rgba(255,255,255,0.05); display:flex; flex-direction:column; gap:8px;">
-                <div><span style="color:#6b7280; display:block; font-size:0.75rem; margin-bottom:1px;">PRODUK</span><span style="color:#f3f4f6; font-weight:600;">${name}</span></div>
-                <div><span style="color:#6b7280; display:block; font-size:0.75rem; margin-bottom:1px;">TOTAL BAYAR</span><span style="color:#22c55e; font-weight:800; font-size:0.95rem;">π ${amount}</span></div>
-                <div><span style="color:#6b7280; display:block; font-size:0.75rem; margin-bottom:1px;">BLOCKCHAIN TXID</span><span style="color:#f3f4f6; font-family:monospace; word-break:break-all; display:block; background:#0b0f19; padding:6px; border-radius:6px; margin-top:3px; font-size:0.7rem; border:1px solid rgba(255,255,255,0.05);">${txid}</span></div>
-            </div>
-            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#22c55e; color:white; text-decoration:none; padding:15px; border-radius:14px; font-weight:800; font-size:0.95rem; box-shadow:0 10px 20px rgba(34,197,94,0.2); transition:all 0.3s; margin-bottom:12px;">HUBUNGI ADMIN VIA WA 💬</a>
-            <button onclick="location.reload()" style="width:100%; background:transparent; color:#9ca3af; border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:14px; font-weight:600; font-size:0.85rem; cursor:pointer;">Kembali ke Beranda</button>
-        </div>
-    `;
+        <div style="background: linear-gradient(135deg, #120024 0%, #2a004d 100%); border: 3px solid #d4af37; padding: 30px 20px; border-radius: 25px; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 15px 40px rgba(212,175,55,0.3); font-family: 'Inter', sans-serif;">
+            <div style="width: 70px; height: 70px; background: rgba(212,175,55,0.1); border: 2px dashed #d4af37; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px auto;"><i class="fa-solid fa-crown" style="font-size: 30px; color: #d4af37;"></i></div>
+            <h3 style="color:#ffffff; margin:0; font-size:1.3rem; font-weight:800; letter-spacing:0.5px;">PEMBAYARAN SUKSES!</h3>
+            <p style="color:#dfcbf2; margin:12px 0 25px; font-size:0.85rem; line-height:1.6;">Selamat! Koin Pi Anda telah berhasil didepositkan ke blockchain premium PT. Digital Pro Indo secara real-time.</p>
+            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:block; text-decoration:none; width:100%; padding:15px; background:#25D366; border:none; border-radius:15px; font-weight:800; color:white; cursor:pointer; font-size:0.9rem; box-shadow:0 4px 15px rgba(37,211,102,0.3); box-sizing:border-box; margin-bottom:12px;"><i class="fa-brands fa-whatsapp"></i> CHAT ADMIN VIA WA</a>
+            <button onclick="location.reload()" style="width:100%; padding:13px; background:transparent; border:1px solid rgba(255,255,255,0.3); border-radius:15px; font-weight:700; color:#dfcbf2; cursor:pointer; font-size:0.85rem;">Kembali ke Beranda</button>
+        </div>`;
     document.body.appendChild(overlay);
 }
 
-function onIncompletePaymentFound(payment) {
-    console.log("Incomplete Payment Detected:", payment);
-    handleIncompletePayment(payment);
-}
-
-window.showAddressModal = () => {
-    let overlay = document.getElementById('address-overlay');
-    if(overlay) overlay.remove();
-    
-    overlay = document.createElement('div');
-    overlay.id = 'address-overlay';
-    overlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); z-index:10001; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box;";
-    overlay.innerHTML = `
-        <div style="background:white; padding:25px; border-radius:20px; width:100%; max-width:350px; color:#333; position:relative; font-family:'Inter', sans-serif;">
-            <div onclick="document.getElementById('address-overlay').remove()" style="position:absolute; top:15px; right:15px; width:30px; height:30px; background:#f2f2f2; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold; color:#666;">✕</div>
-            <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
-            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama || ''}"></div>
-            <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon || ''}"></div>
-            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap || ''}</textarea></div>
-            <button onclick="window.saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:15px; border-radius:12px; font-weight:800; cursor:pointer; box-shadow:0 10px 20px rgba(103,72,215,0.2);">SIMPAN ALAMAT SECARA AMAN</button>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-};
-
 // =========================================================================
-// MODIFIKASI FORM ALAMAT DIGITAL PREMIUM (GANTI TOTAL DI APP.JS)
-// =========================================================================
-
-// Fungsi Utama saat Tombol Simpan Alamat di-Klik (Menggantikan Fungsi Lama)
-window.saveAddress = () => {
-    userAddress = {
-        nama: document.getElementById('ship-name').value,
-        telepon: document.getElementById('ship-phone').value,
-        alamatLengkap: document.getElementById('ship-address').value
-    };
-
-    // Peringatan jika data nama atau alamat kosong
-    if(!userAddress.nama || !userAddress.alamatLengkap) {
-        return tampilkanDpiAlert("DATA BELUM LENGKAP", "Mohon lengkapi nama dan alamat lengkap pengiriman Anda sebelum melanjutkan.", "peringatan");
-    }
-
-    // Hapus form overlay pengisian alamat
-    const addressOverlay = document.getElementById('address-overlay');
-    if(addressOverlay) {
-        addressOverlay.remove();
-    }
-
-    // Munculkan Pop-up Digital Sukses
-    tampilkanDpiAlert(
-        "ALAMAT DIKUNCI SUKSES",
-        "Konfirmasi sukses! Data pengiriman Anda kini telah terenkripsi aman di sistem premium Digital Pro Indo."
-    );
-
-    // Perbarui antarmuka keranjang belanja
-    if(typeof window.updateCartUI === 'function') {
-        window.updateCartUI();
-    }
-};
-
-// =========================================================================
-// 7. USER AUTHENTICATION HANDLERS
-// =========================================================================
-window.handleLogin = async () => {
-    if (currentUser) return;
-    
-    const loginBtn = document.getElementById('login-btn');
-    const loadingOverlay = document.createElement('div');
-    loadingOverlay.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(13,3,26,0.9); z-index:30000; display:flex; flex-direction:column; align-items:center; justify-content:center; color:white; font-family:'Inter', sans-serif;";
-    loadingOverlay.innerHTML = `
-        <div style="width:50px; height:50px; border:5px dashed #d4af37; border-radius:50%; animation:fa-spin 2s infinite linear; margin-bottom:20px;"></div>
-        <div style="color:#d4af37; font-weight:800; font-size:1.1rem; letter-spacing:1px;">MENGHUBUNGKAN KE PI CORE...</div>
-        <div style="color:#dfcbf2; font-size:0.85rem; margin-top:6px;">Silakan otorisasi akun dompet Anda</div>
-    `;
-    document.body.appendChild(loadingOverlay);
-
-    try {
-        if(!window.Pi) {
-            throw new Error("Buka aplikasi ini dari dalam Pi Browser untuk terhubung ke Core Sandbox Mainnet.");
-        }
-        const scopes = ['username', 'payments', 'wallet_address'];
-        const auth = await window.Pi.authenticate(scopes, onIncompletePaymentFound);
-        currentUser = auth.user;
-        
-        if (currentUser) {
-            const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-            if (profileDisplay) profileDisplay.innerText = currentUser.username;
-            
-            const profileAddress = document.getElementById('profile-address');
-            if (profileAddress) profileAddress.innerText = currentUser.uid;
-            
-            if (loginBtn) {
-                loginBtn.innerText = "LOGOUT";
-                loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-                loginBtn.onclick = () => location.reload();
-            }
-        }
-        setTimeout(() => {
-            loadingOverlay.remove();
-        }, 3000);
-    } catch (err) {
-        console.error(err);
-        loadingOverlay.remove();
-        if (err.message !== "User cancelled login") alert("Gagal Login: " + err.message);
-    }
-};
-
-// =========================================================================
-// 8. SIDEBAR MENU & BANNER LOGIC (KODE PERBAIKAN)
+// 7. SIDEBAR MENU & BANNER LOGIC (DIPERBAIKI SECARA TELITI)
 // =========================================================================
 window.toggleMenu = () => {
     const nav = document.getElementById("sideNav");
@@ -1089,24 +905,22 @@ window.toggleMenu = () => {
     nav.style.width = (nav.style.width === "250px") ? "0px" : "250px";
 };
 
-// PERBAIKAN: Deteksi klik luar agar tidak menutup paksa saat memilih kategori
+// PERBAIKAN: Klik area luar untuk tutup sidebar, melompati klik pada Kategori
 window.addEventListener('click', function(event) {
     const nav = document.getElementById("sideNav");
     const menuIcon = document.querySelector('.menu-icon');
     
-    // Pastikan navigasi sedang terbuka
     if (nav && nav.style.width === "250px") {
-        // PERBAIKAN: Jika yang diklik adalah bagian dari sidebar atau tombol menu, JANGAN ditutup
+        // Jika mengklik isi sidebar atau tombol hamburger menu, biarkan tetap terbuka
         if (nav.contains(event.target) || (menuIcon && menuIcon.contains(event.target))) {
-            return; // Biarkan menu tetap terbuka atau memproses kategori
+            return;
         }
-        
-        // Tutup hanya jika benar-benar mengklik area kosong di luar sidebar
+        // Tutup jika mengklik area gelap luar
         nav.style.width = "0px";
     }
 });
 
-// Fungsi filter produk berdasarkan kategori (Pastikan fungsi ini ada dan dipanggil di elemen HTML)
+// Fungsi filter produk berdasarkan kategori pilihan
 window.filterCategory = (categoryName) => {
     if (categoryName === 'Semua') {
         renderProducts(productsData, 'main-grid');
@@ -1114,66 +928,25 @@ window.filterCategory = (categoryName) => {
         const filtered = productsData.filter(p => p.category.toLowerCase() === categoryName.toLowerCase());
         renderProducts(filtered, 'main-grid');
     }
-    // Opsional: Tutup sidebar secara halus SETELAH kategori dipilih
+    // Menutup sidebar secara halus setelah kategori selesai dipilih
     const nav = document.getElementById("sideNav");
     if (nav) nav.style.width = "0px";
 };
 
-
-// =========================================================================
-// 9. SEARCH BAR RUNTIME METHOD
-// =========================================================================
-function initSearch() {
-    const sInput = document.getElementById('search-input');
-    const sResult = document.getElementById('search-results');
-    
-    if (sInput && sResult) {
-        sInput.addEventListener('input', function(e) {
-            const keyword = e.target.value.trim().toLowerCase();
-            if (keyword.length === 0) {
-                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Ketik nama produk premium favoritmu...</p>`;
-                return;
-            }
-            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-            if (filtered.length > 0) {
-                renderProducts(filtered, 'search-results');
-            } else {
-                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
-            }
-        });
-    }
-
-    window.addEventListener('click', function(event) {
-        const nav = document.getElementById("sideNav");
-        const menuIcon = document.querySelector('.menu-icon');
-        if (nav && nav.style.width === "250px" && menuIcon) {
-            if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-                nav.style.width = "0px";
-            }
+// Fitur Pencarian Produk Berdasarkan Keyword
+if (document.getElementById('search-input')) {
+    document.getElementById('search-input').addEventListener('input', function(e) {
+        const keyword = e.target.value.toLowerCase();
+        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+        const sResult = document.getElementById('search-results');
+        if (!sResult) return;
+        
+        if (keyword.length === 0) {
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px; color:#64748b;">Ketik nama produk favoritmu...</p>`;
+        } else if (filtered.length > 0) {
+            renderProducts(filtered, 'search-results');
+        } else {
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; padding: 20px;">Produk "${keyword}" tidak ditemukan.</p>`;
         }
     });
-
-    const banners = [
-        "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
-        "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
-        "https://i.ibb.co.com/Gvc69SRX/Salinan-dari-Salinan-dari-ORANG-PERTAMA-20260217-012738-0000.png", 
-        "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260203-111005-0000.png"
-    ];
-    let currentBannerIdx = 0;
-    const bannerEl = document.getElementById('hero-banner-img');
-    
-    if (bannerEl && banners.length > 0) {
-        setInterval(() => {
-            currentBannerIdx = (currentBannerIdx + 1) % banners.length;
-            bannerEl.style.opacity = '0.4';
-            setTimeout(() => {
-                bannerEl.src = banners[currentBannerIdx];
-                bannerEl.style.opacity = '1';
-            }, 300);
-        }, 5000);
-    }
 }
-
-// Jalankan Rendering Awal
-renderProducts(productsData, 'main-grid');
-initSearch();

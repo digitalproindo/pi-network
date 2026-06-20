@@ -1,8 +1,4 @@
 (function() {
-    // 1. Desain Gaya Tampilan Bursa Saham Bersih & Tegas (Mencegah Tertindih)
-    var style = document.createElement('style');
-    style.innerHTML = 
-(function() {
     // 1. Desain Gaya Tampilan Bursa Saham Bersih & Tegas
     var style = document.createElement('style');
     style.innerHTML = 

@@ -1201,7 +1201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     const banners = [
-        "https://i.ibb.co.com/M5kWS7bv/Ubay-Corner.jpg", 
+        "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
         "https://i.ibb.co.com/Gvc69SRX/Salinan-dari-Salinan-dari-ORANG-PERTAMA-20260217-012738-0000.png", 
         "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"

@@ -1201,7 +1201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     const banners = [
-        "https://i.ibb.co.com/dsXZPqYM/ORANG-PERTAMA-20260202-171219-0000.png", 
+        "https://i.ibb.co.com/Zpx41H8v/Chat-GPT-Image-21-Jun-2026-03-04-11.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
         "https://i.ibb.co.com/Gvc69SRX/Salinan-dari-Salinan-dari-ORANG-PERTAMA-20260217-012738-0000.png", 
         "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"

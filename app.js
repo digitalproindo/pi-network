@@ -614,6 +614,64 @@ function terapkanDataUserKeUI(username, uid) {
     if (profileDisplay) {
         // Tambahkan simbol @ jika belum ada agar terlihat seperti username Pi asli
         profileDisplay.innerText = username.startsWith('@') ? username : `@${username}`;
+// =========================================================================
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
+// =========================================================================
+let currentUser = null; 
+
+async function initPi() {
+    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
+    const loginFallbackTimer = setTimeout(() => {
+        if (!currentUser) {
+            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
+            currentUser = {
+                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
+                username: "Pi_Tester_Indo"
+            };
+            
+            // Terapkan data ke profil UI secara instan
+            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+        }
+    }, 3000); 
+    // --------------------------------------------------------------------
+
+    try {
+        if (window.Pi) {
+            // Aktifkan mode sandbox: true untuk pengujian testnet
+            await window.Pi.init({ version: "2.0", sandbox: true });
+            console.log("Pi SDK Berhasil Diinisialisasi");
+
+            // Ambil scope 'username' dan 'payments' untuk membaca data user
+            const scopes = ['username', 'payments'];
+            window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
+                .then(function(auth) {
+                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan
+                    
+                    currentUser = auth.user; 
+                    console.log("Login otomatis sukses! Pengguna:", currentUser.username);
+
+                    // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
+                    terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+                })
+                .catch(function(error) {
+                    console.error("Gagal Autentikasi Otomatis:", error);
+                    clearTimeout(loginFallbackTimer);
+                });
+        } else {
+            console.log("window.Pi tidak ditemukan. Berjalan di browser biasa (mode simulasi/fallback).");
+        }
+    } catch (e) { 
+        console.error("Init Error:", e); 
+        clearTimeout(loginFallbackTimer);
+    }
+}
+
+// Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
+function terapkanDataUserKeUI(username, uid) {
+    // 1. Menampilkan Nama Akun User Pi (@username)
+    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
+    if (profileDisplay) {
+        profileDisplay.innerText = username.startsWith('@') ? username : `@${username}`;
     }
 
     // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
@@ -623,7 +681,7 @@ function terapkanDataUserKeUI(username, uid) {
             // Memotong UID agar rapi di layar HP (Contoh: GBXW...XDFG)
             const uidDipotong = uid.length > 12 ? `${uid.substring(0, 6)}...${uid.substring(uid.length - 4)}` : uid;
             profileAddress.innerText = uidDipotong;
-            profileAddress.setAttribute('title', uid); // Menyimpan UID asli jika elemen ditahan/di-hover
+            profileAddress.setAttribute('title', uid); 
         } else {
             profileAddress.innerText = "Belum Terhubung";
         }
@@ -653,10 +711,11 @@ async function handleIncompletePayment(p) {
     }
 }
 
-// MEMASTIKAN FUNGSI INIT PI BERJALAN SAAT HALAMAN DIBUKA
-document.addEventListener("DOMContentLoaded", () => {
-    initPi();
-});
+// =========================================================================
+// SOLUSI: MEMANGGIL INIT PI TANPA MENGGANGGU EVENT DOMCONTENTLOADED UTAMA
+// =========================================================================
+// Cukup panggil fungsi ini langsung agar tidak menimpa event listener produk Anda
+initPi();
 
 
 // =========================================================================

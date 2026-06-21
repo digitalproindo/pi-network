@@ -1181,10 +1181,13 @@ window.toggleDropdown = () => {
 // 9. CORE PIPELINE (DOM LOAD INITIALIZATION)
 // =========================================================================
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Jalankan render awal produk premium secara aman
-    renderProducts(productsData, 'main-grid');
+    
+    // 🌟 PASTIKAN BARIS INI ADA DI SINI AGAR PRODUK LANGSUNG TAMPIL SEJAK AWAL
+    if (typeof renderProducts === 'function' && typeof productsData !== 'anonymous') {
+        renderProducts(productsData, 'main-grid');
+    }
 
-    // 2. Hubungkan pipa pencarian input
+    // Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
@@ -1200,7 +1203,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 3. Deteksi klik di luar untuk menutup SideNav
+    // Deteksi klik di luar untuk menutup SideNav
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1211,7 +1214,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 4. Rotasi Banner Otomatis
+    // Rotasi Banner Otomatis
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1224,10 +1227,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // 5. EKSEKUSI UTAMA: Jalankan pipeline login otomatis Pi Network SDK
-    await initPi();
+    // EKSEKUSI UTAMA: Jalankan pipeline login otomatis Pi Network SDK
+    if (typeof initPi === 'function') {
+        await initPi();
+    }
 
-    // 6. Bind tombol login manual jika dibutuhkan re-auth
+    // Bind tombol login manual jika dibutuhkan re-auth
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;

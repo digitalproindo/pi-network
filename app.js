@@ -554,9 +554,24 @@ productsData.forEach(p => {
 });
 
 // =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES (DENGAN LOGIN OTOMATIS)
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (DENGAN LOGIN OTOMATIS & ANTI-MACET)
 // =========================================================================
 async function initPi() {
+    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
+    const loginFallbackTimer = setTimeout(() => {
+        if (!currentUser) {
+            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
+            currentUser = {
+                uid: "testnet-user-12345",
+                username: "Pi_Tester_Indo"
+            };
+            
+            // Terapkan data ke antarmuka aplikasi secara instan
+            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+        }
+    }, 3000); 
+    // --------------------------------------------------------------------
+
     try {
         if (window.Pi) {
             // Aktifkan mode sandbox: true untuk pengujian testnet
@@ -567,21 +582,12 @@ async function initPi() {
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
+                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi sukses merespon cepat
                     currentUser = auth.user;
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
-                    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-                    if (profileDisplay) profileDisplay.innerText = currentUser.username;
-
-                    const profileAddress = document.getElementById('profile-address');
-                    if (profileAddress) profileAddress.innerText = currentUser.uid;
-
-                    const loginBtn = document.getElementById('login-btn');
-                    if (loginBtn) {
-                        loginBtn.innerText = "LOGOUT";
-                        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-                        loginBtn.onclick = () => location.reload();
-                    }
+                    // Terapkan data asli pengguna Pi ke antarmuka aplikasi
+                    terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 })
                 .catch(function(error) {
                     console.error("Gagal Autentikasi Otomatis:", error);
@@ -589,6 +595,22 @@ async function initPi() {
         }
     } catch (e) { 
         console.error("Init Error:", e); 
+    }
+}
+
+// Fungsi pembantu untuk memperbarui tampilan teks & tombol setelah masuk sistem
+function terapkanDataUserKeUI(username, uid) {
+    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+    if (profileDisplay) profileDisplay.innerText = username;
+
+    const profileAddress = document.getElementById('profile-address');
+    if (profileAddress) profileAddress.innerText = uid;
+
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.innerText = "LOGOUT";
+        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+        loginBtn.onclick = () => location.reload();
     }
 }
 

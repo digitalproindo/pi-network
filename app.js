@@ -213,10 +213,88 @@ window.saveAddress = () => {
         telepon: document.getElementById('ship-phone').value,
         alamatLengkap: document.getElementById('ship-address').value
     };
-    if(!userAddress.nama || !userAddress.alamatLengkap) return alert("Mohon lengkapi data!");
-    document.getElementById('address-overlay').remove();
-    alert("Alamat disimpan.");
+    
+    if(!userAddress.nama || !userAddress.alamatLengkap) {
+        return alert("Mohon lengkapi data!"); 
+    }
+    
+    // 🔊 EFEK SUARA ELEKTRONIK (DIGITAL PRO SUCCESS CHIME)
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        
+        // Nada 1 (Rendah) menuju Nada 2 (Tinggi Harmonis)
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = 'sine'; // Suara gelombang lembut/bersih
+        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); // Nada D5 (Mulai)
+        osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.08); // Nada A5 (Melonjak naik)
+        
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35); // Pudar halus
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.35);
+    } catch (e) { 
+        console.log("Audio otomatis diblokir browser atau tidak didukung:", e); 
+    }
+
+    // Tutup overlay form alamat asal
+    const currentOverlay = document.getElementById('address-overlay');
+    if (currentOverlay) currentOverlay.remove();
+    
+    // Perbarui tampilan halaman keranjang jika sedang terbuka
     window.updateCartUI();
+
+    // SEKSI DIGITAL PRO POPUP NOTIFIKASI KUSTOM
+    const successPopup = document.createElement('div');
+    successPopup.id = "digital-pro-success-alert";
+    successPopup.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
+        z-index: 100005; display: flex; align-items: center; justify-content: center;
+        padding: 20px; box-sizing: border-box; opacity: 0;
+        transition: opacity 0.3s ease; font-family: 'Inter', sans-serif;
+    `;
+    
+    successPopup.innerHTML = `
+        <div style="
+            background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%);
+            border: 2px solid #FFD700; padding: 30px 20px; border-radius: 24px;
+            max-width: 320px; width: 100%; text-align: center;
+            box-shadow: 0 15px 50px rgba(212, 175, 55, 0.2);
+            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        ">
+            <div style="
+                background: rgba(255, 215, 0, 0.1); width: 65px; height: 65px;
+                border-radius: 50%; display: flex; justify-content: center;
+                align-items: center; margin: 0 auto 20px; border: 2px solid #FFD700;
+            ">
+                <span style="font-size: 28px;">📍</span>
+            </div>
+            <h3 style="color: #FFD700; margin: 0 0 8px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 1.2rem;">Alamat Disimpan!</h3>
+            <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.9rem; line-height: 1.4;">Data pengiriman logistik Anda telah berhasil diperbarui di sistem kami.</p>
+            <button onclick="document.getElementById('digital-pro-success-alert').remove()" style="
+                background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%);
+                color: #0b2135; border: none; padding: 12px 0; width: 100%;
+                border-radius: 12px; font-weight: 800; font-size: 0.95rem;
+                cursor: pointer; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+                text-transform: uppercase; letter-spacing: 0.5px;
+            ">Lanjutkan</button>
+        </div>
+    `;
+    
+    document.body.appendChild(successPopup);
+    
+    // Memicu efek animasi muncul (fade-in & pop-up scale)
+    setTimeout(() => {
+        successPopup.style.opacity = "1";
+        successPopup.children[0].style.transform = "scale(1)";
+    }, 50);
 };
 
 window.addToCart = (id) => {

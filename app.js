@@ -556,6 +556,8 @@ productsData.forEach(p => {
 // =========================================================================
 // 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
 // =========================================================================
+let currentUser = null; // Pastikan variabel global ini tersedia
+
 async function initPi() {
     // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
     const loginFallbackTimer = setTimeout(() => {
@@ -574,61 +576,87 @@ async function initPi() {
 
     try {
         if (window.Pi) {
-            // Aktifkan mode sandbox: true untuk pengujian testnet
+            // Aktifkan mode sandbox: true untuk pengujian testnet, ubah ke false jika sudah Mainnet
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
-            // Ambil scope 'username' dan 'payments' untuk membaca data user & dompet
+            // Ambil scope 'username' dan 'payments' untuk membaca data user
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
                     clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
-                    currentUser = auth.user; // Berisi data user asli dari Pi Browser (username & uid)
+                    
+                    currentUser = auth.user; // Berisi data user asli dari Pi Browser
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
-                    // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
+                    // PENTING: Jika di Mainnet/Real Pi Browser, auth.user.uid adalah User ID Aplikasi.
+                    // Untuk sinkronisasi tampilan, kita gunakan UID ini sebagai pengenal dompet/akun di UI profil.
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 })
                 .catch(function(error) {
                     console.error("Gagal Autentikasi Otomatis:", error);
+                    clearTimeout(loginFallbackTimer);
                 });
+        } else {
+            console.log("window.Pi tidak ditemukan. Menjalankan fallback.");
         }
     } catch (e) { 
         console.error("Init Error:", e); 
+        clearTimeout(loginFallbackTimer);
     }
 }
 
 // Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
 function terapkanDataUserKeUI(username, uid) {
-    // 1. Menampilkan Nama Akun User Pi
-    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+    // 1. Menampilkan Nama Akun User Pi (@username)
+    // Mencari elemen berdasarkan ID atau Class bawaan profil Anda
+    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
     if (profileDisplay) {
-        profileDisplay.innerText = username;
+        // Tambahkan simbol @ jika belum ada agar terlihat seperti username Pi asli
+        profileDisplay.innerText = username.startsWith('@') ? username : `@${username}`;
     }
 
     // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
-    const profileAddress = document.getElementById('profile-address');
+    const profileAddress = document.getElementById('profile-address') || document.querySelector('.wallet-uid-text') || document.querySelector('.profile-info p');
     if (profileAddress) {
-        // Menampilkan UID lengkap atau bisa disingkat agar rapi di layar HP
-        profileAddress.innerText = uid; 
+        if (uid) {
+            // Memotong UID agar rapi di layar HP (Contoh: GBXW...XDFG)
+            const uidDipotong = uid.length > 12 ? `${uid.substring(0, 6)}...${uid.substring(uid.length - 4)}` : uid;
+            profileAddress.innerText = uidDipotong;
+            profileAddress.setAttribute('title', uid); // Menyimpan UID asli jika elemen ditahan/di-hover
+        } else {
+            profileAddress.innerText = "Belum Terhubung";
+        }
     }
 
-    // 3. Mengubah Status Tombol Login Menjadi Logout
+    // 3. Mengubah Status Tombol Login Menjadi LOGOUT jika tombol tersedia
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
         loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-        loginBtn.onclick = () => location.reload();
+        loginBtn.onclick = () => {
+            currentUser = null;
+            location.reload();
+        };
     }
 }
 
 async function handleIncompletePayment(p) {
-    await fetch('https://www.ptdigitalproindo.com/api/complete', { 
-        method: 'POST', 
-        headers: {'Content-Type': 'application/json'}, 
-        body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
-    });
+    try {
+        await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
+        });
+    } catch (err) {
+        console.error("Gagal menyelesaikan pembayaran tertunda:", err);
+    }
 }
+
+// MEMASTIKAN FUNGSI INIT PI BERJALAN SAAT HALAMAN DIBUKA
+document.addEventListener("DOMContentLoaded", () => {
+    initPi();
+});
 
 
 // =========================================================================

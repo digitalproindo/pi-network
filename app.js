@@ -618,25 +618,76 @@ function terapkanDataUserKeUI(username, uid) {
     }
 
     // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
-    const profileAddress = document.getElementById('profile-address') || document.querySelector('.wallet-uid-text') || document.querySelector('.profile-info p');
+// =========================================================================
+// 3. PI INITIALIZATION & UTILITIES (PERBAIKAN SINKRONISASI TOTAL)
+// =========================================================================
+async function initPi() {
+    try {
+        if (window.Pi) {
+            // Inisialisasi Mainnet (sandbox: false)
+            await window.Pi.init({ version: "2.0", sandbox: false });
+            console.log("Pi SDK Berhasil Diinisialisasi di Mainnet");
+
+            const scopes = ['username', 'payments'];
+            
+            // Lakukan autentikasi dan tunggu hasilnya secara sinkron
+            const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+            
+            currentUser = auth.user; 
+            console.log("Login otomatis sukses! Pengguna Asli:", currentUser.username);
+            
+            // Langsung terapkan ke UI
+            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+            
+        } else {
+            console.error("window.Pi tidak ditemukan. Buka di Pi Browser.");
+            terapkanDataUserKeUI("Guest User", "");
+        }
+    } catch (e) { 
+        console.error("Gagal Autentikasi Pi SDK:", e);
+        terapkanDataUserKeUI("Guest User", "");
+    }
+}
+
+function terapkanDataUserKeUI(username, uid) {
+    if (!username) return;
+
+    // Format nama username agar rapi
+    const namaTampilan = username.startsWith('@') ? username : `@${username}`;
+
+    // 1. PERBAIKAN SELEKTOR PROFIL: Mencari elemen teks nama berdasarkan screenshot Anda
+    // Mencari ID 'profile-username', atau Class 'username-text', atau elemen h3 di dalam container profil
+    const profileDisplay = document.getElementById('profile-username') || 
+                           document.querySelector('.username-text') || 
+                           document.querySelector('.profile-card h3') ||
+                           document.querySelector('.profile-info h3');
+    
+    if (profileDisplay) {
+        profileDisplay.innerText = namaTampilan;
+    }
+
+    // 2. PERBAIKAN SELEKTOR WALLET UID: Mencari container teks Wallet UID Anda
+    const profileAddress = document.getElementById('profile-address') || 
+                           document.querySelector('.wallet-uid-text') || 
+                           document.querySelector('.profile-card p') ||
+                           document.querySelector('.profile-info p');
+    
     if (profileAddress) {
         if (uid) {
-            // Menampilkan UID yang dipotong agar rapi di layar HP
+            // Potong string UID biar rapi (Contoh: GBXWWA...XDFG) seperti di gambar Anda
             const uidDipotong = uid.length > 12 ? `${uid.substring(0, 6)}...${uid.substring(uid.length - 4)}` : uid;
             profileAddress.innerText = uidDipotong; 
-            profileAddress.setAttribute('title', uid); // Simpan UID asli saat di-hover
+            profileAddress.setAttribute('title', uid); 
         } else {
             profileAddress.innerText = "Belum Terhubung";
         }
     }
 
-    // 3. Mengubah Status Tombol Login Menjadi Logout secara dinamis
+    // 3. Update Tombol Login menjadi LOGOUT (Warna Merah)
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
         loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-        
-        // Buat event klik kustom untuk logout tanpa merusak state produk
         loginBtn.onclick = function(e) {
             e.preventDefault();
             prosesLogoutUser();
@@ -644,48 +695,27 @@ function terapkanDataUserKeUI(username, uid) {
     }
 }
 
-// Fungsi Baru untuk Mereset Tampilan saat Tombol LOGOUT diklik
 function prosesLogoutUser() {
-    currentUser = null; // Kosongkan state user global
+    currentUser = null; 
 
-    // 1. Kembalikan Nama Profil ke Guest/Semula
+    // Kembalikan ke mode Guest
     const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
-    if (profileDisplay) {
-        profileDisplay.innerText = "Guest User";
-    }
+    if (profileDisplay) profileDisplay.innerText = "Guest User";
 
-    // 2. Kembalikan Wallet Alamat ke Status Awal
     const profileAddress = document.getElementById('profile-address') || document.querySelector('.wallet-uid-text') || document.querySelector('.profile-info p');
     if (profileAddress) {
         profileAddress.innerText = "Belum Terhubung";
         profileAddress.removeAttribute('title');
     }
 
-    // 3. Ubah Tombol Kembali Menjadi LOGIN Semula
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGIN";
-        loginBtn.style.background = "linear-gradient(to right, #d4af37, #b89324)"; // Kembali ke warna emas/biru bawaan Anda
-        
-        // Kembalikan aksi tombol login ke fungsi initPi semula
-        loginBtn.onclick = function(e) {
+        loginBtn.style.background = "linear-gradient(to right, #00c6ff, #0072ff)"; 
+        loginBtn.onclick = async function(e) {
             e.preventDefault();
-            initPi();
+            await initPi();
         };
-    }
-    
-    tampilkanDpiAlert("Logout Berhasil", "Profil telah dikembalikan ke mode Guest.", "sukses");
-}
-
-async function handleIncompletePayment(p) {
-    try {
-        await fetch('https://www.ptdigitalproindo.com/api/complete', { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
-        });
-    } catch (e) {
-        console.error("Gagal menyelesaikan pembayaran tunda:", e);
     }
 }
 

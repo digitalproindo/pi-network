@@ -1266,11 +1266,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // Sambungkan Pi SDK & Memicu Autentikasi Otomatis
-    await initPi();
+    // ==========================================
+    // TARUH DI SINI (SEBELUM TANDA PENUTUP DI BAWAH)
+    // ==========================================
+    initPi().then(() => {
+        console.log("Sinkronisasi profil selesai.");
+    }).catch(err => {
+        console.error("Gagal login otomatis:", err);
+    });
 
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
-        loginBtn.onclick = window.handleAuth;
+        loginBtn.onclick = function(e) {
+            e.preventDefault();
+            initPi();
+        };
     }
-});
+
+}); // <-- INI ADALAH TANDA PENUTUP DOMCONTENTLOADED. TIDAK BOLEH ADA KODE LAGI DI BAWAH INI!
+    

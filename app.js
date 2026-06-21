@@ -555,9 +555,10 @@ productsData.forEach(p => {
 
 
 // =========================================================================
+// =========================================================================
 // 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
 // =========================================================================
-let currentUser = null; // Menyimpan data user aktif global
+// CATATAN: Biarkan let currentUser = null; tetap berada di Bagian 1 atas file Anda.
 
 async function initPi() {
     // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
@@ -565,9 +566,11 @@ async function initPi() {
         if (!currentUser) {
             console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
             currentUser = {
-                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Alamat Wallet Cadangan
+                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
                 username: "Pi_Tester_Indo"
             };
+            
+            // Terapkan data ke profil UI secara instan
             terapkanDataUserKeUI(currentUser.username, currentUser.uid);
         }
     }, 3000); 
@@ -575,17 +578,19 @@ async function initPi() {
 
     try {
         if (window.Pi) {
+            // Aktifkan mode sandbox: true untuk pengujian testnet
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
+            // Ambil scope 'username' dan 'payments' untuk membaca data user & dompet
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
-                    clearTimeout(loginFallbackTimer);
-                    currentUser = auth.user; 
+                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
+                    currentUser = auth.user; // Berisi data user asli dari Pi Browser (username & uid)
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
-                    // Sinkronkan data ke tampilan UI profil & tombol
+                    // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 })
                 .catch(function(error) {
@@ -599,72 +604,72 @@ async function initPi() {
     }
 }
 
-// Fungsi untuk Menerapkan Data Profil & Mengubah Tombol Menjadi LOGOUT
+// Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
 function terapkanDataUserKeUI(username, uid) {
-    // 1. Sinkronisasi Nama Pengguna di Profil
+    // 1. Menampilkan Nama Akun User Pi
     const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
     if (profileDisplay) {
         profileDisplay.innerText = username.startsWith('@') ? username : `@${username}`;
     }
 
-    // 2. Sinkronisasi Wallet UID di Profil
+    // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
     const profileAddress = document.getElementById('profile-address') || document.querySelector('.wallet-uid-text') || document.querySelector('.profile-info p');
     if (profileAddress) {
         if (uid) {
-            // Potong teks wallet agar rapi di layar HP (Contoh: GBXW...XDFG)
+            // Menampilkan UID yang dipotong agar rapi di layar HP
             const uidDipotong = uid.length > 12 ? `${uid.substring(0, 6)}...${uid.substring(uid.length - 4)}` : uid;
-            profileAddress.innerText = uidDipotong;
-            profileAddress.setAttribute('data-full-uid', uid); 
+            profileAddress.innerText = uidDipotong; 
+            profileAddress.setAttribute('title', uid); // Simpan UID asli saat di-hover
         } else {
             profileAddress.innerText = "Belum Terhubung";
         }
     }
 
-    // 3. Mengubah Tombol LOGIN Menjadi LOGOUT
+    // 3. Mengubah Status Tombol Login Menjadi Logout secara dinamis
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
-        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)"; // Warna merah premium
+        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
         
-        // Ubah aksi klik menjadi fungsi logout kustom
+        // Buat event klik kustom untuk logout tanpa merusak state produk
         loginBtn.onclick = function(e) {
             e.preventDefault();
-            logoutUser();
+            prosesLogoutUser();
         };
     }
 }
 
-// Fungsi Kustom untuk Mengembalikan Profil ke Semula Saat Klik LOGOUT
-function logoutUser() {
-    currentUser = null; // Hapus data user aktif
+// Fungsi Baru untuk Mereset Tampilan saat Tombol LOGOUT diklik
+function prosesLogoutUser() {
+    currentUser = null; // Kosongkan state user global
 
-    // 1. Kembalikan nama profil ke teks default bawaan aplikasi Anda
+    // 1. Kembalikan Nama Profil ke Guest/Semula
     const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
     if (profileDisplay) {
-        profileDisplay.innerText = "Guest User"; // Atau ubah sesuka Anda misal "Belum Login"
+        profileDisplay.innerText = "Guest User";
     }
 
-    // 2. Bersihkan teks Wallet UID
+    // 2. Kembalikan Wallet Alamat ke Status Awal
     const profileAddress = document.getElementById('profile-address') || document.querySelector('.wallet-uid-text') || document.querySelector('.profile-info p');
     if (profileAddress) {
         profileAddress.innerText = "Belum Terhubung";
-        profileAddress.removeAttribute('data-full-uid');
+        profileAddress.removeAttribute('title');
     }
 
-    // 3. Kembalikan Tombol LOGOUT Menjadi LOGIN Semula
+    // 3. Ubah Tombol Kembali Menjadi LOGIN Semula
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGIN";
-        loginBtn.style.background = "linear-gradient(to right, #00c6ff, #0072ff)"; // Warna biru awal aplikasi Anda
+        loginBtn.style.background = "linear-gradient(to right, #d4af37, #b89324)"; // Kembali ke warna emas/biru bawaan Anda
         
-        // Kembalikan aksi klik tombol ke fungsi login Pi SDK semula
+        // Kembalikan aksi tombol login ke fungsi initPi semula
         loginBtn.onclick = function(e) {
             e.preventDefault();
             initPi();
         };
     }
     
-    console.log("User telah logout. Tampilan profil dibersihkan.");
+    tampilkanDpiAlert("Logout Berhasil", "Profil telah dikembalikan ke mode Guest.", "sukses");
 }
 
 async function handleIncompletePayment(p) {
@@ -674,8 +679,8 @@ async function handleIncompletePayment(p) {
             headers: {'Content-Type': 'application/json'}, 
             body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
         });
-    } catch (err) {
-        console.error("Gagal menyelesaikan pembayaran:", err);
+    } catch (e) {
+        console.error("Gagal menyelesaikan pembayaran tunda:", e);
     }
 }
 

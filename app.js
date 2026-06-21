@@ -1079,19 +1079,27 @@ window.handleAuth = async () => {
                 <p style="color:#fff; margin: 10px 0 0 0; font-size:0.95rem;">Selamat datang kembali,<br><span style="color:#ba68c8; font-weight:bold; font-size:1.1rem;">@${currentUser.username}</span></p>
             </div>`;
 
-        // 5. 🛠️ REVISI UTAMA: Paksa ubah teks, warna, dan hapus fungsi handleAuth lama pada tombol
+        // 5. 🛠️ REVISI FIX: Mengamankan tombol LOGOUT dari sisa 'onclick' bawaan HTML
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
+            // Bersihkan properti inline 'onclick' lama (jika ada di tag HTML)
+            loginBtn.onclick = null; 
+            
+            // Setel ulang teks dan gaya desain tombol
             loginBtn.innerText = "LOGOUT";
             loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
             
-            // Hapus sisa-sisa klik event listener lama dan ganti murni ke reload
-            loginBtn.onclick = null; 
-            loginBtn.addEventListener('click', function(e) {
+            // Gunakan fungsi kustom baru yang bersih dari penumpukan event listener
+            const logoutAction = (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                location.reload(); // Memaksa aplikasi muat ulang untuk logout bersih
-            }, { once: true });
+                location.reload(); 
+            };
+            
+            // Mengganti element lama dengan element klon baru untuk mematikan listener duplikat
+            const newLoginBtn = loginBtn.cloneNode(true);
+            newLoginBtn.addEventListener('click', logoutAction);
+            loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
         }
 
         setTimeout(() => { loadingOverlay.remove(); }, 2500);
@@ -1103,6 +1111,7 @@ window.handleAuth = async () => {
         }
     }
 };
+
 function showLoginPrompt() {
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
@@ -1110,10 +1119,21 @@ function showLoginPrompt() {
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
             <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Selamat Datang</h2>
             <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace DIGITAL PRO INDO</p>
-            <button onclick="this.parentElement.parentElement.remove(); window.handleAuth();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LOGIN SEKARANG</button>
-            <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Mungkin Nanti</button>
+            <button id="modal-confirm-login-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LOGIN SEKARANG</button>
+            <button id="modal-cancel-login-btn" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Mungkin Nanti</button>
         </div>`;
     document.body.appendChild(overlay);
+
+    // Memisahkan penanganan klik dari pemanggilan inline onclick HTML agar eksekusi sekuensial
+    document.getElementById('modal-confirm-login-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        overlay.remove();
+        window.handleAuth();
+    });
+
+    document.getElementById('modal-cancel-login-btn').addEventListener('click', function() {
+        overlay.remove();
+    });
 }
 
 function showAddressPrompt() {
@@ -1124,9 +1144,15 @@ function showAddressPrompt() {
             <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
             <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Alamat Kosong</h2>
             <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
-            <button onclick="this.parentElement.parentElement.remove(); window.showAddressForm();" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LENGKAPI ALAMAT</button>
+            <button id="modal-confirm-addr-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LENGKAPI ALAMAT</button>
         </div>`;
     document.body.appendChild(overlay);
+
+    document.getElementById('modal-confirm-addr-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        overlay.remove();
+        if (typeof window.showAddressForm === 'function') window.showAddressForm();
+    });
 }
 
 // =========================================================================

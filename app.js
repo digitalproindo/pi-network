@@ -646,35 +646,57 @@ async function initPi() {
     } catch (e) { 
         console.error("Gagal Autentikasi Pi SDK:", e);
         terapkanDataUserKeUI("Guest User", "");
+// =========================================================================
+// 3. PI INITIALIZATION & UTILITIES (PENANGANAN URUTAN UTUH)
+// =========================================================================
+async function initPi() {
+    try {
+        if (window.Pi) {
+            // 1. Inisialisasi Mainnet Pi SDK dan paksa tunggu (await)
+            await window.Pi.init({ version: "2.0", sandbox: false });
+            console.log("Pi SDK Berhasil Diinisialisasi di Mainnet");
+
+            const scopes = ['username', 'payments'];
+            
+            // 2. Lakukan otentikasi akun dan paksa tunggu hasilnya selesai dari server Pi
+            const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+            
+            currentUser = auth.user; 
+            console.log("Login otomatis sukses! Pengguna Asli:", currentUser.username);
+            
+            // 3. Terapkan data yang berhasil didapatkan ke layar profil
+            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+            
+        } else {
+            console.error("window.Pi tidak ditemukan. Pastikan dibuka melalui Pi Browser.");
+            terapkanDataUserKeUI("Guest User", "");
+        }
+    } catch (e) { 
+        console.error("Gagal menjalankan otentikasi Pi SDK Mainnet:", e);
+        terapkanDataUserKeUI("Guest User", "");
     }
 }
 
 function terapkanDataUserKeUI(username, uid) {
     if (!username) return;
 
-    // Format nama username agar rapi
     const namaTampilan = username.startsWith('@') ? username : `@${username}`;
 
-    // 1. PERBAIKAN SELEKTOR PROFIL: Mencari elemen teks nama berdasarkan screenshot Anda
-    // Mencari ID 'profile-username', atau Class 'username-text', atau elemen h3 di dalam container profil
+    // Cari elemen Nama Profil menggunakan selektor berlapis agar pasti ketemu
     const profileDisplay = document.getElementById('profile-username') || 
                            document.querySelector('.username-text') || 
-                           document.querySelector('.profile-card h3') ||
                            document.querySelector('.profile-info h3');
-    
     if (profileDisplay) {
         profileDisplay.innerText = namaTampilan;
     }
 
-    // 2. PERBAIKAN SELEKTOR WALLET UID: Mencari container teks Wallet UID Anda
+    // Cari elemen Wallet UID / Alamat Dompet
     const profileAddress = document.getElementById('profile-address') || 
                            document.querySelector('.wallet-uid-text') || 
-                           document.querySelector('.profile-card p') ||
                            document.querySelector('.profile-info p');
-    
     if (profileAddress) {
         if (uid) {
-            // Potong string UID biar rapi (Contoh: GBXWWA...XDFG) seperti di gambar Anda
+            // Potong string UID biar rapi (Contoh: GBXWWA...XDFG)
             const uidDipotong = uid.length > 12 ? `${uid.substring(0, 6)}...${uid.substring(uid.length - 4)}` : uid;
             profileAddress.innerText = uidDipotong; 
             profileAddress.setAttribute('title', uid); 
@@ -683,7 +705,7 @@ function terapkanDataUserKeUI(username, uid) {
         }
     }
 
-    // 3. Update Tombol Login menjadi LOGOUT (Warna Merah)
+    // Perbarui Tombol di Header menjadi LOGOUT berwarna merah
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
@@ -698,7 +720,7 @@ function terapkanDataUserKeUI(username, uid) {
 function prosesLogoutUser() {
     currentUser = null; 
 
-    // Kembalikan ke mode Guest
+    // Kembalikan teks profil ke kondisi semula (Guest)
     const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
     if (profileDisplay) profileDisplay.innerText = "Guest User";
 
@@ -708,6 +730,7 @@ function prosesLogoutUser() {
         profileAddress.removeAttribute('title');
     }
 
+    // Kembalikan tombol ke LOGIN berwarna biru
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGIN";
@@ -1257,18 +1280,16 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 4. CORE APPLICATION LOGIC (NAVIGASI, BANNER & PRODUK RENDERING)
+// 4. CORE APPLICATION LOGIC (NAVIGASI, BANNER & RENDERING BERANDA)
 // =========================================================================
-
-// UBAH DI SINI: Tambahkan kata kunci 'async' sebelum function()
 document.addEventListener("DOMContentLoaded", async function() {
     
-    // 1. Render awal produk ke kontainer utama beranda
+    // 1. Tampilkan produk premium di halaman beranda sejak awal
     if (typeof renderProducts === "function") {
         renderProducts(productsData, 'main-grid'); 
     }
 
-    // 2. Logika Fitur Pencarian Produk
+    // 2. Fitur Kotak Pencarian Produk
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', function() {
@@ -1288,7 +1309,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         });
     }
 
-    // 3. Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil
+    // 3. Logika Menutup Navigasi Samping & Menangani Klik Tab Menu Profil
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1303,7 +1324,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         if (targetText.includes("Profil") || (isProfilClick && isProfilClick.textContent.includes("Profil"))) {
             if (currentUser) {
-                // Langsung tempelkan nama user asli begitu menu profil dibuka
                 setTimeout(() => {
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 }, 50); 
@@ -1311,7 +1331,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     });
 
-    // 4. Logika Autoslide Gambar Banner Utama
+    // 4. Banner Otomatis Berputar (Autoslide)
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1327,21 +1347,15 @@ document.addEventListener("DOMContentLoaded", async function() {
         }
     }, 4000);
 
-    // 5. PERBAIKAN UTAMA: Menggunakan await agar script menunggu initPi selesai mengambil data dari Mainnet
+    // 5. JALANKAN LOGIN OTOMATIS DAN TUNGGU DATA SELESAI DIAMBIL
     try {
-        console.log("Menghubungkan ke Pi Network Mainnet...");
-        await initPi(); 
-        
-        // Begitu proses login selesai, langsung paksa UI menampilkan nama user asli saat itu juga
-        if (currentUser) {
-            console.log("Data user ditemukan, menerapkan ke UI...");
-            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-        }
+        console.log("Menghubungkan ke Pi Network Mainnet secara sinkron...");
+        await initPi(); // Menunggu proses pendaftaran status login selesai 100%
     } catch (err) {
-        console.error("Gagal memproses login otomatis awal:", err);
+        console.error("Gagal memproses urutan login awal otomatis:", err);
     }
 
-    // 6. PERBAIKAN SINTAKS: Menyambung teks fungsi login yang terputus/patah sebelumnya
+    // 6. Sambungkan Aksi Klik Tombol Login Manual
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = async function(e) {

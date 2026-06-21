@@ -1282,7 +1282,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
-        "https://i.ibb.co.com/Gvc69SRX/Salinan-dari-Salinan-dari-ORANG-PERTAMA-20260217-012738-0000.png", 
+        "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", 
         "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
     ];
     let idx = 0;

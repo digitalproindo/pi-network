@@ -1230,14 +1230,15 @@ window.toggleDropdown = () => {
 // 4. CORE APPLICATION LOGIC (NAVIGASI, BANNER & PRODUK RENDERING)
 // =========================================================================
 
-document.addEventListener("DOMContentLoaded", function() {
+// UBAH DI SINI: Tambahkan kata kunci 'async' sebelum function()
+document.addEventListener("DOMContentLoaded", async function() {
     
-    // 1. PERBAIKAN: Mengubah 'products-container' menjadi 'main-grid' agar produk langsung muncul di awal
+    // 1. Render awal produk ke kontainer utama beranda
     if (typeof renderProducts === "function") {
-        renderProducts(productsData, 'main-grid'); // <- Diubah ke 'main-grid' sesuai ID HTML beranda Anda
+        renderProducts(productsData, 'main-grid'); 
     }
 
-    // 2. Logika Fitur Pencarian Produk (Biarkan tetap seperti ini)
+    // 2. Logika Fitur Pencarian Produk
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', function() {
@@ -1257,9 +1258,7 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 3. Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil (Biarkan tetap seperti ini)
-    // Di dalam document.addEventListener("DOMContentLoaded", function() { ... })
-    // Bagian Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil:
+    // 3. Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1282,7 +1281,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // 4. Logika Autoslide Gambar Banner Utama (Biarkan tetap seperti ini)
+    // 4. Logika Autoslide Gambar Banner Utama
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1298,22 +1297,26 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }, 4000);
 
-    // 5. JALANKAN LOGIN OTOMATIS DI BACKGROUND (Biarkan tetap seperti ini)
-    initPi().then(() => {
-        console.log("Inisialisasi profil berhasil terhubung di latar belakang.");
+    // 5. PERBAIKAN UTAMA: Menggunakan await agar script menunggu initPi selesai mengambil data dari Mainnet
+    try {
+        console.log("Menghubungkan ke Pi Network Mainnet...");
+        await initPi(); 
+        
+        // Begitu proses login selesai, langsung paksa UI menampilkan nama user asli saat itu juga
         if (currentUser) {
+            console.log("Data user ditemukan, menerapkan ke UI...");
             terapkanDataUserKeUI(currentUser.username, currentUser.uid);
         }
-    }).catch(err => {
-        console.error("Gagal memproses inisialisasi awal login:", err);
-    });
+    } catch (err) {
+        console.error("Gagal memproses login otomatis awal:", err);
+    }
 
-    // 6. Ikat aksi klik awal tombol Login ke fungsi initPi (Biarkan tetap seperti ini)
+    // 6. PERBAIKAN SINTAKS: Menyambung teks fungsi login yang terputus/patah sebelumnya
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
-        loginBtn.onclick = function(e) {
+        loginBtn.onclick = async function(e) {
             e.preventDefault();
-            initPi();
+            await initPi();
         };
     }
 

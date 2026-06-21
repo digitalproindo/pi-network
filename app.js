@@ -554,40 +554,34 @@ productsData.forEach(p => {
 });
 
 // =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (DENGAN LOGIN OTOMATIS)
 // =========================================================================
 async function initPi() {
-    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
-    const loginFallbackTimer = setTimeout(() => {
-        if (!currentUser) {
-            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
-            currentUser = {
-                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
-                username: "Pi_Tester_Indo"
-            };
-            
-            // Terapkan data ke profil UI secara instan
-            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-        }
-    }, 3000); 
-    // --------------------------------------------------------------------
-
     try {
         if (window.Pi) {
             // Aktifkan mode sandbox: true untuk pengujian testnet
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
-            // Ambil scope 'username' dan 'payments' untuk membaca data user & dompet
+            // Paksa login otomatis demi verifikasi Robot App Studio
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
-                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
-                    currentUser = auth.user; // Berisi data user asli dari Pi Browser (username & uid)
+                    currentUser = auth.user;
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
-                    // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
-                    terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+                    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+                    if (profileDisplay) profileDisplay.innerText = currentUser.username;
+
+                    const profileAddress = document.getElementById('profile-address');
+                    if (profileAddress) profileAddress.innerText = currentUser.uid;
+
+                    const loginBtn = document.getElementById('login-btn');
+                    if (loginBtn) {
+                        loginBtn.innerText = "LOGOUT";
+                        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+                        loginBtn.onclick = () => location.reload();
+                    }
                 })
                 .catch(function(error) {
                     console.error("Gagal Autentikasi Otomatis:", error);
@@ -595,30 +589,6 @@ async function initPi() {
         }
     } catch (e) { 
         console.error("Init Error:", e); 
-    }
-}
-
-// Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
-function terapkanDataUserKeUI(username, uid) {
-    // 1. Menampilkan Nama Akun User Pi
-    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-    if (profileDisplay) {
-        profileDisplay.innerText = username;
-    }
-
-    // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
-    const profileAddress = document.getElementById('profile-address');
-    if (profileAddress) {
-        // Menampilkan UID lengkap atau bisa disingkat agar rapi di layar HP
-        profileAddress.innerText = uid; 
-    }
-
-    // 3. Mengubah Status Tombol Login Menjadi Logout
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.innerText = "LOGOUT";
-        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-        loginBtn.onclick = () => location.reload();
     }
 }
 

@@ -561,36 +561,30 @@ productsData.forEach(p => {
 // CATATAN: Biarkan let currentUser = null; tetap berada di Bagian 1 atas file Anda.
 
 async function initPi() {
-    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
+    // --- FITUR CADANGAN ANTI-MACET (MAKSIMAL TIMEOUT 3 DETIK) ---
     const loginFallbackTimer = setTimeout(() => {
         if (!currentUser) {
-            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
-            currentUser = {
-                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
-                username: "Pi_Tester_Indo"
-            };
-            
-            // Terapkan data ke profil UI secara instan
-            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+            console.log("SDK Pi sedang memuat...");
+            // Jika dalam 3 detik SDK belum siap, tampilkan status Guest sementara
+            terapkanDataUserKeUI("Guest User", "");
         }
     }, 3000); 
     // --------------------------------------------------------------------
 
     try {
         if (window.Pi) {
-            // Aktifkan mode sandbox: true untuk pengujian testnet
-            await window.Pi.init({ version: "2.0", sandbox: true });
-            console.log("Pi SDK Berhasil Diinisialisasi");
+            // PERBAIKAN UTAMA: Ubah sandbox menjadi false karena aplikasi Anda berjalan di MAINNET
+            await window.Pi.init({ version: "2.0", sandbox: false });
+            console.log("Pi SDK Berhasil Diinisialisasi di Mainnet");
 
-            // Ambil scope 'username' dan 'payments' untuk membaca data user & dompet
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
-                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
-                    currentUser = auth.user; // Berisi data user asli dari Pi Browser (username & uid)
-                    console.log("Login otomatis sukses! Pengguna:", currentUser.username);
+                    clearTimeout(loginFallbackTimer); // Batalkan timer cadangan
+                    currentUser = auth.user; // Menyimpan data USER ASLI dari Pi Browser
+                    console.log("Login otomatis sukses! Pengguna Asli:", currentUser.username);
 
-                    // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
+                    // Terapkan nama pengguna asli dan Wallet UID asli ke UI
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 })
                 .catch(function(error) {
@@ -1253,6 +1247,8 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     // 3. Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil (Biarkan tetap seperti ini)
+    // Di dalam document.addEventListener("DOMContentLoaded", function() { ... })
+    // Bagian Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil:
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1267,10 +1263,10 @@ document.addEventListener("DOMContentLoaded", function() {
         
         if (targetText.includes("Profil") || (isProfilClick && isProfilClick.textContent.includes("Profil"))) {
             if (currentUser) {
-                console.log("Menu Profil dibuka. Menyinkronkan data untuk:", currentUser.username);
+                // Langsung tempelkan nama user asli begitu menu profil dibuka
                 setTimeout(() => {
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-                }, 100); 
+                }, 50); 
             }
         }
     });

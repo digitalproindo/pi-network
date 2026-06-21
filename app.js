@@ -634,6 +634,24 @@ async function initPi() {
         }
     }, 3000); 
     // --------------------------------------------------------------------
+// =========================================================================
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
+// =========================================================================
+async function initPi() {
+    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
+    const loginFallbackTimer = setTimeout(() => {
+        if (!currentUser) {
+            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
+            currentUser = {
+                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
+                username: "Pi_Tester_Indo"
+            };
+            
+            // Terapkan data ke profil UI secara instan
+            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
+        }
+    }, 3000); 
+    // --------------------------------------------------------------------
 
     try {
         if (window.Pi) {
@@ -641,13 +659,12 @@ async function initPi() {
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
-            // Ambil scope 'username' dan 'payments' untuk membaca data user
+            // Ambil scope 'username' dan 'payments' untuk membaca data user & dompet
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
-                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan
-                    
-                    currentUser = auth.user; 
+                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
+                    currentUser = auth.user; // Berisi data user asli dari Pi Browser (username & uid)
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
 
                     // Terapkan profil asli dari Akun Pi User & Wallet UID ke elemen UI
@@ -657,8 +674,6 @@ async function initPi() {
                     console.error("Gagal Autentikasi Otomatis:", error);
                     clearTimeout(loginFallbackTimer);
                 });
-        } else {
-            console.log("window.Pi tidak ditemukan. Berjalan di browser biasa (mode simulasi/fallback).");
         }
     } catch (e) { 
         console.error("Init Error:", e); 
@@ -687,7 +702,7 @@ function terapkanDataUserKeUI(username, uid) {
         }
     }
 
-    // 3. Mengubah Status Tombol Login Menjadi LOGOUT jika tombol tersedia
+    // 3. Mengubah Status Tombol Login Menjadi Logout
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
@@ -707,15 +722,9 @@ async function handleIncompletePayment(p) {
             body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
         });
     } catch (err) {
-        console.error("Gagal menyelesaikan pembayaran tertunda:", err);
+        console.error("Gagal menyelesaikan pembayaran:", err);
     }
 }
-
-// =========================================================================
-// SOLUSI: MEMANGGIL INIT PI TANPA MENGGANGGU EVENT DOMCONTENTLOADED UTAMA
-// =========================================================================
-// Cukup panggil fungsi ini langsung agar tidak menimpa event listener produk Anda
-initPi();
 
 
 // =========================================================================

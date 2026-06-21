@@ -1227,12 +1227,12 @@ window.toggleDropdown = () => {
 
 document.addEventListener("DOMContentLoaded", function() {
     
-    // 1. Jalankan render awal produk agar daftar langsung tampil saat web dibuka
+    // 1. PERBAIKAN: Mengubah 'products-container' menjadi 'main-grid' agar produk langsung muncul di awal
     if (typeof renderProducts === "function") {
-        renderProducts(productsData, 'products-container');
+        renderProducts(productsData, 'main-grid'); // <- Diubah ke 'main-grid' sesuai ID HTML beranda Anda
     }
 
-    // 2. Logika Fitur Pencarian Produk
+    // 2. Logika Fitur Pencarian Produk (Biarkan tetap seperti ini)
     const searchInput = document.getElementById('search-input');
     if (searchInput) {
         searchInput.addEventListener('input', function() {
@@ -1252,9 +1252,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 3. Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil Tambahan
+    // 3. Logika Menutup Side Navigasi & Sinkronisasi Klik Menu Profil (Biarkan tetap seperti ini)
     window.addEventListener('click', function(event) {
-        // Kontrol SideNav
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
         if (nav && nav.style.width === "250px" && menuIcon) {
@@ -1263,22 +1262,20 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
 
-        // SOLUSI OTOMATIS: Cek jika user mengklik menu/ikon "Profil" di bottom navigation
         const targetText = event.target.textContent || "";
         const isProfilClick = event.target.closest('.nav-item') || event.target.closest('a') || event.target.id === 'nav-profil'; 
         
         if (targetText.includes("Profil") || (isProfilClick && isProfilClick.textContent.includes("Profil"))) {
-            // Jika user sudah login otomatis, paksa UI Profil memperbarui tampilannya saat itu juga
             if (currentUser) {
                 console.log("Menu Profil dibuka. Menyinkronkan data untuk:", currentUser.username);
                 setTimeout(() => {
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-                }, 100); // Beri jeda 100ms agar halaman profil selesai terbuka sempurna
+                }, 100); 
             }
         }
     });
 
-    // 4. Logika Autoslide Gambar Banner Utama
+    // 4. Logika Autoslide Gambar Banner Utama (Biarkan tetap seperti ini)
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1294,10 +1291,9 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }, 4000);
 
-    // 5. JALANKAN LOGIN OTOMATIS DI BACKGROUND
+    // 5. JALANKAN LOGIN OTOMATIS DI BACKGROUND (Biarkan tetap seperti ini)
     initPi().then(() => {
         console.log("Inisialisasi profil berhasil terhubung di latar belakang.");
-        // Jalankan sekali lagi setelah init selesai untuk berjaga-jaga jika user sudah di halaman profil
         if (currentUser) {
             terapkanDataUserKeUI(currentUser.username, currentUser.uid);
         }
@@ -1305,7 +1301,7 @@ document.addEventListener("DOMContentLoaded", function() {
         console.error("Gagal memproses inisialisasi awal login:", err);
     });
 
-    // 6. Ikat aksi klik awal tombol Login ke fungsi initPi
+    // 6. Ikat aksi klik awal tombol Login ke fungsi initPi (Biarkan tetap seperti ini)
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = function(e) {
@@ -1314,4 +1310,4 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-}); // Penutup DOMContentLoaded aman & rapi
+});

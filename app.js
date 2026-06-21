@@ -557,26 +557,6 @@ productsData.forEach(p => {
 // =========================================================================
 // 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
 // =========================================================================
-let currentUser = null; 
-
-async function initPi() {
-    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
-    const loginFallbackTimer = setTimeout(() => {
-        if (!currentUser) {
-            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
-            currentUser = {
-                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
-                username: "Pi_Tester_Indo"
-            };
-            
-            // Terapkan data ke profil UI secara instan
-            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-        }
-    }, 3000); 
-    // --------------------------------------------------------------------
-// =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
-// =========================================================================
 async function initPi() {
     // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
     const loginFallbackTimer = setTimeout(() => {
@@ -612,34 +592,26 @@ async function initPi() {
                 })
                 .catch(function(error) {
                     console.error("Gagal Autentikasi Otomatis:", error);
-                    clearTimeout(loginFallbackTimer);
                 });
         }
     } catch (e) { 
         console.error("Init Error:", e); 
-        clearTimeout(loginFallbackTimer);
     }
 }
 
 // Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
 function terapkanDataUserKeUI(username, uid) {
-    // 1. Menampilkan Nama Akun User Pi (@username)
-    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
+    // 1. Menampilkan Nama Akun User Pi
+    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
     if (profileDisplay) {
-        profileDisplay.innerText = username.startsWith('@') ? username : `@${username}`;
+        profileDisplay.innerText = username;
     }
 
     // 2. Menampilkan Wallet UID / Alamat Dompet Pi Pengguna
-    const profileAddress = document.getElementById('profile-address') || document.querySelector('.wallet-uid-text') || document.querySelector('.profile-info p');
+    const profileAddress = document.getElementById('profile-address');
     if (profileAddress) {
-        if (uid) {
-            // Memotong UID agar rapi di layar HP (Contoh: GBXW...XDFG)
-            const uidDipotong = uid.length > 12 ? `${uid.substring(0, 6)}...${uid.substring(uid.length - 4)}` : uid;
-            profileAddress.innerText = uidDipotong;
-            profileAddress.setAttribute('title', uid); 
-        } else {
-            profileAddress.innerText = "Belum Terhubung";
-        }
+        // Menampilkan UID lengkap atau bisa disingkat agar rapi di layar HP
+        profileAddress.innerText = uid; 
     }
 
     // 3. Mengubah Status Tombol Login Menjadi Logout
@@ -647,23 +619,16 @@ function terapkanDataUserKeUI(username, uid) {
     if (loginBtn) {
         loginBtn.innerText = "LOGOUT";
         loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-        loginBtn.onclick = () => {
-            currentUser = null;
-            location.reload();
-        };
+        loginBtn.onclick = () => location.reload();
     }
 }
 
 async function handleIncompletePayment(p) {
-    try {
-        await fetch('https://www.ptdigitalproindo.com/api/complete', { 
-            method: 'POST', 
-            headers: {'Content-Type': 'application/json'}, 
-            body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
-        });
-    } catch (err) {
-        console.error("Gagal menyelesaikan pembayaran:", err);
-    }
+    await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+        method: 'POST', 
+        headers: {'Content-Type': 'application/json'}, 
+        body: JSON.stringify({ paymentId: p.identifier, txid: p.transaction.txid }) 
+    });
 }
 
 

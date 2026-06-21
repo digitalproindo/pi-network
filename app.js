@@ -554,7 +554,7 @@ productsData.forEach(p => {
 });
 
 // =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES (DENGAN LOGIN OTOMATIS)
+// 3. PI INITIALIZATION & FUNCTION UTILITIES (PERBAIKAN LOGIN OTOMATIS)
 // =========================================================================
 async function initPi() {
     try {
@@ -563,25 +563,19 @@ async function initPi() {
             await window.Pi.init({ version: "2.0", sandbox: true });
             console.log("Pi SDK Berhasil Diinisialisasi");
 
-            // Paksa login otomatis demi verifikasi Robot App Studio
+            // Cek apakah pengguna telah sengaja LOGOUT sebelumnya
+            if (localStorage.getItem('user_logged_out') === 'true') {
+                console.log("Login otomatis dilewati karena pengguna memilih logout sebelumnya.");
+                return; 
+            }
+
+            // Paksa login otomatis demi verifikasi Robot App Studio jika tidak dalam status logout
             const scopes = ['username', 'payments'];
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
                     currentUser = auth.user;
                     console.log("Login otomatis sukses! Pengguna:", currentUser.username);
-
-                    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-                    if (profileDisplay) profileDisplay.innerText = currentUser.username;
-
-                    const profileAddress = document.getElementById('profile-address');
-                    if (profileAddress) profileAddress.innerText = currentUser.uid;
-
-                    const loginBtn = document.getElementById('login-btn');
-                    if (loginBtn) {
-                        loginBtn.innerText = "LOGOUT";
-                        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-                        loginBtn.onclick = () => location.reload();
-                    }
+                    updateUserInterfaceAfterLogin();
                 })
                 .catch(function(error) {
                     console.error("Gagal Autentikasi Otomatis:", error);
@@ -591,6 +585,31 @@ async function initPi() {
         console.error("Init Error:", e); 
     }
 }
+
+// Fungsi pembantu untuk memperbarui tampilan UI setelah berhasil Login
+function updateUserInterfaceAfterLogin() {
+    if (!currentUser) return;
+
+    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+    if (profileDisplay) profileDisplay.innerText = currentUser.username;
+
+    const profileAddress = document.getElementById('profile-address');
+    if (profileAddress) profileAddress.innerText = currentUser.uid;
+
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.innerText = "LOGOUT";
+        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+        loginBtn.onclick = window.handleLogout; // Diarahkan ke fungsi logout kustom
+    }
+}
+
+// Fungsi kustom untuk menangani proses LOGOUT dengan benar
+window.handleLogout = () => {
+    currentUser = null;
+    localStorage.setItem('user_logged_out', 'true'); // Tandai bahwa user keluar secara manual
+    location.reload(); // Refresh halaman untuk mengembalikan UI ke awal
+};
 
 async function handleIncompletePayment(p) {
     await fetch('https://www.ptdigitalproindo.com/api/complete', { 
@@ -972,6 +991,9 @@ function showSuccessOverlay(amount, name, txid) {
 // 7. PI AUTHENTICATION SYSTEMS (MANUAL LOGIN BUTTON)
 // =========================================================================
 window.handleAuth = async () => {
+    // Hapus tanda status logout karena pengguna sengaja masuk secara manual
+    localStorage.removeItem('user_logged_out');
+
     const successSound = new Audio("assets/sound-effect.mp3");
     successSound.load(); 
 
@@ -985,11 +1007,7 @@ window.handleAuth = async () => {
         const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
         currentUser = auth.user;
 
-        const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-        if (profileDisplay) profileDisplay.innerText = currentUser.username;
-
-        const profileAddress = document.getElementById('profile-address');
-        if (profileAddress) profileAddress.innerText = currentUser.uid;
+        updateUserInterfaceAfterLogin();
        
         successSound.play().catch(e => console.log("Audio play blocked"));
 
@@ -998,13 +1016,6 @@ window.handleAuth = async () => {
                 <h2 style="color:#FFD700; margin:5px 0; font-weight:900; text-transform:uppercase;">Login Berhasil!</h2>
                 <p style="color:#fff; margin-bottom:5px;">Selamat datang, <br><span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span></p>
             </div>`;
-
-        const loginBtn = document.getElementById('login-btn');
-        if (loginBtn) {
-            loginBtn.innerText = "LOGOUT";
-            loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-            loginBtn.onclick = () => location.reload();
-        }
 
         setTimeout(() => { loadingOverlay.remove(); }, 3000);
 
@@ -1087,6 +1098,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
-        loginBtn.onclick = window.handleAuth;
+        // Jika status sudah login otomatis oleh initPi(), pasang fungsi logout kustom
+        if (currentUser) {
+            loginBtn.onclick = window.handleLogout;
+        } else {
+            loginBtn.onclick = window.handleAuth;
+        }
     }
 });

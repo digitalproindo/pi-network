@@ -552,16 +552,17 @@ async function initPi() {
         if (window.Pi) {
             console.log("Pi SDK Terdeteksi. Menginisialisasi...");
             
-            // 1. Daftarkan konfigurasi aplikasi sandbox/production
-            window.Pi.init({ version: "2.0", sandbox: false });
+            // Mengamankan proses inisialisasi awal
+            await window.Pi.init({ version: "2.0", sandbox: false });
+            isPiInitialized = true; // Setel ke true setelah init selesai tanpa error
+            console.log("Pi SDK Berhasil Diinisialisasi.");
             
-            // 2. Trigger autentikasi otomatis secara background
+            // Trigger autentikasi otomatis secara background
             const scopes = ['username', 'payments'];
             const auth = await window.Pi.authenticate(scopes, (payment) => {
                 handleIncompletePayment(payment);
             });
             
-            // Jika berhasil masuk secara otomatis
             currentUser = auth.user;
             console.log("Login Otomatis Berhasil:", currentUser.username);
             
@@ -583,22 +584,8 @@ async function initPi() {
         }
     } catch (err) {
         console.error("Gagal Autentikasi Otomatis:", err);
-    }
-}
-
-// Fungsi Wajib dari Pi Core Team untuk menyelesaikan transaksi yang menggantung (Incomplete Payment)
-async function handleIncompletePayment(payment) {
-    console.log("Menangani pembayaran gantung ditemukan:", payment.identifier);
-    try {
-        // Kirim manifes ke server backend Anda untuk diselesaikan langsung ke server Pi Network
-        await fetch('https://www.ptdigitalproindo.com/api/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
-        });
-        console.log("Pembayaran gantung berhasil diselesaikan secara otomatis.");
-    } catch (err) {
-        console.error("Gagal menyelesaikan pembayaran gantung:", err);
+        // Jika gagal karena jaringan/waktu, coba paksa init ulang sekali lagi
+        isPiInitialized = false;
     }
 }
 
@@ -1038,15 +1025,49 @@ function showSuccessOverlay(amount, name, txid) {
 // 7. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC)
 // =========================================================================
 window.handleAuth = async () => {
+    // 🛡️ PROTEKSI UTAMA: Jika SDK belum siap, jalankan init ulang secara otomatis
+    if (!isPiInitialized) {
+        const tempOverlay = document.createElement('div');
+        tempOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; font-family:'Inter', sans-serif;";
+        tempOverlay.innerHTML = `
+            <div style="background:#0b2135; border:2px solid #FFD700; padding:25px; border-radius:20px; text-align:center; max-width:280px;">
+                <div style="font-size:30px; animation: spin 2s linear infinite;">🔄</div>
+                <h4 style="color:#FFD700; margin:10px 0 5px;">Sinkronisasi Jaringan</h4>
+                <p style="color:#fff; font-size:0.8rem; margin:0;">Menghubungkan ke Pi Blockchain Core. Mohon tunggu sekejap...</p>
+            </div>
+            <style>@keyframes spin { 100% { transform:rotate(360deg); } }</style>
+        `;
+        document.body.appendChild(tempOverlay);
+
+        // Mencoba memanggil ulang fungsi initPi yang kita buat sebelumnya
+        if (typeof initPi === 'function') {
+            await initPi();
+        }
+
+        // Jika setelah di-init ulang tetap belum siap (misal di luar Pi Browser)
+        if (!isPiInitialized) {
+            tempOverlay.remove();
+            alert("Gagal terhubung ke Pi Network. Pastikan Anda membuka aplikasi ini dari dalam Pi Browser resmi!");
+            return;
+        }
+        
+        tempOverlay.remove(); // Hapus loading sementara jika berhasil init
+    }
+
+    // ⏳ INDIKATOR LOADING LOGIN
     const loadingOverlay = document.createElement('div');
     loadingOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:9999;";
-    loadingOverlay.innerHTML = `<div style="text-align:center;"><div class="hourglass">⏳</div><p style="margin-top:20px; font-weight:bold; color:#f3e5f5; font-size:0.7rem; letter-spacing:2px;">MENGHUBUNGKAN...</p></div>`;
+    loadingOverlay.innerHTML = `<div style="text-align:center;"><div class="hourglass" style="font-size:2rem; animation: flip 1s ease infinite;">⏳</div><p style="margin-top:20px; font-weight:bold; color:#f3e5f5; font-size:0.7rem; letter-spacing:2px;">MENGHUBUNGKAN...</p></div><style>@keyframes flip { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.2) rotate(180deg); } }</style>`;
     document.body.appendChild(loadingOverlay);
 
     try {
         if (!window.Pi) { throw new Error("Gunakan Pi Browser."); }
         const scopes = ['username', 'payments'];
-        const auth = await window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p));
+        
+        // Memanggil otentikasi aman karena init() dipastikan sudah selesai
+        const auth = await window.Pi.authenticate(scopes, (p) => {
+            if (typeof handleIncompletePayment === 'function') handleIncompletePayment(p);
+        });
         currentUser = auth.user;
 
         const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
@@ -1055,10 +1076,12 @@ window.handleAuth = async () => {
         const profileAddress = document.getElementById('profile-address');
         if (profileAddress) profileAddress.innerText = currentUser.uid;
        
+        // 🎉 TAMPILAN LOGIN BERHASIL (STYLE DIGITAL PRO)
         loadingOverlay.innerHTML = `
-            <div style="background-color:#0b2135; border:3px solid #FFD700; border-radius:15px; padding:20px; text-align:center; width:75%; max-width:300px; font-family:'Inter', sans-serif;">
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; text-transform:uppercase;">Login Berhasil!</h2>
-                <p style="color:#fff; margin-bottom:5px;">Selamat datang, <br><span style="color:#ba68c8; font-weight:bold;">@${currentUser.username}</span></p>
+            <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border:3px solid #FFD700; border-radius:25px; padding:30px 20px; text-align:center; width:80%; max-width:320px; font-family:'Inter', sans-serif; box-shadow: 0 10px 40px rgba(212,175,55,0.35);">
+                <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
+                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; text-transform:uppercase; font-size:1.3rem; letter-spacing:1px;">Login Berhasil!</h2>
+                <p style="color:#fff; margin: 10px 0 0 0; font-size:0.95rem;">Selamat datang kembali,<br><span style="color:#ba68c8; font-weight:bold; font-size:1.1rem;">@${currentUser.username}</span></p>
             </div>`;
 
         const loginBtn = document.getElementById('login-btn');
@@ -1068,14 +1091,15 @@ window.handleAuth = async () => {
             loginBtn.onclick = () => location.reload();
         }
 
-        setTimeout(() => { loadingOverlay.remove(); }, 2000);
+        setTimeout(() => { loadingOverlay.remove(); }, 2500);
     } catch (err) { 
         console.error(err); 
         loadingOverlay.remove();
-        if (err.message !== "User cancelled login") alert("Gagal Login: " + err.message);
+        if (err.message !== "User cancelled login") {
+            alert("Gagal Login: " + err.message);
+        }
     }
 };
-
 function showLoginPrompt() {
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";

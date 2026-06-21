@@ -561,40 +561,51 @@ productsData.forEach(p => {
 // CATATAN: Biarkan let currentUser = null; tetap berada di Bagian 1 atas file Anda.
 
 async function initPi() {
-    // --- FITUR CADANGAN ANTI-MACET (MAKSIMAL TIMEOUT 3 DETIK) ---
+    // --- FITUR CADANGAN TIMEOUT (3 DETIK) ---
     const loginFallbackTimer = setTimeout(() => {
         if (!currentUser) {
             console.log("SDK Pi sedang memuat...");
-            // Jika dalam 3 detik SDK belum siap, tampilkan status Guest sementara
             terapkanDataUserKeUI("Guest User", "");
         }
     }, 3000); 
-    // --------------------------------------------------------------------
+    // ----------------------------------------
 
     try {
         if (window.Pi) {
-            // PERBAIKAN UTAMA: Ubah sandbox menjadi false karena aplikasi Anda berjalan di MAINNET
+            // 1. Wajib gunakan 'await' dan pastikan berhasil init sebelum lanjut ke kode di bawahnya
             await window.Pi.init({ version: "2.0", sandbox: false });
             console.log("Pi SDK Berhasil Diinisialisasi di Mainnet");
 
+            // 2. Beri jeda sangat singkat (100ms) agar status inisialisasi terdaftar sempurna di browser
+            await new Promise(resolve => setTimeout(resolve, 100));
+
             const scopes = ['username', 'payments'];
+            
+            // 3. Jalankan autentikasi setelah dipastikan init() selesai
             window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
                 .then(function(auth) {
-                    clearTimeout(loginFallbackTimer); // Batalkan timer cadangan
-                    currentUser = auth.user; // Menyimpan data USER ASLI dari Pi Browser
+                    clearTimeout(loginFallbackTimer);
+                    currentUser = auth.user; 
                     console.log("Login otomatis sukses! Pengguna Asli:", currentUser.username);
-
-                    // Terapkan nama pengguna asli dan Wallet UID asli ke UI
                     terapkanDataUserKeUI(currentUser.username, currentUser.uid);
                 })
                 .catch(function(error) {
                     console.error("Gagal Autentikasi Otomatis:", error);
                     clearTimeout(loginFallbackTimer);
+                    // Tampilkan pesan error di konsol untuk analisa lanjutan jika gagal
+                    if (error.message) {
+                        console.log("Detail Error Autentikasi: " + error.message);
+                    }
                 });
+        } else {
+            console.error(" window.Pi tidak ditemukan. Pastikan dibuka di Pi Browser.");
+            clearTimeout(loginFallbackTimer);
         }
     } catch (e) { 
-        console.error("Init Error:", e); 
+        console.error("Init Error Fatal:", e); 
         clearTimeout(loginFallbackTimer);
+        // Jika gagal init, infokan secara halus di log
+        terapkanDataUserKeUI("Guest User", "");
     }
 }
 

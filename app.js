@@ -14,7 +14,7 @@ const productsData = [
         name: "The Beverly Hills Modern Mansion",
         price: 3.25000,
         images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"],
-        desc: `• <b>Luas Tanah:</b> 2.500 m²<br>• <b>Kamar Tidur:</b> 7 Master Suite<br>• <b>Fasilitas:</b> Infinity Pool, Home Cinema, Wine Cellar<br>• <b>Lokasi:</b> Beverly Hills, California<br>• <b>Garasi:</b> Kapasitas 10 Mobil Mewah`
+        desc: • <b>Luas Tanah:</b> 2.500 m²<br>• <b>Kamar Tidur:</b> 7 Master Suite<br>• <b>Fasilitas:</b> Infinity Pool, Home Cinema, Wine Cellar<br>• <b>Lokasi:</b> Beverly Hills, California<br>• <b>Garasi:</b> Kapasitas 10 Mobil Mewah`
     },
     {
         id: "house-002",
@@ -1025,7 +1025,7 @@ function showSuccessOverlay(amount, name, txid) {
 // 7. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC)
 // =========================================================================
 window.handleAuth = async () => {
-    // 🛡️ PROTEKSI UTAMA: Jika SDK belum siap, jalankan init ulang secara otomatis
+    // 1. Proteksi jika SDK belum siap
     if (!isPiInitialized) {
         const tempOverlay = document.createElement('div');
         tempOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; font-family:'Inter', sans-serif;";
@@ -1039,22 +1039,17 @@ window.handleAuth = async () => {
         `;
         document.body.appendChild(tempOverlay);
 
-        // Mencoba memanggil ulang fungsi initPi yang kita buat sebelumnya
-        if (typeof initPi === 'function') {
-            await initPi();
-        }
+        if (typeof initPi === 'function') { await initPi(); }
 
-        // Jika setelah di-init ulang tetap belum siap (misal di luar Pi Browser)
         if (!isPiInitialized) {
             tempOverlay.remove();
             alert("Gagal terhubung ke Pi Network. Pastikan Anda membuka aplikasi ini dari dalam Pi Browser resmi!");
             return;
         }
-        
-        tempOverlay.remove(); // Hapus loading sementara jika berhasil init
+        tempOverlay.remove();
     }
 
-    // ⏳ INDIKATOR LOADING LOGIN
+    // 2. Indikator Loading Login
     const loadingOverlay = document.createElement('div');
     loadingOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:9999;";
     loadingOverlay.innerHTML = `<div style="text-align:center;"><div class="hourglass" style="font-size:2rem; animation: flip 1s ease infinite;">⏳</div><p style="margin-top:20px; font-weight:bold; color:#f3e5f5; font-size:0.7rem; letter-spacing:2px;">MENGHUBUNGKAN...</p></div><style>@keyframes flip { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.2) rotate(180deg); } }</style>`;
@@ -1064,19 +1059,19 @@ window.handleAuth = async () => {
         if (!window.Pi) { throw new Error("Gunakan Pi Browser."); }
         const scopes = ['username', 'payments'];
         
-        // Memanggil otentikasi aman karena init() dipastikan sudah selesai
         const auth = await window.Pi.authenticate(scopes, (p) => {
             if (typeof handleIncompletePayment === 'function') handleIncompletePayment(p);
         });
         currentUser = auth.user;
 
+        // 3. Update Tampilan Username & UID
         const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
         if (profileDisplay) profileDisplay.innerText = currentUser.username;
 
         const profileAddress = document.getElementById('profile-address');
         if (profileAddress) profileAddress.innerText = currentUser.uid;
        
-        // 🎉 TAMPILAN LOGIN BERHASIL (STYLE DIGITAL PRO)
+        // 4. 🎉 TAMPILAN POPUP LOGIN BERHASIL
         loadingOverlay.innerHTML = `
             <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border:3px solid #FFD700; border-radius:25px; padding:30px 20px; text-align:center; width:80%; max-width:320px; font-family:'Inter', sans-serif; box-shadow: 0 10px 40px rgba(212,175,55,0.35);">
                 <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
@@ -1084,11 +1079,19 @@ window.handleAuth = async () => {
                 <p style="color:#fff; margin: 10px 0 0 0; font-size:0.95rem;">Selamat datang kembali,<br><span style="color:#ba68c8; font-weight:bold; font-size:1.1rem;">@${currentUser.username}</span></p>
             </div>`;
 
+        // 5. 🛠️ REVISI UTAMA: Paksa ubah teks, warna, dan hapus fungsi handleAuth lama pada tombol
         const loginBtn = document.getElementById('login-btn');
         if (loginBtn) {
             loginBtn.innerText = "LOGOUT";
             loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-            loginBtn.onclick = () => location.reload();
+            
+            // Hapus sisa-sisa klik event listener lama dan ganti murni ke reload
+            loginBtn.onclick = null; 
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                location.reload(); // Memaksa aplikasi muat ulang untuk logout bersih
+            }, { once: true });
         }
 
         setTimeout(() => { loadingOverlay.remove(); }, 2500);

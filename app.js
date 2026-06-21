@@ -553,67 +553,7 @@ productsData.forEach(p => {
     if(!p.reviews) p.reviews = [{user: "Pembeli", comment: "Barang bagus sesuai pesanan."}];
 });
 
-// =========================================================================
-// 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
-// =========================================================================
-let currentUser = null; // Pastikan variabel global ini tersedia
 
-async function initPi() {
-    // --- FITUR CADANGAN ANTI-MACET TESTNET (MAKSIMAL TIMEOUT 3 DETIK) ---
-    const loginFallbackTimer = setTimeout(() => {
-        if (!currentUser) {
-            console.log("SDK Pi lama merespon. Mengaktifkan Bypass Akun Uji Coba.");
-            currentUser = {
-                uid: "GBXWWALLETUIDTESTNETPIINDONESIA123456789XDFG", // Contoh format Wallet UID cadangan
-                username: "Pi_Tester_Indo"
-            };
-            
-            // Terapkan data ke profil UI secara instan
-            terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-        }
-    }, 3000); 
-    // --------------------------------------------------------------------
-
-    try {
-        if (window.Pi) {
-            // Aktifkan mode sandbox: true untuk pengujian testnet, ubah ke false jika sudah Mainnet
-            await window.Pi.init({ version: "2.0", sandbox: true });
-            console.log("Pi SDK Berhasil Diinisialisasi");
-
-            // Ambil scope 'username' dan 'payments' untuk membaca data user
-            const scopes = ['username', 'payments'];
-            window.Pi.authenticate(scopes, (p) => handleIncompletePayment(p))
-                .then(function(auth) {
-                    clearTimeout(loginFallbackTimer); // Batalkan mode cadangan karena SDK Pi merespon cepat
-                    
-                    currentUser = auth.user; // Berisi data user asli dari Pi Browser
-                    console.log("Login otomatis sukses! Pengguna:", currentUser.username);
-
-                    // PENTING: Jika di Mainnet/Real Pi Browser, auth.user.uid adalah User ID Aplikasi.
-                    // Untuk sinkronisasi tampilan, kita gunakan UID ini sebagai pengenal dompet/akun di UI profil.
-                    terapkanDataUserKeUI(currentUser.username, currentUser.uid);
-                })
-                .catch(function(error) {
-                    console.error("Gagal Autentikasi Otomatis:", error);
-                    clearTimeout(loginFallbackTimer);
-                });
-        } else {
-            console.log("window.Pi tidak ditemukan. Menjalankan fallback.");
-        }
-    } catch (e) { 
-        console.error("Init Error:", e); 
-        clearTimeout(loginFallbackTimer);
-    }
-}
-
-// Fungsi Utama untuk Menerapkan Nama Pengguna dan Wallet UID ke Tampilan Aplikasi
-function terapkanDataUserKeUI(username, uid) {
-    // 1. Menampilkan Nama Akun User Pi (@username)
-    // Mencari elemen berdasarkan ID atau Class bawaan profil Anda
-    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text') || document.querySelector('.profile-info h3');
-    if (profileDisplay) {
-        // Tambahkan simbol @ jika belum ada agar terlihat seperti username Pi asli
-        profileDisplay.innerText = username.startsWith('@') ? username : `@${username}`;
 // =========================================================================
 // 3. PI INITIALIZATION & FUNCTION UTILITIES (PROFIL USER & WALLET UID)
 // =========================================================================

@@ -1,5 +1,5 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS) - Dioptimalkan untuk Mobile & Keyboard Friendly
+    // 1. Injeksi Gaya Tampilan (CSS) - Mobile & Keyboard Friendly
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
@@ -57,12 +57,11 @@
         .bot-input-area input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 13px; }
         .btn-send { background: #25d366; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        /* Container Form Modifikasi Agar Responsif Terhadap Keyboard */
         .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
         .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; }
         .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
-        /* Form Cek Ongkir Minimalis Ringkas */
+        /* Form Cek Ongkir */
         .ongkir-input-container { display: none; padding: 12px 14px; background: #e3f2fd; border-top: 1px solid #bbdefb; flex-direction: column; gap: 8px; font-size: 12px; }
         .ongkir-grid { display: flex; flex-direction: column; gap: 6px; }
         .ongkir-grid textarea { width: 100%; height: 55px; padding: 8px; border: 1px solid #2196f3; border-radius: 6px; font-size: 12px; font-family: inherit; background: white; box-sizing: border-box; resize: none; outline: none; }
@@ -82,7 +81,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot (Form diubah menjadi Textarea Alamat Terpadu)
+    // 3. Inject Struktur HTML Widget Bot
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -112,6 +111,7 @@
 
             <div class="ongkir-input-container" id="ongkirForm">
                 <div class="ongkir-grid">
+                    <div style="font-size: 11px; color: #555; margin-bottom: 2px;">📦 Pengirim: <strong>Jakarta (Gudang Utama)</strong></div>
                     <textarea id="inputAlamatLengkap" placeholder="Ketik Alamat Lengkap Tujuan...&#10;(Kelurahan, Kecamatan, Kota, Provinsi)"></textarea>
                     <div class="ongkir-row">
                         <input type="number" id="inputBerat" placeholder="Berat Barang (Gram)" value="1000">
@@ -207,24 +207,23 @@
 
         // Kirim rincian teks alamat ke bubble chat
         let userMsg = `<strong>Request Cek Ongkir:</strong><br>` +
-                      `📍 Alamat Tujuan: ${alamatFull}<br>` +
+                      `🛫 Dari: Jakarta (Gudang Utama)<br>` +
+                      `🛬 Ke: ${alamatFull}<br>` +
                       `⚖️ Berat: ${berat} gram`;
         
         appendBotMsg(userMsg, 'user');
-        appendBotMsg(`<em>Mencari estimasi perbandingan ongkos kirim ekspedisi... 📦</em>`, 'bot');
+        appendBotMsg(`<em>Mencari estimasi tarif pengiriman dari Jakarta... 📦</em>`, 'bot');
 
-        // Simulasi hasil komparasi kurir
+        // Simulasi hasil komparasi kurir dari asal JAKARTA
         setTimeout(() => {
-            let hasilOngkir = `Berikut ringkasan estimasi tarif pengiriman ke lokasi Anda:<br><br>` +
+            let hasilOngkir = `Berikut perbandingan estimasi tarif pengiriman <strong>dari Jakarta</strong> ke lokasi Anda:<br><br>` +
                 `<strong>🚚 J&T Express (EZ)</strong><br>• Tarif: Rp 14.000<br>• Estimasi: 2-3 Hari<br>___________________<br>` +
                 `<strong>🚚 JNE (Regular)</strong><br>• Tarif: Rp 15.000<br>• Estimasi: 2-4 Hari<br>___________________<br>` +
                 `<strong>🚚 Sicepat (REG)</strong><br>• Tarif: Rp 14.500<br>• Estimasi: 1-2 Hari<br>___________________<br>` +
                 `<strong>🚚 POS Indonesia</strong><br>• Tarif: Rp 16.000<br>• Estimasi: 3-5 Hari<br><br>` +
-                `*Info tambahan: Salin alamat di atas untuk memudahkan konfirmasi pengiriman fisik saat terhubung dengan WhatsApp Admin.*`;
+                `*Info tambahan: Salin detail alamat pengiriman di atas untuk memudahkan konfirmasi fisik saat melakukan checkout via WA Admin.*`;
             
             appendBotMsg(hasilOngkir, 'bot');
-            
-            // Reset bidang input teks
             inputAlamatLengkap.value = '';
         }, 1500);
     });

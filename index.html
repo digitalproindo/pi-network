@@ -431,7 +431,7 @@
     }
 
 // ==========================================
-    // FUNGSI MODAL GLOBAL (VERSI SUPER KUAT)
+    // FUNGSI MODAL (DIBUAT GLOBAL & PASTI TERBUKA)
     // ==========================================
     window.openModal = function() { document.getElementById("comingSoonModal").style.display = "flex"; }
     window.closeModal = function() { document.getElementById("comingSoonModal").style.display = "none"; }
@@ -441,7 +441,7 @@
     window.openKomunitasModal = function() {
         const modalKomunitas = document.getElementById("komunitasModal");
         if (modalKomunitas) {
-            modalKomunitas.style.display = "flex";
+            modalKomunitas.style.display = "flex"; // 🟢 Modal dijamin pasti terbuka saat tombol diklik!
         }
         var sideNav = document.getElementById("sideNav");
         if(sideNav) sideNav.style.width = "0";
@@ -452,23 +452,8 @@
         if (modalKomunitas) modalKomunitas.style.display = "none";
     }
 
-    // OTOMATIS IKAT TOMBOL HTML KE FUNGSI MODAL DI ATAS
-    document.addEventListener("DOMContentLoaded", () => {
-        // Cari tombol ungu "PERBARUI / AJUKAN WILAYAH BARU"
-        const btnAjukan = document.querySelector("button[onclick*='openKomunitasModal']"),
-              btnProfil = document.getElementById("btn-ajukan-wilayah"); // Sesuaikan id jika ada
-              
-        // Pasang klik paksa lewat JavaScript jika onclick di HTML macet
-        document.body.addEventListener("click", function(e) {
-            if (e.target && (e.target.innerText === "PERBARUI / AJUKAN WILAYAH BARU" || e.target.closest("button")?.innerText === "PERBARUI / AJUKAN WILAYAH BARU")) {
-                e.preventDefault();
-                window.openKomunitasModal();
-            }
-        });
-    });
-
     // ==========================================
-    // DEKLARASI & PROSES SUBMIT FORM
+    // DEKLARASI & VALIDASI SUBMIT PENDAFTARAN
     // ==========================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
@@ -477,10 +462,12 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            const userDaftar = window.currentUser || currentUser;
+            // Mengambil status login dari window global app.js secara real-time
+            const userDaftar = window.currentUser;
             
+            // Validasi dipindahkan ke sini (saat menekan tombol DAFTAR SEKARANG di dalam form)
             if (!userDaftar || !userDaftar.uid) {
-                alert("Gagal mengirim! Otorisasi login Pi Anda belum terbaca. Harap tunggu beberapa detik atau muat ulang aplikasi.");
+                alert("⚠️ Gagal mengirim! Akun Pi Network Anda belum terotentikasi secara sempurna di aplikasi. Harap refresh atau tunggu beberapa detik lalu coba lagi.");
                 return;
             }
 
@@ -490,6 +477,7 @@
                 btn.disabled = true;
             }
 
+            // 1. Mengambil data inputan dari form HTML secara aman
             const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : (form.querySelector('[name="name"]') ? form.querySelector('[name="name"]').value : "");
             const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
             
@@ -498,6 +486,7 @@
             const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
             const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
             
+            // 2. Menyusun string parameter URL (Anti-Geser Kolom Google Sheets)
             const params = new URLSearchParams({
                 nama: namaUser,
                 whatsapp: waUser,
@@ -505,9 +494,10 @@
                 kota: kotaUser,
                 kecamatan: kecUser,
                 kelurahan: kelUser,
-                uid: userDaftar.uid
+                uid: userDaftar.uid // Mengirimkan Wallet UID asli dari blockchain Pi
             });
 
+            // 3. Eksekusi pengiriman data POST ke Google Sheets
             fetch(`${scriptURL}?${params.toString()}`, { 
                 method: 'POST' 
             })
@@ -516,16 +506,24 @@
                 window.closeKomunitasModal();
                 form.reset();
                 
+                // Mengubah warna UI status secara dinamis menjadi kuning setelah berhasil submit
                 const statusLabel = document.getElementById('partner-status');
-                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
+                if(statusLabel) { 
+                    statusLabel.style.background = "#fef3c7";
+                    statusLabel.style.color = "#f59e0b";
+                    statusLabel.innerText = "PROSES REVIEW"; 
+                }
                 
+                // Memicu sinkronisasi data profil di app.js
                 if (typeof window.muatStatusKemitraan === "function") {
                     window.muatStatusKemitraan();
+                } else if (typeof muatStatusKemitraan === "function") {
+                    muatStatusKemitraan();
                 }
             })
             .catch(error => {
                 console.error("Gagal mendaftar:", error);
-                alert("Error: Silakan coba lagi nanti.");
+                alert("Terjadi masalah koneksi. Silakan coba klik daftar kembali.");
             })
             .finally(() => {
                 if (btn) {

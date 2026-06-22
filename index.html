@@ -430,32 +430,28 @@
             sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
         }
     }
+ <script>
+    // =========================================================================
+    // 1. MANAGEMENT UTAMA MODAL (BUKA / TUTUP)
+    // =========================================================================
+    function openModal() { document.getElementById("comingSoonModal").style.display = "flex"; }
+    function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
+    function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
+    function closeLoginModal() { document.getElementById("loginModal").style.display = "none"; }
 
-    // ==========================================
-    // FUNGSI MODAL GLOBAL (PASTI TERBUKA)
-    // ==========================================
-    window.openModal = function() { document.getElementById("comingSoonModal").style.display = "flex"; }
-    window.closeModal = function() { document.getElementById("comingSoonModal").style.display = "none"; }
-    window.openLoginModal = function() { document.getElementById("loginModal").style.display = "flex"; }
-    window.closeLoginModal = function() { document.getElementById("loginModal").style.display = "none"; }
-
-    window.openKomunitasModal = function() {
-        const modalKomunitas = document.getElementById("komunitasModal");
-        if (modalKomunitas) {
-            modalKomunitas.style.display = "flex";
-        }
+    function openKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "flex";
         var sideNav = document.getElementById("sideNav");
         if(sideNav) sideNav.style.width = "0";
     }
 
-    window.closeKomunitasModal = function() {
-        const modalKomunitas = document.getElementById("komunitasModal");
-        if (modalKomunitas) modalKomunitas.style.display = "none";
+    function closeKomunitasModal() {
+        document.getElementById("komunitasModal").style.display = "none";
     }
 
-    // ==========================================
-    // DEKLARASI & PROSES SUBMIT FORM + AUTO WA GROUP
-    // ==========================================
+    // =========================================================================
+    // 2. SUBMIT FORM + INTEGRASI POP-UP SUKSES CUSTOM "DIGITAL PRO"
+    // =========================================================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
 
@@ -463,27 +459,31 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            const userDaftar = window.currentUser || currentUser;
+            // Membaca variabel global currentUser dari window
+            const userDaftar = window.currentUser;
             
+            // Proteksi jika user belum login Pi Network / variabel belum siap
             if (!userDaftar || !userDaftar.uid) {
                 alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna di halaman ini. Harap muat ulang aplikasi di Pi Browser Anda.");
                 return;
             }
-
+            
             const btn = document.getElementById('btnKirim');
             if (btn) {
                 btn.innerText = "MENGIRIM...";
                 btn.disabled = true;
             }
-
+            
+            // Mengambil data inputan dari form HTML secara aman
             const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : "";
             const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
             
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+            const provUser = document.getElementById('selectProvinsi').value;
+            const kotaUser = document.getElementById('selectKota').value;
+            const kecUser = document.getElementById('selectKecamatan').value;
+            const kelUser = document.getElementById('selectKelurahan').value;
             
+            // Menyusun string parameter URL (Anti-Geser Kolom)
             const params = new URLSearchParams({
                 nama: namaUser,
                 whatsapp: waUser,
@@ -493,25 +493,30 @@
                 kelurahan: kelUser,
                 uid: userDaftar.uid
             });
-
-            fetch(`${scriptURL}?${params.toString()}`, { 
-                method: 'POST' 
+            
+            // Eksekusi pendaftaran POST ke Google Sheets
+            fetch(`${scriptURL}?${params.toString()}`, {
+                method: 'POST'
             })
             .then(response => {
-                // Notifikasi sukses pendaftaran
-                alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.\n\nKlik OK untuk masuk ke Grup WhatsApp Otoritas Wilayah.");
-                
-                // REDIRECT OTOMATIS KE GRUP WA
-                window.location.href = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
-                
-                window.closeKomunitasModal();
+                // Tutup form pendaftaran
+                closeKomunitasModal();
                 form.reset();
                 
-                const statusLabel = document.getElementById('partner-status');
-                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
+                // PANGGIL MODAL SUKSES DIGITAL PRO CUSTOM
+                tampilkanModalSuksesDigital();
                 
-                if (typeof window.muatStatusKemitraan === "function") {
-                    window.muatStatusKemitraan();
+                // Ubah UI status secara dinamis menjadi PROSES REVIEW
+                const statusLabel = document.getElementById('partner-status');
+                if (statusLabel) { 
+                    statusLabel.innerText = "PROSES REVIEW"; 
+                    statusLabel.style.background = "#fef3c7";
+                    statusLabel.style.color = "#f59e0b";
+                }
+                
+                // Memanggil fungsi sinkronisasi profil di app.js jika tersedia
+                if (typeof muatStatusKemitraan === "function") {
+                    muatStatusKemitraan();
                 }
             })
             .catch(error => {
@@ -527,9 +532,64 @@
         });
     }
 
-    // ==========================================
-    // LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC
-    // ==========================================
+    // =========================================================================
+    // 3. FUNGSI LAYOUT MODAL SUKSES KUSTOM & SYSTEM SECURITY BYPASS PI BROWSER
+    // =========================================================================
+    function tampilkanModalSuksesDigital() {
+        let suksesModal = document.getElementById("digitalSuksesModal");
+        
+        if (!suksesModal) {
+            suksesModal = document.createElement("div");
+            suksesModal.id = "digitalSuksesModal";
+            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:99999; padding:20px; font-family:'Poppins', sans-serif;";
+            
+            suksesModal.innerHTML = `
+                <div style="background:#ffffff; width:100%; max-width:400px; border-radius:20px; text-align:center; padding:30px 20px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: popUpAnim 0.4s ease-out;">
+                    <div style="width:80px; height:80px; background:#e8f8f5; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
+                        <span style="font-size:40px; color:#2ecc71;">✅</span>
+                    </div>
+                    <h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:22px; font-weight:700;">Pendaftaran Berhasil!</h3>
+                    <p style="margin:0 0 25px 0; color:#7f8c8d; font-size:14px; line-height:1.5;">
+                        Data kemitraan komunitas Anda di <span style="color:#2c3e50; font-weight:600;">PT. DIGITAL PRO INDO</span> telah aman tersimpan di sistem kami.
+                    </p>
+                    <div style="background:#f8f9fa; border-left:4px solid #00c3a5; border-radius:8px; padding:12px; text-align:left; margin-bottom:25px;">
+                        <p style="margin:0; font-size:12px; color:#34495e; font-weight:500;">
+                            📢 <strong>Langkah Wajib Selanjutnya:</strong><br>Silakan bergabung ke dalam Grup WhatsApp resmi untuk validasi dokumen otoritas wilayah Anda.
+                        </p>
+                    </div>
+                    <button onclick="bukaGrupWhatsAppDigital()" style="width:100%; background:linear-gradient(135deg, #25d366, #128c7e); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(37,211,102,0.3); display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:12px; transition: all 0.3s;">
+                        <span>Masuk Grup WhatsApp</span> 🚀
+                    </button>
+                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:transparent; color:#95a5a6; border:none; padding:8px; font-size:13px; cursor:pointer; text-decoration:underline;">
+                        Nanti Saja
+                    </button>
+                </div>
+                <style>
+                    @keyframes popUpAnim {
+                        from { transform: scale(0.8); opacity: 0; }
+                        to { transform: scale(1); opacity: 1; }
+                    }
+                </style>
+            `;
+            document.body.appendChild(suksesModal);
+        }
+        suksesModal.style.display = "flex";
+    }
+
+    function bukaGrupWhatsAppDigital() {
+        const waLink = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
+        // Menggunakan target _blank agar Pi Browser melempar link keluar menuju aplikasi WhatsApp asli internal HP
+        window.open(waLink, '_blank');
+        
+        setTimeout(() => {
+            const modal = document.getElementById("digitalSuksesModal");
+            if(modal) modal.style.display = "none";
+        }, 1000);
+    }
+
+    // =========================================================================
+    // 4. LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC
+    // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
     const kecSelect = document.getElementById('selectKecamatan');
@@ -601,11 +661,12 @@
         target.disabled = true;
     }
 
+    // Menutup modal apa pun jika pengguna menyentuh area luar hitam overlay
     window.onclick = function(event) {
         if (event.target.className === "modal-overlay") {
             event.target.style.display = "none";
         }
     }
-</script>                      
+</script>                 
 </body>
 </html>

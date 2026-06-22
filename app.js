@@ -1941,13 +1941,58 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
-
-    // 5. Jalankan pipeline login otomatis Pi Network SDK
+// 5. Jalankan pipeline login otomatis Pi Network SDK
     await initPi();
+    muatStatusKemitraan();
 
     // 6. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn && !currentUser) {
         loginBtn.onclick = window.handleAuth;
     }
-});
+}); 
+
+// ==========================================
+// FUNGSI SINKRONISASI STATUS KEMITRAAN
+// ==========================================
+function muatStatusKemitraan() {
+    if (!currentUser || !currentUser.uid) {
+        console.log("User belum login Pi.");
+        return;
+    }
+    
+    const penunjukStatus = document.getElementById('partner-status');
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    
+    // Perhatikan penggunaan tanda ` (backtick) di bawah ini:
+    fetch(scriptURL}?uid=${encodeURIComponent(currentUser.uid)}
+        .then(res => res.json())
+        .then(data => {
+            if (penunjukStatus) {
+                if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
+                    penunjukStatus.style.background = "#dcfce7";
+                    penunjukStatus.style.color = "#15803d";
+                    penunjukStatus.innerText = "✅ MITRA SAH WILAYAH";
+                } else if (data.status === "PROSES REVIEW") {
+                    penunjukStatus.style.background = "#fef3c7";
+                    penunjukStatus.style.color = "#f59e0b";
+                    penunjukStatus.innerText = "PROSES REVIEW";
+                } else {
+                    penunjukStatus.style.background = "#f1f5f9";
+                    penunjukStatus.style.color = "#64748b";
+                    penunjukStatus.innerText = "BELUM TERDAFTAR";
+                }
+            }
+            
+            // Update data Logistik Share & Produk Terproses
+            const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
+            if (infoCards.length >= 2) {
+                infoCards[0].innerText = data.share;
+                infoCards[1].innerText = data.terproses;
+                if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
+                    infoCards[0].style.color = "#15803d";
+                }
+            }
+        })
+        .catch(err => console.error("Gagal sinkronisasi:", err));
+}

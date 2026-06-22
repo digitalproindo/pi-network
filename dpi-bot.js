@@ -1,5 +1,5 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS) - Diubah ke Kanan, Warna Hijau WA & Layout Cek Ongkir
+    // 1. Injeksi Gaya Tampilan (CSS) - Diperluas untuk Form Alamat Detail
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
@@ -56,13 +56,18 @@
         .bot-input-area input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 13px; }
         .btn-send { background: #25d366; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         
-        /* Form Input Pop-up */
-        .lacak-input-container, .ongkir-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
-        .ongkir-input-container { background: #e3f2fd; border-top: 1px solid #bbdefb; }
-        .lacak-input-container input, .ongkir-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; }
-        .ongkir-input-container input { border: 1px solid #2196f3; }
-        .lacak-input-container button, .ongkir-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
-        .ongkir-input-container button { background: #2196f3; color: white; }
+        /* Container Form */
+        .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
+        .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; }
+        .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+
+        /* Form Alamat Cek Ongkir */
+        .ongkir-input-container { display: none; padding: 12px 14px; background: #e3f2fd; border-top: 1px solid #bbdefb; flex-direction: column; gap: 8px; font-size: 12px; max-height: 250px; overflow-y: auto; }
+        .ongkir-grid { display: flex; flex-direction: column; gap: 6px; }
+        .ongkir-row { display: flex; gap: 6px; }
+        .ongkir-grid select, .ongkir-grid input { width: 100%; padding: 6px 8px; border: 1px solid #2196f3; border-radius: 6px; font-size: 12px; background: white; box-sizing: border-box; outline: none; }
+        .ongkir-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .btn-proses-ongkir { background: #2196f3; color: white; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
     `;
     document.head.appendChild(style);
 
@@ -75,7 +80,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot
+    // 3. Inject Struktur HTML Widget Bot (Dengan Form Dropdown Bertingkat Lengkap)
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -104,10 +109,21 @@
             </div>
 
             <div class="ongkir-input-container" id="ongkirForm">
-                <input type="text" id="kotaTujuan" placeholder="Kota Tujuan (Misal: Surabaya)...">
-                <input type="number" id="beratBarang" placeholder="Gram" value="1000" style="max-width: 70px;">
-                <button id="btnProsesOngkir">Cek</button>
-                <span id="btnTutupOngkir" style="cursor:pointer; margin-left:5px; color:red;"><i class="fa-solid fa-xmark"></i></span>
+                <div class="ongkir-grid">
+                    <select id="selectProvinsi"><option value="">-- Pilih Provinsi --</option></select>
+                    <select id="selectKota" disabled><option value="">-- Pilih Kota/Kabupaten --</option></select>
+                    <select id="selectKecamatan" disabled><option value="">-- Pilih Kecamatan --</option></select>
+                    <select id="selectKelurahan" disabled><option value="">-- Pilih Kelurahan/Desa --</option></select>
+                    
+                    <div class="ongkir-row">
+                        <input type="text" id="inputAlamat" placeholder="Nama Jalan / No. Rumah...">
+                        <input type="number" id="inputBerat" placeholder="Gram" value="1000" style="max-width: 75px;">
+                    </div>
+                </div>
+                <div class="ongkir-actions">
+                    <span id="btnTutupOngkir" style="cursor:pointer; color:red; font-weight:bold;"><i class="fa-solid fa-xmark"></i> Batal</span>
+                    <button class="btn-proses-ongkir" id="btnProsesOngkir">Cek Tarif</button>
+                </div>
             </div>
 
             <div class="faq-section">
@@ -131,7 +147,7 @@
     botWrapper.innerHTML = botHtml;
     document.body.appendChild(botWrapper);
 
-    // 4. Inisialisasi Elemen & Logika Event Listener
+    // 4. Inisialisasi Elemen Elemen Utama
     const botToggle = document.getElementById('botToggle');
     const botContainer = document.getElementById('botContainer');
     const botMinimize = document.getElementById('botMinimize');
@@ -149,6 +165,14 @@
     const btnProsesOngkir = document.getElementById('btnProsesOngkir');
     const btnTutupOngkir = document.getElementById('btnTutupOngkir');
 
+    // Elemen Dropdown Wilayah
+    const selectProvinsi = document.getElementById('selectProvinsi');
+    const selectKota = document.getElementById('selectKota');
+    const selectKecamatan = document.getElementById('selectKecamatan');
+    const selectKelurahan = document.getElementById('selectKelurahan');
+    const inputAlamat = document.getElementById('inputAlamat');
+    const inputBerat = document.getElementById('inputBerat');
+
     // Buka Tutup Widget Chat
     botToggle.addEventListener('click', () => {
         botContainer.style.display = botContainer.style.display === 'flex' ? 'none' : 'flex';
@@ -156,7 +180,6 @@
     });
     botMinimize.addEventListener('click', () => { botContainer.style.display = 'none'; });
 
-    // Fungsi Pengiriman Pesan ke Bubble Chat
     function appendBotMsg(text, sender) {
         const bubble = document.createElement('div');
         bubble.className = `msg-bubble msg-${sender}`;
@@ -165,87 +188,151 @@
         botChatBody.scrollTop = botChatBody.scrollHeight;
     }
 
-    function eksekusiKirim() {
-        const text = botUserInput.value.trim();
-        if(!text) return;
-        
-        appendBotMsg(text, 'user');
-        botUserInput.value = '';
+    // --- INTEGRASI STRUKTUR DATA WILAYAH INDONESIA ---
+    const baseUrlWilayah = "https://emsifa.github.io/api-wilayah-indonesia/api";
 
-        setTimeout(() => {
-            let balasan = "Pertanyaan Anda telah kami rekam. Untuk bantuan respon kilat langsung terhubung manusia, silakan klik tombol **WA Admin** di bawah ini.";
-            const low = text.toLowerCase();
-            if(low.includes('beli') || low.includes('cara')) {
-                balasan = "Untuk membeli aset/produk, pilih produk pilihan Anda, tekan tombol **Beli**, lalu masukkan frasa sandi dompet Pi Anda dengan aman pada jendela pop-up Pi SDK.";
-            } else if(low.includes('pi') || low.includes('koin') || low.includes('bayar')) {
-                balasan = "Aplikasi PT. Digital Pro Indo menggunakan integrasi Pi Network API untuk memproses alat pembayaran sah internal ekosistem.";
-            }
-            appendBotMsg(balasan, 'bot');
-        }, 800);
-    }
-
-    botBtnSend.addEventListener('click', eksekusiKirim);
-    botUserInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') eksekusiKirim(); });
-
-    // FAQ Otomatis
-    document.querySelectorAll('.faq-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const pertanyaan = this.innerText;
-            const jawaban = this.getAttribute('data-reply');
-            appendBotMsg(pertanyaan, 'user');
-            setTimeout(() => { appendBotMsg(jawaban, 'bot'); }, 500);
+    // Load Data Provinsi Saat Awal Script Berjalan
+    fetch(`${baseUrlWilayah}/provinces.json`)
+        .then(res => res.json())
+        .then(provinces => {
+            provinces.forEach(p => {
+                let opt = document.createElement('option');
+                opt.value = p.id;
+                opt.text = p.name;
+                selectProvinsi.appendChild(opt);
+            });
         });
+
+    // Ketika Provinsi Berubah -> Ambil data Kota
+    selectProvinsi.addEventListener('change', function() {
+        selectKota.innerHTML = '<option value="">-- Pilih Kota/Kabupaten --</option>';
+        selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+        selectKelurahan.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+        selectKecamatan.disabled = true; selectKelurahan.disabled = true;
+        
+        if(!this.value) { selectKota.disabled = true; return; }
+        
+        fetch(`${baseUrlWilayah}/regencies/${this.value}.json`)
+            .then(res => res.json())
+            .then(regencies => {
+                regencies.forEach(r => {
+                    let opt = document.createElement('option');
+                    opt.value = r.id;
+                    opt.text = r.name;
+                    selectKota.appendChild(opt);
+                });
+                selectKota.disabled = false;
+            });
     });
 
-    // --- LOGIKA MENU LACAK PESANAN ---
+    // Ketika Kota Berubah -> Ambil data Kecamatan
+    selectKota.addEventListener('change', function() {
+        selectKecamatan.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+        selectKelurahan.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+        selectKelurahan.disabled = true;
+        
+        if(!this.value) { selectKecamatan.disabled = true; return; }
+
+        fetch(`${baseUrlWilayah}/districts/${this.value}.json`)
+            .then(res => res.json())
+            .then(districts => {
+                districts.forEach(d => {
+                    let opt = document.createElement('option');
+                    opt.value = d.id;
+                    opt.text = d.name;
+                    selectKecamatan.appendChild(opt);
+                });
+                selectKecamatan.disabled = false;
+            });
+    });
+
+    // Ketika Kecamatan Berubah -> Ambil data Kelurahan
+    selectKecamatan.addEventListener('change', function() {
+        selectKelurahan.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+        if(!this.value) { selectKelurahan.disabled = true; return; }
+
+        fetch(`${baseUrlWilayah}/villages/${this.value}.json`)
+            .then(res => res.json())
+            .then(villages => {
+                villages.forEach(v => {
+                    let opt = document.createElement('option');
+                    opt.value = v.id;
+                    opt.text = v.name;
+                    selectKelurahan.appendChild(opt);
+                });
+                selectKelurahan.disabled = false;
+            });
+    });
+
+
+    // --- KONTROL TOMBOL INTERAKSI ---
     btnMenuLacak.addEventListener('click', () => {
-        ongkirForm.style.display = 'none'; // tutup form ongkir jika buka form lacak
+        ongkirForm.style.display = 'none';
         lacakForm.style.display = 'flex';
     });
     btnTutupLacak.addEventListener('click', () => { lacakForm.style.display = 'none'; });
 
-    btnProsesLacak.addEventListener('click', () => {
-        const inv = document.getElementById('noInvoice').value.trim();
-        if(!inv) return;
-        
-        appendBotMsg(`Melacak nomor invoice: <strong>${inv}</strong>`, 'user');
-        lacakForm.style.display = 'none';
-        
-        setTimeout(() => {
-            appendBotMsg(`Sistem mendeteksi transaksi properti/produk dengan invoice <strong>${inv}</strong> saat ini sedang dalam antrean verifikasi enkripsi Blockchain Pi Network.`, 'bot');
-            document.getElementById('noInvoice').value = '';
-        }, 800);
-    });
-
-    // --- LOGIKA MENU CEK ONGKIR (SIMULASI PERBANDINGAN LAYANAN) ---
     btnMenuOngkir.addEventListener('click', () => {
-        lacakForm.style.display = 'none'; // tutup form lacak jika buka form ongkir
+        lacakForm.style.display = 'none';
         ongkirForm.style.display = 'flex';
     });
     btnTutupOngkir.addEventListener('click', () => { ongkirForm.style.display = 'none'; });
 
+    // Aksi Klik tombol utama "Cek Tarif"
     btnProsesOngkir.addEventListener('click', () => {
-        const kota = document.getElementById('kotaTujuan').value.trim();
-        const berat = document.getElementById('beratBarang').value.trim();
-        if(!kota) return;
+        const provText = selectProvinsi.options[selectProvinsi.selectedIndex]?.text || '';
+        const kotaText = selectKota.options[selectKota.selectedIndex]?.text || '';
+        const kecText = selectKecamatan.options[selectKecamatan.selectedIndex]?.text || '';
+        const kelText = selectKelurahan.options[selectKelurahan.selectedIndex]?.text || '';
+        const alamat = inputAlamat.value.trim();
+        const berat = inputBerat.value.trim();
 
-        appendBotMsg(`Cek perbandingan ongkir ke: <strong>${kota}</strong> (${berat} gram)`, 'user');
+        if(!provText || !kotaText || !kecText || !kelText) {
+            alert("Harap lengkapi semua pilihan wilayah!");
+            return;
+        }
+
         ongkirForm.style.display = 'none';
 
-        appendBotMsg(`<em>Mencari perbandingan harga ekspedisi terupdate... 📦</em>`, 'bot');
+        // Tampilkan Input Alamat Lengkap dari User ke Layar Obrolan
+        let userMsg = `<strong>Request Cek Ongkir:</strong><br>` +
+                      `📍 Alamat: ${alamat ? alamat : '-'}<br>` +
+                      `🏡 Kel/Desa: ${kelText}<br>` +
+                      `🏢 Kec: ${kecText}<br>` +
+                      `🌆 Kota/Kab: ${kotaText}<br>` +
+                      `🗺️ Provinsi: ${provText}<br>` +
+                      `⚖️ Berat: ${berat} gram`;
+        
+        appendBotMsg(userMsg, 'user');
+        appendBotMsg(`<em>Mencari perbandingan ongkos kirim ke alamat tujuan... 📦</em>`, 'bot');
 
-        // Simulasi Output Komparasi Jasa Pengiriman
+        // Simulasi kalkulasi komparator ekspedisi real-time di UI
         setTimeout(() => {
-            let hasilOngkir = `Berikut perbandingan tarif ongkir terendah ke <strong>${kota}</strong> (${berat}g):<br><br>` +
-                `<strong>🚚 J&T Express (EZ)</strong><br>• Tarif: Rp 11.500<br>• Estimasi: 2 - 3 Hari<br>___________________<br>` +
-                `<strong>🚚 JNE (Regular)</strong><br>• Tarif: Rp 12.000<br>• Estimasi: 2 - 4 Hari<br>___________________<br>` +
-                `<strong>🚚 Sicepat (REG)</strong><br>• Tarif: Rp 12.000<br>• Estimasi: 1 - 2 Hari<br>___________________<br>` +
-                `<strong>🚚 POS Indonesia (Kilat)</strong><br>• Tarif: Rp 14.500<br>• Estimasi: 3 - 5 Hari<br><br>` +
-                `*Catatan: Harga di atas merupakan estimasi standar marketplace. Hubungi admin untuk asuransi pengiriman barang mewah/properti.*`;
+            let hasilOngkir = `Berikut perbandingan tarif pengiriman ke <strong>${kecText}, ${kotaText}</strong>:<br><br>` +
+                `<strong>🚚 J&T Express (EZ)</strong><br>• Tarif: Rp 14.000<br>• Estimasi: 2-3 Hari<br>___________________<br>` +
+                `<strong>🚚 JNE (Regular)</strong><br>• Tarif: Rp 15.000<br>• Estimasi: 2-4 Hari<br>___________________<br>` +
+                `<strong>🚚 Sicepat (REG)</strong><br>• Tarif: Rp 14.500<br>• Estimasi: 1-2 Hari<br>___________________<br>` +
+                `<strong>🚚 POS Indonesia</strong><br>• Tarif: Rp 16.000<br>• Estimasi: 3-5 Hari<br><br>` +
+                `*Silakan salin data alamat di atas untuk ditempel pada instruksi WA Admin saat checkout properti/produk digital.*`;
             
             appendBotMsg(hasilOngkir, 'bot');
-            document.getElementById('kotaTujuan').value = '';
-        }, 1200);
+            
+            // Reset Form input text biasa
+            inputAlamat.value = '';
+        }, 1500);
     });
+
+    // Fitur kirim manual chat bot bawaan
+    function eksekusiKirim() {
+        const text = botUserInput.value.trim();
+        if(!text) return;
+        appendBotMsg(text, 'user');
+        botUserInput.value = '';
+        setTimeout(() => {
+            appendBotMsg("Pertanyaan Anda telah kami rekam. Untuk bantuan respon kilat langsung terhubung manusia, silakan klik tombol **WA Admin** di bawah ini.", 'bot');
+        }, 800);
+    }
+    botBtnSend.addEventListener('click', eksekusiKirim);
+    botUserInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') eksekusiKirim(); });
 
 })();

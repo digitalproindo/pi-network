@@ -1191,6 +1191,119 @@ const productsData = [
         sold: 1,
         images: ["https://i.ibb.co.com/7xshksJQ/Desain-tanpa-judul-20260207-114554-0000.png"],
         desc: "Dapur Pacu: Mesin 6.75L V12 Twin-Turbo super senyap. Kenyamanan Utama: Fitur plafon Starlight Headliner dan suspensi udara Magic Carpet Ride."
+    },
+    // -----------------------------------------------------------------
+    // KATEGORI: MAKANAN (FOOD)
+    // -----------------------------------------------------------------
+    {
+        id: "food-001",
+        category: "Makan",
+        name: "Rendang Daging Sapi Minang Vakum",
+        price: 0.000015,
+        discount: 0,
+        rating: "4.9",
+        sold: 340,
+        images: ["https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500"],
+        desc: "Daging rendang otentik dengan bumbu rempah Padang asli seberat 500 gram. Dikemas steril menggunakan metode vakum udara sehingga awet alami tanpa pengawet."
+    },
+    {
+        id: "food-002",
+        category: "Makan",
+        name: "Sambal Cumi Ciamik Premium",
+        price: 0.000005,
+        discount: 5,
+        rating: "4.8",
+        sold: 512,
+        images: ["https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500"],
+        desc: "Sambal bawang pedas gurih dipadu dengan potongan daging cumi asin melimpah. Dimasak segar setiap hari dan siap disantap langsung bersama nasi hangat."
+    },
+    {
+        id: "food-003",
+        category: "Makan",
+        name: "Kue Lapis Legit Spesial Full Wisman",
+        price: 0.000045,
+        discount: 0,
+        rating: "5.0",
+        sold: 68,
+        images: ["https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"],
+        desc: "Kue lapis premium ukuran 20x20cm dengan tekstur super lembut, legit, dan aroma wangi yang menggoda berkat penggunaan mentega Wijsman murni 100 persen."
+    },
+    {
+        id: "food-004",
+        category: "Makan",
+        name: "Baso Aci Garut Instan Kuah Pedas",
+        price: 0.000003,
+        discount: 10,
+        rating: "4.7",
+        sold: 1250,
+        images: ["https://images.unsplash.com/photo-1552611052-33e04de081de?w=500"],
+        desc: "Paket lengkap baso aci instan khas Garut. Isi terdiri dari baso aci, cuanki lidah, siomay kering, pilus cikur, lengkap dengan bumbu gurih, minyak bawang, dan cabai kering."
+    },
+    {
+        id: "food-005",
+        category: "Makan",
+        name: "Keripik Singkong Balado Daun Jeruk",
+        price: 0.000002,
+        discount: 0,
+        rating: "4.8",
+        sold: 890,
+        images: ["https://images.unsplash.com/photo-1566478989037-eec170784d0b?w=500"],
+        desc: "Keripik singkong renyah dengan balutan bumbu balado basah yang manis pedas, ditambah taburan daun jeruk purut segar yang menambah aroma harum."
+    },
+    {
+        id: "food-006",
+        category: "Makan",
+        name: "Dendeng Sapi Batokok Asli Padang",
+        price: 0.000022,
+        discount: 0,
+        rating: "4.9",
+        sold: 145,
+        images: ["https://images.unsplash.com/photo-1544025162-d76694265947?w=500"],
+        desc: "Daging sapi pilihan yang dipukul (batokok) hingga pipih dan empuk, disiram dengan sambal ijo khas Minang yang segar dan minyak kelapa murni."
+    },
+    {
+        id: "food-007",
+        category: "Makan",
+        name: "Dimsum Ayam Udang Premium Isi 10",
+        price: 0.000006,
+        discount: 5,
+        rating: "4.9",
+        sold: 620,
+        images: ["https://images.unsplash.com/photo-1617196034796-73dfa7b1fd56?w=500"],
+        desc: "Dimsum premium berukuran besar dengan isian daging ayam cincang dan potongan udang utuh yang juicy. Sudah termasuk saus asam pedas manis."
+    },
+    {
+        id: "food-008",
+        category: "Makan",
+        name: "Bumbu Instan Nusantara Pack isi 5",
+        price: 0.000004,
+        discount: 12,
+        rating: "4.8",
+        sold: 430,
+        images: ["https://images.unsplash.com/photo-1596797038530-2c107229654b?w=500"],
+        desc: "Paket praktis bumbu masak basah instan tanpa pengawet. Terdiri dari bumbu Soto Ayam, Rawon, Gulai, Semur, dan Rendang. Praktis tinggal tumis."
+    },
+    {
+        id: "food-009",
+        category: "Makan",
+        name: "Brownies Panggang Fudgy Almond Shaved",
+        price: 0.000008,
+        discount: 0,
+        rating: "5.0",
+        sold: 185,
+        images: ["https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=500"],
+        desc: "Brownies panggang dengan tekstur fudgy yang padat dan cokelat yang sangat pekat (rich). Diberi taburan kacang almond dan chocochips di atasnya."
+    },
+    {
+        id: "food-010",
+        category: "Makan",
+        name: "Ayam Kampung Ungkep Bumbu Kuning",
+        price: 0.000012,
+        discount: 0,
+        rating: "4.9",
+        sold: 290,
+        images: ["https://images.unsplash.com/photo-1604503468506-a8da13d82791?w=500"],
+        desc: "Satu ekor ayam kampung asli yang sudah dipotong dan diungkep dengan bumbu kuning rempah tradisional. Tekstur daging empuk, meresap, siap digoreng atau dibakar."
     }
 ];
 // =========================================================================

@@ -498,7 +498,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500"],
         rating: "4.9",
         sold: 412,
-        category: "herbal",
+        category: "Herbal",
         desc: "Madu murni mentah (raw honey) langsung dari hutan Baduy. Kaya akan antioksidan untuk menjaga stamina dan imunitas tubuh."
     },
     {
@@ -509,7 +509,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1611070973770-b1a672610042?w=500"],
         rating: "4.8",
         sold: 310,
-        category: "herbal",
+        category: "Herbal",
         desc: "Ekstrak minyak jintan hitam murni dalam kemasan kapsul mudah ditelan. Berkhasiat menormalkan tekanan darah dan kolesterol."
     },
     {
@@ -520,7 +520,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500"],
         rating: "4.7",
         sold: 189,
-        category: "herbal",
+        category: "Herbal",
         desc: "Teh celup organik dari daun kelor pilihan. Kaya akan nutrisi, asam amino, serta berfungsi sebagai detoksifikasi racun tubuh."
     },
 
@@ -535,7 +535,7 @@ const productsData = [
         images: ["https://i.ibb.co.com/kgxjnpyp/Desain-tanpa-judul-20260207-181545-0000.png"],
         rating: "4.9",
         sold: 85,
-        category: "gadget",
+        category: "Gadget",
         desc: "Layar: 6.7 inci Super Retina XDR OLED. Chipset: A17 Pro (3nm). Kamera periskop 5x optical zoom dan material kokoh Titanium Grade 5."
     },
     {
@@ -546,7 +546,7 @@ const productsData = [
         images: ["https://i.ibb.co.com/RprpNpf6/Desain-tanpa-judul-20260207-182139-0000.png"],
         rating: "4.9",
         sold: 92,
-        category: "gadget",
+        category: "Gadget",
         desc: "Layar: 6.8 inci Dynamic LTPO AMOLED 2X. Dilengkapi S-Pen bawaan, kamera 200MP, dan fitur canggih Galaxy AI Circle to Search."
     },
     {
@@ -557,7 +557,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500"],
         rating: "4.8",
         sold: 67,
-        category: "gadget",
+        category: "Gadget",
         desc: "Jam tangan pintar pelacak olahraga komprehensif. Monitor detak jantung, kadar oksigen darah SpO2, dan ketahanan air hingga kedalaman 50 meter."
     },
 
@@ -572,7 +572,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500"],
         rating: "4.9",
         sold: 45,
-        category: "elektronik",
+        category: "Elektronik",
         desc: "Televisi pintar beresolusi tajam dengan fitur Voice Control Google Assistant, Dolby Audio, serta dukungan aplikasi streaming Youtube, Netflix."
     },
     {
@@ -583,7 +583,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500"],
         rating: "4.8",
         sold: 29,
-        category: "elektronik",
+        category: "Elektronik",
         desc: "Pendingin ruangan dengan teknologi pintar Inverter yang mendinginkan lebih cepat sekaligus menghemat konsumsi listrik bulanan hingga 60%."
     },
     {
@@ -594,7 +594,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500"],
         rating: "5.0",
         sold: 12,
-        category: "elektronik",
+        category: "Elektronik",
         desc: "Kulkas berkapasitas ekstra besar dengan kompartemen higienis anti bakteri, teknologi pendinginan merata ganda, serta panel kontrol layar sentuh."
     },
 
@@ -609,7 +609,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"],
         rating: "5.0",
         sold: 18,
-        category: "jasa",
+        category: "Jasa",
         desc: "Pengembangan web interaktif modern yang siap diintegrasikan dengan Pi Sandbox SDK SDK ekosistem, responsif, dan ramah SEO."
     },
     {
@@ -620,7 +620,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=500"],
         rating: "4.9",
         sold: 9,
-        category: "jasa",
+        category: "Jasa",
         desc: "Pembuatan denah bangunan, fasad rumah minimalis/mewah beserta gambar kerja konstruksi lengkap dan visualisasi realistis 3D."
     },
     {
@@ -631,7 +631,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1450133064473-71024230f91b?w=500"],
         rating: "4.9",
         sold: 15,
-        category: "jasa",
+        category: "Jasa",
         desc: "Pengurusan izin usaha komprehensif berbadan hukum resmi termasuk akta notaris, SK Kemenkumham, NPWP Badan, hingga NIB OSS RBA."
     },
 
@@ -646,7 +646,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500"],
         rating: "4.9",
         sold: 230,
-        category: "makan",
+        category: "Makan",
         desc: "Daging rendang otentik bumbu rempah Padang asli seberat 500g. Dikemas steril dengan metode vakum udara, awet tanpa pengawet."
     },
     {
@@ -657,7 +657,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500"],
         rating: "4.8",
         sold: 560,
-        category: "makan",
+        category: "Makan",
         desc: "Sambal bawang pedas nampol dipadu potongan daging cumi asin melimpah. Fresh dimasak setiap hari, siap santap dengan nasi hangat."
     },
     {
@@ -668,7 +668,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"],
         rating: "5.0",
         sold: 43,
-        category: "makan",
+        category: "Makan",
         desc: "Kue lapis premium ukuran 20x20cm bertekstur sangat lembut dan wangi menggoda berkat penggunaan mentega Wijsman murni."
     },
 
@@ -683,7 +683,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500"],
         rating: "4.9",
         sold: 175,
-        category: "minuman",
+        category: "Minuman",
         desc: "Biji kopi atau bubuk kopi Arabika dataran tinggi Gayo Aceh. Proses cuci medium roasted dengan cita rasa asam buah yang bersih."
     },
     {
@@ -694,7 +694,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500"],
         rating: "4.8",
         sold: 120,
-        category: "minuman",
+        category: "Minuman",
         desc: "Bubuk teh hijau murni racikan kualitas impor Jepang (Uji Matcha). Mudah larut untuk disajikan hangat ataupun dicampur es susu."
     },
     {
@@ -705,7 +705,7 @@ const productsData = [
         images: ["https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500"],
         rating: "4.7",
         sold: 210,
-        category: "minuman",
+        category: "Minuman",
         desc: "100% konsentrat jus perasan lemon lokal segar berukuran 500ml tanpa tambahan air dan gula. Sangat baik untuk diet sehat harian."
     }
 ];

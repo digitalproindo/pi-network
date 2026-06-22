@@ -430,8 +430,8 @@
         sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
     }
 
-    // ==========================================
-    // FUNGSI MODAL (DIBUAT GLOBAL AGAR BISA DIKLIK)
+// ==========================================
+    // FUNGSI MODAL GLOBAL (VERSI SUPER KUAT)
     // ==========================================
     window.openModal = function() { document.getElementById("comingSoonModal").style.display = "flex"; }
     window.closeModal = function() { document.getElementById("comingSoonModal").style.display = "none"; }
@@ -439,13 +439,6 @@
     window.closeLoginModal = function() { document.getElementById("loginModal").style.display = "none"; }
 
     window.openKomunitasModal = function() {
-        // Cek status login secara real-time dari window global app.js
-        const userDaftar = window.currentUser;
-        if (!userDaftar || !userDaftar.uid) {
-            alert("⚠️ Perhatian: Anda harus masuk/login akun Pi Network Anda terlebih dahulu di aplikasi ini agar tombol pendaftaran aktif.");
-            return;
-        }
-
         const modalKomunitas = document.getElementById("komunitasModal");
         if (modalKomunitas) {
             modalKomunitas.style.display = "flex";
@@ -459,6 +452,21 @@
         if (modalKomunitas) modalKomunitas.style.display = "none";
     }
 
+    // OTOMATIS IKAT TOMBOL HTML KE FUNGSI MODAL DI ATAS
+    document.addEventListener("DOMContentLoaded", () => {
+        // Cari tombol ungu "PERBARUI / AJUKAN WILAYAH BARU"
+        const btnAjukan = document.querySelector("button[onclick*='openKomunitasModal']"),
+              btnProfil = document.getElementById("btn-ajukan-wilayah"); // Sesuaikan id jika ada
+              
+        // Pasang klik paksa lewat JavaScript jika onclick di HTML macet
+        document.body.addEventListener("click", function(e) {
+            if (e.target && (e.target.innerText === "PERBARUI / AJUKAN WILAYAH BARU" || e.target.closest("button")?.innerText === "PERBARUI / AJUKAN WILAYAH BARU")) {
+                e.preventDefault();
+                window.openKomunitasModal();
+            }
+        });
+    });
+
     // ==========================================
     // DEKLARASI & PROSES SUBMIT FORM
     // ==========================================
@@ -469,10 +477,10 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            const userDaftar = window.currentUser;
+            const userDaftar = window.currentUser || currentUser;
             
             if (!userDaftar || !userDaftar.uid) {
-                alert("Gagal mengirim! Anda harus login melalui Pi Browser terlebih dahulu.");
+                alert("Gagal mengirim! Otorisasi login Pi Anda belum terbaca. Harap tunggu beberapa detik atau muat ulang aplikasi.");
                 return;
             }
 
@@ -482,7 +490,6 @@
                 btn.disabled = true;
             }
 
-            // 1. Mengambil data inputan dari form HTML secara aman
             const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : (form.querySelector('[name="name"]') ? form.querySelector('[name="name"]').value : "");
             const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
             
@@ -491,7 +498,6 @@
             const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
             const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
             
-            // 2. Menyusun string parameter URL (Anti-Geser Kolom)
             const params = new URLSearchParams({
                 nama: namaUser,
                 whatsapp: waUser,
@@ -502,7 +508,6 @@
                 uid: userDaftar.uid
             });
 
-            // 3. Eksekusi pengiriman data POST ke Google Sheets
             fetch(`${scriptURL}?${params.toString()}`, { 
                 method: 'POST' 
             })
@@ -511,15 +516,11 @@
                 window.closeKomunitasModal();
                 form.reset();
                 
-                // Mengubah UI status secara dinamis setelah form dikirim
                 const statusLabel = document.getElementById('partner-status');
                 if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
                 
-                // Memanggil fungsi sinkronisasi profil di app.js
                 if (typeof window.muatStatusKemitraan === "function") {
                     window.muatStatusKemitraan();
-                } else if (typeof muatStatusKemitraan === "function") {
-                    muatStatusKemitraan();
                 }
             })
             .catch(error => {
@@ -533,4 +534,10 @@
                 }
             });
         });
+    }
+
+    window.onclick = function(event) {
+        if (event.target.className === "modal-overlay") {
+            event.target.style.display = "none";
+        }
     }

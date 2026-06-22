@@ -359,7 +359,415 @@ const productsData = [
         rating: 4.8,
         terjual: 132,
         images: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&auto=format&fit=crop&q=60"]
-    }
+    },
+    {
+        id: "house-001",
+        category: "Rumah",
+        name: "The Beverly Hills Modern Mansion",
+        price: 3.25000,
+        discount: null,
+        badge: "Premium Pro",
+        rating: 5.0,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Luas Tanah:</b> 2.500 m²<br>• <b>Kamar Tidur:</b> 7 Master Suite<br>• <b>Fasilitas:</b> Infinity Pool, Home Cinema, Wine Cellar<br>• <b>Lokasi:</b> Beverly Hills, California<br>• <b>Garasi:</b> Kapasitas 10 Mobil Mewah`
+    },
+    {
+        id: "house-002",
+        category: "Rumah",
+        name: "Zen Waterfront Villa",
+        price: 3.18000,
+        discount: null,
+        badge: "Premium Pro",
+        rating: 4.9,
+        terjual: 2,
+        images: ["https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Pemandangan:</b> Akses Langsung ke Danau Privasi<br>• <b>Gaya:</b> Arsitektur Minimalis Modern<br>• <b>Fasilitas:</b> Dermaga Pribadi, Spa & Sauna, Gym<br>• <b>Sistem:</b> Full Smart Home Technology<br>• <b>Keamanan:</b> Biometric Entry System`
+    },
+    {
+        id: "house-003",
+        category: "Rumah",
+        name: "Penthouse Skyline Duplex",
+        price: 2.12000,
+        discount: null,
+        badge: "Best Seller",
+        rating: 5.0,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1567496898669-ee935f5f647a?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lantai:</b> Lantai 50 & 51 (Top Floor)<br>• <b>Pemandangan:</b> 360° City Skyline View<br>• <b>Interior:</b> Marmer Italia & Panel Emas<br>• <b>Fasilitas:</b> Private Rooftop Garden & Jacuzzi<br>• <b>Layanan:</b> 24/7 Concierge Service`
+    },
+    {
+        id: "house-005",
+        category: "Rumah",
+        name: "Tropical Cliffside Sanctuary",
+        price: 4.15500,
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 5.0,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1512915922686-57c11dde9b6b?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lokasi:</b> Tebing Uluwatu, Bali<br>• <b>Konsep:</b> Open Living Space with Ocean View<br>• <b>Fasilitas:</b> Private Beach Access, Deck Yoga<br>• <b>Struktur:</b> Kayu Ulin & Batu Alam Lokal<br>• <b>Kamar:</b> 5 Suite dengan Semi-Outdoor Bathroom`
+    },
+    {
+        id: "house-008",
+        category: "Rumah",
+        name: "The Glass House Estate",
+        price: 3.21000,
+        discount: null,
+        badge: "Unique Design",
+        rating: 4.8,
+        terjual: 3,
+        images: ["https://images.unsplash.com/photo-1564013799919-ab600027ffc6?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Material Dominan:</b> Kaca Tempered & Baja Hitam<br>• <b>Privasi:</b> Smart Glass (Bisa Buram Otomatis)<br>• <b>Lansekap:</b> Koi Pond Keliling Bangunan<br>• <b>Ruang:</b> Galeri Seni Pribadi & Studio Musik<br>• <b>Luas:</b> Kavling Sudut 3.000 m²`
+    },
+    {
+        id: "house-009",
+        category: "Rumah",
+        name: "Mediterranean Seafront Palace",
+        price: 3.28000,
+        discount: null,
+        badge: "Luxury Pro",
+        rating: 5.0,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Lokasi:</b> French Riviera (Cote d'Azur)<br>• <b>Atap:</b> Terakota Tradisional Spanyol<br>• <b>Taman:</b> Kebun Zaitun & Citrus<br>• <b>Fasilitas:</b> Lapangan Tenis Pribadi, Helipad<br>• <b>Kamar Mandi:</b> Perlengkapan Emas 24 Karat`
+    },
+    {
+        id: "house-010",
+        category: "Rumah",
+        name: "The Urban Luxury Loft",
+        price: 2.08800,
+        discount: null,
+        badge: "Modern Tech",
+        rating: 4.7,
+        terjual: 4,
+        images: ["https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Tipe:</b> Industrial Luxury Loft<br>• <b>Tinggi Plafon:</b> 6 Meter (Double Height Ceiling)<br>• <b>Fitur:</b> Tangga Melingkar Besi Kustom<br>• <b>Lokasi:</b> Pusat Distrik Finansial<br>• <b>Sistem:</b> Voice Controlled Home Automation`
+    },
+    {
+        id: "house-011",
+        category: "Rumah",
+        name: "The Floating Diamond Villa",
+        price: 2.19500,
+        discount: null,
+        badge: "Oceanic Pro",
+        rating: 5.0,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LB 550 m² (Struktur Terapung)<br>• <b>Lokasi:</b> Maladewa (Private Lagoon)<br>• <b>Fitur:</b> Kamar Tidur Bawah Laut, Dek Berjemur 360°<br>• <b>Material:</b> Kaca Anti-Karat & Kayu Jati Reklamasi<br>• <b>Energi:</b> Kemandirian Energi dengan Panel Surya Laut`
+    },
+    {
+        id: "house-013",
+        category: "Rumah",
+        name: "Cyber-Tech Underground Bunker",
+        price: 3.16000,
+        discount: null,
+        badge: "Futuristic",
+        rating: 4.9,
+        terjual: 2,
+        images: ["https://images.unsplash.com/photo-1558036117-15d82a90b9b1?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LB 900 m² (Kedalaman 15 Meter)<br>• <b>Keamanan:</b> Pintu Anti-Ledakan, Sistem Filtrasi Udara Nuklir<br>• <b>Fasilitas:</b> Kebun Hidroponik Indoor, Simulator Golf<br>• <b>Teknologi:</b> AI Butler terintegrasi ke seluruh ruangan<br>• <b>Lantai:</b> Epoxy Resin Anti-Statis & Dinding Beton Ekspos`
+    },
+    {
+        id: "house-014",
+        category: "Rumah",
+        name: "Aspen Snow Peak Lodge",
+        price: 3.13500,
+        discount: null,
+        badge: "Winter Comfort",
+        rating: 4.9,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1542718610-a1d656d1884c?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LT 3.500 m² / LB 700 m²<br>• <b>Lokasi:</b> Aspen, Colorado (Ski-in/Ski-out Access)<br>• <b>Fitur:</b> Perapian Batu Alam Raksasa, Kolam Air Hangat Outdoor<br>• <b>Material:</b> Kayu Pinus Tua & Batu Granit Pegunungan<br>• <b>Ruangan:</b> Ruang Simpan Perlengkapan Ski Khusus`
+    },
+    {
+        id: "house-015",
+        category: "Rumah",
+        name: "Mediterranean Cliff Villa",
+        price: 3.27000,
+        discount: null,
+        badge: "Luxury Pro",
+        rating: 5.0,
+        terjual: 2,
+        images: ["https://images.unsplash.com/photo-1568605114967-8130f3a36994?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LT 2.200 m² / LB 950 m²<br>• <b>Pemandangan:</b> Laut Mediterania (Amalfi Coast)<br>• <b>Fasilitas:</b> Lift Tebing Pribadi, Bar Tepi Kolam, Bioskop Terbuka<br>• <b>Interior:</b> Keramik Hand-Painted Italia & Furnitur Putih Bersih<br>• <b>Lanskap:</b> Kebun Vertikal & Pohon Lemon`
+    },
+    {
+        id: "house-016",
+        category: "Rumah",
+        name: "The Brutalist Cube Estate",
+        price: 3.11000,
+        discount: null,
+        badge: "Artistic Design",
+        rating: 4.6,
+        terjual: 5,
+        images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LT 1.500 m² / LB 800 m²<br>• <b>Gaya:</b> Brutalisme Kontemporer (Raw Concrete)<br>• <b>Ruangan:</b> Studio Lukis & Ruang Musik Kedap Suara<br>• <b>Fitur:</b> Skylight Masif di Tengah Rumah<br>• <b>Sistem:</b> Smart Lighting System yang mengikuti ritme sirkadian`
+    },
+    {
+        id: "house-017",
+        category: "Rumah",
+        name: "Amazonian Eco-Mansion",
+        price: 3.14500,
+        discount: null,
+        badge: "Eco-Friendly",
+        rating: 4.8,
+        terjual: 3,
+        images: ["https://images.unsplash.com/photo-1464146072230-91cabc968266?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LT 10.000 m² / LB 650 m² (Floating on stilts)<br>• <b>Konsep:</b> Regenerative Architecture (Mandiri Air & Limbah)<br>• <b>Fitur:</b> Dinding Tanaman Hidup, Kolam Renang Air Hujan<br>• <b>Material:</b> Bambu Laminasi & Atap Daun Rumbia Sintetis<br>• <b>Lokasi:</b> Hutan Lindung Tropis`
+    },
+    {
+        id: "house-019",
+        category: "Rumah",
+        name: "Dubai Sky-High Villa",
+        price: 4.35000,
+        discount: null,
+        badge: "Ultra Luxury",
+        rating: 5.0,
+        terjual: 1,
+        images: ["https://images.unsplash.com/photo-1582268611958-ebfd161ef9cf?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LB 1.100 m² (Penthouse 3 Lantai)<br>• <b>Fasilitas:</b> Kolam Renang Kaca Gantung, Helipad Gedung<br>• <b>Interior:</b> Aksen Emas 24K & Kristal Baccarat<br>• <b>Pemandangan:</b> Burj Khalifa & Palm Jumeirah<br>• <b>Layanan:</b> Private Chef & Sopir Rolls-Royce`
+    },
+    {
+        id: "house-020",
+        category: "Rumah",
+        name: "The Vineyard Ranch Estate",
+        price: 2.17500,
+        discount: null,
+        badge: "Classic Ranch",
+        rating: 4.9,
+        terjual: 2,
+        images: ["https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80"],
+        desc: `• <b>Dimensi:</b> LT 15 Hektar / LB 1.300 m²<br>• <b>Fitur:</b> Perkebunan Anggur Pribadi, Pabrik Pengolahan Wine<br>• <b>Fasilitas:</b> Lapangan Berkuda, Kandang Kuda Premium<br>• <b>Interior:</b> Gaya Farmhouse Modern dengan Kayu Oak Ekspos<br>• <b>Dapur:</b> Outdoor BBQ Station & Pizza Wood-Oven`
+    },
+    {
+        id: "house-smart",
+        category: "Rumah",
+        name: "Smart Home System Pro",
+        price: 0.50000,
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 45,
+        images: ["https://images.unsplash.com/photo-1558002038-1055907df827?q=80&w=400"],
+        desc: `• <b>Tipe:</b> Paket Instalasi Smart Home IoT<br>• <b>Fitur:</b> Kendali Penuh via Suara & Aplikasi Browser<br>• <b>Keamanan:</b> Integrasi Jaringan Enkripsi Ekosistem Pi`
+    },
+    {
+        id: "house-sofa",
+        category: "Rumah",
+        name: "Sofa Minimalis 2 Seater - Modern Grey",
+        price: 0.05000,
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.7,
+        terjual: 88,
+        images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500&q=80"],
+        desc: `• <b>Dimensi:</b> Ukuran Presisi 150 cm x 80 cm<br>• <b>Material:</b> Kain Premium Breathable & Busa Tahan Kempes<br>• <b>Desain:</b> Sangat Estetik untuk Ruang Tamu Minimalis`
+    },
+    {
+        id: "house-lamp",
+        category: "Rumah",
+        name: "Lampu Gantung Industrial - Model Black Dome",
+        price: 0.01500,
+        discount: null,
+        badge: "Dekorasi",
+        rating: 4.6,
+        terjual: 124,
+        images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&q=80"],
+        desc: `• <b>Spesifikasi:</b> Lampu Plafon Dekoratif Diameter 30 cm<br>• <b>Kesan Gaya:</b> Tampilan Estetik Industrial Kontemporer<br>• <b>Aplikasi:</b> Ideal untuk Cafe, Dapur, mau pun Ruang Kerja`
+    },
+    {
+        id: "house-bookshelf",
+        category: "Rumah",
+        name: "Rak Buku Kayu 5 Tingkat - Slim Design",
+        price: 0.03000,
+        discount: null,
+        badge: "Furniture",
+        rating: 4.7,
+        terjual: 62,
+        images: ["https://images.unsplash.com/photo-1594620302200-9a762244a156?w=500&q=80"],
+        desc: `• <b>Dimensi:</b> Tinggi 180 cm / Lebar Efisien 40 cm<br>• <b>Fitur:</b> Struktur Kokoh, Sangat Mudah Dirakit Sendiri<br>• <b>Fungsi:</b> Maksimalkan Penyimpanan Buku di Ruang Terbatas`
+    },
+    {
+        id: "house-carpet",
+        category: "Rumah",
+        name: "Karpet Bulu Lembut 160x210 - Creamy White",
+        price: 0.01200,
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 215,
+        images: ["https://images.unsplash.com/photo-1575414003591-ece8d0416c7a?w=500&q=80"],
+        desc: `• <b>Spesifikasi:</b> Karpet Lantai Premium Ukuran 160 cm x 210 cm<br>• <b>Kelebihan:</b> Tekstur Sangat Lembut & Mudah Dibersihkan<br>• <b>Nuansa:</b> Menghadirkan Kesan Hangat di Dalam Kamar`
+    },
+    {
+        id: "house-curtain",
+        category: "Rumah",
+        name: "Set Gorden Jendela - Model Smokering Minimalis",
+        price: 0.00800,
+        discount: null,
+        badge: "Dekorasi",
+        rating: 4.5,
+        terjual: 340,
+        images: ["https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=500&q=80"],
+        desc: `• <b>Spesifikasi:</b> Kain Gorden Blackout Ukuran 140 cm x 220 cm<br>• <b>Performa:</b> Efektif Menghalau Sinar Matahari Hingga 90%<br>• <b>Desain:</b> Model Smokering Ringkas & Elegan`
+    },
+    {
+        id: "house-clock",
+        category: "Rumah",
+        name: "Jam Dinding Kayu - Tipe Scandinavian",
+        price: 0.00500,
+        discount: null,
+        badge: "Aksesoris",
+        rating: 4.7,
+        terjual: 195,
+        images: ["https://images.unsplash.com/photo-1563861826100-9cb868fdbe1c?w=500&q=80"],
+        desc: `• <b>Spesifikasi:</b> Jam Dinding Estetik Kayu Diameter 35 cm<br>• <b>Mesin:</b> Tipe Sweep Movement (Jarum Berputar Senyap)<br>• <b>Kelebihan:</b> Memberikan Sentuhan Minimalis Tanpa Suara`
+    },
+    {
+        id: "house-plant",
+        category: "Rumah",
+        name: "Tanaman Hias Artificial - Model Monstera Large",
+        price: 0.01000,
+        discount: null,
+        badge: "Dekorasi",
+        rating: 4.8,
+        terjual: 150,
+        images: ["https://images.unsplash.com/photo-1581404476143-fb31d742929f?w=500&q=80"],
+        desc: `• <b>Spesifikasi:</b> Tanaman Imitasi Presisi Tinggi 80 cm<br>• <b>Kelengkapan:</b> Dilengkapi Pot Keramik Kokoh<br>• <b>Manfaat:</b> Hadirkan Nuansa Hijau Asri Tanpa Perawatan`
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: HERBAL & KESEHATAN
+    // -----------------------------------------------------------------
+    {
+        id: "herbal-002",
+        category: "Herbal",
+        name: "COCO Pro Kunyit",
+        price: 0.00006,
+        discount: "-5%",
+        badge: "Immune Support",
+        rating: 4.9,
+        terjual: 530,
+        images: ["https://i.ibb.co.com/F4qZdtmN/IMG-20251130-WA0033.jpg"],
+        desc: `• <b>Jenis:</b> Superfood Biotech Masa Depan<br>• <b>Kandungan:</b> 10 Multi-Strain Probiotik, Madu Alami, Air Kelapa, Kurma, Kunyit<br>• <b>Khasiat:</b> Formula Live Probiotic, Immune Support, Tinggi Antioksidan, Memperbaiki Pencernaan & Penambah Energi Alami`
+    },
+    {
+        id: "herbal-003",
+        category: "Herbal",
+        name: "An-Nisa",
+        price: 0.00010,
+        discount: "-5%",
+        badge: "Women Care",
+        rating: 4.9,
+        terjual: 412,
+        images: ["https://i.ibb.co.com/0jjhzJ7p/Desain-tanpa-judul-20260211-213452-0000.png"],
+        desc: `• <b>Fungsi:</b> Solusi Lengkap Problem Kewanitaan<br>• <b>Khasiat Utama:</b> Mengatasi Keputihan & Gatal, Membunuh Bakteri, Melancarkan Menstruasi, Redakan Nyeri Haid<br>• <b>Proteksi:</b> Mencegah Kanker Rahim, Mioma/Kista, Merapatkan, Mengencangkan, serta Menyeimbangkan Hormon`
+    },
+    {
+        id: "herbal-004",
+        category: "Herbal",
+        name: "Ar-Rizal",
+        price: 0.00010,
+        discount: "-5%",
+        badge: "Men Stamina",
+        rating: 5.0,
+        terjual: 620,
+        images: ["https://i.ibb.co.com/Ndjmbdbj/Desain-tanpa-judul-20260211-214933-0000.png"],
+        desc: `• <b>Fungsi:</b> Suplemen Kesehatan & Stamina Pria<br>• <b>Khasiat Utama:</b> Menguatkan & Mengencangkan Vitalitas, Meningkatkan Gairah & Kualitas Hormon, Mengatasi Ejakulasi Dini<br>• <b>Manfaat Medis:</b> Menguatkan Jantung & Melancarkan Sirkulasi Darah ke Alat Vital`
+    },
+    {
+        id: "herbal-006",
+        category: "Herbal",
+        name: "Nabidz Dessert",
+        price: 0.00012,
+        discount: null,
+        badge: "Microbiome Pro",
+        rating: 4.8,
+        terjual: 185,
+        images: ["https://i.ibb.co.com/qMCm0C7q/IMG-20260203-WA0004.jpg"],
+        desc: `• <b>Bahan Baku:</b> Fermentasi Esterifikasi Biokimia Anggur Merah Murni<br>• <b>Proses:</b> Teknik Istihalah Microbiome & Asam Organik Kompleks<br>• <b>Fokus Utama:</b> Mengoptimalkan Pencernaan (Pusat 90% Sistem Imun Tubuh)`
+    },
+    {
+        id: "herbal-010",
+        category: "Herbal",
+        name: "COCO Pro 10",
+        price: 0.00006,
+        discount: null,
+        badge: "High Antioksidan",
+        rating: 4.9,
+        terjual: 290,
+        images: ["https://i.ibb.co.com/4nRdtBpb/IMG-20260203-WA0005.jpg"],
+        desc: `• <b>Jenis:</b> Formula Bioteknologi Nutrisi Masa Depan<br>• <b>Kandungan:</b> Sinergi Multi-Strain Probiotik, Air Kelapa Segar, Madu, Kunyit, dan Kurma Pilihan<br>• <b>Khasiat:</b> Memperkuat Kekebalan Tubuh, Regenerasi Sel, Detoksifikasi Racun, dan Penjaga Stamina Harian`
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: ELEKTRONIK & GADGET
+    // -----------------------------------------------------------------
+    {
+        id: "elec-phone-001",
+        category: "Elektronik",
+        name: "Premium Smartphone X",
+        price: 1.20000,
+        discount: null,
+        badge: "Gadget Pro",
+        rating: 4.8,
+        terjual: 35,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=400"],
+        desc: `• <b>Kamera:</b> Resolusi Ultra Tinggi / Sensor Profesional<br>• <b>Baterai:</b> Tahan Lama (Super Fast Charging)<br>• <b>Performa:</b> Dapur Pacu Kelas Flagship untuk Kebutuhan Harian`
+    },
+    {
+        id: "elec-phone-002",
+        category: "Elektronik",
+        name: "Smartphone Pi-Phone X - 256GB Platinum",
+        price: 0.15000,
+        discount: null,
+        badge: "Native Pi OS",
+        rating: 4.9,
+        terjual: 98,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&q=80"],
+        desc: `• <b>Layar:</b> AMOLED 6.7 inci dengan Kontras Tinggi<br>• <b>Memori:</b> RAM 12GB / Penyimpanan Internal 256GB<br>• <b>Sistem:</b> Optimalisasi Penuh untuk Integrasi Native Ekosistem Aplikasi Pi`
+    },
+    {
+        id: "elec-earbuds",
+        category: "Elektronik",
+        name: "Wireless Earbuds Pro - Noise Cancelling",
+        price: 0.02000,
+        discount: null,
+        badge: "Audio HD",
+        rating: 4.6,
+        terjual: 142,
+        images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&q=80"],
+        desc: `• <b>Kualitas Suara:</b> Audio High-Fidelity dengan Bass Mantap<br>• <b>Proteksi:</b> Sertifikasi Tahan Air IPX5 (Aman untuk Olahraga)<br>• <b>Baterai:</b> Durasi Aktif 24 Jam Terhitung dengan Charging Case`
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: OTOMOTIF (MOBIL)
+    // -----------------------------------------------------------------
+    {
+        id: "car-fortuner",
+        category: "Mobil",
+        name: "Toyota Fortuner 2.8 GR Sport 2024",
+        price: 0.15000,
+        discount: "-5%",
+        badge: "GR Sport",
+        rating: 4.9,
+        terjual: 4,
+        images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
+        desc: `• <b>Mesin:</b> 2.800 cc Diesel Turbo Berperforma Tinggi<br>• <b>Transmisi:</b> Otomatis Tangguh 6-Percepatan<br>• <b>Output:</b> Daya Maksimal 203.9 PS / Torsi Kuat 500 Nm`
+    },
+    {
+        id: "car-crv",
+        category: "Mobil",
+        name: "Honda CR-V 2.0 RS e:HEV Hybrid 2024",
+        price: 0.18500,
+        discount: "-10%",
+        badge: "Hybrid Tech",
+        rating: 5.0,
+        terjual: 3
+        images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
+        desc: `• <b>Mesin:</b> 2.800 cc Diesel Turbo Berperforma Tinggi<br>• <b>Transmisi:</b> Otomatis Tangguh 6-Percepatan<br>• <b>Output:</b> Daya Maksimal 203.9 PS / Torsi Kuat 500 Nm`
+    },
     ];
 // =========================================================================
 // 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS)

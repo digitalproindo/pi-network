@@ -5,7 +5,7 @@ let currentUser = null;
 let cart = [];
 let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
 let isPiInitialized = false; // Penanda status inisialisasi SDK Blockchain
-const ADMIN_WA = "6281234567890"; // Silakan ganti dengan nomor WhatsApp Admin Anda
+const ADMIN_WA = "6281906066757"; // Silakan ganti dengan nomor WhatsApp Admin Anda
 
 // Mock Data Produk (Pastikan ID unik dan format harga sesuai)
 const productsData = [

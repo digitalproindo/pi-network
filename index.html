@@ -449,95 +449,61 @@
 
     form.addEventListener('submit', e => {
         e.preventDefault();
+        
+        // Proteksi jika user belum login Pi Network
+        if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+            alert("Gagal mengirim! Anda harus login melalui Pi Browser terlebih dahulu.");
+            return;
+        }
+
         const btn = document.getElementById('btnKirim');
         btn.innerText = "MENGIRIM...";
         btn.disabled = true;
 
-        fetch(scriptURL, { method: 'POST', body: new FormData(form)})
-            .then(response => {
-                alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.");
-                closeKomunitasModal();
-                form.reset();
-                // Mengubah UI status secara dinamis setelah form dikirim
-                const statusLabel = document.getElementById('partner-status');
-                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
-            })
-            .catch(error => alert("Error: Silakan coba lagi nanti."))
-            .finally(() => {
-                btn.innerText = "DAFTAR SEKARANG";
-                btn.disabled = false;
-            });
-    });
-
-    window.onclick = function(event) {
-        if (event.target.className === "modal-overlay") {
-            event.target.style.display = "none";
-        }
-    }
-
-    const provSelect = document.getElementById('selectProvinsi');
-    const kotaSelect = document.getElementById('selectKota');
-    const kecSelect = document.getElementById('selectKecamatan');
-    const kelSelect = document.getElementById('selectKelurahan');
-
-    fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
-        .then(res => res.json())
-        .then(provinces => {
-            provinces.forEach(p => {
-                let opt = document.createElement('option');
-                opt.value = p.name;
-                opt.dataset.id = p.id;
-                opt.innerHTML = p.name;
-                provSelect.appendChild(opt);
-            });
+        // 1. Mengambil data inputan dari form HTML secara aman
+        const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : (form.querySelector('[name="name"]') ? form.querySelector('[name="name"]').value : "");
+        const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
+        
+        const provUser = document.getElementById('selectProvinsi').value;
+        const kotaUser = document.getElementById('selectKota').value;
+        const kecUser = document.getElementById('selectKecamatan').value;
+        const kelUser = document.getElementById('selectKelurahan').value;
+        
+        // 2. Menyusun string parameter URL agar masuk ke kolom yang pas (Anti-Geser Kolom)
+        const params = new URLSearchParams({
+            nama: namaUser,
+            whatsapp: waUser,
+            provinsi: provUser,
+            kota: kotaUser,
+            kecamatan: kecUser,
+            kelurahan: kelUser,
+            uid: currentUser.uid // 🔴 MENYERTAKAN WALLET UID SECARA OTOMATIS
         });
 
-    provSelect.addEventListener('change', function() {
-        const id = this.options[this.selectedIndex].dataset.id;
-        resetDropdown(kotaSelect, "Kota/Kabupaten");
-        resetDropdown(kecSelect, "Kecamatan");
-        resetDropdown(kelSelect, "Kelurahan");
-        if(!id) return;
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`)
-            .then(res => res.json())
-            .then(data => populate(kotaSelect, data));
-    });
-
-    kotaSelect.addEventListener('change', function() {
-        const id = this.options[this.selectedIndex].dataset.id;
-        resetDropdown(kecSelect, "Kecamatan");
-        resetDropdown(kelSelect, "Kelurahan");
-        if(!id) return;
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`)
-            .then(res => res.json())
-            .then(data => populate(kecSelect, data));
-    });
-
-    kecSelect.addEventListener('change', function() {
-        const id = this.options[this.selectedIndex].dataset.id;
-        resetDropdown(kelSelect, "Kelurahan");
-        if(!id) return;
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`)
-            .then(res => res.json())
-            .then(data => populate(kelSelect, data));
-    });
-
-    function populate(target, data) {
-        target.disabled = false;
-        data.forEach(d => {
-            let opt = document.createElement('option');
-            opt.value = d.name;
-            opt.dataset.id = d.id;
-            opt.innerHTML = d.name;
-            target.appendChild(opt);
+        // 3. Eksekusi pengiriman data dengan metode POST menggunakan URL berparameter
+        fetch(`${scriptURL}?${params.toString()}`, { 
+            method: 'POST' 
+        })
+        .then(response => {
+            alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.");
+            closeKomunitasModal();
+            form.reset();
+            
+            // Mengubah UI status secara dinamis setelah form dikirim
+            const statusLabel = document.getElementById('partner-status');
+            if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
+            
+            // Muat ulang data profil secara otomatis jika fungsi di app.js tersedia
+            if (typeof muatStatusKemitraan === "function") {
+                muatStatusKemitraan();
+            }
+        })
+        .catch(error => {
+            console.error("Gagal mendaftar:", error);
+            alert("Error: Silakan coba lagi nanti.");
+        })
+        .finally(() => {
+            btn.innerText = "DAFTAR SEKARANG";
+            btn.disabled = false;
         });
-    }
-
-    function resetDropdown(target, label) {
-        target.innerHTML = `<option value="">Pilih ${label}</option>`;
-        target.disabled = true;
-    }
-</script>
-
-</body>
-</html>
+    });

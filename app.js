@@ -1900,7 +1900,7 @@ window.toggleDropdown = () => {
     }
 };
 
-// =========================================================================
+ // =========================================================================
 // 8. CORE PIPELINE (DOM LOAD INITIALIZATION)
 // =========================================================================
 document.addEventListener("DOMContentLoaded", async () => {
@@ -1946,15 +1946,83 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
-// 5. Jalankan pipeline login otomatis Pi Network SDK
+
+    // 5. Jalankan pipeline login otomatis Pi Network SDK
     await initPi();
     
-    // 6. Bind tombol login manual awal sebelum ter-otentikasi
-
     // 6. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn && !currentUser) {
         loginBtn.onclick = window.handleAuth;
+    }
+
+    // =========================================================================
+    // TAMBAHAN: PROSES SUBMIT FORM KOMUNITAS & REDIRECT GRUP WA
+    // =========================================================================
+    const form = document.getElementById('formKomunitas');
+    if (form) {
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            // Menggunakan objek currentUser global dari initPi()
+            if (!currentUser || !currentUser.uid) {
+                alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna di halaman ini. Harap muat ulang aplikasi di Pi Browser Anda.");
+                return;
+            }
+
+            const btn = document.getElementById('btnKirim');
+            if (btn) {
+                btn.innerText = "MENGIRIM...";
+                btn.disabled = true;
+            }
+
+            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : "";
+            const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
+            
+            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+            
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+            const params = new URLSearchParams({
+                nama: namaUser,
+                whatsapp: waUser,
+                provinsi: provUser,
+                kota: kotaUser,
+                kecamatan: kecUser,
+                kelurahan: kelUser,
+                uid: currentUser.uid
+            });
+
+            fetch(`${scriptURL}?${params.toString()}`, { 
+                method: 'POST' 
+            })
+            .then(response => {
+                alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.\n\nKlik OK untuk bergabung ke Grup WhatsApp Resmi kami.");
+                
+                // Otomatis alihkan user ke link grup WhatsApp
+                window.location.href = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
+                
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                form.reset();
+                
+                const statusLabel = document.getElementById('partner-status');
+                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
+                
+                muatStatusKemitraan();
+            })
+            .catch(error => {
+                console.error("Gagal mendaftar:", error);
+                alert("Error: Silakan coba lagi nanti.");
+            })
+            .finally(() => {
+                if (btn) {
+                    btn.innerText = "DAFTAR SEKARANG";
+                    btn.disabled = false;
+                }
+            });
+        });
     }
 }); 
 
@@ -1962,10 +2030,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 // FUNGSI SINKRONISASI STATUS KEMITRAAN (VERSI AMAN & BEBAL ERROR)
 // =========================================================================
 function muatStatusKemitraan() {
-    // 1. Ambil elemen label status di halaman profil
     const penunjukStatus = document.getElementById('partner-status');
     
-    // 2. Proteksi Awal: Jika user belum login atau UID tidak ada, langsung amankan UI tanpa melempar error
     if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
         console.log("User belum ter-otentikasi. Menggunakan tampilan default.");
         if (penunjukStatus) penunjukStatus.innerText = "BELUM LOGIN";
@@ -1974,7 +2040,6 @@ function muatStatusKemitraan() {
     
     const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
     
-    // 3. Gunakan blok try-catch pembungkus agar kegagalan jaringan tidak mematikan aplikasi
     try {
         fetch(`${scriptURL}?uid=${encodeURIComponent(currentUser.uid)}`)
             .then(res => {
@@ -1984,7 +2049,6 @@ function muatStatusKemitraan() {
             .then(data => {
                 if (!data) return;
                 
-                // Atur warna kotak status berdasarkan respon Google Sheets (Sheet1)
                 if (penunjukStatus) {
                     if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
                         penunjukStatus.style.background = "#dcfce7";
@@ -2001,7 +2065,6 @@ function muatStatusKemitraan() {
                     }
                 }
                 
-                // Update angka pada kartu Logistik & Produk Terproses
                 const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
                 if (infoCards && infoCards.length >= 2) {
                     if (data.share) infoCards[0].innerText = data.share;
@@ -2012,11 +2075,11 @@ function muatStatusKemitraan() {
                 }
             })
             .catch(fetchErr => {
-                // Jika fetch gagal atau JSON rusak, tangkap di sini tanpa merusak sisa aplikasi
                 console.warn("Koneksi ke Google Sheets dibatasi atau tertunda:", fetchErr);
             });
             
     } catch (fatalErr) {
         console.error("Sistem mengisolasi error kemitraan:", fatalErr);
     }
-}
+        }   
+    

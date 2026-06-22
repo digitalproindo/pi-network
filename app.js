@@ -174,18 +174,12 @@ const productsData = [
             id: "house-009",
             category: "Rumah",
             name: "Mediterranean Seafront Palace",
-
-price: 3.28000,
-
-images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
-
-desc: `• <b>Lokasi:</b> French Riviera (Cote d'Azur)<br>• <b>Atap:</b> Terakota Tradisional Spanyol<br>• <b>Taman:</b> Kebun Zaitun & Citrus<br>• <b>Fasilitas:</b> Lapangan Tenis Pribadi, Helipad<br>• <b>Kamar Mandi:</b> Perlengkapan Emas 24 Karat`
-
-},
-
-{
-
-id: "house-010",
+            price: 3.28000,
+            images: ["https://images.unsplash.com/photo-1523217582562-09d0def993a6?auto=format&fit=crop&w=800&q=80"],
+            desc: `• <b>Lokasi:</b> French Riviera (Cote d'Azur)<br>• <b>Atap:</b> Terakota Tradisional Spanyol<br>• <b>Taman:</b> Kebun Zaitun & Citrus<br>• <b>Fasilitas:</b> Lapangan Tenis Pribadi, Helipad<br>• <b>Kamar Mandi:</b> Perlengkapan Emas 24 Karat`
+        },
+        {
+            id: "house-010",
 
 category: "Rumah",
 
@@ -668,6 +662,7 @@ category: "Motor",
 images: ["https://i.ibb.co.com/jZ6LvJTB/Desain-tanpa-judul-20260207-131613-0000.png"],
 
 desc: `• <b>Mesin:</b> 998cc In-line Four with 
+},
 ];
 
 // =========================================================================

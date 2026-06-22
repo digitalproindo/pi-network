@@ -139,8 +139,228 @@ const productsData = [
         sold: 20,
         category: "Rumah",
         desc: `• <b>Luas Tanah:</b> 2.500 m²<br>• <b>Kamar Tidur:</b> 7 Master Suite<br>• <b>Fasilitas:</b> Infinity Pool, Home Cinema, Wine Cellar<br>• <b>Lokasi:</b> Beverly Hills, California<br>• <b>Garasi:</b> Kapasitas 10 Mobil Mewah`
-     }
-     ];
+     },
+    {
+        id: "p1",
+        name: "Smartphone Premium Pro Max XTRA",
+        price: 0.00050,
+        category: "gadget",
+        discount: "-10%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.9,
+        terjual: 142,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p2",
+        name: "Laptop Eksekutif Core i9 Ultrabook",
+        price: 0.00120,
+        category: "elektronik",
+        discount: "-5%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 5.0,
+        terjual: 38,
+        images: ["https://images.unsplash.com/photo-1496181130204-755241524eab?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p3",
+        name: "Jam Tangan Pintar Pro Chrono",
+        price: 0.00015,
+        category: "aksesoris",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 95,
+        images: ["https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p4",
+        name: "Wireless Earbuds Noise Cancelling Pro",
+        price: 0.00008,
+        category: "gadget",
+        discount: "-15%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.7,
+        terjual: 210,
+        images: ["https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p5",
+        name: "Tablet Pro 11-inch Super AMOLED",
+        price: 0.00045,
+        category: "gadget",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.9,
+        terjual: 64,
+        images: ["https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p6",
+        name: "Kamera Mirrorless 4K Ultra HD",
+        price: 0.00150,
+        category: "elektronik",
+        discount: "-8%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 5.0,
+        terjual: 19,
+        images: ["https://images.unsplash.com/photo-1516035069371-29a1b244cc32?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p7",
+        name: "Mechanical Keyboard RGB Wireless",
+        price: 0.00007,
+        category: "aksesoris",
+        discount: "-12%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 115,
+        images: ["https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p8",
+        name: "Gaming Mouse Ergonomis 16000 DPI",
+        price: 0.00004,
+        category: "aksesoris",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.6,
+        terjual: 180,
+        images: ["https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p9",
+        name: "Smart TV 4K LED 55-inch",
+        price: 0.00095,
+        category: "elektronik",
+        discount: "-20%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.9,
+        terjual: 42,
+        images: ["https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p10",
+        name: "Kopi Mesin Espresso Otomatis",
+        price: 0.00035,
+        category: "elektronik",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 53,
+        images: ["https://images.unsplash.com/photo-1517256064527-09c53b2d0c6b?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p11",
+        name: "Kacamata Hitam Polarized Aviator",
+        price: 0.00003,
+        category: "fashion",
+        discount: "-5%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.5,
+        terjual: 320,
+        images: ["https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p12",
+        name: "Tas Ransel Eksklusif Anti Air",
+        price: 0.00006,
+        category: "fashion",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.7,
+        terjual: 245,
+        images: ["https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p13",
+        name: "Sepatu Sneakers Running Pro Fly",
+        price: 0.00012,
+        category: "fashion",
+        discount: "-10%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 198,
+        images: ["https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p14",
+        name: "Air Purifier HEPA Filter Pintar",
+        price: 0.00022,
+        category: "elektronik",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.9,
+        terjual: 77,
+        images: ["https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p15",
+        name: "Powerbank Fast Charging 30000mAh",
+        price: 0.00003,
+        category: "aksesoris",
+        discount: "-15%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.6,
+        terjual: 412,
+        images: ["https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p16",
+        name: "Speaker Bluetooth Bass Booster HD",
+        price: 0.00009,
+        category: "elektronik",
+        discount: "-8%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.7,
+        terjual: 156,
+        images: ["https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p17",
+        name: "Drone Quadcopter 4K GPS Pro",
+        price: 0.00085,
+        category: "elektronik",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.9,
+        terjual: 23,
+        images: ["https://images.unsplash.com/photo-1527977966376-1c8408f9f108?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p18",
+        name: "Lampu Meja Belajar Cerdas LED",
+        price: 0.00003,
+        category: "aksesoris",
+        discount: "-25%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.5,
+        terjual: 289,
+        images: ["https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p19",
+        name: "Gimbal Stabilizer Smartphone 3-Axis",
+        price: 0.00014,
+        category: "aksesoris",
+        discount: null,
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.7,
+        terjual: 84,
+        images: ["https://images.unsplash.com/photo-1584438784894-089d6a128f3e?w=500&auto=format&fit=crop&q=60"]
+    },
+    {
+        id: "p20",
+        name: "Mikrofon Kondensor Podcast Pro",
+        price: 0.00008,
+        category: "elektronik",
+        discount: "-10%",
+        badge: "XTRA Gratis Ongkir+",
+        rating: 4.8,
+        terjual: 132,
+        images: ["https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&auto=format&fit=crop&q=60"]
+    }
+    ];
 // =========================================================================
 // 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS)
 // =========================================================================

@@ -30,8 +30,360 @@ const productsData = [
         sold: 38,
         category: "elektronik",
         desc: "Laptop tipis premium untuk kebutuhan bisnis dan komputasi berat. Baterai tahan hingga 18 jam penggunaan aktif."
+    },
+    {
+        id: "bike-001",
+        name: "Ducati Panigale V4 R",
+        price: 0.01500,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Mesin: 998cc Desmosedici Stradale V4 R. Tenaga: 218 HP @ 15.500 RPM. Fitur: Sayap Karbon (Aero Winglets), Öhlins Suspension."
+    },
+    {
+        id: "bike-002",
+        name: "Kawasaki Ninja H2R (Track Only)",
+        price: 0.01800,
+        discount: 0,
+        images: ["https://i.ibb.co.com/jZ6LvJTB/Desain-tanpa-judul-20260207-131613-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Mesin: 998cc In-line Four with Supercharger. Tenaga: 310 HP (Paling bertenaga di dunia). Top Speed: 400+ km/jam."
+    },
+    {
+        id: "bike-003",
+        name: "BMW M 1000 RR",
+        price: 0.01250,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1615172282427-9a57ef2d142e?auto=format&fit=crop&w=800&q=80"],
+        rating: "5.0",
+        sold: 2,
+        category: "Motor",
+        desc: "Mesin: 999cc Water-cooled Inline 4-Cylinder. Fitur M: Velg Karbon M, Kursi M, Knalpot Akrapovic Titanium."
+    },
+    {
+        id: "bike-004",
+        name: "Harley-Davidson CVO Road Glide",
+        price: 0.01400,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1558981806-ec527fa84c39?auto=format&fit=crop&w=800&q=80"],
+        rating: "4.9",
+        sold: 2,
+        category: "Motor",
+        desc: "Mesin: Milwaukee-Eight® VVT 121 (1.977cc). Gaya: Grand American Touring Luxury."
+    },
+    {
+        id: "bike-005",
+        name: "MV Agusta Rush 1000 cc",
+        price: 0.01650,
+        discount: 0,
+        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Konsep: Hyper-Naked Drag Bike Luxury. Mesin: 998cc 16-valve DOHC Inline 4."
+    },
+    {
+        id: "bike-006",
+        name: "Aprilia RSV4 Xtrenta",
+        price: 0.01900,
+        discount: 0,
+        images: ["https://i.ibb.co.com/gMRDN2kp/Desain-tanpa-judul-20260207-132024-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Teknologi: MotoGP Derived Aerodynamics. Mesin: 1.099cc V4 Longitudinal 65°."
+    },
+    {
+        id: "bike-007",
+        name: "Triumph Rocket 3 TFC",
+        price: 0.00950,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?auto=format&fit=crop&w=800&q=80"],
+        rating: "4.8",
+        sold: 3,
+        category: "Motor",
+        desc: "Mesin: 2.458cc (Mesin motor terbesar di dunia). Torsi: 225 Nm (Akselerasi instan)."
+    },
+    {
+        id: "bike-008",
+        name: "Arch Motorcycle KRGT-1",
+        price: 0.02500,
+        discount: 0,
+        images: ["https://i.ibb.co.com/d4dwYps4/Desain-tanpa-judul-20260207-132911-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Pembuat: Co-founded by Keanu Reeves. Mesin: 2.032cc S&S Cycle V-Twin."
+    },
+    {
+        id: "bike-010",
+        name: "Honda Gold Wing Tour DCT",
+        price: 0.00850,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1599819811279-d5ad9cccf838?auto=format&fit=crop&w=800&q=80"],
+        rating: "4.9",
+        sold: 5,
+        category: "Motor",
+        desc: "Mesin: 1.833cc Liquid-cooled 6-cylinder Boxer. Transmisi: 7-speed Automatic Dual Clutch (DCT)."
+    },
+    {
+        id: "car-001",
+        name: "Toyota Fortuner 2.8 GR Sport 2024",
+        price: 0.15000,
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
+        rating: "4.9",
+        sold: 14,
+        category: "Mobil",
+        desc: "Mesin: 2.800 cc Diesel Turbo. Transmisi: Otomatis 6-Speed. Tenaga: 203.9 PS / 500 Nm."
+    },
+    {
+        id: "car-002",
+        name: "Honda CR-V 2.0 RS e:HEV Hybrid 2024",
+        price: 0.18500,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1590362891991-f776e747a588?q=80&w=1000&auto=format&fit=crop"],
+        rating: "5.0",
+        sold: 8,
+        category: "Mobil",
+        desc: "Mesin: 2.0L i-VTEC + Electric Motor (Hybrid). Transmisi: e-CVT. Fitur: Panoramic Sunroof & BOSE Audio."
+    },
+    {
+        id: "car-003",
+        name: "Rolls-Royce Phantom Series II",
+        price: 0.15000,
+        discount: 0,
+        images: ["https://i.ibb.co.com/7xshksJQ/Desain-tanpa-judul-20260207-114554-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Mobil",
+        desc: "Mesin: 6.75L V12 Twin-Turbo. Fitur: Starlight Headliner, Magic Carpet Ride."
+    },
+    {
+        id: "car-004",
+        name: "Lamborghini Aventador SVJ",
+        price: 0.08500,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&w=800&q=80"],
+        rating: "5.0",
+        sold: 2,
+        category: "Mobil",
+        desc: "Mesin: 6.5L V12 Naturally Aspirated. Akselerasi: 0-100 km/h dalam 2.8 detik."
+    },
+    {
+        id: "car-005",
+        name: "Bentley Continental GT Mulliner",
+        price: 0.06500,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1621135802920-133df287f89c?auto=format&fit=crop&w=800&q=80"],
+        rating: "4.9",
+        sold: 3,
+        category: "Mobil",
+        desc: "Mesin: 6.0L W12 TSI Twin-Turbo. Interior: Diamond-in-Diamond Quilting."
+    },
+    {
+        id: "car-006",
+        name: "Ferrari SF90 Stradale",
+        price: 0.09200,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1592198084033-aade902d1aae?auto=format&fit=crop&w=800&q=80"],
+        rating: "5.0",
+        sold: 1,
+        category: "Mobil",
+        desc: "Sistem: Plug-in Hybrid AWD. Mesin: 4.0L V8 Turbo + 3 Motor Listrik."
+    },
+    {
+        id: "car-007",
+        name: "Mercedes-Maybach S-Class S680",
+        price: 0.04500,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?auto=format&fit=crop&w=800&q=80"],
+        rating: "4.9",
+        sold: 6,
+        category: "Mobil",
+        desc: "Mesin: 6.0L V12 Biturbo. Kursi: Executive Rear Seats with Massage Function."
+    },
+    {
+        id: "car-008",
+        name: "Porsche 911 GT3 RS",
+        price: 0.05800,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=500&q=80"],
+        rating: "5.0",
+        sold: 4,
+        category: "Mobil",
+        desc: "Mesin: 4.0L Naturally Aspirated Boxer-6. Sayap: Active Rear Wing with DRS."
+    },
+    {
+        id: "car-009",
+        name: "Aston Martin DBS Volante",
+        price: 0.07200,
+        discount: 0,
+        images: ["https://i.ibb.co.com/GvnNVhbt/Desain-tanpa-judul-20260207-115657-0000.png"],
+        rating: "4.8",
+        sold: 2,
+        category: "Mobil",
+        desc: "Konfigurasi: Convertible. Mesin: 5.2L V12 Twin-Turbo."
+    },
+    {
+        id: "car-0010",
+        name: "Bugatti Chiron Super Sport",
+        price: 0.25000,
+        discount: 0,
+        images: ["https://i.ibb.co.com/mFMXn0VQ/Desain-tanpa-judul-20260207-120754-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Mobil",
+        desc: "Mesin: 8.0L W16 Quad-Turbocharged. Tenaga: 1.600 PS (1.578 HP)."
+    },
+    {
+        id: "car-0011",
+        name: "McLaren 720S Spider",
+        price: 0.06800,
+        discount: 0,
+        images: ["https://i.ibb.co.com/KjcpvFzt/Desain-tanpa-judul-20260207-121412-0000.png"],
+        rating: "4.9",
+        sold: 3,
+        category: "Mobil",
+        desc: "Mesin: 4.0L V8 Twin-Turbo. Sasis: Monocage II-S Carbon Fiber."
+    },
+    {
+        id: "car-0012",
+        name: "Range Rover SV Autobiography",
+        price: 0.04000,
+        discount: 0,
+        images: ["https://i.ibb.co.com/zV8hJbjn/Desain-tanpa-judul-20260207-122051-0000.png"],
+        rating: "4.9",
+        sold: 5,
+        category: "Mobil",
+        desc: "Tipe: Long Wheelbase Luxury SUV. Mesin: 5.0L Supercharged V8."
+    },
+    {
+        id: "gold-001",
+        name: "Emas Antam Logam Mulia 1 Gram",
+        price: 0.00015,
+        discount: 0,
+        images: ["https://i.ibb.co.com/WW2GjHH3/Desain-tanpa-judul-20260207-134044-0000.png"],
+        rating: "4.9",
+        sold: 1250,
+        category: "Emas",
+        desc: "Berat: 1 Gram. Kemurnian: 999.9 (24 Karat). Fitur: QR Code CertiEye."
+    },
+    {
+        id: "gold-002",
+        name: "Emas Antam Logam Mulia 2 Gram",
+        price: 0.00029,
+        discount: 0,
+        images: ["https://i.ibb.co.com/WWSt12zP/Desain-tanpa-judul-20260207-134711-0000.png"],
+        rating: "4.9",
+        sold: 620,
+        category: "Emas",
+        desc: "Berat: 2 Gram. Kemurnian: Fine Gold 999.9."
+    },
+    {
+        id: "gold-003",
+        name: "Emas Antam Logam Mulia 5 Gram",
+        price: 0.00072,
+        discount: 0,
+        images: ["https://i.ibb.co.com/JW7Tk9kZ/Desain-tanpa-judul-20260207-141911-0000.png"],
+        rating: "4.9",
+        sold: 430,
+        category: "Emas",
+        desc: "Berat: 5 Gram. Kemurnian: 99.99% Emas Murni."
+    },
+    {
+        id: "gold-004",
+        name: "Emas Antam Logam Mulia 10 Gram",
+        price: 0.00142,
+        discount: 0,
+        images: ["https://i.ibb.co.com/qMTw7ZPb/Desain-tanpa-judul-20260207-142456-0000.png"],
+        rating: "5.0",
+        sold: 215,
+        category: "Emas",
+        desc: "Berat: 10 Gram. Sertifikat: LBMA (London Bullion Market)."
+    },
+    {
+        id: "gold-005",
+        name: "Emas Antam Logam Mulia 25 Gram",
+        price: 0.00350,
+        discount: 0,
+        images: ["https://i.ibb.co.com/K8jSt3G/Desain-tanpa-judul-20260207-145416-0000.png"],
+        rating: "4.9",
+        sold: 95,
+        category: "Emas",
+        desc: "Berat: 25 Gram. Sertifikat: Akreditasi KAN."
+    },
+    {
+        id: "gold-006",
+        name: "Emas Antam Logam Mulia 50 Gram",
+        price: 0.00690,
+        discount: 0,
+        images: ["https://i.ibb.co.com/GvbphD6M/Desain-tanpa-judul-20260207-143702-0000.png"],
+        rating: "5.0",
+        sold: 48,
+        category: "Emas",
+        desc: "Berat: 50 Gram. Kemurnian: 24 Karat (99.99%)."
+    },
+    {
+        id: "gold-007",
+        name: "Emas Antam Logam Mulia 100 Gram",
+        price: 0.01370,
+        discount: 0,
+        images: ["https://i.ibb.co.com/PzwYFNZ8/Desain-tanpa-judul-20260207-150017-0000.png"],
+        rating: "5.0",
+        sold: 22,
+        category: "Emas",
+        desc: "Berat: 100 Gram. Nilai: Instrumen lindung nilai terbaik."
+    },
+    {
+        id: "gold-010",
+        name: "Emas Antam Logam Mulia 250 Gram",
+        price: 0.03400,
+        discount: 0,
+        images: ["https://i.ibb.co.com/hx080kjJ/Desain-tanpa-judul-20260207-150526-0000.png"],
+        rating: "5.0",
+        sold: 7,
+        category: "Emas",
+        desc: "Berat: 250 Gram. Bentuk: Cast Bar (Emas Tuang)."
+    },
+    {
+        id: "gold-011",
+        name: "Emas Antam Logam Mulia 500 Gram",
+        price: 0.06400,
+        discount: 0,
+        images: ["https://i.ibb.co.com/hx080kjJ/Desain-tanpa-judul-20260207-150526-0000.png"],
+        rating: "5.0",
+        sold: 3,
+        category: "Emas",
+        desc: "Berat: 500 Gram. Bentuk: Cast Bar Premium."
+    },
+    {
+        id: "gadget-001",
+        name: "iPhone 15 Pro Max 512GB",
+        price: 0.00250,
+        discount: 0,
+        images: ["https://i.ibb.co.com/kgxjnpyp/Desain-tanpa-judul-20260207-181545-0000.png"],
+        rating: "4.9",
+        sold: 85,
+        category: "Gadget",
+        desc: "Layar: 6.7\" Super Retina XDR OLED. Chipset: A17 Pro (3nm). Material: Titanium Grade 5."
+    },
+    {
+        id: "gadget-002",
+        name: "Samsung Galaxy S24 Ultra",
+        price: 0.00235,
+        discount: 0,
+        images: ["https://i.ibb.co.com/RprpNpf6/Desain-tanpa-judul-20260207-182139-0000.png"],
+        rating: "4.9",
+        sold: 92,
+        category: "Gadget",
+        desc: "Layar: 6.8\" Dynamic LTPO AMOLED 2X. AI: Galaxy AI (Circle to Search)."
     }
-    ];
+];
 // =========================================================================
 // 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS)
 // =========================================================================

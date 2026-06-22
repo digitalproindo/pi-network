@@ -1,5 +1,5 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS) - Diubah ke Kanan & Warna Hijau WhatsApp (#25d366)
+    // 1. Injeksi Gaya Tampilan (CSS) - Diubah ke Kanan, Warna Hijau WA & Layout Cek Ongkir
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
@@ -47,16 +47,22 @@
         .msg-user { background: #25d366; color: white; align-self: flex-end; border-top-right-radius: 0px; }
         .faq-section { padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 6px; background: #f4f7f5; }
         .faq-btn { background: white; color: #25d366; border: 1px solid #c7f2d6; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .action-buttons { display: flex; gap: 8px; padding: 10px 14px; background: #f4f7f5; }
-        .action-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .action-buttons { display: flex; gap: 6px; padding: 10px 14px; background: #f4f7f5; }
+        .action-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
         .btn-lacak { background: #e6f9ed; color: #25d366; }
+        .btn-ongkir { background: #e1f5fe; color: #0288d1; }
         .btn-wa { background: #128c7e; color: white; }
         .bot-input-area { display: flex; padding: 10px 14px; background: white; border-top: 1px solid #eee; gap: 8px; }
         .bot-input-area input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 13px; }
         .btn-send { background: #25d366; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
-        .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; }
-        .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        
+        /* Form Input Pop-up */
+        .lacak-input-container, .ongkir-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
+        .ongkir-input-container { background: #e3f2fd; border-top: 1px solid #bbdefb; }
+        .lacak-input-container input, .ongkir-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; }
+        .ongkir-input-container input { border: 1px solid #2196f3; }
+        .lacak-input-container button, .ongkir-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .ongkir-input-container button { background: #2196f3; color: white; }
     `;
     document.head.appendChild(style);
 
@@ -69,7 +75,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot (Ditambahkan kembali elemen btnMenuLacak agar script tidak error)
+    // 3. Inject Struktur HTML Widget Bot
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -90,18 +96,28 @@
                     Halo! 👋 Saya <strong>DPI Bot</strong>.<br>Ada yang bisa saya bantu seputar transaksi produk atau properti di PT. Digital Pro Indo? Silakan pilih FAQ di bawah.
                 </div>
             </div>
+            
             <div class="lacak-input-container" id="lacakForm">
                 <input type="text" id="noInvoice" placeholder="Masukkan nomor invoice...">
                 <button id="btnProsesLacak">Cek</button>
                 <span id="btnTutupLacak" style="cursor:pointer; margin-left:5px; color:red;"><i class="fa-solid fa-xmark"></i></span>
             </div>
+
+            <div class="ongkir-input-container" id="ongkirForm">
+                <input type="text" id="kotaTujuan" placeholder="Kota Tujuan (Misal: Surabaya)...">
+                <input type="number" id="beratBarang" placeholder="Gram" value="1000" style="max-width: 70px;">
+                <button id="btnProsesOngkir">Cek</button>
+                <span id="btnTutupOngkir" style="cursor:pointer; margin-left:5px; color:red;"><i class="fa-solid fa-xmark"></i></span>
+            </div>
+
             <div class="faq-section">
                 <button class="faq-btn" data-reply="Sistem kami terhubung otomatis dengan Pi SDK. Cukup pilih produk aset digital atau properti yang Anda inginkan, klik 'Beli', lalu selesaikan pembayaran aman lewat jendela pop-up dompet Pi Browser Anda.">Cara beli asset?</button>
                 <button class="faq-btn" data-reply="Saat ini kami melayani transaksi komersial eksklusif menggunakan koin di jaringan Pi Testnet sebagai simulasi validasi ekosistem sebelum berlanjut penuh ke fase Open Mainnet.">Metode pembayaran?</button>
                 <button class="faq-btn" data-reply="PT. Digital Pro Indo adalah platform e-commerce dan marketplace berbadan hukum resmi di Indonesia yang terdaftar sah dalam jajaran utilitas Pi Developer Studio.">Legalitas Perusahaan?</button>
             </div>
             <div class="action-buttons">
-                <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-truck"></i> Lacak Pesanan</button>
+                <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-truck"></i> Lacak</button>
+                <button class="action-btn btn-ongkir" id="btnMenuOngkir"><i class="fa-solid fa-box"></i> Cek Ongkir</button>
                 <button class="action-btn btn-wa" onclick="window.open('https://wa.me/6281906066757?text=Halo%20Admin%20PT.%20Digital%20Pro%20Indo%2C%20saya%20ingin%20bertanya%20mengenai%20produk%20atau%20aset%20properti%20yang%20ada%20di%20marketplace.', '_blank')"><i class="fa-brands fa-whatsapp"></i> WA Admin</button>
             </div>
             <div class="bot-input-area">
@@ -122,10 +138,16 @@
     const botChatBody = document.getElementById('botChatBody');
     const botUserInput = document.getElementById('botUserInput');
     const botBtnSend = document.getElementById('botBtnSend');
+    
     const btnMenuLacak = document.getElementById('btnMenuLacak');
     const lacakForm = document.getElementById('lacakForm');
     const btnProsesLacak = document.getElementById('btnProsesLacak');
     const btnTutupLacak = document.getElementById('btnTutupLacak');
+
+    const btnMenuOngkir = document.getElementById('btnMenuOngkir');
+    const ongkirForm = document.getElementById('ongkirForm');
+    const btnProsesOngkir = document.getElementById('btnProsesOngkir');
+    const btnTutupOngkir = document.getElementById('btnTutupOngkir');
 
     // Buka Tutup Widget Chat
     botToggle.addEventListener('click', () => {
@@ -134,7 +156,7 @@
     });
     botMinimize.addEventListener('click', () => { botContainer.style.display = 'none'; });
 
-    // Fungsi Pengiriman Pesan
+    // Fungsi Pengiriman Pesan ke Bubble Chat
     function appendBotMsg(text, sender) {
         const bubble = document.createElement('div');
         bubble.className = `msg-bubble msg-${sender}`;
@@ -162,33 +184,25 @@
         }, 800);
     }
 
-    // Event Listener Tombol Kirim Manual & Tombol Enter
     botBtnSend.addEventListener('click', eksekusiKirim);
     botUserInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') eksekusiKirim(); });
 
-    // Event Listener Tombol FAQ Otomatis
+    // FAQ Otomatis
     document.querySelectorAll('.faq-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const pertanyaan = this.innerText;
             const jawaban = this.getAttribute('data-reply');
-            
             appendBotMsg(pertanyaan, 'user');
-            setTimeout(() => {
-                appendBotMsg(jawaban, 'bot');
-            }, 500);
+            setTimeout(() => { appendBotMsg(jawaban, 'bot'); }, 500);
         });
     });
 
-    // Logika Pengendalian Fitur Menu Lacak Pesanan
-    if (btnMenuLacak) {
-        btnMenuLacak.addEventListener('click', () => {
-            lacakForm.style.display = 'flex';
-        });
-    }
-    
-    btnTutupLacak.addEventListener('click', () => {
-        lacakForm.style.display = 'none';
+    // --- LOGIKA MENU LACAK PESANAN ---
+    btnMenuLacak.addEventListener('click', () => {
+        ongkirForm.style.display = 'none'; // tutup form ongkir jika buka form lacak
+        lacakForm.style.display = 'flex';
     });
+    btnTutupLacak.addEventListener('click', () => { lacakForm.style.display = 'none'; });
 
     btnProsesLacak.addEventListener('click', () => {
         const inv = document.getElementById('noInvoice').value.trim();
@@ -201,6 +215,37 @@
             appendBotMsg(`Sistem mendeteksi transaksi properti/produk dengan invoice <strong>${inv}</strong> saat ini sedang dalam antrean verifikasi enkripsi Blockchain Pi Network.`, 'bot');
             document.getElementById('noInvoice').value = '';
         }, 800);
+    });
+
+    // --- LOGIKA MENU CEK ONGKIR (SIMULASI PERBANDINGAN LAYANAN) ---
+    btnMenuOngkir.addEventListener('click', () => {
+        lacakForm.style.display = 'none'; // tutup form lacak jika buka form ongkir
+        ongkirForm.style.display = 'flex';
+    });
+    btnTutupOngkir.addEventListener('click', () => { ongkirForm.style.display = 'none'; });
+
+    btnProsesOngkir.addEventListener('click', () => {
+        const kota = document.getElementById('kotaTujuan').value.trim();
+        const berat = document.getElementById('beratBarang').value.trim();
+        if(!kota) return;
+
+        appendBotMsg(`Cek perbandingan ongkir ke: <strong>${kota}</strong> (${berat} gram)`, 'user');
+        ongkirForm.style.display = 'none';
+
+        appendBotMsg(`<em>Mencari perbandingan harga ekspedisi terupdate... 📦</em>`, 'bot');
+
+        // Simulasi Output Komparasi Jasa Pengiriman
+        setTimeout(() => {
+            let hasilOngkir = `Berikut perbandingan tarif ongkir terendah ke <strong>${kota}</strong> (${berat}g):<br><br>` +
+                `<strong>🚚 J&T Express (EZ)</strong><br>• Tarif: Rp 11.500<br>• Estimasi: 2 - 3 Hari<br>___________________<br>` +
+                `<strong>🚚 JNE (Regular)</strong><br>• Tarif: Rp 12.000<br>• Estimasi: 2 - 4 Hari<br>___________________<br>` +
+                `<strong>🚚 Sicepat (REG)</strong><br>• Tarif: Rp 12.000<br>• Estimasi: 1 - 2 Hari<br>___________________<br>` +
+                `<strong>🚚 POS Indonesia (Kilat)</strong><br>• Tarif: Rp 14.500<br>• Estimasi: 3 - 5 Hari<br><br>` +
+                `*Catatan: Harga di atas merupakan estimasi standar marketplace. Hubungi admin untuk asuransi pengiriman barang mewah/properti.*`;
+            
+            appendBotMsg(hasilOngkir, 'bot');
+            document.getElementById('kotaTujuan').value = '';
+        }, 1200);
     });
 
 })();

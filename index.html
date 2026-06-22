@@ -450,8 +450,11 @@
     form.addEventListener('submit', e => {
         e.preventDefault();
         
-        // Proteksi jika user belum login Pi Network
-        if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+        // Membaca variabel global currentUser dari window
+        const userDaftar = window.currentUser;
+        
+        // Proteksi jika user belum login Pi Network / variabel belum siap
+        if (!userDaftar || !userDaftar.uid) {
             alert("Gagal mengirim! Anda harus login melalui Pi Browser terlebih dahulu.");
             return;
         }
@@ -469,7 +472,7 @@
         const kecUser = document.getElementById('selectKecamatan').value;
         const kelUser = document.getElementById('selectKelurahan').value;
         
-        // 2. Menyusun string parameter URL agar masuk ke kolom yang pas (Anti-Geser Kolom)
+        // 2. Menyusun string parameter URL (Anti-Geser Kolom)
         const params = new URLSearchParams({
             nama: namaUser,
             whatsapp: waUser,
@@ -477,10 +480,10 @@
             kota: kotaUser,
             kecamatan: kecUser,
             kelurahan: kelUser,
-            uid: currentUser.uid // 🔴 MENYERTAKAN WALLET UID SECARA OTOMATIS
+            uid: userDaftar.uid // 🔴 Menggunakan userDaftar.uid dari variabel global
         });
 
-        // 3. Eksekusi pengiriman data dengan metode POST menggunakan URL berparameter
+        // 3. Eksekusi pengiriman data POST ke Google Sheets
         fetch(`${scriptURL}?${params.toString()}`, { 
             method: 'POST' 
         })
@@ -493,7 +496,7 @@
             const statusLabel = document.getElementById('partner-status');
             if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
             
-            // Muat ulang data profil secara otomatis jika fungsi di app.js tersedia
+            // Memanggil fungsi sinkronisasi profil di app.js
             if (typeof muatStatusKemitraan === "function") {
                 muatStatusKemitraan();
             }

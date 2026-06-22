@@ -1771,12 +1771,17 @@ window.switchPage = (pageId) => {
     });
     const activePage = document.getElementById(`page-${pageId}`);
     if(activePage) activePage.classList.remove('hidden');
-    
+
     document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
     const activeNav = document.getElementById(`nav-${pageId}`);
     if(activeNav) activeNav.classList.add('active');
-    
+
     if(pageId === 'home') renderProducts(productsData, 'main-grid');
+    
+    // 🔴 TAMBAHKAN LOGIKA INI DI SINI
+    if(pageId === 'profile') {
+        muatStatusKemitraan();
+    }
 };
 
 // =========================================================================
@@ -1943,7 +1948,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 4000);
 // 5. Jalankan pipeline login otomatis Pi Network SDK
     await initPi();
-    muatStatusKemitraan();
+    
+    // 6. Bind tombol login manual awal sebelum ter-otentikasi
 
     // 6. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');

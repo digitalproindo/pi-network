@@ -1197,7 +1197,7 @@ const productsData = [
     // -----------------------------------------------------------------
     {
         id: "food-001",
-        category: "Makan",
+        category: "Makanan",
         name: "Rendang Daging Sapi Minang Vakum",
         price: 0.000015,
         discount: 0,
@@ -1208,7 +1208,7 @@ const productsData = [
     },
     {
         id: "food-002",
-        category: "Makan",
+        category: "Makanan",
         name: "Sambal Cumi Ciamik Premium",
         price: 0.000005,
         discount: 5,
@@ -1219,7 +1219,7 @@ const productsData = [
     },
     {
         id: "food-003",
-        category: "Makan",
+        category: "Makanan",
         name: "Kue Lapis Legit Spesial Full Wisman",
         price: 0.000045,
         discount: 0,
@@ -1230,7 +1230,7 @@ const productsData = [
     },
     {
         id: "food-004",
-        category: "Makan",
+        category: "Makanan",
         name: "Baso Aci Garut Instan Kuah Pedas",
         price: 0.000003,
         discount: 10,
@@ -1241,7 +1241,7 @@ const productsData = [
     },
     {
         id: "food-005",
-        category: "Makan",
+        category: "Makanan",
         name: "Keripik Singkong Balado Daun Jeruk",
         price: 0.000002,
         discount: 0,
@@ -1252,7 +1252,7 @@ const productsData = [
     },
     {
         id: "food-006",
-        category: "Makan",
+        category: "Makanan",
         name: "Dendeng Sapi Batokok Asli Padang",
         price: 0.000022,
         discount: 0,
@@ -1263,7 +1263,7 @@ const productsData = [
     },
     {
         id: "food-007",
-        category: "Makan",
+        category: "Makanan",
         name: "Dimsum Ayam Udang Premium Isi 10",
         price: 0.000006,
         discount: 5,
@@ -1274,7 +1274,7 @@ const productsData = [
     },
     {
         id: "food-008",
-        category: "Makan",
+        category: "Makanan",
         name: "Bumbu Instan Nusantara Pack isi 5",
         price: 0.000004,
         discount: 12,
@@ -1285,7 +1285,7 @@ const productsData = [
     },
     {
         id: "food-009",
-        category: "Makan",
+        category: "Makanan",
         name: "Brownies Panggang Fudgy Almond Shaved",
         price: 0.000008,
         discount: 0,
@@ -1296,7 +1296,7 @@ const productsData = [
     },
     {
         id: "food-010",
-        category: "Makan",
+        category: "Makanan",
         name: "Ayam Kampung Ungkep Bumbu Kuning",
         price: 0.000012,
         discount: 0,

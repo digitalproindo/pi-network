@@ -1,5 +1,5 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS) - Mobile & Keyboard Friendly
+    // 1. Injeksi Gaya Tampilan (CSS)
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
@@ -61,7 +61,6 @@
         .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; }
         .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
-        /* Form Cek Ongkir */
         .ongkir-input-container { display: none; padding: 12px 14px; background: #e3f2fd; border-top: 1px solid #bbdefb; flex-direction: column; gap: 8px; font-size: 12px; }
         .ongkir-grid { display: flex; flex-direction: column; gap: 6px; }
         .ongkir-grid textarea { width: 100%; height: 55px; padding: 8px; border: 1px solid #2196f3; border-radius: 6px; font-size: 12px; font-family: inherit; background: white; box-sizing: border-box; resize: none; outline: none; }
@@ -98,10 +97,7 @@
                 <i class="fa-solid fa-minus" id="botMinimize" style="cursor:pointer; opacity:0.7;"></i>
             </div>
             <div class="bot-chat-body" id="botChatBody">
-                <div class="msg-bubble msg-bot">
-                    Halo! 👋 Saya <strong>DPI Bot</strong>.<br>Ada yang bisa saya bantu seputar transaksi produk atau properti di PT. Digital Pro Indo? Silakan pilih FAQ di bawah.
                 </div>
-            </div>
             
             <div class="lacak-input-container" id="lacakForm">
                 <input type="text" id="noInvoice" placeholder="Masukkan nomor invoice...">
@@ -165,12 +161,48 @@
     const inputAlamatLengkap = document.getElementById('inputAlamatLengkap');
     const inputBerat = document.getElementById('inputBerat');
 
-    // Buka Tutup Widget Chat
+    // --- FUNGSI UTAMA REFRESH/RESET STATE CHATBOT ---
+    function resetChatbotState() {
+        // Kosongkan riwayat chat body dan kembalikan ke pesan pertama
+        botChatBody.innerHTML = `
+            <div class="msg-bubble msg-bot">
+                Halo! 👋 Saya <strong>DPI Bot</strong>.<br>Ada yang bisa saya bantu seputar transaksi produk atau properti di PT. Digital Pro Indo? Silakan pilih FAQ di bawah.
+            </div>
+        `;
+        // Tutup semua sub-formulir yang terbuka
+        lacakForm.style.display = 'none';
+        ongkirForm.style.display = 'none';
+        
+        // Bersihkan seluruh teks input lama
+        botUserInput.value = '';
+        inputAlamatLengkap.value = '';
+        document.getElementById('noInvoice').value = '';
+        inputBerat.value = '1000';
+        
+        botChatBody.scrollTop = 0;
+    }
+
+    // Jalankan reset saat widget pertama kali diload agar siap pakai
+    resetChatbotState();
+
+    // Buka atau Tutup Kontainer Chat Lewat Tombol Lingkaran Ikon Utama
     botToggle.addEventListener('click', () => {
-        botContainer.style.display = botContainer.style.display === 'flex' ? 'none' : 'flex';
-        botChatBody.scrollTop = botChatBody.scrollHeight;
+        if (botContainer.style.display === 'flex') {
+            // JIKA SEDANG TERBUKA LALU DIKLIK -> TUTUP DAN REFRESH TOTAL
+            botContainer.style.display = 'none';
+            resetChatbotState();
+        } else {
+            // JIKA SEDANG TERTUTUP LALU DIKLIK -> BUKA SEPERTI BIASA
+            botContainer.style.display = 'flex';
+            botChatBody.scrollTop = botChatBody.scrollHeight;
+        }
     });
-    botMinimize.addEventListener('click', () => { botContainer.style.display = 'none'; });
+
+    // Aksi klik Tanda Minus (-) -> Tutup dan Refresh Total
+    botMinimize.addEventListener('click', () => { 
+        botContainer.style.display = 'none'; 
+        resetChatbotState();
+    });
 
     function appendBotMsg(text, sender) {
         const bubble = document.createElement('div');
@@ -193,6 +225,18 @@
     });
     btnTutupOngkir.addEventListener('click', () => { ongkirForm.style.display = 'none'; });
 
+    // Aksi Lacak
+    btnProsesLacak.addEventListener('click', () => {
+        const inv = document.getElementById('noInvoice').value.trim();
+        if(!inv) return;
+        appendBotMsg(`Melacak nomor invoice: <strong>${inv}</strong>`, 'user');
+        lacakForm.style.display = 'none';
+        setTimeout(() => {
+            appendBotMsg(`Sistem mendeteksi transaksi dengan invoice <strong>${inv}</strong> saat ini sedang dalam antrean verifikasi enkripsi Blockchain Pi Network.`, 'bot');
+            document.getElementById('noInvoice').value = '';
+        }, 800);
+    });
+
     // Aksi Klik "Cek Tarif"
     btnProsesOngkir.addEventListener('click', () => {
         const alamatFull = inputAlamatLengkap.value.trim();
@@ -205,7 +249,6 @@
 
         ongkirForm.style.display = 'none';
 
-        // Kirim rincian teks alamat ke bubble chat
         let userMsg = `<strong>Request Cek Ongkir:</strong><br>` +
                       `🛫 Dari: Jakarta (Gudang Utama)<br>` +
                       `🛬 Ke: ${alamatFull}<br>` +
@@ -214,7 +257,6 @@
         appendBotMsg(userMsg, 'user');
         appendBotMsg(`<em>Mencari estimasi tarif pengiriman dari Jakarta... 📦</em>`, 'bot');
 
-        // Simulasi hasil komparasi kurir dari asal JAKARTA
         setTimeout(() => {
             let hasilOngkir = `Berikut perbandingan estimasi tarif pengiriman <strong>dari Jakarta</strong> ke lokasi Anda:<br><br>` +
                 `<strong>🚚 J&T Express (EZ)</strong><br>• Tarif: Rp 14.000<br>• Estimasi: 2-3 Hari<br>___________________<br>` +
@@ -226,6 +268,16 @@
             appendBotMsg(hasilOngkir, 'bot');
             inputAlamatLengkap.value = '';
         }, 1500);
+    });
+
+    // FAQ Otomatis
+    document.querySelectorAll('.faq-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const pertanyaan = this.innerText;
+            const jawaban = this.getAttribute('data-reply');
+            appendBotMsg(pertanyaan, 'user');
+            setTimeout(() => { appendBotMsg(jawaban, 'bot'); }, 500);
+        });
     });
 
     // Fitur pesan bawaan

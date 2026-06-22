@@ -186,7 +186,6 @@
         .slider-container img { transition: opacity 0.5s ease-in-out; }
         .xtra-label { background: linear-gradient(45deg, #1a237e, #4a148c) !important; }
 
-        /* KEYFRAME PULSE UNTUK NOTIFIKASI LIVE */
         @keyframes pulse-glow {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.6); }
             70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 191, 165, 0); }
@@ -297,9 +296,9 @@
             </span>
             
             <span style="margin-right: 40px; display: inline-flex; align-items: center; gap: 4px;">
-                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Staking:</span>
-                <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-staking">1,533.49 Pi</span>
-                <span style="color: #f1c40f; font-size: 9px;">★ Boosted</span>
+                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Otoritas:</span>
+                <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-staking">34 Provinsi</span>
+                <span style="color: #f1c40f; font-size: 9px;">★ Active</span>
             </span>
         </marquee>
     </div>
@@ -376,22 +375,30 @@
         <div class="badge-verified">Status: Verified ✅</div>
     </div>
 
-    <div style="background: white; border-radius: 25px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #edf2f7;">
-        <h3 style="margin: 0 0 4px 0; font-size: 0.75rem; color: var(--pi-gold); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase;">
-            💰 NODE STAKING DESENTRALISASI
+    <div style="background: white; border-radius: 25px; padding: 22px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #edf2f7;">
+        <h3 style="margin: 0 0 12px 0; font-size: 0.75rem; color: var(--pi-color); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+            <span>💼</span> STATUS KEMITRAAN & VENDOR
         </h3>
-        <div id="total-staking-display" style="font-size: 1.6rem; font-weight: 900; color: var(--pi-color); margin: 6px 0;">
-            0.00000 π
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-main);">Pengajuan Hak Otoritas</span>
+            <span style="font-size: 0.7rem; font-weight: 700; color: #f59e0b; background: #fef3c7; padding: 3px 10px; border-radius: 20px;" id="partner-status">MENUNGGU VERIFIKASI</span>
         </div>
-        <p style="font-size: 0.7rem; color: var(--text-muted); margin: 0 0 15px 0; line-height: 1.4;">
-            Kunci koin Pi Anda di dalam node ekosistem Digital Pro Indo untuk membantu likuiditas dan dapatkan bagi hasil berkala.
-        </p>
-        <div style="display: flex; gap: 8px;">
-            <input type="number" id="input-staking" placeholder="Jumlah Pi (π)" style="flex: 1; padding: 12px; border-radius: 10px; border: 1px solid #cbd5e1; outline: none; font-size: 0.85rem;">
-            <button onclick="prosesStakingBaru()" style="background: var(--pi-color); color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: 700; font-size: 0.8rem; cursor: pointer;">
-                LOCK STAKE
-            </button>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="padding: 10px; background: #f1f5f9; border-radius: 10px; text-align: center;">
+                <p style="margin: 0; font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">LOGISTIK SHARE</p>
+                <p style="margin: 4px 0 0 0; font-size: 0.95rem; font-weight: 800; color: var(--pi-color);">0.00 %</p>
+            </div>
+            <div style="padding: 10px; background: #f1f5f9; border-radius: 10px; text-align: center;">
+                <p style="margin: 0; font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">PRODUK TERPROSES</p>
+                <p style="margin: 4px 0 0 0; font-size: 0.95rem; font-weight: 800; color: var(--text-main);">0 Item</p>
+            </div>
         </div>
+
+        <button onclick="openKomunitasModal()" style="width: 100%; padding: 12px; background: var(--pi-color); color: white; border: none; border-radius: 10px; font-weight: 700; font-size: 0.75rem; cursor: pointer; text-transform: uppercase;">
+            Perbarui / Ajukan Wilayah Baru
+        </button>
     </div>
 </main>
 
@@ -451,6 +458,9 @@
                 alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.");
                 closeKomunitasModal();
                 form.reset();
+                // Mengubah UI status secara dinamis setelah form dikirim
+                const statusLabel = document.getElementById('partner-status');
+                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
             })
             .catch(error => alert("Error: Silakan coba lagi nanti."))
             .finally(() => {
@@ -464,37 +474,6 @@
             event.target.style.display = "none";
         }
     }
-
-    // LOGIKA INTEGRASI ENGINE TOTAL STAKING PADA PROFIL
-    function muatDataStakingLokal() {
-        let total = parseFloat(localStorage.getItem('pi_total_staking')) || 0;
-        const display = document.getElementById('total-staking-display');
-        if (display) {
-            display.innerText = total.toFixed(5) + " π";
-        }
-    }
-
-    function prosesStakingBaru() {
-        const inputAmount = document.getElementById('input-staking');
-        if (!inputAmount || !inputAmount.value) {
-            alert("Harap tentukan jumlah saldo Pi yang ingin Anda kunci!");
-            return;
-        }
-        const nilai = parseFloat(inputAmount.value);
-        if (nilai <= 0) { alert("Nilai deposit staking harus lebih besar dari 0 π."); return; }
-
-        let totalSkrg = parseFloat(localStorage.getItem('pi_total_staking')) || 0;
-        totalSkrg += nilai;
-        localStorage.setItem('pi_total_staking', totalSkrg);
-        muatDataStakingLokal();
-        alert(`Berhasil melakukan lock-up dana staking sebesar ${nilai.toFixed(5)} π ke dalam node.`);
-        inputAmount.value = "";
-    }
-
-    // Inisialisasi pembacaan database staking lokal saat elemen dimuat
-    document.addEventListener("DOMContentLoaded", () => {
-        muatDataStakingLokal();
-    });
 
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');

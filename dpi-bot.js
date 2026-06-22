@@ -1,12 +1,12 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS) - Posisi Kiri Sesuai Revisi Anda
+    // 1. Injeksi Gaya Tampilan (CSS) - Diubah ke Kanan & Warna Hijau WhatsApp (#25d366)
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
             position: fixed;
             bottom: 90px;
-            left: 20px;
-            background: #5a2d82;
+            right: 20px;
+            background: #25d366;
             color: white;
             width: 50px;
             height: 50px;
@@ -23,7 +23,7 @@
         .bot-widget-container {
             position: fixed;
             bottom: 155px;
-            left: 20px;
+            right: 20px;
             width: 360px;
             max-width: 90%;
             background: #ffffff;
@@ -35,25 +35,25 @@
             display: none; 
             flex-direction: column;
         }
-        .bot-header { background: #5a2d82; color: white; padding: 14px; display: flex; align-items: center; justify-content: space-between; }
+        .bot-header { background: #25d366; color: white; padding: 14px; display: flex; align-items: center; justify-content: space-between; }
         .bot-profile { display: flex; align-items: center; gap: 10px; }
-        .bot-avatar { width: 35px; height: 35px; background: #eedfff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #5a2d82; font-size: 16px; }
+        .bot-avatar { width: 35px; height: 35px; background: #e6f9ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #25d366; font-size: 16px; }
         .bot-info h4 { margin: 0; font-size: 14px; }
-        .bot-info span { font-size: 11px; opacity: 0.8; display: flex; align-items: center; gap: 4px; }
-        .status-dot { width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; display: inline-block; }
-        .bot-chat-body { height: 260px; padding: 14px; overflow-y: auto; background: #f8f9fa; display: flex; flex-direction: column; gap: 10px; }
+        .bot-info span { font-size: 11px; opacity: 0.9; display: flex; align-items: center; gap: 4px; }
+        .status-dot { width: 6px; height: 6px; background: #ffffff; border-radius: 50%; display: inline-block; }
+        .bot-chat-body { height: 260px; padding: 14px; overflow-y: auto; background: #f4f7f5; display: flex; flex-direction: column; gap: 10px; }
         .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
-        .msg-bot { background: #eedfff; color: #333; align-self: flex-start; border-top-left-radius: 0px; }
-        .msg-user { background: #5a2d82; color: white; align-self: flex-end; border-top-right-radius: 0px; }
-        .faq-section { padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 6px; background: #f8f9fa; }
-        .faq-btn { background: white; color: #5a2d82; border: 1px solid #e0c7ff; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .action-buttons { display: flex; gap: 8px; padding: 10px 14px; background: #f8f9fa; }
+        .msg-bot { background: #e6f9ed; color: #333; align-self: flex-start; border-top-left-radius: 0px; }
+        .msg-user { background: #25d366; color: white; align-self: flex-end; border-top-right-radius: 0px; }
+        .faq-section { padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 6px; background: #f4f7f5; }
+        .faq-btn { background: white; color: #25d366; border: 1px solid #c7f2d6; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
+        .action-buttons { display: flex; gap: 8px; padding: 10px 14px; background: #f4f7f5; }
         .action-btn { flex: 1; padding: 8px; border: none; border-radius: 8px; font-weight: bold; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .btn-lacak { background: #eedfff; color: #5a2d82; }
-        .btn-wa { background: #2ecc71; color: white; }
+        .btn-lacak { background: #e6f9ed; color: #25d366; }
+        .btn-wa { background: #128c7e; color: white; }
         .bot-input-area { display: flex; padding: 10px 14px; background: white; border-top: 1px solid #eee; gap: 8px; }
         .bot-input-area input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 13px; }
-        .btn-send { background: #5a2d82; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .btn-send { background: #25d366; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
         .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; }
         .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
@@ -69,7 +69,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot
+    // 3. Inject Struktur HTML Widget Bot (Ditambahkan kembali elemen btnMenuLacak agar script tidak error)
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -101,8 +101,8 @@
                 <button class="faq-btn" data-reply="PT. Digital Pro Indo adalah platform e-commerce dan marketplace berbadan hukum resmi di Indonesia yang terdaftar sah dalam jajaran utilitas Pi Developer Studio.">Legalitas Perusahaan?</button>
             </div>
             <div class="action-buttons">
+                <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-truck"></i> Lacak Pesanan</button>
                 <button class="action-btn btn-wa" onclick="window.open('https://wa.me/6281906066757?text=Halo%20Admin%20PT.%20Digital%20Pro%20Indo%2C%20saya%20ingin%20bertanya%20mengenai%20produk%20atau%20aset%20properti%20yang%20ada%20di%20marketplace.', '_blank')"><i class="fa-brands fa-whatsapp"></i> WA Admin</button>
-
             </div>
             <div class="bot-input-area">
                 <input type="text" id="botUserInput" placeholder="Ketik pesan...">
@@ -115,7 +115,7 @@
     botWrapper.innerHTML = botHtml;
     document.body.appendChild(botWrapper);
 
-    // 4. Inisialisasi Elemen & Logika Event Listener (DIREVISI AGAR DIJAMIN AKTIF)
+    // 4. Inisialisasi Elemen & Logika Event Listener
     const botToggle = document.getElementById('botToggle');
     const botContainer = document.getElementById('botContainer');
     const botMinimize = document.getElementById('botMinimize');
@@ -180,9 +180,11 @@
     });
 
     // Logika Pengendalian Fitur Menu Lacak Pesanan
-    btnMenuLacak.addEventListener('click', () => {
-        lacakForm.style.display = 'flex';
-    });
+    if (btnMenuLacak) {
+        btnMenuLacak.addEventListener('click', () => {
+            lacakForm.style.display = 'flex';
+        });
+    }
     
     btnTutupLacak.addEventListener('click', () => {
         lacakForm.style.display = 'none';

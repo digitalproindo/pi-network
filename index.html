@@ -454,7 +454,7 @@
     }
 
     // ==========================================
-    // DEKLARASI & PROSES SUBMIT FORM (ANTI-GESER)
+    // DEKLARASI & PROSES SUBMIT FORM + AUTO WA GROUP
     // ==========================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
@@ -498,7 +498,12 @@
                 method: 'POST' 
             })
             .then(response => {
-                alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.");
+                // Notifikasi sukses pendaftaran
+                alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.\n\nKlik OK untuk masuk ke Grup WhatsApp Otoritas Wilayah.");
+                
+                // REDIRECT OTOMATIS KE GRUP WA
+                window.location.href = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
+                
                 window.closeKomunitasModal();
                 form.reset();
                 
@@ -601,6 +606,6 @@
             event.target.style.display = "none";
         }
     }
-</script>
+</script>                      
 </body>
 </html>

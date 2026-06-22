@@ -107,7 +107,7 @@
         }
 
         .xtra-label {
-            position: absolute; bottom: 0; left: 0; background: #00bfa5;
+            position: absolute; bottom: 0; left: 0; background: linear-gradient(45deg, #1a237e, #4a148c) !important;
             color: white; padding: 2px 8px; border-top-right-radius: 8px;
             z-index: 10; line-height: 1.2;
         }
@@ -184,7 +184,6 @@
         .search-container { position: relative; z-index: 999; pointer-events: auto !important; }
         .slider-container { width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0; }
         .slider-container img { transition: opacity 0.5s ease-in-out; }
-        .xtra-label { background: linear-gradient(45deg, #1a237e, #4a148c) !important; }
 
         @keyframes pulse-glow {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.6); }
@@ -427,11 +426,13 @@
 <script>   
     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
-        sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
+        if (sideNav) {
+            sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
+        }
     }
 
-// ==========================================
-    // FUNGSI MODAL (DIBUAT GLOBAL & PASTI TERBUKA)
+    // ==========================================
+    // FUNGSI MODAL GLOBAL (PASTI TERBUKA)
     // ==========================================
     window.openModal = function() { document.getElementById("comingSoonModal").style.display = "flex"; }
     window.closeModal = function() { document.getElementById("comingSoonModal").style.display = "none"; }
@@ -441,7 +442,7 @@
     window.openKomunitasModal = function() {
         const modalKomunitas = document.getElementById("komunitasModal");
         if (modalKomunitas) {
-            modalKomunitas.style.display = "flex"; // 🟢 Modal dijamin pasti terbuka saat tombol diklik!
+            modalKomunitas.style.display = "flex";
         }
         var sideNav = document.getElementById("sideNav");
         if(sideNav) sideNav.style.width = "0";
@@ -453,7 +454,7 @@
     }
 
     // ==========================================
-    // DEKLARASI & VALIDASI SUBMIT PENDAFTARAN
+    // DEKLARASI & PROSES SUBMIT FORM (ANTI-GESER)
     // ==========================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
@@ -462,12 +463,10 @@
         form.addEventListener('submit', e => {
             e.preventDefault();
             
-            // Mengambil status login dari window global app.js secara real-time
-            const userDaftar = window.currentUser;
+            const userDaftar = window.currentUser || currentUser;
             
-            // Validasi dipindahkan ke sini (saat menekan tombol DAFTAR SEKARANG di dalam form)
             if (!userDaftar || !userDaftar.uid) {
-                alert("⚠️ Gagal mengirim! Akun Pi Network Anda belum terotentikasi secara sempurna di aplikasi. Harap refresh atau tunggu beberapa detik lalu coba lagi.");
+                alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna di halaman ini. Harap muat ulang aplikasi di Pi Browser Anda.");
                 return;
             }
 
@@ -477,8 +476,7 @@
                 btn.disabled = true;
             }
 
-            // 1. Mengambil data inputan dari form HTML secara aman
-            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : (form.querySelector('[name="name"]') ? form.querySelector('[name="name"]').value : "");
+            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : "";
             const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
             
             const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
@@ -486,7 +484,6 @@
             const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
             const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
             
-            // 2. Menyusun string parameter URL (Anti-Geser Kolom Google Sheets)
             const params = new URLSearchParams({
                 nama: namaUser,
                 whatsapp: waUser,
@@ -494,10 +491,9 @@
                 kota: kotaUser,
                 kecamatan: kecUser,
                 kelurahan: kelUser,
-                uid: userDaftar.uid // Mengirimkan Wallet UID asli dari blockchain Pi
+                uid: userDaftar.uid
             });
 
-            // 3. Eksekusi pengiriman data POST ke Google Sheets
             fetch(`${scriptURL}?${params.toString()}`, { 
                 method: 'POST' 
             })
@@ -506,24 +502,16 @@
                 window.closeKomunitasModal();
                 form.reset();
                 
-                // Mengubah warna UI status secara dinamis menjadi kuning setelah berhasil submit
                 const statusLabel = document.getElementById('partner-status');
-                if(statusLabel) { 
-                    statusLabel.style.background = "#fef3c7";
-                    statusLabel.style.color = "#f59e0b";
-                    statusLabel.innerText = "PROSES REVIEW"; 
-                }
+                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
                 
-                // Memicu sinkronisasi data profil di app.js
                 if (typeof window.muatStatusKemitraan === "function") {
                     window.muatStatusKemitraan();
-                } else if (typeof muatStatusKemitraan === "function") {
-                    muatStatusKemitraan();
                 }
             })
             .catch(error => {
                 console.error("Gagal mendaftar:", error);
-                alert("Terjadi masalah koneksi. Silakan coba klik daftar kembali.");
+                alert("Error: Silakan coba lagi nanti.");
             })
             .finally(() => {
                 if (btn) {
@@ -534,8 +522,85 @@
         });
     }
 
+    // ==========================================
+    // LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC
+    // ==========================================
+    const provSelect = document.getElementById('selectProvinsi');
+    const kotaSelect = document.getElementById('selectKota');
+    const kecSelect = document.getElementById('selectKecamatan');
+    const kelSelect = document.getElementById('selectKelurahan');
+
+    if (provSelect) {
+        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json`)
+            .then(res => res.json())
+            .then(provinces => {
+                provinces.forEach(p => {
+                    let opt = document.createElement('option');
+                    opt.value = p.name;
+                    opt.dataset.id = p.id;
+                    opt.innerHTML = p.name;
+                    provSelect.appendChild(opt);
+                });
+            });
+
+        provSelect.addEventListener('change', function() {
+            const id = this.options[this.selectedIndex].dataset.id;
+            resetDropdown(kotaSelect, "Kota/Kabupaten");
+            resetDropdown(kecSelect, "Kecamatan");
+            resetDropdown(kelSelect, "Kelurahan");
+            if(!id) return;
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${id}.json`)
+                .then(res => res.json())
+                .then(data => populate(kotaSelect, data));
+        });
+    }
+
+    if (kotaSelect) {
+        kotaSelect.addEventListener('change', function() {
+            const id = this.options[this.selectedIndex].dataset.id;
+            resetDropdown(kecSelect, "Kecamatan");
+            resetDropdown(kelSelect, "Kelurahan");
+            if(!id) return;
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${id}.json`)
+                .then(res => res.json())
+                .then(data => populate(kecSelect, data));
+        });
+    }
+
+    if (kecSelect) {
+        kecSelect.addEventListener('change', function() {
+            const id = this.options[this.selectedIndex].dataset.id;
+            resetDropdown(kelSelect, "Kelurahan");
+            if(!id) return;
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`)
+                .then(res => res.json())
+                .then(data => populate(kelSelect, data));
+        });
+    }
+
+    function populate(target, data) {
+        if (!target) return;
+        target.disabled = false;
+        data.forEach(d => {
+            let opt = document.createElement('option');
+            opt.value = d.name;
+            opt.dataset.id = d.id;
+            opt.innerHTML = d.name;
+            target.appendChild(opt);
+        });
+    }
+
+    function resetDropdown(target, label) {
+        if (!target) return;
+        target.innerHTML = `<option value="">Pilih ${label}</option>`;
+        target.disabled = true;
+    }
+
     window.onclick = function(event) {
         if (event.target.className === "modal-overlay") {
             event.target.style.display = "none";
         }
     }
+</script>
+</body>
+</html>

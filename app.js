@@ -1,11 +1,11 @@
 // =========================================================================
 // 1. GLOBAL VARIABLES & CONFIGURATION
 // =========================================================================
-let currentUser = null;
+window.currentUser = null; // 🔴 Diubah menggunakan window. agar menjadi Global
 let cart = [];
 let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
-let isPiInitialized = false; // Penanda status inisialisasi SDK Blockchain
-const ADMIN_WA = "6281906066757"; // Silakan ganti dengan nomor WhatsApp Admin Anda
+let isPiInitialized = false; 
+const ADMIN_WA = "6281906066757";
 
 // Mock Data Produk (Pastikan ID unik dan format harga sesuai)
 const productsData = [

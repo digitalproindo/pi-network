@@ -564,13 +564,23 @@
     }
 
     function bukaGrupWhatsAppDigital() {
-        const waLink = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
-        window.open(waLink, '_blank');
-        setTimeout(() => {
-            const modal = document.getElementById("digitalSuksesModal");
-            if(modal) modal.style.display = "none";
-        }, 1000);
-    }
+    const waLink = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
+    
+    // Trik Bypass Pi Browser: Membuat elemen tautan tak terlihat lalu memicu klik murni keluar
+    const downloader = document.createElement('a');
+    downloader.href = waLink;
+    downloader.target = '_blank';
+    downloader.rel = 'noopener noreferrer';
+    document.body.appendChild(downloader);
+    downloader.click();
+    document.body.removeChild(downloader);
+    
+    // Menutup modal sukses setelah melempar user ke WhatsApp
+    setTimeout(() => {
+        const modal = document.getElementById("digitalSuksesModal");
+        if(modal) modal.style.display = "none";
+    }, 1500);
+}
 
     // =========================================================================
     // 4. LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC

@@ -382,6 +382,331 @@ const productsData = [
         sold: 92,
         category: "Gadget",
         desc: "Layar: 6.8\" Dynamic LTPO AMOLED 2X. AI: Galaxy AI (Circle to Search)."
+    },
+    {
+        id: "prod-001",
+        name: "Smartphone Premium Pro Max 5G",
+        price: 0.00050,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"],
+        rating: "4.9",
+        sold: 142,
+        category: "elektronik",
+        desc: "Spesifikasi Flagship tertinggi dengan kapasitas RAM 12GB, Internal 512GB. Mendukung jaringan Pi Decentralized Web3 secara instan."
+    },
+    {
+        id: "prod-002",
+        name: "Laptop Eksekutif Core i9 Ultrabook",
+        price: 0.00120,
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1496181130204-755241524eab?w=500"],
+        rating: "5.0",
+        sold: 38,
+        category: "elektronik",
+        desc: "Laptop tipis premium untuk kebutuhan bisnis dan komputasi berat. Baterai tahan hingga 18 jam penggunaan aktif."
+    },
+    {
+        id: "bike-001",
+        name: "Ducati Panigale V4 R",
+        price: 0.01500,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Mesin: 998cc Desmosedici Stradale V4 R. Tenaga: 218 HP @ 15.500 RPM. Fitur: Sayap Karbon (Aero Winglets), Öhlins Suspension."
+    },
+    {
+        id: "bike-002",
+        name: "Kawasaki Ninja H2R (Track Only)",
+        price: 0.01800,
+        discount: 0,
+        images: ["https://i.ibb.co.com/jZ6LvJTB/Desain-tanpa-judul-20260207-131613-0000.png"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Mesin: 998cc In-line Four with Supercharger. Tenaga: 310 HP (Paling bertenaga di dunia). Top Speed: 400+ km/jam."
+    },
+    {
+        id: "car-001",
+        name: "Toyota Fortuner 2.8 GR Sport 2024",
+        price: 0.15000,
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1619682817481-e994891cd1f5?q=80&w=1000&auto=format&fit=crop"],
+        rating: "4.9",
+        sold: 14,
+        category: "Mobil",
+        desc: "Mesin: 2.800 cc Diesel Turbo. Transmisi: Otomatis 6-Speed. Tenaga: 203.9 PS / 500 Nm."
+    },
+    {
+        id: "gold-001",
+        name: "Emas Antam Logam Mulia 1 Gram",
+        price: 0.00015,
+        discount: 0,
+        images: ["https://i.ibb.co.com/WW2GjHH3/Desain-tanpa-judul-20260207-134044-0000.png"],
+        rating: "4.9",
+        sold: 1250,
+        category: "Emas",
+        desc: "Berat: 1 Gram. Kemurnian: 999.9 (24 Karat). Fitur: QR Code CertiEye."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: RUMAH (HOME & LIVING)
+    // -----------------------------------------------------------------
+    {
+        id: "home-001",
+        name: "Sofa Minimalis Scandinavian 3 Seater",
+        price: 0.00045,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=500"],
+        rating: "4.8",
+        sold: 22,
+        category: "Rumah",
+        desc: "Sofa ruang tamu dengan kain rami premium, busa anti amblas, dan rangka kayu mahoni kokoh. Desain estetik modern."
+    },
+    {
+        id: "home-002",
+        name: "Kasur Springbed Orthopedic Luxury King Size",
+        price: 0.00065,
+        discount: 15,
+        images: ["https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=500"],
+        rating: "4.9",
+        sold: 14,
+        category: "Rumah",
+        desc: "Kasur kesehatan tulang belakang menggunakan pocket spring premium dan lapisan latex alami. Garansi per hingga 10 tahun."
+    },
+    {
+        id: "home-003",
+        name: "Set Meja Makan Kayu Jati Solid",
+        price: 0.00085,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1615066390971-03e4e1c36ddf?w=500"],
+        rating: "5.0",
+        sold: 5,
+        category: "Rumah",
+        desc: "Satu set meja makan mewah dengan 4 kursi minimalis. Terbuat dari kayu jati asli Jepara dengan finishing halus tahan air."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: HERBAL & KESEHATAN
+    // -----------------------------------------------------------------
+    {
+        id: "herb-001",
+        name: "Madu Alami Murni Baduy Torgal",
+        price: 0.00002,
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500"],
+        rating: "4.9",
+        sold: 412,
+        category: "herbal",
+        desc: "Madu murni mentah (raw honey) langsung dari hutan Baduy. Kaya akan antioksidan untuk menjaga stamina dan imunitas tubuh."
+    },
+    {
+        id: "herb-002",
+        name: "Kapsul Minyak Habbatussauda Premium",
+        price: 0.00003,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1611070973770-b1a672610042?w=500"],
+        rating: "4.8",
+        sold: 310,
+        category: "herbal",
+        desc: "Ekstrak minyak jintan hitam murni dalam kemasan kapsul mudah ditelan. Berkhasiat menormalkan tekanan darah dan kolesterol."
+    },
+    {
+        id: "herb-003",
+        name: "Teh Herbal Daun Kelor Moringa",
+        price: 0.00001,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500"],
+        rating: "4.7",
+        sold: 189,
+        category: "herbal",
+        desc: "Teh celup organik dari daun kelor pilihan. Kaya akan nutrisi, asam amino, serta berfungsi sebagai detoksifikasi racun tubuh."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: GADGET
+    // -----------------------------------------------------------------
+    {
+        id: "gadget-001",
+        name: "iPhone 15 Pro Max 512GB Titanium",
+        price: 0.00250,
+        discount: 0,
+        images: ["https://i.ibb.co.com/kgxjnpyp/Desain-tanpa-judul-20260207-181545-0000.png"],
+        rating: "4.9",
+        sold: 85,
+        category: "gadget",
+        desc: "Layar: 6.7 inci Super Retina XDR OLED. Chipset: A17 Pro (3nm). Kamera periskop 5x optical zoom dan material kokoh Titanium Grade 5."
+    },
+    {
+        id: "gadget-002",
+        name: "Samsung Galaxy S24 Ultra 5G",
+        price: 0.00235,
+        discount: 0,
+        images: ["https://i.ibb.co.com/RprpNpf6/Desain-tanpa-judul-20260207-182139-0000.png"],
+        rating: "4.9",
+        sold: 92,
+        category: "gadget",
+        desc: "Layar: 6.8 inci Dynamic LTPO AMOLED 2X. Dilengkapi S-Pen bawaan, kamera 200MP, dan fitur canggih Galaxy AI Circle to Search."
+    },
+    {
+        id: "gadget-003",
+        name: "Smartwatch AMOLED Series 9 Sport",
+        price: 0.00018,
+        discount: 12,
+        images: ["https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=500"],
+        rating: "4.8",
+        sold: 67,
+        category: "gadget",
+        desc: "Jam tangan pintar pelacak olahraga komprehensif. Monitor detak jantung, kadar oksigen darah SpO2, dan ketahanan air hingga kedalaman 50 meter."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: ELEKTRONIK
+    // -----------------------------------------------------------------
+    {
+        id: "elec-001",
+        name: "Smart TV 4K Ultra HD 55 Inch Android OS",
+        price: 0.00060,
+        discount: 8,
+        images: ["https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=500"],
+        rating: "4.9",
+        sold: 45,
+        category: "elektronik",
+        desc: "Televisi pintar beresolusi tajam dengan fitur Voice Control Google Assistant, Dolby Audio, serta dukungan aplikasi streaming Youtube, Netflix."
+    },
+    {
+        id: "elec-002",
+        name: "Air Conditioner AC Inverter 1 PK Hemat Energi",
+        price: 0.00038,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500"],
+        rating: "4.8",
+        sold: 29,
+        category: "elektronik",
+        desc: "Pendingin ruangan dengan teknologi pintar Inverter yang mendinginkan lebih cepat sekaligus menghemat konsumsi listrik bulanan hingga 60%."
+    },
+    {
+        id: "elec-003",
+        name: "Kulkas Side-by-Side 4 Pintu Premium",
+        price: 0.00095,
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=500"],
+        rating: "5.0",
+        sold: 12,
+        category: "elektronik",
+        desc: "Kulkas berkapasitas ekstra besar dengan kompartemen higienis anti bakteri, teknologi pendinginan merata ganda, serta panel kontrol layar sentuh."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: JASA (SERVICES)
+    // -----------------------------------------------------------------
+    {
+        id: "jasa-001",
+        name: "Jasa Pembuatan Landing Page Web3 & Pi-App",
+        price: 0.00025,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500"],
+        rating: "5.0",
+        sold: 18,
+        category: "jasa",
+        desc: "Pengembangan web interaktif modern yang siap diintegrasikan dengan Pi Sandbox SDK SDK ekosistem, responsif, dan ramah SEO."
+    },
+    {
+        id: "jasa-002",
+        name: "Jasa Desain Arsitektur Rumah & Rendering 3D",
+        price: 0.00030,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1503387762-592deb58ef4e?w=500"],
+        rating: "4.9",
+        sold: 9,
+        category: "jasa",
+        desc: "Pembuatan denah bangunan, fasad rumah minimalis/mewah beserta gambar kerja konstruksi lengkap dan visualisasi realistis 3D."
+    },
+    {
+        id: "jasa-003",
+        name: "Paket Jasa Legalitas Pembuatan PT / CV Lengkap",
+        price: 0.00040,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1450133064473-71024230f91b?w=500"],
+        rating: "4.9",
+        sold: 15,
+        category: "jasa",
+        desc: "Pengurusan izin usaha komprehensif berbadan hukum resmi termasuk akta notaris, SK Kemenkumham, NPWP Badan, hingga NIB OSS RBA."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: MAKANAN (FOOD)
+    // -----------------------------------------------------------------
+    {
+        id: "food-001",
+        name: "Rendang Daging Sapi Minang Kemasan Vakum",
+        price: 0.00001,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1606491956689-2ea866880c84?w=500"],
+        rating: "4.9",
+        sold: 230,
+        category: "makan",
+        desc: "Daging rendang otentik bumbu rempah Padang asli seberat 500g. Dikemas steril dengan metode vakum udara, awet tanpa pengawet."
+    },
+    {
+        id: "food-002",
+        name: "Sambal Cumi Ciamik Premium",
+        price: 0.000003,
+        discount: 5,
+        images: ["https://images.unsplash.com/photo-1541532713592-79a0317b6b77?w=500"],
+        rating: "4.8",
+        sold: 560,
+        category: "makan",
+        desc: "Sambal bawang pedas nampol dipadu potongan daging cumi asin melimpah. Fresh dimasak setiap hari, siap santap dengan nasi hangat."
+    },
+    {
+        id: "food-003",
+        name: "Kue Lapis Legit Spesial Full Wisman",
+        price: 0.00004,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500"],
+        rating: "5.0",
+        sold: 43,
+        category: "makan",
+        desc: "Kue lapis premium ukuran 20x20cm bertekstur sangat lembut dan wangi menggoda berkat penggunaan mentega Wijsman murni."
+    },
+
+    // -----------------------------------------------------------------
+    // KATEGORI: MINUMAN (BEVERAGES)
+    // -----------------------------------------------------------------
+    {
+        id: "drink-001",
+        name: "Kopi Arabika Gayo Single Origin 250g",
+        price: 0.000007,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1559056199-641a0ac8b55e?w=500"],
+        rating: "4.9",
+        sold: 175,
+        category: "minuman",
+        desc: "Biji kopi atau bubuk kopi Arabika dataran tinggi Gayo Aceh. Proses cuci medium roasted dengan cita rasa asam buah yang bersih."
+    },
+    {
+        id: "drink-002",
+        name: "Matcha Latte Bubuk Premium Organik",
+        price: 0.000005,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1536256263959-770b48d82b0a?w=500"],
+        rating: "4.8",
+        sold: 120,
+        category: "minuman",
+        desc: "Bubuk teh hijau murni racikan kualitas impor Jepang (Uji Matcha). Mudah larut untuk disajikan hangat ataupun dicampur es susu."
+    },
+    {
+        id: "drink-003",
+        name: "Sari Lemon Murni Perasan Asli",
+        price: 0.000004,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?w=500"],
+        rating: "4.7",
+        sold: 210,
+        category: "minuman",
+        desc: "100% konsentrat jus perasan lemon lokal segar berukuran 500ml tanpa tambahan air dan gula. Sangat baik untuk diet sehat harian."
     }
 ];
 // =========================================================================

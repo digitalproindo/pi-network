@@ -1958,47 +1958,65 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 }); 
 
-// ==========================================
-// FUNGSI SINKRONISASI STATUS KEMITRAAN
-// ==========================================
+// =========================================================================
+// FUNGSI SINKRONISASI STATUS KEMITRAAN (VERSI AMAN & BEBAL ERROR)
+// =========================================================================
 function muatStatusKemitraan() {
-    if (!currentUser || !currentUser.uid) {
-        console.log("User belum login Pi.");
+    // 1. Ambil elemen label status di halaman profil
+    const penunjukStatus = document.getElementById('partner-status');
+    
+    // 2. Proteksi Awal: Jika user belum login atau UID tidak ada, langsung amankan UI tanpa melempar error
+    if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+        console.log("User belum ter-otentikasi. Menggunakan tampilan default.");
+        if (penunjukStatus) penunjukStatus.innerText = "BELUM LOGIN";
         return;
     }
     
-    const penunjukStatus = document.getElementById('partner-status');
     const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
     
-    // Perhatikan penggunaan tanda ` (backtick) di bawah ini:
-    fetch(scriptURL}?uid=${encodeURIComponent(currentUser.uid)}
-        .then(res => res.json())
-        .then(data => {
-            if (penunjukStatus) {
-                if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
-                    penunjukStatus.style.background = "#dcfce7";
-                    penunjukStatus.style.color = "#15803d";
-                    penunjukStatus.innerText = "✅ MITRA SAH WILAYAH";
-                } else if (data.status === "PROSES REVIEW") {
-                    penunjukStatus.style.background = "#fef3c7";
-                    penunjukStatus.style.color = "#f59e0b";
-                    penunjukStatus.innerText = "PROSES REVIEW";
-                } else {
-                    penunjukStatus.style.background = "#f1f5f9";
-                    penunjukStatus.style.color = "#64748b";
-                    penunjukStatus.innerText = "BELUM TERDAFTAR";
+    // 3. Gunakan blok try-catch pembungkus agar kegagalan jaringan tidak mematikan aplikasi
+    try {
+        fetch(`${scriptURL}?uid=${encodeURIComponent(currentUser.uid)}`)
+            .then(res => {
+                if (!res.ok) throw new Error("Respon jaringan tidak bersih");
+                return res.json();
+            })
+            .then(data => {
+                if (!data) return;
+                
+                // Atur warna kotak status berdasarkan respon Google Sheets (Sheet1)
+                if (penunjukStatus) {
+                    if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
+                        penunjukStatus.style.background = "#dcfce7";
+                        penunjukStatus.style.color = "#15803d";
+                        penunjukStatus.innerText = "✅ MITRA SAH WILAYAH";
+                    } else if (data.status === "PROSES REVIEW") {
+                        penunjukStatus.style.background = "#fef3c7";
+                        penunjukStatus.style.color = "#f59e0b";
+                        penunjukStatus.innerText = "PROSES REVIEW";
+                    } else {
+                        penunjukStatus.style.background = "#f1f5f9";
+                        penunjukStatus.style.color = "#64748b";
+                        penunjukStatus.innerText = "BELUM TERDAFTAR";
+                    }
                 }
-            }
+                
+                // Update angka pada kartu Logistik & Produk Terproses
+                const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
+                if (infoCards && infoCards.length >= 2) {
+                    if (data.share) infoCards[0].innerText = data.share;
+                    if (data.terproses) infoCards[1].innerText = data.terproses;
+                    if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
+                        infoCards[0].style.color = "#15803d";
+                    }
+                }
+            })
+            .catch(fetchErr => {
+                // Jika fetch gagal atau JSON rusak, tangkap di sini tanpa merusak sisa aplikasi
+                console.warn("Koneksi ke Google Sheets dibatasi atau tertunda:", fetchErr);
+            });
             
-            // Update data Logistik Share & Produk Terproses
-            const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
-            if (infoCards.length >= 2) {
-                infoCards[0].innerText = data.share;
-                infoCards[1].innerText = data.terproses;
-                if (data.status === "DISETUJUI" || data.status === "MITRA SAH WILAYAH") {
-                    infoCards[0].style.color = "#15803d";
-                }
-            }
-        })
-        .catch(err => console.error("Gagal sinkronisasi:", err));
+    } catch (fatalErr) {
+        console.error("Sistem mengisolasi error kemitraan:", fatalErr);
+    }
 }

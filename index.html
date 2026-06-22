@@ -424,13 +424,13 @@
 <script src="app.js?v=4.2"></script>
 <script src="/dpi-bot.js"></script>
 <script>   
-    function toggleMenu() {
+        function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         if (sideNav) {
             sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
         }
     }
- <script>
+
     // =========================================================================
     // 1. MANAGEMENT UTAMA MODAL (BUKA / TUTUP)
     // =========================================================================
@@ -458,11 +458,8 @@
     if (form) {
         form.addEventListener('submit', e => {
             e.preventDefault();
-            
-            // Membaca variabel global currentUser dari window
             const userDaftar = window.currentUser;
             
-            // Proteksi jika user belum login Pi Network / variabel belum siap
             if (!userDaftar || !userDaftar.uid) {
                 alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna di halaman ini. Harap muat ulang aplikasi di Pi Browser Anda.");
                 return;
@@ -474,7 +471,6 @@
                 btn.disabled = true;
             }
             
-            // Mengambil data inputan dari form HTML secara aman
             const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : "";
             const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
             
@@ -483,7 +479,6 @@
             const kecUser = document.getElementById('selectKecamatan').value;
             const kelUser = document.getElementById('selectKelurahan').value;
             
-            // Menyusun string parameter URL (Anti-Geser Kolom)
             const params = new URLSearchParams({
                 nama: namaUser,
                 whatsapp: waUser,
@@ -494,19 +489,12 @@
                 uid: userDaftar.uid
             });
             
-            // Eksekusi pendaftaran POST ke Google Sheets
-            fetch(`${scriptURL}?${params.toString()}`, {
-                method: 'POST'
-            })
+            fetch(`${scriptURL}?${params.toString()}`, { method: 'POST' })
             .then(response => {
-                // Tutup form pendaftaran
                 closeKomunitasModal();
                 form.reset();
-                
-                // PANGGIL MODAL SUKSES DIGITAL PRO CUSTOM
                 tampilkanModalSuksesDigital();
                 
-                // Ubah UI status secara dinamis menjadi PROSES REVIEW
                 const statusLabel = document.getElementById('partner-status');
                 if (statusLabel) { 
                     statusLabel.innerText = "PROSES REVIEW"; 
@@ -514,7 +502,6 @@
                     statusLabel.style.color = "#f59e0b";
                 }
                 
-                // Memanggil fungsi sinkronisasi profil di app.js jika tersedia
                 if (typeof muatStatusKemitraan === "function") {
                     muatStatusKemitraan();
                 }
@@ -541,7 +528,7 @@
         if (!suksesModal) {
             suksesModal = document.createElement("div");
             suksesModal.id = "digitalSuksesModal";
-            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:99999; padding:20px; font-family:'Poppins', sans-serif;";
+            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:100005; padding:20px; font-family:'Inter', sans-serif;";
             
             suksesModal.innerHTML = `
                 <div style="background:#ffffff; width:100%; max-width:400px; border-radius:20px; text-align:center; padding:30px 20px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: popUpAnim 0.4s ease-out;">
@@ -557,64 +544,28 @@
                             📢 <strong>Langkah Wajib Selanjutnya:</strong><br>Silakan bergabung ke dalam Grup WhatsApp resmi untuk validasi dokumen otoritas wilayah Anda.
                         </p>
                     </div>
-                    <button onclick="bukaGrupWhatsAppDigital()" style="...">
-    <span>Masuk Grup WhatsApp</span> 🚀
-</button> </button> ```
-Dan pada tombol kedua, properti `style="..."` belum ditutup dengan benar, serta teks tombolnya menggantung di luar.
-
----
-
-###  Solusi Perbaikan (Ganti Baris 538 sampai 577):
-
-Silakan ganti fungsi `tampilkanModalSuksesDigital()` di GitHub Anda dengan versi yang sudah bersih dan rapi di bawah ini agar tombolnya berfungsi sempurna:
-
-```javascript
-function tampilkanModalSuksesDigital() {
-    let suksesModal = document.getElementById("digitalSuksesModal");
-    
-    if (!suksesModal) {
-        suksesModal = document.createElement("div");
-        suksesModal.id = "digitalSuksesModal";
-        suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:99999; padding:20px; font-family:'Poppins', sans-serif;";
-        
-        suksesModal.innerHTML = `
-            <div style="background:#ffffff; width:100%; max-width:400px; border-radius:20px; text-align:center; padding:30px 20px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: popUpAnim 0.4s ease-out;">
-                <div style="width:80px; height:80px; background:#e8f8f5; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
-                    <span style="font-size:40px; color:#2ecc71;">✅</span>
+                    <button onclick="bukaGrupWhatsAppDigital()" style="width:100%; background:linear-gradient(135deg, #25d366, #128c7e); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(37,211,102,0.3); display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:12px; transition: all 0.3s;">
+                        <span>Masuk Grup WhatsApp</span> 🚀
+                    </button>
+                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:transparent; color:#95a5a6; border:none; padding:8px; font-size:13px; cursor:pointer; text-decoration:underline;">
+                        Nanti Saja
+                    </button>
                 </div>
-                <h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:22px; font-weight:700;">Pendaftaran Berhasil!</h3>
-                <p style="margin:0 0 25px 0; color:#7f8c8d; font-size:14px; line-height:1.5;">
-                    Data kemitraan komunitas Anda di <span style="color:#2c3e50; font-weight:600;">PT. DIGITAL PRO INDO</span> telah aman tersimpan di sistem kami.
-                </p>
-                <div style="background:#f8f9fa; border-left:4px solid #00c3a5; border-radius:8px; padding:12px; text-align:left; margin-bottom:25px;">
-                    <p style="margin:0; font-size:12px; color:#34495e; font-weight:500;">
-                        📢 <strong>Langkah Wajib Selanjutnya:</strong><br>Silakan bergabung ke dalam Grup WhatsApp resmi untuk validasi dokumen otoritas wilayah Anda.
-                    </p>
-                </div>
-                <button onclick="bukaGrupWhatsAppDigital()" style="width:100%; background:linear-gradient(135deg, #25d366, #128c7e); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(37,211,102,0.3); display:flex; justify-content:center; align-items:center; gap:8px; margin-bottom:12px; transition: all 0.3s;">
-                    <span>Masuk Grup WhatsApp</span> 🚀
-                </button>
-                <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:transparent; color:#95a5a6; border:none; padding:8px; font-size:13px; cursor:pointer; text-decoration:underline;">
-                    Nanti Saja
-                </button>
-            </div>
-            <style>
-                @keyframes popUpAnim {
-                    from { transform: scale(0.8); opacity: 0; }
-                    to { transform: scale(1); opacity: 1; }
-                }
-            </style>
-        `;
-        document.body.appendChild(suksesModal);
+                <style>
+                    @keyframes popUpAnim {
+                        from { transform: scale(0.8); opacity: 0; }
+                        to { transform: scale(1); opacity: 1; }
+                    }
+                </style>
+            `;
+            document.body.appendChild(suksesModal);
+        }
+        suksesModal.style.display = "flex";
     }
-    suksesModal.style.display = "flex";
-}
 
     function bukaGrupWhatsAppDigital() {
         const waLink = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
-        // Menggunakan target _blank agar Pi Browser melempar link keluar menuju aplikasi WhatsApp asli internal HP
         window.open(waLink, '_blank');
-        
         setTimeout(() => {
             const modal = document.getElementById("digitalSuksesModal");
             if(modal) modal.style.display = "none";
@@ -695,12 +646,32 @@ function tampilkanModalSuksesDigital() {
         target.disabled = true;
     }
 
-    // Menutup modal apa pun jika pengguna menyentuh area luar hitam overlay
     window.onclick = function(event) {
         if (event.target.className === "modal-overlay") {
             event.target.style.display = "none";
         }
     }
-</script>                 
+
+    // =========================================================================
+    // 5. PENYELAMAT KLIK GLOBAL (MEMAKSA TOMBOL PERBARUI & AJUKAN DI PI BROWSER AKTIF)
+    // =========================================================================
+    function paksaAktifTombolWilayah() {
+        const semuaTombol = document.querySelectorAll("button");
+        semuaTombol.forEach(btn => {
+            const txt = btn.innerText ? btn.innerText.toUpperCase() : "";
+            if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH")) {
+                btn.removeAttribute("disabled");
+                btn.disabled = false;
+                btn.style.pointerEvents = "auto";
+                btn.style.cursor = "pointer";
+                btn.setAttribute("onclick", "openKomunitasModal()");
+            }
+        });
+    }
+    
+    document.addEventListener("DOMContentLoaded", paksaAktifTombolWilayah);
+    window.addEventListener("load", paksaAktifTombolWilayah);
+    setInterval(paksaAktifTombolWilayah, 1500);
+</script>
 </body>
 </html>

@@ -520,7 +520,7 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI LAYOUT MODAL SUKSES KUSTOM & FITUR SALIN BYPASS PI BROWSER
+    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (ANTI-BLOKIR)
     // =========================================================================
     function tampilkanModalSuksesDigital() {
         let suksesModal = document.getElementById("digitalSuksesModal");
@@ -528,48 +528,59 @@
         if (!suksesModal) {
             suksesModal = document.createElement("div");
             suksesModal.id = "digitalSuksesModal";
-            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7); display:flex; justify-content:center; align-items:center; z-index:100005; padding:20px; font-family:'Inter', sans-serif;";
+            // Overlay gelap dengan efek blur premium (backdrop-filter)
+            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(12, 1, 26, 0.8); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:20px; font-family:'Inter', sans-serif;";
             
             suksesModal.innerHTML = `
-                <div style="background:#ffffff; width:100%; max-width:400px; border-radius:20px; text-align:center; padding:30px 20px; box-shadow:0 10px 25px rgba(0,0,0,0.2); animation: popUpAnim 0.4s ease-out;">
-                    <div style="width:80px; height:80px; background:#e8f8f5; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
-                        <span style="font-size:40px; color:#2ecc71;">✅</span>
+                <div style="background:linear-gradient(135deg, #1f053d 0%, #0c011a 100%); width:100%; max-width:380px; border-radius:24px; text-align:center; padding:35px 24px 25px; box-shadow:0 20px 50px rgba(74, 20, 140, 0.5); border:2px solid #f1c40f; position:relative; overflow:hidden; animation: popUpAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                    
+                    <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:rgba(0, 191, 165, 0.1); border-radius:50%; filter:blur(20px);"></div>
+                    <div style="position:absolute; bottom:-50px; left:-50px; width:150px; height:150px; background:rgba(212, 175, 55, 0.1); border-radius:50%; filter:blur(20px);"></div>
+
+                    <div class="glow-icon-container" style="width:85px; height:85px; background:rgba(0, 191, 165, 0.15); border:2px solid #00bfc5; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 22px; box-shadow: 0 0 20px rgba(0, 191, 165, 0.4); animation: pulseGlow 2s infinite;">
+                        <span style="font-size:38px; filter: drop-shadow(0 0 8px #00bfc5);">✅</span>
                     </div>
-                    <h3 style="margin:0 0 10px 0; color:#2c3e50; font-size:22px; font-weight:700;">Pendaftaran Berhasil!</h3>
-                    <p style="margin:0 0 25px 0; color:#7f8c8d; font-size:14px; line-height:1.5;">
-                        Data kemitraan komunitas Anda di <span style="color:#2c3e50; font-weight:600;">PT. DIGITAL PRO INDO</span> telah aman tersimpan di sistem kami.
+                    
+                    <div style="display: inline-flex; align-items: center; background: rgba(241, 196, 15, 0.1); border: 1px solid #f1c40f; padding: 4px 12px; border-radius: 20px; margin-bottom: 15px;">
+                        <span style="font-size: 0.65rem; font-weight: 800; color: #f1c40f; letter-spacing: 1px; text-transform: uppercase;">PT. DIGITAL PRO INDO</span>
+                    </div>
+
+                    <h3 style="margin:0 0 8px 0; color:#ffffff; font-size:20px; font-weight:800; letter-spacing:-0.5px;">Pendaftaran Berhasil!</h3>
+                    
+                    <p style="margin:0 0 25px 0; color:#a4b3c6; font-size:13px; line-height:1.5; padding:0 5px;">
+                        Hak otoritas wilayah Anda telah aman terenkripsi ke dalam database ekosistem perdagangan logistik kami.
                     </p>
-                    <div style="background:#f8f9fa; border-left:4px solid #00c3a5; border-radius:8px; padding:12px; text-align:left; margin-bottom:25px;">
-                        <p style="margin:0; font-size:12px; color:#34495e; font-weight:500;">
-                            📢 <strong>Langkah Wajib Selanjutnya:</strong><br>Silakan salin tautan di bawah ini dan buka di browser biasa (Chrome/Safari) untuk bergabung ke Grup WhatsApp Resmi validasi dokumen.
+                    
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius:14px; padding:15px; text-align:left; margin-bottom:25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <span style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">Status Review</span>
+                            <span style="font-size:10px; color:#f59e0b; background:rgba(245,158,11,0.15); padding:2px 8px; border-radius:10px; font-weight:800;">PENDING VERIFICATION</span>
+                        </div>
+                        <p style="margin:0; font-size:11px; color:#94a3b8; line-height:1.4;">
+                            Tim analis internal kami sedang melakukan validasi silang pada ID dompet Pi Network Anda. Mohon pantau halaman profil secara berkala.
                         </p>
                     </div>
                     
-                    <button id="btnSalinWA" onclick="salinLinkGrupDigital(this)" style="width:100%; background:linear-gradient(135deg, #25d366, #128c7e); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(37,211,102,0.3); margin-bottom:12px; display:flex; justify-content:center; align-items:center; gap:8px;">
-                        📋 <span>Salin Tautan Grup WA</span>
-                    </button>
-                    
-                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:transparent; color:#95a5a6; border:none; padding:8px; font-size:13px; cursor:pointer; text-decoration:underline;">
-                        Tutup Halaman
+                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:linear-gradient(45deg, #f1c40f, #f39c12); color:#000000; border:none; padding:14px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 6px 20px rgba(241,196,15,0.3); text-transform:uppercase; letter-spacing:0.5px; transition: all 0.3s ease;">
+                        Konfirmasi & Selesai
                     </button>
                 </div>
+
                 <style>
                     @keyframes popUpAnim {
-                        from { transform: scale(0.8); opacity: 0; }
+                        from { transform: scale(0.7); opacity: 0; }
                         to { transform: scale(1); opacity: 1; }
+                    }
+                    @keyframes pulseGlow {
+                        0% { box-shadow: 0 0 15px rgba(0, 191, 165, 0.4); border-color: #00bfc5; }
+                        50% { box-shadow: 0 0 30px rgba(0, 191, 165, 0.7); border-color: #00f0e1; }
+                        100% { box-shadow: 0 0 15px rgba(0, 191, 165, 0.4); border-color: #00bfc5; }
                     }
                 </style>
             `;
             document.body.appendChild(suksesModal);
         }
         suksesModal.style.display = "flex";
-        
-        // Kembalikan status tombol ke semula jika modal dibuka kembali
-        const btnSalin = document.getElementById("btnSalinWA");
-        if(btnSalin) {
-            btnSalin.innerHTML = "📋 <span>Salin Tautan Grup WA</span>";
-            btnSalin.style.background = "linear-gradient(135deg, #25d366, #128c7e)";
-        }
     }
 
     function salinLinkGrupDigital(button) {

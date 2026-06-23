@@ -1307,7 +1307,7 @@ const productsData = [
     }
 ];
 // =========================================================================
-// 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS)
+// 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS) - FIXED VERSION
 // =========================================================================
 async function initPi() {
     try {
@@ -1338,6 +1338,16 @@ async function initPi() {
 
             // Atur tombol utama menjadi LOGOUT jika auto-login sukses
             configureLogoutButton();
+
+            // =========================================================================
+            // PERBAIKAN UTAMA: Ambil data status kemitraan & produk secara realtime 
+            // tepat setelah User ID (UID) berhasil didapatkan dari server Pi Core Team.
+            // =========================================================================
+            if (typeof muatStatusKemitraan === "function") {
+                console.log("Menjalankan sinkronisasi status kemitraan awal...");
+                muatStatusKemitraan();
+            }
+            
         } else {
             console.warn("Membuka di luar Pi Browser. Fitur blockchain dinonaktifkan sementara.");
         }
@@ -1383,7 +1393,6 @@ function configureLogoutButton() {
         }
     }
 }
-
 // =========================================================================
 // 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC)
 // =========================================================================

@@ -1393,233 +1393,203 @@ function configureLogoutButton() {
         }
     }
 }
+
+
+
+// =========================================================================
+// 3. PI AUTHENTICATION SYSTEMS (SILENT AUTO-LOGIN & MANUAL LOGIC) - OPTIMIZED
 // =========================================================================
 
-// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC) - FIXED VERSION
+// Fungsi Inisialisasi Inti SDK (Dijalankan otomatis di DOMContentLoaded)
+window.initPi = async () => {
+    // 1. EKSEKUSI AUTO-LOGIN INSTAN: Muat session lokal dari localStorage jika ada (Anti-Delay)
+    const savedUser = localStorage.getItem('pi_currentUser');
+    const savedAddress = localStorage.getItem('pi_userAddress');
 
-// =========================================================================
+    if (savedUser) {
+        try {
+            window.currentUser = JSON.parse(savedUser);
+            if (savedAddress) window.userAddress = JSON.parse(savedAddress);
 
-window.handleAuth = async () => {
-
-    if (!isPiInitialized) {
-
-        const tempOverlay = document.createElement('div');
-
-        tempOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; font-family:'Inter', sans-serif;";
-
-        tempOverlay.innerHTML = `
-
-            <div style="background:#0b2135; border:2px solid #FFD700; padding:25px; border-radius:20px; text-align:center; max-width:280px;">
-
-                <div style="font-size:30px; animation: spin 2s linear infinite;">🔄</div>
-
-                <h4 style="color:#FFD700; margin:10px 0 5px;">Sinkronisasi Jaringan</h4>
-
-                <p style="color:#fff; font-size:0.8rem; margin:0;">Menghubungkan ke Pi Blockchain Core. Mohon tunggu sekejap...</p>
-
-            </div>
-
-            <style>@keyframes spin { 100% { transform:rotate(360deg); } }</style>
-
-        `;
-
-        document.body.appendChild(tempOverlay);
-
-
-
-        if (typeof initPi === 'function') { await initPi(); }
-
-
-
-        if (!isPiInitialized) {
-
-            tempOverlay.remove();
-
-            alert("Gagal terhubung ke Pi Network. Pastikan Anda membuka aplikasi ini dari dalam Pi Browser resmi!");
-
-            return;
-
+            // Terapkan langsung ke komponen visual profil tanpa nunggu jabat tangan blockchain
+            window.syncProfilVisualUI(window.currentUser);
+            console.log("⚡ Auto-Login Berhasil via Sesi Lokal:", window.currentUser.username);
+        } catch (e) {
+            console.error("Gagal memuat cache login:", e);
         }
-
-        tempOverlay.remove();
-
     }
 
-
-
-    const loadingOverlay = document.createElement('div');
-
-    loadingOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:9999;";
-
-    loadingOverlay.innerHTML = `<div style="text-align:center;"><div class="hourglass" style="font-size:2rem; animation: flip 1s ease infinite;">⏳</div><p style="margin-top:20px; font-weight:bold; color:#f3e5f5; font-size:0.7rem; letter-spacing:2px;">MENGHUBUNGKAN...</p></div><style>@keyframes flip { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.2) rotate(180deg); } }</style>`;
-
-    document.body.appendChild(loadingOverlay);
-
-
-
+    // 2. JALANKAN PROSES BLOCKCHAIN DI LATAR BELAKANG (NON-BLOCKING)
     try {
+        if (window.Pi) {
+            await window.Pi.init({ version: "2.0", sandbox: false });
+            window.isPiInitialized = true;
+            console.log("✅ Jaringan Pi SDK Core Siap Digunakan.");
 
-        if (!window.Pi) { throw new Error("Gunakan Pi Browser."); }
-
-        const scopes = ['username', 'payments'];
-
-        
-
-        const auth = await window.Pi.authenticate(scopes, (p) => {
-
-            if (typeof handleIncompletePayment === 'function') handleIncompletePayment(p);
-
-        });
-
-        currentUser = auth.user;
-
-
-
-        const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-
-        if (profileDisplay) profileDisplay.innerText = currentUser.username;
-
-
-
-        const profileAddress = document.getElementById('profile-address');
-
-        if (profileAddress) profileAddress.innerText = currentUser.uid;
-
-       
-
-        loadingOverlay.innerHTML = `
-
-            <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border:3px solid #FFD700; border-radius:25px; padding:30px 20px; text-align:center; width:80%; max-width:320px; font-family:'Inter', sans-serif; box-shadow: 0 10px 40px rgba(212,175,55,0.35);">
-
-                <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
-
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; text-transform:uppercase; font-size:1.3rem; letter-spacing:1px;">Login Berhasil!</h2>
-
-                <p style="color:#fff; margin: 10px 0 0 0; font-size:0.95rem;">Selamat datang kembali,<br><span style="color:#ba68c8; font-weight:bold; font-size:1.1rem;">@${currentUser.username}</span></p>
-
-            </div>`;
-
-
-
-        configureLogoutButton();
-
-
-
-        // =========================================================================
-
-        // PERBAIKAN: Ambil status kemitraan setelah login manual sukses
-
-        // =========================================================================
-
-        if (typeof muatStatusKemitraan === "function") {
-
-            muatStatusKemitraan();
-
+            // Jika tidak ada session lokal, coba tembak login siluman (Silent Authentication)
+            if (!window.currentUser) {
+                await window.jalankanSilentAuth();
+            } else {
+                // Jika sudah auto-login, sinkronisasikan ulang database kemitraan secara paralel
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+            }
+        } else {
+            console.warn("⚠️ Pi Browser tidak terdeteksi. Berjalan di mode web standar.");
         }
-
-
-
-        setTimeout(() => { loadingOverlay.remove(); }, 2500);
-
-    } catch (err) { 
-
-        console.error(err); 
-
-        loadingOverlay.remove();
-
-        if (err.message !== "User cancelled login") {
-
-            alert("Gagal Login: " + err.message);
-
-        }
-
+    } catch (error) {
+        console.error("Gagal sinkronisasi Pi SDK:", error);
     }
-
 };
 
+// Fungsi Login Siluman (Mengecek otorisasi Pi diam-diam tanpa memunculkan loading berat)
+window.jalankanSilentAuth = async () => {
+    try {
+        const scopes = ['username', 'payments'];
+        const auth = await window.Pi.authenticate(scopes, (p) => {
+            if (typeof handleIncompletePayment === 'function') handleIncompletePayment(p);
+        });
 
+        if (auth && auth.user) {
+            window.currentUser = auth.user;
+            localStorage.setItem('pi_currentUser', JSON.stringify(auth.user));
+            window.syncProfilVisualUI(auth.user);
+            console.log("🔄 Silent Auth memperbarui data pengguna:", auth.user.username);
+        }
+    } catch (err) {
+        console.log("Silent Auth dilewati:", err.message);
+    }
+};
+
+// Fungsi Login Manual Utama (Hanya dipicu jika user mengklik tombol login/belum terdaftar)
+window.handleAuth = async () => {
+    if (!window.isPiInitialized) {
+        const tempOverlay = document.createElement('div');
+        tempOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); z-index:99999; font-family:'Inter', sans-serif;";
+        tempOverlay.innerHTML = `
+            <div style="background:#0b2135; border:2px solid #FFD700; padding:25px; border-radius:20px; text-align:center; max-width:280px;">
+                <div style="font-size:30px; animation: spin 2s linear infinite;">🔄</div>
+                <h4 style="color:#FFD700; margin:10px 0 5px;">Sinkronisasi Jaringan</h4>
+                <p style="color:#fff; font-size:0.8rem; margin:0;">Menghubungkan ke Pi Blockchain Core. Mohon tunggu sekejap...</p>
+            </div>
+            <style>@keyframes spin { 100% { transform:rotate(360deg); } }</style>
+        `;
+        document.body.appendChild(tempOverlay);
+
+        if (typeof window.initPi === 'function') { await window.initPi(); }
+
+        if (!window.isPiInitialized) {
+            tempOverlay.remove();
+            alert("Gagal terhubung ke Pi Network. Pastikan Anda membuka aplikasi ini dari dalam Pi Browser resmi!");
+            return;
+        }
+        tempOverlay.remove();
+    }
+
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.style.cssText = "display:flex; justify-content:center; align-items:center; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(8px); z-index:9999;";
+    loadingOverlay.innerHTML = `<div style="text-align:center;"><div class="hourglass" style="font-size:2rem; animation: flip 1s ease infinite;">⏳</div><p style="margin-top:20px; font-weight:bold; color:#f3e5f5; font-size:0.7rem; letter-spacing:2px;">MENGHUBUNGKAN...</p></div><style>@keyframes flip { 0%, 100% { transform:scale(1); } 50% { transform:scale(1.2) rotate(180deg); } }</style>`;
+    document.body.appendChild(loadingOverlay);
+
+    try {
+        if (!window.Pi) { throw new Error("Gunakan Pi Browser."); }
+        const scopes = ['username', 'payments'];
+        
+        const auth = await window.Pi.authenticate(scopes, (p) => {
+            if (typeof handleIncompletePayment === 'function') handleIncompletePayment(p);
+        });
+        
+        window.currentUser = auth.user;
+        localStorage.setItem('pi_currentUser', JSON.stringify(auth.user)); // Amankan sesi ke storage lokal
+
+        window.syncProfilVisualUI(window.currentUser);
+       
+        loadingOverlay.innerHTML = `
+            <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border:3px solid #FFD700; border-radius:25px; padding:30px 20px; text-align:center; width:80%; max-width:320px; font-family:'Inter', sans-serif; box-shadow: 0 10px 40px rgba(212,175,55,0.35);">
+                <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
+                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; text-transform:uppercase; font-size:1.3rem; letter-spacing:1px;">Login Berhasil!</h2>
+                <p style="color:#fff; margin: 10px 0 0 0; font-size:0.95rem;">Selamat datang kembali,<br><span style="color:#ba68c8; font-weight:bold; font-size:1.1rem;">@${window.currentUser.username}</span></p>
+            </div>`;
+
+        if (typeof configureLogoutButton === "function") configureLogoutButton();
+        if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+
+        setTimeout(() => { loadingOverlay.remove(); }, 2500);
+    } catch (err) { 
+        console.error(err); 
+        loadingOverlay.remove();
+        if (err.message !== "User cancelled login") {
+            alert("Gagal Login: " + err.message);
+        }
+    }
+};
+
+// Fungsi Modular Penyelaras Antarmuka UI (Menghindari Redundansi Kode)
+window.syncProfilVisualUI = function(userObj) {
+    if (!userObj) return;
+    
+    const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
+    if (profileDisplay) profileDisplay.innerText = userObj.username;
+
+    const profileAddress = document.getElementById('profile-address');
+    if (profileAddress) profileAddress.innerText = userObj.uid;
+
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.innerText = `PROFIL: @${userObj.username.toUpperCase()}`;
+        loginBtn.style.background = "#4a148c";
+    }
+};
+
+// Fungsi Logout untuk membersihkan cache sesi lama (Bisa dipasang pada tombol Keluar)
+window.handleLogout = () => {
+    localStorage.removeItem('pi_currentUser');
+    window.currentUser = null;
+    window.location.reload();
+};
 
 function showLoginPrompt() {
-
     const overlay = document.createElement('div');
-
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
-
     overlay.innerHTML = `
-
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
-
             <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Selamat Datang</h2>
-
             <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace DIGITAL PRO INDO</p>
-
             <button id="modal-confirm-login-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LOGIN SEKARANG</button>
-
             <button id="modal-cancel-login-btn" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Mungkin Nanti</button>
-
         </div>`;
-
     document.body.appendChild(overlay);
-
-
 
     document.getElementById('modal-confirm-login-btn').addEventListener('click', function(e) {
-
         e.preventDefault();
-
         overlay.remove();
-
         window.handleAuth();
-
     });
-
-
 
     document.getElementById('modal-cancel-login-btn').addEventListener('click', function() {
-
         overlay.remove();
-
     });
-
 }
-
-
 
 function showAddressPrompt() {
-
     const overlay = document.createElement('div');
-
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
-
     overlay.innerHTML = `
-
         <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
-
             <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
-
             <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Alamat Kosong</h2>
-
             <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
-
             <button id="modal-confirm-addr-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LENGKAPI ALAMAT</button>
-
         </div>`;
-
     document.body.appendChild(overlay);
 
-
-
     document.getElementById('modal-confirm-addr-btn').addEventListener('click', function(e) {
-
         e.preventDefault();
-
         overlay.remove();
-
         if (typeof window.showAddressForm === 'function') window.showAddressForm();
-
     });
-
 }
+        
+
 
 // =========================================================================
 // 4. RENDERING & UI FUNCTIONS - FIXED VERSION

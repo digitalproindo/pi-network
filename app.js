@@ -1439,74 +1439,126 @@ window.handleAuth = async () => {
 
         const profileAddress = document.getElementById('profile-address');
         if (profileAddress) profileAddress.innerText = currentUser.uid;
-       
-        loadingOverlay.innerHTML = `
-            <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border:3px solid #FFD700; border-radius:25px; padding:30px 20px; text-align:center; width:80%; max-width:320px; font-family:'Inter', sans-serif; box-shadow: 0 10px 40px rgba(212,175,55,0.35);">
-                <div style="font-size: 40px; margin-bottom: 10px;">✨</div>
-                <h2 style="color:#FFD700; margin:5px 0; font-weight:900; text-transform:uppercase; font-size:1.3rem; letter-spacing:1px;">Login Berhasil!</h2>
-                <p style="color:#fff; margin: 10px 0 0 0; font-size:0.95rem;">Selamat datang kembali,<br><span style="color:#ba68c8; font-weight:bold; font-size:1.1rem;">@${currentUser.username}</span></p>
-            </div>`;
+// =========================================================================
+// 3. AUTHENTICATION & AUTO-LOGIN PI SDK - OPTIMIZED
+// =========================================================================
 
-        configureLogoutButton();
+// Fungsi untuk menginisialisasi Pi SDK saat aplikasi dibuka
+window.initPi = async () => {
+    // 1. Cek secara instan apakah ada session login sebelumnya di localStorage (Aman & Cepat)
+    const savedUser = localStorage.getItem('pi_currentUser');
+    const savedAddress = localStorage.getItem('pi_userAddress');
 
-        // =========================================================================
-        // PERBAIKAN: Ambil status kemitraan setelah login manual sukses
-        // =========================================================================
-        if (typeof muatStatusKemitraan === "function") {
-            muatStatusKemitraan();
+    if (savedUser) {
+        window.currentUser = JSON.parse(savedUser);
+        console.log("⚡ Auto-Login Berhasil (Session Dimuat):", window.currentUser.username);
+        
+        // Sinkronisasi data alamat jika ada
+        if (savedAddress) {
+            window.userAddress = JSON.parse(savedAddress);
         }
 
-        setTimeout(() => { loadingOverlay.remove(); }, 2500);
-    } catch (err) { 
-        console.error(err); 
-        loadingOverlay.remove();
-        if (err.message !== "User cancelled login") {
-            alert("Gagal Login: " + err.message);
+        // Langsung perbarui UI agar tombol login berubah jadi profil tanpa nunggu SDK
+        window.updateUISetelahLogin();
+    }
+
+    try {
+        // 2. Inisialisasi Pi SDK secara asynchronous di latar belakang (tidak memblokir UI)
+        if (window.Pi) {
+            await window.Pi.init({ version: "2.0", sandbox: false });
+            window.isPiInitialized = true;
+            console.log("✅ Pi SDK Blockchain Berhasil Diinisialisasi.");
+
+            // 3. Jika belum auto-login lewat localStorage, coba autentikasi otomatis lewat SDK
+            if (!window.currentUser) {
+                await window.jalankanAutentikasiSiluman();
+            } else {
+                // Jika sudah auto-login, tetap verifikasi ulang di latar belakang untuk memperbarui data kemitraan
+                if (typeof window.muatStatusKemitraan === "function") {
+                    window.muatStatusKemitraan();
+                }
+            }
+        } else {
+            console.warn("⚠️ Pi Browser tidak terdeteksi. Berjalan di mode browser standar.");
         }
+    } catch (error) {
+        console.error("Gagal memuat Pi SDK:", error);
     }
 };
 
-function showLoginPrompt() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
-    overlay.innerHTML = `
-        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
-            <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Selamat Datang</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace DIGITAL PRO INDO</p>
-            <button id="modal-confirm-login-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LOGIN SEKARANG</button>
-            <button id="modal-cancel-login-btn" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Mungkin Nanti</button>
-        </div>`;
-    document.body.appendChild(overlay);
+// Fungsi autentikasi otomatis (siluman) tanpa mengganggu pengguna dengan popup berulang
+window.jalankanAutentikasiSiluman = async () => {
+    try {
+        const scopes = ['username', 'payments'];
+        const auth = await window.Pi.authenticate(scopes, window.onIncompletePaymentFound);
+        
+        if (auth && auth.user) {
+            window.currentUser = auth.user;
+            
+            // Simpan ke localStorage agar kunjungan berikutnya langsung masuk otomatis
+            localStorage.setItem('pi_currentUser', JSON.stringify(auth.user));
+            
+            window.updateUISetelahLogin();
+            console.log("✅ Autentikasi latar belakang berhasil:", auth.user.username);
+        }
+    } catch (err) {
+        console.log("Autentikasi otomatis latar belakang dilewati atau gagal:", err);
+    }
+};
 
-    document.getElementById('modal-confirm-login-btn').addEventListener('click', function(e) {
-        e.preventDefault();
-        overlay.remove();
-        window.handleAuth();
-    });
+// Tombol Login Manual (Hanya digunakan jika session terhapus atau pertama kali masuk)
+window.handleAuth = async () => {
+    if (!window.Pi) {
+        alert("Mohon buka aplikasi ini dari dalam Pi Browser.");
+        return;
+    }
+    
+    try {
+        const scopes = ['username', 'payments'];
+        const auth = await window.Pi.authenticate(scopes, window.onIncompletePaymentFound);
+        
+        if (auth && auth.user) {
+            window.currentUser = auth.user;
+            
+            // Simpan ke local storage
+            localStorage.setItem('pi_currentUser', JSON.stringify(auth.user));
+            
+            window.updateUISetelahLogin();
+            alert(`Selamat datang kembali, ${auth.user.username}! ✨`);
+        }
+    } catch (error) {
+        alert("Gagal melakukan otentikasi login. Silakan coba lagi.");
+        console.error(error);
+    }
+};
 
-    document.getElementById('modal-cancel-login-btn').addEventListener('click', function() {
-        overlay.remove();
-    });
-}
+// Fungsi pembantu untuk memperbarui tampilan UI setelah berhasil login
+window.updateUISetelahLogin = () => {
+    const loginBtn = document.getElementById('login-btn');
+    const profileName = document.getElementById('profile-name'); // Sesuaikan ID elemen nama di UI profil Anda
+    
+    if (loginBtn && window.currentUser) {
+        loginBtn.innerText = `PROFIL: ${window.currentUser.username.toUpperCase()}`;
+        loginBtn.style.background = "#4a148c";
+        loginBtn.disabled = true; // Nonaktifkan tombol karena sudah sukses masuk
+    }
+    
+    if (profileName && window.currentUser) {
+        profileName.innerText = window.currentUser.username;
+    }
 
-function showAddressPrompt() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
-    overlay.innerHTML = `
-        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
-            <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
-            <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Alamat Kosong</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
-            <button id="modal-confirm-addr-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LENGKAPI ALAMAT</button>
-        </div>`;
-    document.body.appendChild(overlay);
+    // Jalankan pemuatan data kemitraan ke Google Sheets secara otomatis
+    if (typeof window.muatStatusKemitraan === "function") {
+        window.muatStatusKemitraan();
+    }
+};
 
-    document.getElementById('modal-confirm-addr-btn').addEventListener('click', function(e) {
-        e.preventDefault();
-        overlay.remove();
-        if (typeof window.showAddressForm === 'function') window.showAddressForm();
-    });
-}
+// Fungsi Logout (Opsional, jika Anda ingin menyediakan tombol keluar di menu profil)
+window.handleLogout = () => {
+    localStorage.removeItem('pi_currentUser');
+    window.currentUser = null;
+    location.reload();
+};
 
 // =========================================================================
 // 4. RENDERING & UI FUNCTIONS - FIXED VERSION

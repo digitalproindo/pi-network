@@ -1509,7 +1509,7 @@ function showAddressPrompt() {
 }
 
 // =========================================================================
-// 4. RENDERING & UI FUNCTIONS
+// 4. RENDERING & UI FUNCTIONS - FIXED VERSION
 // =========================================================================
 function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
@@ -1539,7 +1539,7 @@ function renderProducts(data, targetGridId) {
                 <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
                 <div class="card-bottom">
                     <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.handlePayment(${p.price}, '${p.name}')">Beli</button>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment(${p.price}, '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu melalui menu Profil.'); }">Beli</button>
                 </div>
             </div>`;
         grid.appendChild(card);
@@ -1547,6 +1547,7 @@ function renderProducts(data, targetGridId) {
 }
 
 window.openProductDetail = (productId) => {
+    if (typeof productsData === 'undefined') return;
     const p = productsData.find(x => x.id === productId);
     if (!p) return;
 
@@ -1573,7 +1574,7 @@ window.openProductDetail = (productId) => {
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
                     <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="window.handlePayment(${p.price}, '${p.name}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
+                    <button onclick="if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment(${p.price}, '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); }" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
         </div>`;
@@ -1587,6 +1588,7 @@ window.closeProductDetail = () => {
 };
 
 window.filterCategory = (category, element) => {
+    if (typeof productsData === 'undefined') return;
     const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
     renderProducts(filtered, 'main-grid');
     if (element) {
@@ -1596,7 +1598,7 @@ window.filterCategory = (category, element) => {
 };
 
 // =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS
+// 5. CART & SHIPPING ADDRESS ACTIONS - FIXED VERSION
 // =========================================================================
 window.showAddressForm = () => {
     const overlay = document.createElement('div');
@@ -1615,17 +1617,24 @@ window.showAddressForm = () => {
 };
 
 window.saveAddress = () => {
-    userAddress = {
-        nama: document.getElementById('ship-name').value,
-        telepon: document.getElementById('ship-phone').value,
-        alamatLengkap: document.getElementById('ship-address').value
-    };
+    const inputName = document.getElementById('ship-name');
+    const inputPhone = document.getElementById('ship-phone');
+    const inputAddr = document.getElementById('ship-address');
+
+    if (!inputName || !inputPhone || !inputAddr) return;
+
+    const valName = inputName.value.trim();
+    const valPhone = inputPhone.value.trim();
+    const valAddr = inputAddr.value.trim();
     
-    if(!userAddress.nama || !userAddress.alamatLengkap) {
-        return alert("Mohon lengkapi data!"); 
+    if(!valName || !valPhone || !valAddr) {
+        return alert("⚠️ Mohon lengkapi seluruh data alamat pengiriman Anda!"); 
     }
+
+    // Set ke variabel global secara aman
+    userAddress = { nama: valName, telepon: valPhone, alamatLengkap: valAddr };
     
-    // 🔊 EFEK SUARA ELEKTRONIK KUSTOM (DIGITAL PRO SUCCESS CHIME)
+    // 🔊 EFEK SUARA ELEKTRONIK KUSTOM
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') { audioCtx.resume(); }
@@ -1642,13 +1651,12 @@ window.saveAddress = () => {
         osc.stop(audioCtx.currentTime + 0.35);
     } catch (e) { console.log("Audio diblokir:", e); }
 
-    // Tutup overlay form alamat asal
     const currentOverlay = document.getElementById('address-overlay');
     if (currentOverlay) currentOverlay.remove();
     
     window.updateCartUI();
 
-    // 🌟 SEKSI DIGITAL PRO POPUP NOTIFIKASI KUSTOM ALAMAT DISIMPAN
+    // 🌟 SEKSI POPUP NOTIFIKASI KUSTOM ALAMAT DISIMPAN
     const successPopup = document.createElement('div');
     successPopup.id = "digital-pro-success-alert";
     successPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 100005; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.3s ease; font-family: 'Inter', sans-serif;";
@@ -1668,6 +1676,7 @@ window.saveAddress = () => {
 };
 
 window.addToCart = (id) => {
+    if (typeof productsData === 'undefined') return;
     const p = productsData.find(x => x.id === id);
     if(p) { 
         cart.push(p); 
@@ -1776,7 +1785,11 @@ window.updateCartUI = () => {
             <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
                 <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#64748b;"><span>Subtotal (${cart.length} Produk)</span><span>π ${total}</span></div>
                 <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; border-top:2px solid #f8fafc; padding-top:15px;"><span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span></div>
-                <button style="width:100%; padding:16px; border-radius:16px; background:#6748d7; color:white; font-weight:800; border:none; cursor:pointer;" onclick="window.handlePayment(${total}, 'Total Keranjang')">CHECKOUT SEKARANG 🚀</button>
+                
+                <button style="width:100%; padding:16px; border-radius:16px; background:#6748d7; color:white; font-weight:800; border:none; cursor:pointer;" 
+                        onclick="if(typeof currentUser === 'undefined' || !currentUser) { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); } else if(!userAddress.nama || !userAddress.alamatLengkap) { if(typeof showAddressPrompt === 'function') showAddressPrompt(); else alert('Silakan lengkapi alamat pengiriman Anda terlebih dahulu.'); } else { window.handlePayment(${total}, 'Total Keranjang'); }">
+                    CHECKOUT SEKARANG 🚀
+                </button>
             </div>
         </div>`;
 };
@@ -1793,13 +1806,15 @@ window.switchPage = (pageId) => {
     const activeNav = document.getElementById(`nav-${pageId}`);
     if(activeNav) activeNav.classList.add('active');
 
-    if(pageId === 'home') renderProducts(productsData, 'main-grid');
+    if(pageId === 'home' && typeof renderProducts === 'function' && typeof productsData !== 'undefined') {
+        renderProducts(productsData, 'main-grid');
+    }
     
-    // 🔴 TAMBAHKAN LOGIKA INI DI SINI
-    if(pageId === 'profile') {
+    if(pageId === 'profile' && typeof muatStatusKemitraan === "function") {
         muatStatusKemitraan();
     }
 };
+
 
 // =========================================================================
 // 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS

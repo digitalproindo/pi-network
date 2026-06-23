@@ -2034,7 +2034,7 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION WITH CLOSE BUTTON
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - UPDATED CLOSING BUTTON LOGIC
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
@@ -2096,58 +2096,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 7. PENANGANAN SUBMIT FORM KOMUNITAS & TOMBOL CLOSING (X)
+    // 7. PENANGANAN SUBMIT FORM KOMUNITAS (TANDA X DI SINI SUDAH DIHILANGKAN)
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
-        // --- AWAL INJEKSI TOMBOL (X) POJOK KANAN ATAS ---
-        formAman.style.position = "relative"; // Pengunci koordinat absolute
-
-        const closeBtn = document.createElement('button');
-        closeBtn.type = "button"; // Mencegah pemicuan submit form secara tidak sengaja
-        closeBtn.innerHTML = "&times;"; // Karakter silang (X) HTML semantik
-        
-        // Atur gaya desain lingkaran transparan modern di sudut kanan atas form
-        closeBtn.style.cssText = `
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-            border: none;
-            font-size: 24px;
-            font-weight: bold;
-            line-height: 1;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.2s ease;
-            z-index: 100;
-        `;
-
-        // Animasi hover warna merah saat disorot kursor / sentuhan jari
-        closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; };
-        closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(255, 255, 255, 0.1)"; closeBtn.style.color = "#ffffff"; };
-
-        // Logika penutupan modal saat (X) diklik
-        closeBtn.onclick = (e) => {
-            e.preventDefault();
-            if (typeof window.closeKomunitasModal === "function") {
-                window.closeKomunitasModal();
-            } else {
-                // Aturan fallback jika pembungkus modal langsung berupa parentElement
-                const modalParent = formAman.closest('[id*="modal"]') || formAman.parentElement;
-                if (modalParent) modalParent.style.display = "none";
-            }
-        };
-
-        // Pasang elemen tombol silang ke formKomunitas
-        formAman.appendChild(closeBtn);
-        // --- AKHIR INJEKSI TOMBOL (X) ---
-
         formAman.addEventListener('submit', e => {
             e.preventDefault();
             
@@ -2227,7 +2178,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL (DITEMPEL KE WINDOW AGAR GLOBAL)
+// =========================================================================
+// PERBAIKAN: MODAL BERHASIL SEKARANG MEMILIKI TOMBOL (X) DI POJOK KANAN ATAS
+// =========================================================================
+window.tampilkanModalSuksesDigital = function() {
+    // Cari overlay sukses yang ada di sistem (bisa disesuaikan dengan fungsi overlay sukses Anda sebelumnya)
+    const overlay = document.createElement('div');
+    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px); font-family:'Inter', sans-serif;";
+    
+    // Pembungkus dalam (Modal Box) diset ke relative agar koordinat absolute tombol (X) presisi
+    overlay.innerHTML = `
+        <div style="background:white; padding:40px 25px 35px; border-radius:30px; max-width:380px; width:100%; text-align:center; position:relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+            <button id="close-overlay-sukses" type="button" style="position:absolute; top:15px; right:15px; background:rgba(0,0,0,0.05); color:#64748b; border:none; font-size:22px; font-weight:bold; line-height:1; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease;">&times;</button>
+            
+            <div style="font-size:45px; margin-bottom:15px;">✅</div>
+            <h2 style="color:#1a0033; margin:0; font-weight:800; font-size:1.4rem;">Pendaftaran Berhasil!</h2>
+            <p style="color:#64748b; margin-top:10px; font-size:0.9rem; line-height:1.4;">Data kemitraan Anda telah sukses direkam dan sedang dalam antrean review sistem.</p>
+            
+            <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:25px; font-size:0.95rem; box-shadow: 0 4px 12px rgba(37,211,102,0.3);">MASUK GRUP WHATSAPP</a>
+            <button id="btn-kembali-beranda" style="background:none; border:none; color:#94a3b8; margin-top:18px; cursor:pointer; font-size:0.85rem; font-weight:500;">Kembali ke Beranda</button>
+        </div>`;
+        
+    document.body.appendChild(overlay);
+
+    // Event Listener untuk tombol (X)
+    const closeBtn = overlay.querySelector('#close-overlay-sukses');
+    closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; };
+    closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(0,0,0,0.05)"; closeBtn.style.color = "#64748b"; };
+    closeBtn.onclick = () => { overlay.remove(); };
+
+    // Event Listener untuk tombol "Kembali ke Beranda" di bawah
+    const btnBeranda = overlay.querySelector('#btn-kembali-beranda');
+    btnBeranda.onclick = () => { overlay.remove(); location.reload(); };
+};
+
+// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share'); 

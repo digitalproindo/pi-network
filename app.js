@@ -1961,90 +1961,99 @@ document.addEventListener("DOMContentLoaded", async () => {
     // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            // Menggunakan objek currentUser global dari initPi()
-            if (!currentUser || !currentUser.uid) {
-                alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna di halaman ini. Harap muat ulang aplikasi di Pi Browser Anda.");
-                return;
-            }
+        // Taruh variabel ini di bagian atas sebelum form event listener (misal di baris 1961)
+let sedangMengirimData = false; 
 
-            const btn = document.getElementById('btnKirim');
-            if (btn) {
-                btn.innerText = "MENGIRIM...";
-                btn.disabled = true;
-            }
+const form = document.getElementById('formKomunitas');
+if (form) {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        // 1. KUNCI JIKA SEDANG PROSES (Anti Duplikat Data)
+        if (sedangMengirimData) return;
+        
+        if (!currentUser || !currentUser.uid) {
+            alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terdeteksi.");
+            return;
+        }
 
-            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : "";
-            const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
-            
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-            
-            const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-            const params = new URLSearchParams({
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: currentUser.uid
-            });
+        // 2. Ambil Elemen Form & Validasi (Pastikan name sesuai dengan HTML Anda)
+        const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value.trim() : "";
+        const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value.trim() : "";
+        
+        const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+        const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+        const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+        const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+        
+        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+            alert("⚠️ Mohon lengkapi seluruh data pilihan wilayah Anda!");
+            return;
+        }
 
-            fetch(`${scriptURL}?${params.toString()}`, { 
-                method: 'POST' 
-            })
-            .then(response => {
-                // 1. Tutup form pendaftaran kemitraan yang sedang terbuka
-                if (typeof window.closeKomunitasModal === "function") {
-                    window.closeKomunitasModal();
-                } else if (document.getElementById("komunitasModal")) {
-                    document.getElementById("komunitasModal").style.display = "none";
-                }
-                
-                // 2. Bersihkan input data form
-                form.reset();
-                
-                // 3. PANGGIL MODAL SUKSES PREMIUM DIGITAL PRO (TANPA ALERT & TANPA REDIRECT WHATSAPP)
-                if (typeof window.tampilkanModalSuksesDigital === "function") {
-                    window.tampilkanModalSuksesDigital();
-                } else if (typeof tampilkanModalSuksesDigital === "function") {
-                    tampilkanModalSuksesDigital();
-                }
-                
-                // 4. Ubah UI status secara dinamis menjadi PROSES REVIEW
-                const statusLabel = document.getElementById('partner-status');
-                if (statusLabel) { 
-                    statusLabel.innerText = "PROSES REVIEW"; 
-                    statusLabel.style.background = "#fef3c7";
-                    statusLabel.style.color = "#f59e0b";
-                }
-                
-                // 5. Memanggil fungsi sinkronisasi profil jika tersedia
-                if (typeof muatStatusKemitraan === "function") {
-                    muatStatusKemitraan();
-                }
-            })
-            .catch(error => {
-                console.error("Gagal mendaftar:", error);
-                // Fallback aman agar user tidak macet (stuck) jika server sheets lambat
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                form.reset();
-                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
-            })
-            .finally(() => {
-                if (btn) {
-                    btn.innerText = "DAFTAR SEKARANG";
-                    btn.disabled = false;
-                }
-            });
+        // 3. AKTIFKAN STATE LOCK & UBAH UI TOMBOL
+        sedangMengirimData = true;
+        const btn = document.getElementById('btnKirim');
+        if (btn) {
+            btn.innerText = "MENGIRIM...";
+            btn.disabled = true;
+        }
+        
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+        const params = new URLSearchParams({
+            nama: namaUser,
+            whatsapp: waUser,
+            provinsi: provUser,
+            kota: kotaUser,
+            kecamatan: kecUser,
+            kelurahan: kelUser,
+            uid: currentUser.uid
         });
-    }
-});
+
+        // 4. PROSES KIPIM KE GOOGLE SHEETS VIA POST
+        fetch(`${scriptURL}?${params.toString()}`, { method: 'POST' })
+        .then(res => res.json())
+        .then(response => {
+            // Tutup modal form pendaftaran
+            if (typeof window.closeKomunitasModal === "function") {
+                window.closeKomunitasModal();
+            } else if (document.getElementById("komunitasModal")) {
+                document.getElementById("komunitasModal").style.display = "none";
+            }
+            
+            // Bersihkan isi form
+            form.reset();
+            
+            // Jalankan Modal Sukses Premium Anda
+            if (typeof window.tampilkanModalSuksesDigital === "function") {
+                window.tampilkanModalSuksesDigital();
+            }
+            
+            // SOLUSI ERROR WHATSAPP PI BROWSER: Gunakan window.open dengan '_blank' 
+            // agar sistem operasi handphone yang mengambil alih untuk membuka aplikasi WA asli.
+            setTimeout(() => {
+                window.open("https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
+            }, 1000);
+
+            // Sinkronisasi pembaruan UI status profil secara instan
+            if (typeof muatStatusKemitraan === "function") {
+                muatStatusKemitraan();
+            }
+        })
+        .catch(error => {
+            console.error("Gagal mendaftar:", error);
+            alert("⚠️ Terjadi gangguan jaringan, silakan coba lagi.");
+        })
+        .finally(() => {
+            // 5. BUKA KUNCI KEMBALI (Tombol kembali normal & tidak stuck di 'MENGIRIM...')
+            sedangMengirimData = false;
+            if (btn) {
+                btn.innerText = "DAFTAR SEKARANG";
+                btn.disabled = false;
+            }
+        });
+    });
+}
 
 // =========================================================================
 // FUNGSI SINKRONISASI STATUS KEMITRAAN (VERSI ADVANCED & AMAN PI BROWSER)

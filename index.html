@@ -423,8 +423,8 @@
 <script src="https://sdk.minepi.com/pi-sdk.js"></script>
 <script src="app.js?v=4.2"></script>
 <script src="/dpi-bot.js"></script>
-<script>   
-      function toggleMenu() {
+<script>
+    function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         if (sideNav) {
             sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
@@ -450,7 +450,7 @@
     }
 
     // =========================================================================
-    // 2. SUBMIT FORM & INTEGRASI POP-UP SUKSES PREMIUM
+    // 2. SUBMIT FORM (MURNI TANPA REDIRECT / TANPA ALERT WHATSAPP)
     // =========================================================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
@@ -489,18 +489,15 @@
                 uid: userDaftar.uid
             });
             
-            // Mengirim data ke Google Apps Script
             fetch(`${scriptURL}?${params.toString()}`, { method: 'POST' })
-            .then(response => response.json()) // Membaca respons murni JSON
-            .then(data => {
-                // Tutup form pendaftaran & reset inputan
+            .then(response => {
+                // Langsung tutup form & reset data
                 closeKomunitasModal();
                 form.reset();
                 
-                // LANGSUNG PANGGIL MODAL DIGITAL PRO FUTURISTIK (TANPA REDIRECT / ALERT WHATSAPP)
+                // TAMPILKAN MODAL SUKSES DIGITAL PRO YANG EMAS (MURNI TANPA WA)
                 tampilkanModalSuksesDigital();
                 
-                // Perbarui status label di profil secara dinamis
                 const statusLabel = document.getElementById('partner-status');
                 if (statusLabel) { 
                     statusLabel.innerText = "PROSES REVIEW"; 
@@ -514,7 +511,7 @@
             })
             .catch(error => {
                 console.error("Gagal mendaftar:", error);
-                // Fallback jika database sibuk, langsung amankan alur tampilan ke modal sukses Anda
+                // Fallback aman agar pengguna tidak stuck: langsung munculkan modal sukses
                 closeKomunitasModal();
                 form.reset();
                 tampilkanModalSuksesDigital();
@@ -529,7 +526,7 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (MURNI & BERSIH)
+    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (SAMA SEKALI TANPA WA)
     // =========================================================================
     function tampilkanModalSuksesDigital() {
         let suksesModal = document.getElementById("digitalSuksesModal");
@@ -693,4 +690,4 @@
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>
-</html>   
+</html>

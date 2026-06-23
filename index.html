@@ -520,7 +520,7 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI LAYOUT MODAL SUKSES KUSTOM & SYSTEM SECURITY BYPASS PI BROWSER
+    // 3. FUNGSI LAYOUT MODAL SUKSES KUSTOM & FITUR SALIN BYPASS PI BROWSER
     // =========================================================================
     function tampilkanModalSuksesDigital() {
         let suksesModal = document.getElementById("digitalSuksesModal");
@@ -541,16 +541,16 @@
                     </p>
                     <div style="background:#f8f9fa; border-left:4px solid #00c3a5; border-radius:8px; padding:12px; text-align:left; margin-bottom:25px;">
                         <p style="margin:0; font-size:12px; color:#34495e; font-weight:500;">
-                            📢 <strong>Langkah Wajib Selanjutnya:</strong><br>Silakan bergabung ke dalam Grup WhatsApp resmi untuk validasi dokumen otoritas wilayah Anda.
+                            📢 <strong>Langkah Wajib Selanjutnya:</strong><br>Silakan salin tautan di bawah ini dan buka di browser biasa (Chrome/Safari) untuk bergabung ke Grup WhatsApp Resmi validasi dokumen.
                         </p>
                     </div>
                     
-                    <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="text-decoration:none; display:flex; justify-content:center; align-items:center; gap:8px; width:100%; background:linear-gradient(135deg, #25d366, #128c7e); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(37,211,102,0.3); margin-bottom:12px; box-sizing:border-box;" onclick="setTimeout(function(){ document.getElementById('digitalSuksesModal').style.display='none'; }, 1500);">
-                        <span>Masuk Grup WhatsApp</span> 🚀
-                    </a>
+                    <button id="btnSalinWA" onclick="salinLinkGrupDigital(this)" style="width:100%; background:linear-gradient(135deg, #25d366, #128c7e); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(37,211,102,0.3); margin-bottom:12px; display:flex; justify-content:center; align-items:center; gap:8px;">
+                        📋 <span>Salin Tautan Grup WA</span>
+                    </button>
                     
                     <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:transparent; color:#95a5a6; border:none; padding:8px; font-size:13px; cursor:pointer; text-decoration:underline;">
-                        Nanti Saja
+                        Tutup Halaman
                     </button>
                 </div>
                 <style>
@@ -563,6 +563,35 @@
             document.body.appendChild(suksesModal);
         }
         suksesModal.style.display = "flex";
+        
+        // Kembalikan status tombol ke semula jika modal dibuka kembali
+        const btnSalin = document.getElementById("btnSalinWA");
+        if(btnSalin) {
+            btnSalin.innerHTML = "📋 <span>Salin Tautan Grup WA</span>";
+            btnSalin.style.background = "linear-gradient(135deg, #25d366, #128c7e)";
+        }
+    }
+
+    function salinLinkGrupDigital(button) {
+        const waLink = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
+        
+        // Fallback pemicu salin text di berbagai versi mobile webview
+        const el = document.createElement('textarea');
+        el.value = waLink;
+        el.setAttribute('readonly', '');
+        el.style.position = 'absolute';
+        el.style.left = '-9999px';
+        document.body.appendChild(el);
+        el.select();
+        el.setSelectionRange(0, 99999); // Untuk perangkat iOS
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        
+        // Berikan respon visual sukses salin kepada pengguna
+        button.innerHTML = "✨ Tautan Berhasil Disalin!";
+        button.style.background = "#2ecc71";
+        
+        alert("📋 Tautan grup berhasil disalin! Silakan tempel (paste) di Chrome atau kirim langsung ke chat WhatsApp Anda untuk bergabung.");
     }
 
     function bukaGrupWhatsAppDigital() {

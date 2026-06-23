@@ -520,7 +520,7 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (ANTI-BLOKIR)
+    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (BERSIH & FUTURISTIK)
     // =========================================================================
     function tampilkanModalSuksesDigital() {
         let suksesModal = document.getElementById("digitalSuksesModal");
@@ -528,52 +528,52 @@
         if (!suksesModal) {
             suksesModal = document.createElement("div");
             suksesModal.id = "digitalSuksesModal";
-            // Overlay gelap dengan efek blur premium (backdrop-filter)
-            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(12, 1, 26, 0.8); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:20px; font-family:'Inter', sans-serif;";
+            // Efek background semi-transparan dengan blur kaca premium (Glassmorphism)
+            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(8, 2, 18, 0.85); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:20px; font-family:'Inter', sans-serif;";
             
             suksesModal.innerHTML = `
-                <div style="background:linear-gradient(135deg, #1f053d 0%, #0c011a 100%); width:100%; max-width:380px; border-radius:24px; text-align:center; padding:35px 24px 25px; box-shadow:0 20px 50px rgba(74, 20, 140, 0.5); border:2px solid #f1c40f; position:relative; overflow:hidden; animation: popUpAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
+                <div style="background:linear-gradient(135deg, #1f053d 0%, #0c011a 100%); width:100%; max-width:380px; border-radius:24px; text-align:center; padding:40px 24px 30px; box-shadow:0 25px 60px rgba(111, 66, 193, 0.4); border:2px solid #f1c40f; position:relative; overflow:hidden; animation: popUpAnim 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
                     
-                    <div style="position:absolute; top:-50px; right:-50px; width:150px; height:150px; background:rgba(0, 191, 165, 0.1); border-radius:50%; filter:blur(20px);"></div>
-                    <div style="position:absolute; bottom:-50px; left:-50px; width:150px; height:150px; background:rgba(212, 175, 55, 0.1); border-radius:50%; filter:blur(20px);"></div>
+                    <div style="position:absolute; top:-60px; right:-60px; width:160px; height:160px; background:rgba(0, 240, 225, 0.12); border-radius:50%; filter:blur(25px);"></div>
+                    <div style="position:absolute; bottom:-60px; left:-60px; width:160px; height:160px; background:rgba(241, 196, 15, 0.08); border-radius:50%; filter:blur(25px);"></div>
 
-                    <div class="glow-icon-container" style="width:85px; height:85px; background:rgba(0, 191, 165, 0.15); border:2px solid #00bfc5; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 22px; box-shadow: 0 0 20px rgba(0, 191, 165, 0.4); animation: pulseGlow 2s infinite;">
-                        <span style="font-size:38px; filter: drop-shadow(0 0 8px #00bfc5);">✅</span>
+                    <div style="width:90px; height:90px; background:rgba(0, 191, 165, 0.12); border:2px solid #00bfc5; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 25px; box-shadow: 0 0 25px rgba(0, 191, 165, 0.5); animation: pulseGlow 2s infinite;">
+                        <span style="font-size:42px; filter: drop-shadow(0 0 10px #00bfc5);">✅</span>
                     </div>
                     
-                    <div style="display: inline-flex; align-items: center; background: rgba(241, 196, 15, 0.1); border: 1px solid #f1c40f; padding: 4px 12px; border-radius: 20px; margin-bottom: 15px;">
-                        <span style="font-size: 0.65rem; font-weight: 800; color: #f1c40f; letter-spacing: 1px; text-transform: uppercase;">PT. DIGITAL PRO INDO</span>
+                    <div style="display: inline-flex; align-items: center; background: rgba(241, 196, 15, 0.1); border: 1px solid #f1c40f; padding: 5px 16px; border-radius: 20px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(241, 196, 15, 0.15);">
+                        <span style="font-size: 11px; font-weight: 900; color: #f1c40f; letter-spacing: 1.5px; text-transform: uppercase;">PT. DIGITAL PRO INDO</span>
                     </div>
 
-                    <h3 style="margin:0 0 8px 0; color:#ffffff; font-size:20px; font-weight:800; letter-spacing:-0.5px;">Pendaftaran Berhasil!</h3>
+                    <h3 style="margin:0 0 10px 0; color:#ffffff; font-size:24px; font-weight:800; letter-spacing:-0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Pendaftaran Berhasil!</h3>
                     
-                    <p style="margin:0 0 25px 0; color:#a4b3c6; font-size:13px; line-height:1.5; padding:0 5px;">
-                        Hak otoritas wilayah Anda telah aman terenkripsi ke dalam database ekosistem perdagangan logistik kami.
+                    <p style="margin:0 0 25px 0; color:#b3c3d6; font-size:13.5px; line-height:1.6; padding:0 10px;">
+                        Hak otoritas kemitraan wilayah Anda telah aman terenkripsi dan tercatat ke dalam basis data ekosistem perdagangan logistik.
                     </p>
                     
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius:14px; padding:15px; text-align:left; margin-bottom:25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-                            <span style="font-size:11px; color:#64748b; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">Status Review</span>
-                            <span style="font-size:10px; color:#f59e0b; background:rgba(245,158,11,0.15); padding:2px 8px; border-radius:10px; font-weight:800;">PENDING VERIFICATION</span>
+                    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.07); border-radius:16px; padding:16px; text-align:left; margin-bottom:30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                            <span style="font-size:11px; color:#748ba7; font-weight:700; letter-spacing:0.5px; text-transform:uppercase;">Status Peninjauan</span>
+                            <span style="font-size:10px; color:#f59e0b; background:rgba(245,158,11,0.15); padding:3px 10px; border-radius:12px; font-weight:800; border: 1px solid rgba(245,158,11,0.3);">PROSES REVIEW</span>
                         </div>
-                        <p style="margin:0; font-size:11px; color:#94a3b8; line-height:1.4;">
-                            Tim analis internal kami sedang melakukan validasi silang pada ID dompet Pi Network Anda. Mohon pantau halaman profil secara berkala.
+                        <p style="margin:0; font-size:11.5px; color:#94a3b8; line-height:1.5;">
+                            Tim analis internal kami sedang melakukan validasi berkas. Silakan pantau halaman profil Anda secara berkala untuk pembaruan status hak wilayah.
                         </p>
                     </div>
                     
-                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:linear-gradient(45deg, #f1c40f, #f39c12); color:#000000; border:none; padding:14px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; box-shadow:0 6px 20px rgba(241,196,15,0.3); text-transform:uppercase; letter-spacing:0.5px; transition: all 0.3s ease;">
+                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:linear-gradient(45deg, #f1c40f, #f39c12); color:#0c011a; border:none; padding:15px; border-radius:14px; font-size:14px; font-weight:900; cursor:pointer; box-shadow:0 8px 25px rgba(241,196,15,0.35); text-transform:uppercase; letter-spacing:1px; transition: all 0.3s ease;">
                         Konfirmasi & Selesai
                     </button>
                 </div>
 
                 <style>
                     @keyframes popUpAnim {
-                        from { transform: scale(0.7); opacity: 0; }
+                        from { transform: scale(0.75); opacity: 0; }
                         to { transform: scale(1); opacity: 1; }
                     }
                     @keyframes pulseGlow {
                         0% { box-shadow: 0 0 15px rgba(0, 191, 165, 0.4); border-color: #00bfc5; }
-                        50% { box-shadow: 0 0 30px rgba(0, 191, 165, 0.7); border-color: #00f0e1; }
+                        50% { box-shadow: 0 0 32px rgba(0, 191, 165, 0.75); border-color: #00f0e1; }
                         100% { box-shadow: 0 0 15px rgba(0, 191, 165, 0.4); border-color: #00bfc5; }
                     }
                 </style>

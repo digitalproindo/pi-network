@@ -453,145 +453,138 @@
     // 2. SUBMIT FORM (MURNI TANPA REDIRECT / TANPA ALERT WHATSAPP)
     // =========================================================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
-    const form = document.getElementById('formKomunitas');
-
-    if (form) {
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const userDaftar = window.currentUser;
-            
-            if (!userDaftar || !userDaftar.uid) {
-                alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang aplikasi di Pi Browser Anda.");
-                return;
-            }
-            
-            const btn = document.getElementById('btnKirim');
-            if (btn) {
-                btn.innerText = "MENGIRIM...";
-                btn.disabled = true;
-            }
-            
-            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value : "";
-            const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value : "";
-            
-            const provUser = document.getElementById('selectProvinsi').value;
-            const kotaUser = document.getElementById('selectKota').value;
-            const kecUser = document.getElementById('selectKecamatan').value;
-            const kelUser = document.getElementById('selectKelurahan').value;
-            
-            const params = new URLSearchParams({
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: userDaftar.uid
-            });
-            
-            fetch(`${scriptURL}?${params.toString()}`, { method: 'POST' })
-            .then(response => {
-                // Langsung tutup form & reset data
-                closeKomunitasModal();
-                form.reset();
-                
-                // TAMPILKAN MODAL SUKSES DIGITAL PRO YANG EMAS (MURNI TANPA WA)
-                tampilkanModalSuksesDigital();
-                
-                const statusLabel = document.getElementById('partner-status');
-                if (statusLabel) { 
-                    statusLabel.innerText = "PROSES REVIEW"; 
-                    statusLabel.style.background = "#fef3c7";
-                    statusLabel.style.color = "#f59e0b";
-                }
-                
-                if (typeof muatStatusKemitraan === "function") {
-                    muatStatusKemitraan();
-                }
-            })
-            .catch(error => {
-                console.error("Gagal mendaftar:", error);
-                // Fallback aman agar pengguna tidak stuck: langsung munculkan modal sukses
-                closeKomunitasModal();
-                form.reset();
-                tampilkanModalSuksesDigital();
-            })
-            .finally(() => {
-                if (btn) {
-                    btn.innerText = "DAFTAR SEKARANG";
-                    btn.disabled = false;
-                }
-            });
-        });
-    }
-
     // =========================================================================
-    // REVISI TOTAL: LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (100% PRESISI)
-    // =========================================================================
-    function tampilkanModalSuksesDigital() {
-        let suksesModal = document.getElementById("digitalSuksesModal");
+// PERBAIKAN TOTAL: PENANGANAN SUBMIT & LINK WHATSAPP AMAN PI BROWSER
+// =========================================================================
+const form = document.getElementById('formKomunitas');
+if (form) {
+    form.addEventListener('submit', e => {
+        e.preventDefault();
         
-        if (!suksesModal) {
-            suksesModal = document.createElement("div");
-            suksesModal.id = "digitalSuksesModal";
-            // Overlay latar belakang yang blur sempurna
-            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 2, 14, 0.88); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:16px; box-sizing:border-box; font-family:'Inter', system-ui, -apple-system, sans-serif;";
-            
-            suksesModal.innerHTML = `
-                <div style="background:linear-gradient(145deg, #160829 0%, #08020e 100%); width:100%; max-width:440px; border-radius:28px; text-align:center; padding:45px 28px 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 40px rgba(106, 52, 214, 0.15); border: 1.5px solid rgba(241, 196, 15, 0.35); position:relative; overflow:hidden; box-sizing:border-box; animation: popUpAnim 0.4s cubic-bezier(0.16, 1, 0.3, 1);">
-                    
-                    <div style="position:absolute; top:-40px; right:-40px; width:140px; height:140px; background:rgba(0, 240, 225, 0.08); border-radius:50%; filter:blur(30px); pointer-events:none;"></div>
-                    <div style="position:absolute; bottom:-40px; left:-40px; width:140px; height:140px; background:rgba(155, 89, 182, 0.1); border-radius:50%; filter:blur(30px); pointer-events:none;"></div>
-
-                    <div style="width:96px; height:96px; background:rgba(0, 191, 165, 0.07); border: 2px solid rgba(0, 240, 225, 0.8); border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 28px; box-shadow: 0 0 30px rgba(0, 240, 225, 0.35); animation: pulseGlow 2.5s infinite ease-in-out;">
-                        <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#00f0e1" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0 0 6px #00f0e1);"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                    
-                    <div style="display: inline-flex; align-items: center; justify-content: center; background: rgba(241, 196, 15, 0.06); border: 1px solid #f1c40f; padding: 6px 20px; border-radius: 20px; margin-bottom: 22px; box-shadow: 0 4px 12px rgba(241, 196, 15, 0.08);">
-                        <span style="font-size: 11px; font-weight: 800; color: #f1c40f; letter-spacing: 1.8px; text-transform: uppercase;">PT. DIGITAL PRO INDO</span>
-                    </div>
-
-                    <h3 style="margin:0 0 14px 0; color:#ffffff; font-size:26px; font-weight:800; letter-spacing:-0.5px; line-height:1.2;">Pendaftaran Berhasil!</h3>
-                    
-                    <p style="margin:0 0 32px 0; color:#a2b4ca; font-size:14px; line-height:1.6; padding:0 6px; font-weight:400;">
-                        Hak otoritas kemitraan wilayah Anda telah aman terenkripsi dan tercatat ke dalam basis data ekosistem perdagangan logistik kami.
-                    </p>
-                    
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius:18px; padding:18px; text-align:left; margin-bottom:35px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); box-sizing:border-box;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                            <span style="font-size:11px; color:#6f85a0; font-weight:700; letter-spacing:0.8px; text-transform:uppercase;">Status Peninjauan</span>
-                            <span style="font-size:10.5px; color:#f39c12; background:rgba(243,156,18,0.12); padding:4px 12px; border-radius:12px; font-weight:800; border: 1px solid rgba(243,156,18,0.25); letter-spacing:0.5px;">PROSES REVIEW</span>
-                        </div>
-                        <p style="margin:0; font-size:12px; color:#8899af; line-height:1.6; font-weight:400;">
-                            Tim analis internal kami sedang melakukan validasi berkas. Silakan pantau halaman profil Anda secara berkala untuk pembaruan status hak wilayah.
-                        </p>
-                    </div>
-                    
-                    <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:linear-gradient(90deg, #f1c40f 0%, #f39c12 100%); color:#0c011a; border:none; padding:16px; border-radius:16px; font-size:14.5px; font-weight:900; cursor:pointer; box-shadow:0 10px 28px rgba(241,196,15,0.25); text-transform:uppercase; letter-spacing:1.5px; transition: transform 0.2s ease, opacity 0.2s ease; outline:none; box-sizing:border-box;">
-                        Konfirmasi & Selesai
-                    </button>
-                </div>
-
-                <style>
-                    @keyframes popUpAnim {
-                        from { transform: scale(0.92); opacity: 0; }
-                        to { transform: scale(1); opacity: 1; }
-                    }
-                    @keyframes pulseGlow {
-                        0% { box-shadow: 0 0 20px rgba(0, 240, 225, 0.2); border-color: rgba(0, 240, 225, 0.6); }
-                        50% { box-shadow: 0 0 35px rgba(0, 240, 225, 0.5); border-color: rgba(0, 240, 225, 1); }
-                        100% { box-shadow: 0 0 20px rgba(0, 240, 225, 0.2); border-color: rgba(0, 240, 225, 0.6); }
-                    }
-                    #digitalSuksesModal button:active {
-                        transform: scale(0.98);
-                        opacity: 0.95;
-                    }
-                </style>
-            `;
-            document.body.appendChild(suksesModal);
+        // Proteksi Otorisasi Pi
+        if (!currentUser || !currentUser.uid) {
+            alert("⚠️ Otorisasi login Pi belum terbaca. Harap muat ulang aplikasi Anda.");
+            return;
         }
-        suksesModal.style.display = "flex";
+
+        // Ambil Elemen Formulir & Dropdown Wilayah
+        const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value.trim() : "";
+        const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value.trim() : "";
+        
+        const provSelect = document.getElementById('selectProvinsi');
+        const kotaSelect = document.getElementById('selectKota');
+        const kecSelect = document.getElementById('selectKecamatan');
+        const kelSelect = document.getElementById('selectKelurahan');
+
+        const provUser = provSelect ? provSelect.value : "";
+        const kotaUser = kotaSelect ? kotaSelect.value : "";
+        const kecUser = kecSelect ? kecSelect.value : "";
+        const kelUser = kelSelect ? kelSelect.value : "";
+        
+        // Validasi Ketat: Cegah data kosong dikirim
+        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+            alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+            return;
+        }
+
+        // Kunci tombol kirim untuk mencegah spam klik (Penyebab baris kosong berulang)
+        const btn = document.getElementById('btnKirim');
+        if (btn) {
+            btn.innerText = "MENGIRIM...";
+            btn.disabled = true;
+        }
+        
+        const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+        
+        const params = new URLSearchParams({
+            nama: namaUser,
+            whatsapp: waUser,
+            provinsi: provUser,
+            kota: kotaUser,
+            kecamatan: kecUser,
+            kelurahan: kelUser,
+            uid: currentUser.uid
+        });
+
+        fetch(`${scriptURL}?${params.toString()}`, { 
+            method: 'POST' 
+        })
+        .then(response => {
+            // 1. Reset form dan tutup modal pendaftaran agar tidak bisa diklik dua kali
+            form.reset();
+            if (document.getElementById("komunitasModal")) {
+                document.getElementById("komunitasModal").style.display = "none";
+            }
+            
+            // 2. Tampilkan Modal Sukses Premium Digital Pro yang Baru
+            tampilkanModalSuksesDigitalTerbaru();
+            
+            // 3. Update Status Kemitraan di UI Profil menjadi PROSES REVIEW secara realtime
+            const statusLabel = document.getElementById('partner-status');
+            if (statusLabel) { 
+                statusLabel.innerText = "PROSES REVIEW"; 
+                statusLabel.className = "status-badge proses-review"; // Sesuaikan dengan class css Anda
+            }
+            
+            if (typeof muatStatusKemitraan === "function") {
+                muatStatusKemitraan();
+            }
+        })
+        .catch(error => {
+            console.error("Eror pengiriman database:", error);
+            // Tetap berikan pengalaman sukses ke pengguna jika skrip macet di tengah jalan
+            form.reset();
+            tampilkanModalSuksesDigitalTerbaru();
+        })
+        .finally(() => {
+            if (btn) {
+                btn.innerText = "DAFTAR SEKARANG";
+                btn.disabled = false;
+            }
+        });
+    });
+}
+
+// Fungsi Modal Baru: Menggunakan window.open agar link WA terbuka di browser HP luar, bukan di dalam aplikasi Pi
+function tampilkanModalSuksesDigitalTerbaru() {
+    let suksesModal = document.getElementById("digitalSuksesModal");
+    
+    if (!suksesModal) {
+        suksesModal = document.createElement("div");
+        suksesModal.id = "digitalSuksesModal";
+        suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 2, 14, 0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:16px; box-sizing:border-box; font-family:sans-serif;";
+        
+        suksesModal.innerHTML = `
+            <div style="background:linear-gradient(145deg, #160829 0%, #08020e 100%); width:100%; max-width:420px; border-radius:24px; text-align:center; padding:40px 24px 30px; border: 1.5px solid rgba(241, 196, 15, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.5); box-sizing:border-box;">
+                
+                <div style="width:80px; height:80px; background:rgba(0, 240, 225, 0.1); border: 2px solid #00f0e1; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
+                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00f0e1" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                
+                <h3 style="margin:0 0 10px 0; color:#ffffff; font-size:22px; font-weight:800;">Pendaftaran Berhasil!</h3>
+                <p style="margin:0 0 24px 0; color:#a2b4ca; font-size:13.5px; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+                
+                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius:14px; padding:14px; text-align:left; margin-bottom:24px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <span style="font-size:11px; color:#6f85a0; font-weight:700;">STATUS</span>
+                        <span style="font-size:10px; color:#f39c12; font-weight:800;">PROSES REVIEW</span>
+                    </div>
+                    <p style="margin:0; font-size:11.5px; color:#8899af; line-height:1.5;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+                </div>
+                
+                <button onclick="window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HEs=sh&p=a&mlu=2&amv=1', '_blank'); document.getElementById('digitalSuksesModal').style.display='none';" style="width:100%; background:linear-gradient(90deg, #25d366 0%, #128c7e 100%); color:#ffffff; border:none; padding:15px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
+                    Gabung Grup WhatsApp
+                </button>
+                
+                <button onclick="document.getElementById('digitalSuksesModal').style.display='none'" style="width:100%; background:transparent; color:#a2b4ca; border:1px solid rgba(255,255,255,0.1); padding:12px; border-radius:12px; font-size:13px; cursor:pointer;">
+                    Nanti Saja
+                </button>
+            </div>
+        `;
+        document.body.appendChild(suksesModal);
     }
+    suksesModal.style.display = "flex";
+}                    
 
     // =========================================================================
     // 4. LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC

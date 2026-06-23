@@ -2070,87 +2070,66 @@ if (form) {
 // FUNGSI SINKRONISASI STATUS KEMITRAAN (VERSI ADVANCED & AMAN PI BROWSER)
 // =========================================================================
 function muatStatusKemitraan() {
-    // 1. Ambil elemen label status di halaman profil
     const penunjukStatus = document.getElementById('partner-status');
+    const labelLogistik = document.getElementById('logistik-share'); 
+    const labelItem = document.getElementById('item-terproses');     
     
-    // 2. Proteksi Awal: Jika user belum login atau UID tidak ada, langsung amankan UI tanpa melempar error
-    if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-        console.log("Sinkronisasi Kemitraan: User belum ter-otentikasi. Menggunakan tampilan default.");
+    if (!currentUser || !currentUser.uid) {
         if (penunjukStatus) {
             penunjukStatus.innerText = "BELUM LOGIN";
             penunjukStatus.style.background = "#f1f5f9";
             penunjukStatus.style.color = "#64748b";
-            penunjukStatus.style.border = "1px solid #cbd5e1";
         }
         return;
     }
     
-    // 3. Gunakan blok try-catch pembungkus agar kegagalan jaringan tidak mematikan sisa pipeline aplikasi
-    try {
-        // FIX: Menggunakan SCRIPT_URL huruf besar dan action=cekStatus agar terbaca di Apps Script terbaru
-        fetch(`${SCRIPT_URL}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script tidak bersih");
-                return res.json();
-            })
-            .then(data => {
-                if (!data) return;
-                
-                // FIX: Menyesuaikan pembacaan variabel objek dengan hasil dari Apps Script terbaru (statusKemitraan)
-                const statusSistem = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "";
-                
-                // 4. ATUR WARNA KOTAK STATUS SECARA PREMIUM BERDASARKAN RESPON GOOGLE SHEETS
-                if (penunjukStatus) {
-                    if (statusSistem === "DISETUJUI" || statusSistem === "MITRA SAH WILAYAH" || statusSistem === "MITRA SAH") {
-                        // Tampilan Sukses (Digital Pro Green)
-                        penunjukStatus.style.background = "#e8f8f5"; 
-                        penunjukStatus.style.color = "#2ecc71";      
-                        penunjukStatus.style.border = "1px solid #2ecc71";
-                        penunjukStatus.innerText = "✅ MITRA SAH WILAYAH";
-                    } else if (statusSistem === "PROSES REVIEW" || statusSistem === "MENUNGGU VERIFIKASI" || statusSistem === "MENUNGGU") {
-                        // Tampilan Menunggu (Digital Pro Warning Yellow)
-                        penunjukStatus.style.background = "#fef3c7";
-                        penunjukStatus.style.color = "#f59e0b";
-                        penunjukStatus.style.border = "1px solid #f59e0b";
-                        penunjukStatus.innerText = "PROSES REVIEW";
-                    } else if (statusSistem === "DITOLAK") {
-                        // Tampilan Gagal (Digital Pro Danger Red)
-                        penunjukStatus.style.background = "#fee2e2";
-                        penunjukStatus.style.color = "#ef4444";
-                        penunjukStatus.style.border = "1px solid #ef4444";
-                        penunjukStatus.innerText = "❌ PENGAJUAN DITOLAK";
-                    } else {
-                        // Tampilan Awal / Belum Mengisi Form sama sekali
-                        penunjukStatus.style.background = "#f1f5f9";
-                        penunjukStatus.style.color = "#64748b";
-                        penunjukStatus.style.border = "1px solid #cbd5e1";
-                        penunjukStatus.innerText = "BELUM TERDAFTAR";
-                    }
-                }
-                
-                // 5. UPDATE ANGKA DINAMIS PADA KARTU LOGISTIK SHARE & PRODUK TERPROSES
-                const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
-                if (infoCards && infoCards.length >= 2) {
-                    // FIX: Menyesuaikan key dengan data.logistikShare (Kolom I) & data.produkTerproses (Kolom J)
-                    if (data.logistikShare) infoCards[0].innerText = data.logistikShare;
-                    if (data.produkTerproses) infoCards[1].innerText = data.produkTerproses;
-                    
-                    // Jika statusnya sah, ubah teks angka logistik share menjadi hijau tebal agar menarik
-                    if (statusSistem === "DISETUJUI" || statusSistem === "MITRA SAH WILAYAH" || statusSistem === "MITRA SAH") {
-                        infoCards[0].style.color = "#2ecc71";
-                        infoCards[0].style.fontWeight = "bold";
-                    } else {
-                        // Kembalikan ke warna bawaan jika belum disetujui admin
-                        infoCards[0].style.color = "";
-                        infoCards[0].style.fontWeight = "";
-                    }
-                }
-            })
-            .catch(fetchErr => {
-                console.warn("Koneksi ke Google Sheets dibatasi atau tertunda di Pi Browser:", fetchErr);
-            });
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    
+    // Kirim parameter action=cekStatus agar Apps Script tahu ini adalah request pembacaan data
+    fetch(`${scriptURL}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    .then(res => {
+        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        
+        if (data.status === "ditemukan") {
+            // 1. Normalisasi teks status menjadi huruf kapital
+            const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
             
-    } catch (fatalErr) {
-        console.error("Sistem mengisolasi error kemitraan:", fatalErr);
-    }
-                }            
+            if (penunjukStatus) {
+                penunjukStatus.innerText = statusFinal;
+                
+                // 2. Pewarnaan UI Dinamis & Presisi sesuai status di database
+                if (statusFinal === "DISETUJUI") {
+                    penunjukStatus.style.background = "#d1fae5"; // Hijau Muda
+                    penunjukStatus.style.color = "#065f46";      // Hijau Tua
+                } else if (statusFinal === "PROSES REVIEW") {
+                    penunjukStatus.style.background = "#fef3c7"; // Kuning Muda
+                    penunjukStatus.style.color = "#92400e";      // Oranye/Coklat Peninjauan
+                } else {
+                    penunjukStatus.style.background = "#fee2e2"; // Merah jika Ditolak/Lainnya
+                    penunjukStatus.style.color = "#991b1b";
+                }
+            }
+            
+            // 3. Perbarui angka presentase share logistik & total item terproses
+            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
+            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
+            
+        } else {
+            // Jika UID tidak ditemukan sama sekali di Google Sheets
+            if (penunjukStatus) {
+                penunjukStatus.innerText = "BELUM TERDAFTAR";
+                penunjukStatus.style.background = "#f1f5f9";
+                penunjukStatus.style.color = "#64748b";
+            }
+            if (labelLogistik) labelLogistik.innerText = "0.00 %";
+            if (labelItem) labelItem.innerText = "0 Item";
+        }
+    })
+    .catch(err => {
+        console.error("Gagal melakukan sinkronisasi profil:", err);
+    });
+}

@@ -2069,6 +2069,7 @@ function muatStatusKemitraan() {
             penunjukStatus.innerText = "BELUM LOGIN";
             penunjukStatus.style.background = "#f1f5f9";
             penunjukStatus.style.color = "#64748b";
+            penunjukStatus.style.border = "1px solid #cbd5e1";
         }
         return;
     }
@@ -2077,7 +2078,8 @@ function muatStatusKemitraan() {
     
     // 3. Gunakan blok try-catch pembungkus agar kegagalan jaringan tidak mematikan sisa pipeline aplikasi
     try {
-        fetch(`${scriptURL}?uid=${encodeURIComponent(currentUser.uid)}`)
+        // PERBAIKAN: Menambahkan parameter &action=cekStatus agar Apps Script membaca baris terbawah tabel
+        fetch(`${scriptURL}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
             .then(res => {
                 if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script tidak bersih");
                 return res.json();
@@ -2085,8 +2087,8 @@ function muatStatusKemitraan() {
             .then(data => {
                 if (!data) return;
                 
-                // NORMALISASI TEKS STATUS (Mengubah ke huruf kapital agar pengecekan akurat)
-                const statusSistem = data.status ? data.status.toUpperCase() : "";
+                // PERBAIKAN: Menyesuaikan pembacaan variabel objek dengan hasil dari Apps Script terbaru
+                const statusSistem = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "";
                 
                 // 4. ATUR WARNA KOTAK STATUS SECARA PREMIUM BERDASARKAN RESPON GOOGLE SHEETS
                 if (penunjukStatus) {
@@ -2109,7 +2111,7 @@ function muatStatusKemitraan() {
                         penunjukStatus.style.border = "1px solid #ef4444";
                         penunjukStatus.innerText = "❌ PENGAJUAN DITOLAK";
                     } else {
-                        // Tampilan Awal / Belum Mengisi Form sama sekali
+                        // Tampilan Awal / Belum Mengisi Form sama sekali (Jika response status adalah "belum_daftar")
                         penunjukStatus.style.background = "#f1f5f9";
                         penunjukStatus.style.color = "#64748b";
                         penunjukStatus.style.border = "1px solid #cbd5e1";
@@ -2120,15 +2122,18 @@ function muatStatusKemitraan() {
                 // 5. UPDATE ANGKA DINAMIS PADA KARTU LOGISTIK SHARE & PRODUK TERPROSES
                 const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
                 if (infoCards && infoCards.length >= 2) {
-                    // Update Nilai Logistik Share (Kolom I)
-                    if (data.share) infoCards[0].innerText = data.share;
-                    // Update Nilai Produk Terproses (Kolom J)
-                    if (data.terproses) infoCards[1].innerText = data.terproses;
+                    // PERBAIKAN: Menyesuaikan key dengan data.logistikShare (Kolom I) & data.produkTerproses (Kolom J)
+                    if (data.logistikShare) infoCards[0].innerText = data.logistikShare;
+                    if (data.produkTerproses) infoCards[1].innerText = data.produkTerproses;
                     
                     // Jika statusnya sah, ubah teks angka logistik share menjadi hijau tebal agar menarik
                     if (statusSistem === "DISETUJUI" || statusSistem === "MITRA SAH WILAYAH" || statusSistem === "MITRA SAH") {
                         infoCards[0].style.color = "#2ecc71";
                         infoCards[0].style.fontWeight = "bold";
+                    } else {
+                        // Kembalikan ke warna bawaan jika belum disetujui admin
+                        infoCards[0].style.color = "";
+                        infoCards[0].style.fontWeight = "";
                     }
                 }
             })

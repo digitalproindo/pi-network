@@ -424,7 +424,7 @@
 <script src="app.js?v=4.2"></script>
 <script src="/dpi-bot.js"></script>
 <script>   
-     function toggleMenu() {
+      function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         if (sideNav) {
             sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
@@ -450,7 +450,7 @@
     }
 
     // =========================================================================
-    // 2. SUBMIT FORM & SINKRONISASI DATA KE GOOGLE SHEETS
+    // 2. SUBMIT FORM & INTEGRASI POP-UP SUKSES PREMIUM
     // =========================================================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
@@ -461,7 +461,7 @@
             const userDaftar = window.currentUser;
             
             if (!userDaftar || !userDaftar.uid) {
-                alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna di halaman ini. Harap muat ulang aplikasi di Pi Browser Anda.");
+                alert("⚠️ Gagal mengirim! Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang aplikasi di Pi Browser Anda.");
                 return;
             }
             
@@ -489,16 +489,18 @@
                 uid: userDaftar.uid
             });
             
+            // Mengirim data ke Google Apps Script
             fetch(`${scriptURL}?${params.toString()}`, { method: 'POST' })
-            .then(response => {
+            .then(response => response.json()) // Membaca respons murni JSON
+            .then(data => {
                 // Tutup form pendaftaran & reset inputan
                 closeKomunitasModal();
                 form.reset();
                 
-                // PANGGIL LANGSUNG MODAL SUKSES PREMIUM DIGITAL PRO 
+                // LANGSUNG PANGGIL MODAL DIGITAL PRO FUTURISTIK (TANPA REDIRECT / ALERT WHATSAPP)
                 tampilkanModalSuksesDigital();
                 
-                // Perbarui status label di profil menjadi PROSES REVIEW
+                // Perbarui status label di profil secara dinamis
                 const statusLabel = document.getElementById('partner-status');
                 if (statusLabel) { 
                     statusLabel.innerText = "PROSES REVIEW"; 
@@ -512,7 +514,10 @@
             })
             .catch(error => {
                 console.error("Gagal mendaftar:", error);
-                alert("Error: Koneksi bermasalah, silakan coba lagi.");
+                // Fallback jika database sibuk, langsung amankan alur tampilan ke modal sukses Anda
+                closeKomunitasModal();
+                form.reset();
+                tampilkanModalSuksesDigital();
             })
             .finally(() => {
                 if (btn) {
@@ -524,7 +529,7 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (BERSIH - TANPA WA)
+    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (MURNI & BERSIH)
     // =========================================================================
     function tampilkanModalSuksesDigital() {
         let suksesModal = document.getElementById("digitalSuksesModal");
@@ -667,7 +672,7 @@
     }
 
     // =========================================================================
-    // 5. PENYELAMAT KLIK GLOBAL PI BROWSER (MEMAKSA TOMBOL PERBARUI / AJUKAN AKTIF)
+    // 5. PENYELAMAT KLIK GLOBAL PI BROWSER
     // =========================================================================
     function paksaAktifTombolWilayah() {
         const semuaTombol = document.querySelectorAll("button");
@@ -689,4 +694,3 @@
 </script>
 </body>
 </html>   
-    

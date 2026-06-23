@@ -2235,31 +2235,6 @@ window.tampilkanModalSuksesDigital = function() {
     };
 };
 
-    // 3. Logika interaksi dan penutupan tombol (X)
-    const closeBtn = overlay.querySelector('#close-overlay-sukses');
-    
-    // Efek transisi warna tombol saat disentuh (Hover effect)
-    closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; };
-    closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(0, 0, 0, 0.08)"; closeBtn.style.color = "#1a0033"; };
-    
-    // Menutup modal secara instan saat tombol (X) diklik
-    closeBtn.onclick = (e) => {
-        e.stopPropagation();
-        overlay.remove();
-    };
-
-    // Event Listener untuk tombol "Kembali ke Beranda" di bagian bawah
-    const btnBeranda = overlay.querySelector('#btn-kembali-beranda');
-    btnBeranda.onclick = () => { 
-        overlay.remove(); 
-        if(typeof window.closeKomunitasModal === "function") {
-            window.closeKomunitasModal();
-        } else {
-            location.reload(); 
-        }
-    };
-};
-
 // 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');

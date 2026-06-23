@@ -2045,64 +2045,67 @@ setTimeout(() => {
 // 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 function muatStatusKemitraan() {
     const penunjukStatus = document.getElementById('partner-status');
-    if (!penunjukStatus) return; 
+    const labelLogistik = document.getElementById('logistik-share'); 
+    const labelItem = document.getElementById('item-terproses');     
     
-    if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-        penunjukStatus.innerText = "BELUM LOGIN";
+    if (!currentUser || !currentUser.uid) {
+        if (penunjukStatus) {
+            penunjukStatus.innerText = "BELUM LOGIN";
+            penunjukStatus.style.background = "#f1f5f9";
+            penunjukStatus.style.color = "#64748b";
+        }
         return;
     }
     
-    try {
-        fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
-            .then(res => {
-                if (!res.ok) throw new Error("Respon server Google Sheets bermasalah");
-                return res.json();
-            })
-            .then(data => {
-                if (!data) return;
-                
-                const statusSistem = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "";
-                
-                if (statusSistem === "DISETUJUI" || statusSistem === "MITRA SAH WILAYAH" || statusSistem === "MITRA SAH") {
-                    penunjukStatus.style.background = "#e8f8f5"; 
-                    penunjukStatus.style.color = "#2ecc71";      
-                    penunjukStatus.style.border = "1px solid #2ecc71";
-                    penunjukStatus.innerText = "✅ MITRA SAH WILAYAH";
-                } else if (statusSistem === "PROSES REVIEW" || statusSistem === "MENUNGGU VERIFIKASI" || statusSistem === "MENUNGGU") {
-                    penunjukStatus.style.background = "#fef3c7";
-                    penunjukStatus.style.color = "#f59e0b";
-                    penunjukStatus.style.border = "1px solid #f59e0b";
-                    penunjukStatus.innerText = "PROSES REVIEW";
-                } else if (statusSistem === "DITOLAK") {
-                    penunjukStatus.style.background = "#fee2e2";
-                    penunjukStatus.style.color = "#ef4444";
-                    penunjukStatus.style.border = "1px solid #ef4444";
-                    penunjukStatus.innerText = "❌ PENGAJUAN DITOLAK";
-                } else {
-                    penunjukStatus.style.background = "#f1f5f9";
-                    penunjukStatus.style.color = "#64748b";
-                    penunjukStatus.style.border = "1px solid #cbd5e1";
-                    penunjukStatus.innerText = "BELUM TERDAFTAR";
-                }
-                
-                const infoCards = document.querySelectorAll('#page-profile div[style*="background: #f1f5f9"] p:last-child');
-                if (infoCards && infoCards.length >= 2) {
-                    if (data.logistikShare) infoCards[0].innerText = data.logistikShare;
-                    if (data.produkTerproses) infoCards[1].innerText = data.produkTerproses;
-                    
-                    if (statusSistem === "DISETUJUI" || statusSistem === "MITRA SAH WILAYAH" || statusSistem === "MITRA SAH") {
-                        infoCards[0].style.color = "#2ecc71";
-                        infoCards[0].style.fontWeight = "bold";
-                    }
-                }
-            })
-            .catch(fetchErr => {
-                console.warn("Eror sinkronisasi profil diredam:", fetchErr);
-            });
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    
+    // Kirim parameter action=cekStatus agar Apps Script tahu ini adalah request pembacaan data
+    fetch(`${scriptURL}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    .then(res => {
+        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        
+        if (data.status === "ditemukan") {
+            // 1. Normalisasi teks status menjadi huruf kapital
+            const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
             
-    } catch (fatalErr) {
-        console.error("Eror fatal profil berhasil diredam:", fatalErr);
-    }
+            if (penunjukStatus) {
+                penunjukStatus.innerText = statusFinal;
+                
+                // 2. Pewarnaan UI Dinamis & Presisi sesuai status di database
+                if (statusFinal === "DISETUJUI") {
+                    penunjukStatus.style.background = "#d1fae5"; // Hijau Muda
+                    penunjukStatus.style.color = "#065f46";      // Hijau Tua
+                } else if (statusFinal === "PROSES REVIEW") {
+                    penunjukStatus.style.background = "#fef3c7"; // Kuning Muda
+                    penunjukStatus.style.color = "#92400e";      // Oranye/Coklat Peninjauan
+                } else {
+                    penunjukStatus.style.background = "#fee2e2"; // Merah jika Ditolak/Lainnya
+                    penunjukStatus.style.color = "#991b1b";
+                }
+            }
+            
+            // 3. Perbarui angka presentase share logistik & total item terproses
+            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
+            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
+            
+        } else {
+            // Jika UID tidak ditemukan sama sekali di Google Sheets
+            if (penunjukStatus) {
+                penunjukStatus.innerText = "BELUM TERDAFTAR";
+                penunjukStatus.style.background = "#f1f5f9";
+                penunjukStatus.style.color = "#64748b";
+            }
+            if (labelLogistik) labelLogistik.innerText = "0.00 %";
+            if (labelItem) labelItem.innerText = "0 Item";
+        }
+    })
+    .catch(err => {
+        console.error("Gagal melakukan sinkronisasi profil:", err);
+    });
 }
 
 // =========================================================================

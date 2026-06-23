@@ -1815,9 +1815,8 @@ window.switchPage = (pageId) => {
     }
 };
 
-
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS
+// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - FIXED VERSION
 // =========================================================================
 window.handlePayment = async (amount, name) => {
     if (!isPiInitialized) {
@@ -1828,11 +1827,17 @@ window.handlePayment = async (amount, name) => {
     if (!userAddress.nama) { showAddressPrompt(); return; }
 
     let detailedItemName = name;
-    if (name === 'Total Keranjang' && cart.length > 0) {
+    if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
         detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
     }
 
-    const secureAmountString = parseFloat(amount).toFixed(7).toString();
+    // PERBAIKAN 1: Amankan konversi agar parameter angka maupun string tidak memicu eror .toFixed()
+    const parsedAmount = parseFloat(amount);
+    if (isNaN(parsedAmount)) {
+        alert("⚠️ Format harga tidak valid.");
+        return;
+    }
+    const secureAmountString = parsedAmount.toFixed(7).toString();
 
     try {
         if (!window.Pi) {
@@ -1864,13 +1869,16 @@ window.handlePayment = async (amount, name) => {
                 });
                 if (res.ok) { 
                     showSuccessOverlay(secureAmountString, detailedItemName, txid);
-                    if(name === 'Total Keranjang') { cart = []; window.updateCartUI(); }
+                    if(name === 'Total Keranjang') { 
+                        cart = []; 
+                        if (typeof window.updateCartUI === 'function') window.updateCartUI(); 
+                    }
                 }
             },
             onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
             onError: (error, payment) => { 
                 console.error("Payment Error:", error); 
-                if(payment) handleIncompletePayment(payment); 
+                if(payment && typeof handleIncompletePayment === 'function') handleIncompletePayment(payment); 
             }
         });
     } catch (err) { 
@@ -1879,7 +1887,9 @@ window.handlePayment = async (amount, name) => {
 };
 
 function showSuccessOverlay(amount, name, txid) {
+    // Gunakan SCRIPT_URL yang terpadu agar tidak terjadi bentrok variabel
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    
     const dataTransaksi = {
         tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
         penerima: userAddress.nama,
@@ -1891,13 +1901,21 @@ function showSuccessOverlay(amount, name, txid) {
         telepon: userAddress.telepon
     };
 
-    fetch(excelWebhookUrl, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(dataTransaksi) })
+    // PERBAIKAN 2: Gunakan URLSearchParams + metode POST biasa tanpa 'no-cors' agar data bodi masuk sempurna ke Google Sheets
+    const googleFormBody = new URLSearchParams(dataTransaksi);
+
+    fetch(excelWebhookUrl, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
+        body: googleFormBody.toString() 
+    })
+    .then(() => console.log("Data pesanan berhasil disinkronkan ke server Google Sheets."))
     .catch(err => console.error("Gagal catat Excel:", err));
 
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
     
-    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${name}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${userAddress.nama}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${userAddress.alamatLengkap}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(userAddress.nama)}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${encodeURIComponent(userAddress.alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
 
     overlay.innerHTML = `
         <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif;">

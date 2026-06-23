@@ -2097,8 +2097,70 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 7. PENANGANAN SUBMIT FORM KOMUNITAS
+    // =========================================================================
+// PENANGANAN SUBMIT FORM KOMUNITAS + TOMBOL TOMBOL (X) POJOK KANAN ATAS
+// =========================================================================
+const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+let statusKirimKomunitas = false;
+
+document.addEventListener("DOMContentLoaded", () => {
     const formAman = document.getElementById('formKomunitas');
+    
     if (formAman) {
+        // 🔴 FITUR BARU: INJEKSI TOMBOL (X) DI POJOK KANAN ATAS SECARA OTOMATIS
+        // Memastikan induk/form memiliki posisi relatif agar tombol absolute berfungsi presisi
+        formAman.style.position = "relative"; 
+
+        // Buat elemen tombol silang (X)
+        const closeBtn = document.createElement('button');
+        closeBtn.type = "button"; // Mencegah form ke-submit tidak sengaja
+        closeBtn.innerHTML = "&times;"; // Karakter silang (X) yang elegan
+        
+        // Atur styling CSS tombol silang agar berada tepat di pojok kanan atas form
+        closeBtn.style.cssText = `
+            position: absolute;
+            top: 12px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 999;
+        `;
+
+        // Efek visual interaktif saat kursor berada di atas tombol
+        closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#fff"; };
+        closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(255, 255, 255, 0.1)"; closeBtn.style.color = "#ffffff"; };
+
+        // Aksi ketika tombol (X) diklik
+        closeBtn.onclick = (e) => {
+            e.preventDefault();
+            if (typeof window.closeKomunitasModal === "function") {
+                window.closeKomunitasModal();
+            } else {
+                // Alternatif cadangan jika fungsi closeKomunitasModal terpisah dari pembungkus utama
+                const modalWrapper = formAman.closest('[id*="modal"]') || formAman.parentElement;
+                if (modalWrapper) modalWrapper.style.display = "none";
+            }
+        };
+
+        // Tempelkan tombol silang ke dalam form komunitas
+        formAman.appendChild(closeBtn);
+
+
+        // =========================================================================
+        // PIPELINE LOGIKA SUBMIT FORM (SAMA SEPERTI SEBELUMNYA)
+        // =========================================================================
         formAman.addEventListener('submit', e => {
             e.preventDefault();
             
@@ -2143,7 +2205,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 uid: currentUser.uid
             };
 
-            // PERBAIKAN UTAMA: Kirim data menggunakan URLSearchParams di dalam BODY POST agar dibaca sempurna oleh doPost() Google Apps Script
             fetch(SCRIPT_URL_AMAN, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },

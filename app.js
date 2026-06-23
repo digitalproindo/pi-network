@@ -2182,48 +2182,48 @@ document.addEventListener("DOMContentLoaded", async () => {
 // PERBAIKAN TOTAL: MODAL BERHASIL DENGAN TOMBOL (X) SANGAT JELAS & KONTRAS
 // =========================================================================
 window.tampilkanModalSuksesDigital = function() {
-    // Buat lapisan luar (overlay) hitam transparan
+    // 1. Mempertahankan overlay asli sistem Anda
     const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px); font-family:'Inter', sans-serif;";
+    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px); font-family:'Inter', sans-serif;";
     
-    // Kontainer Box Putih Utama (Diberi posisi relative & overflow visible agar tombol X menyembul sempurna)
+    // 2. Mempertahankan struktur dalam box asli Anda (Warna background, ukuran text, dan padding dipertahankan 100%)
     overlay.innerHTML = `
-        <div style="background:#ffffff; padding:45px 25px 35px; border-radius:30px; max-width:360px; width:100%; text-align:center; position:relative; box-shadow: 0 20px 50px rgba(0,0,0,0.5); box-sizing:border-box;">
+        <div style="background:white; padding:40px 25px 35px; border-radius:30px; max-width:380px; width:100%; text-align:center; position:relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
             
-            <button id="close-overlay-sukses" type="button" style="position:absolute; top:15px; right:15px; background:#f1f5f9; color:#0f172a; border:none; font-size:24px; font-weight:bold; line-height:1; width:34px; height:34px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; z-index:9999999; box-shadow: 0 2px 8px rgba(0,0,0,0.15); font-family:Arial, sans-serif;">&times;</button>
+            <button id="close-overlay-sukses" type="button" style="position:absolute; top:15px; right:15px; background:rgba(0, 0, 0, 0.08); color:#1a0033; border:none; font-size:22px; font-weight:bold; line-height:1; width:34px; height:34px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; z-index:10001;">&times;</button>
             
-            <div style="font-size:55px; margin-bottom:15px; line-height:1;">✅</div>
+            <div style="font-size:45px; margin-bottom:15px;">✅</div>
+            <h2 style="color:#1a0033; margin:0; font-weight:800; font-size:1.4rem;">Pendaftaran Berhasil!</h2>
+            <p style="color:#64748b; margin-top:10px; font-size:0.9rem; line-height:1.4;">Data kemitraan Anda telah sukses direkam dan sedang dalam antrean review sistem.</p>
             
-            <h2 style="color:#0b2135; margin:0 0 10px; font-weight:800; font-size:1.35rem; letter-spacing:-0.5px; padding:0 10px;">Pendaftaran Berhasil!</h2>
-            <p style="color:#475569; margin:0; font-size:0.9rem; line-height:1.5; padding:0 5px;">Data kemitraan Anda telah sukses direkam dan sedang dalam antrean review sistem.</p>
-            
-            <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="display:flex; align-items:center; justify-content:center; background:#25D366; color:#ffffff; text-decoration:none; padding:14px; border-radius:14px; font-weight:bold; margin-top:25px; font-size:0.95rem; box-shadow: 0 4px 15px rgba(37,211,102,0.4); transition: transform 0.2s;">
-                MASUK GRUP WHATSAPP
-            </a>
-            
-            <button id="btn-kembali-beranda" type="button" style="background:none; border:none; color:#64748b; margin-top:20px; cursor:pointer; font-size:0.85rem; font-weight:600; text-decoration:underline; width:100%;">Kembali ke Beranda</button>
+            <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:25px; font-size:0.95rem; box-shadow: 0 4px 12px rgba(37,211,102,0.3);">MASUK GRUP WHATSAPP</a>
+            <button id="btn-kembali-beranda" style="background:none; border:none; color:#94a3b8; margin-top:18px; cursor:pointer; font-size:0.85rem; font-weight:500;">Kembali ke Beranda</button>
         </div>`;
         
     document.body.appendChild(overlay);
 
-    // Ambil element tombol (X) yang baru saja dibuat
+    // 3. Logika interaksi dan penutupan tombol (X)
     const closeBtn = overlay.querySelector('#close-overlay-sukses');
     
-    // Efek Hover Interaktif (Berubah jadi Merah Terang saat disentuh/hover di Pi Browser)
+    // Efek transisi warna tombol saat disentuh (Hover effect)
     closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; };
-    closeBtn.onmouseleave = () => { closeBtn.style.background = "#f1f5f9"; closeBtn.style.color = "#0f172a"; };
+    closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(0, 0, 0, 0.08)"; closeBtn.style.color = "#1a0033"; };
     
-    // Aksi Penutupan Instan saat tombol (X) diklik
-    closeBtn.onclick = (e) => { 
+    // Menutup modal secara instan saat tombol (X) diklik
+    closeBtn.onclick = (e) => {
         e.stopPropagation();
-        overlay.remove(); 
+        overlay.remove();
     };
 
-    // Aksi Penutupan via tombol "Kembali ke Beranda"
+    // Event Listener untuk tombol "Kembali ke Beranda" di bagian bawah
     const btnBeranda = overlay.querySelector('#btn-kembali-beranda');
     btnBeranda.onclick = () => { 
         overlay.remove(); 
-        if(typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+        if(typeof window.closeKomunitasModal === "function") {
+            window.closeKomunitasModal();
+        } else {
+            location.reload(); 
+        }
     };
 };
 

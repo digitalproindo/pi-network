@@ -1929,7 +1929,7 @@ function showSuccessOverlay(amount, name, txid) {
 }
 
 // =========================================================================
-// 7. SIDEBAR MENU & BANNER LOGIC
+// 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION
 // =========================================================================
 window.toggleMenu = () => {
     const nav = document.getElementById("sideNav");
@@ -1950,16 +1950,21 @@ window.toggleDropdown = () => {
     }
 };
 
- // =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION)
 // =========================================================================
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION
+// =========================================================================
+const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+let statusKirimKomunitas = false;
+
 document.addEventListener("DOMContentLoaded", async () => {
-    // 🌟 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
-    renderProducts(productsData, 'main-grid');
+    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+        renderProducts(productsData, 'main-grid');
+    }
 
     // 2. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
-    if (searchInput) {
+    if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {
             const keyword = e.target.value.toLowerCase();
             const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
@@ -1998,22 +2003,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }, 4000);
 
     // 5. Jalankan pipeline login otomatis Pi Network SDK
-    await initPi();
+    if (typeof initPi === "function") {
+        await initPi();
+    }
     
     // 6. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn && !currentUser) {
+    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
         loginBtn.onclick = window.handleAuth;
     }
 
-     // =========================================================================
-// PERBAIKAN 100% AMAN: FIX REFERENCEERROR & PRODUK MUNCUL KEMBALI
-// =========================================================================
-const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-let statusKirimKomunitas = false;
-
-// 1. PENANGANAN SUBMIT FORM KOMUNITAS
-setTimeout(() => {
+    // 7. PENANGANAN SUBMIT FORM KOMUNITAS
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -2050,7 +2050,7 @@ setTimeout(() => {
 
             statusKirimKomunitas = true;
 
-            const paramsAman = new URLSearchParams({
+            const dataKomunitas = {
                 nama: namaUser,
                 whatsapp: waUser,
                 provinsi: provUser,
@@ -2058,10 +2058,14 @@ setTimeout(() => {
                 kecamatan: kecUser,
                 kelurahan: kelUser,
                 uid: currentUser.uid
-            });
+            };
 
-            // BERHASIL DIPERBAIKI: Menggunakan SCRIPT_URL_AMAN sesuai deklarasi atas
-            fetch(`${SCRIPT_URL_AMAN}?${paramsAman.toString()}`, { method: 'POST' })
+            // PERBAIKAN UTAMA: Kirim data menggunakan URLSearchParams di dalam BODY POST agar dibaca sempurna oleh doPost() Google Apps Script
+            fetch(SCRIPT_URL_AMAN, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dataKomunitas).toString()
+            })
             .then(res => res.json())
             .then(response => {
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
@@ -2075,7 +2079,7 @@ setTimeout(() => {
                     window.location.href = "whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q";
                 }, 1000);
 
-                if (typeof muatStatusKemitraan === "function") muatStatusKemitraan();
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
             .catch(err => {
                 console.error("Eror form komunitas:", err);
@@ -2090,15 +2094,15 @@ setTimeout(() => {
             });
         });
     }
-}, 1000);
+});
 
-// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
-function muatStatusKemitraan() {
+// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL (DITEMPEL KE WINDOW AGAR GLOBAL)
+window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share'); 
     const labelItem = document.getElementById('item-terproses');     
     
-    if (!currentUser || !currentUser.uid) {
+    if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
         if (penunjukStatus) {
             penunjukStatus.innerText = "BELUM LOGIN";
             penunjukStatus.style.background = "#f1f5f9";
@@ -2107,10 +2111,8 @@ function muatStatusKemitraan() {
         return;
     }
     
-    const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-    
-    // Kirim parameter action=cekStatus agar Apps Script tahu ini adalah request pembacaan data
-    fetch(`${scriptURL}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    // Kirim parameter action=cekStatus via GET agar dapet dibaca doGet(e) di Apps Script
+    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
     .then(res => {
         if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
         return res.json();
@@ -2119,31 +2121,27 @@ function muatStatusKemitraan() {
         if (!data) return;
         
         if (data.status === "ditemukan") {
-            // 1. Normalisasi teks status menjadi huruf kapital
             const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
             
             if (penunjukStatus) {
                 penunjukStatus.innerText = statusFinal;
                 
-                // 2. Pewarnaan UI Dinamis & Presisi sesuai status di database
                 if (statusFinal === "DISETUJUI") {
-                    penunjukStatus.style.background = "#d1fae5"; // Hijau Muda
-                    penunjukStatus.style.color = "#065f46";      // Hijau Tua
+                    penunjukStatus.style.background = "#d1fae5"; 
+                    penunjukStatus.style.color = "#065f46";      
                 } else if (statusFinal === "PROSES REVIEW") {
-                    penunjukStatus.style.background = "#fef3c7"; // Kuning Muda
-                    penunjukStatus.style.color = "#92400e";      // Oranye/Coklat Peninjauan
+                    penunjukStatus.style.background = "#fef3c7"; 
+                    penunjukStatus.style.color = "#92400e";      
                 } else {
-                    penunjukStatus.style.background = "#fee2e2"; // Merah jika Ditolak/Lainnya
+                    penunjukStatus.style.background = "#fee2e2"; 
                     penunjukStatus.style.color = "#991b1b";
                 }
             }
             
-            // 3. Perbarui angka presentase share logistik & total item terproses
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
         } else {
-            // Jika UID tidak ditemukan sama sekali di Google Sheets
             if (penunjukStatus) {
                 penunjukStatus.innerText = "BELUM TERDAFTAR";
                 penunjukStatus.style.background = "#f1f5f9";
@@ -2156,51 +2154,4 @@ function muatStatusKemitraan() {
     .catch(err => {
         console.error("Gagal melakukan sinkronisasi profil:", err);
     });
-}
-
-// =========================================================================
-// 3. INISIALISASI HALAMAN UTAMA & INPUT PENCARIAN (PRODUK AMAN)
-// =========================================================================
-if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-    renderProducts(productsData, 'main-grid');
-}
-
-const searchInput = document.getElementById('search-input');
-if (searchInput && typeof productsData !== "undefined") {
-    searchInput.addEventListener('input', (e) => {
-        const keyword = e.target.value.toLowerCase();
-        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-        const sResult = document.getElementById('search-results');
-        if (!sResult) return;
-        if (keyword === "") {
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
-        } else {
-            renderProducts(filtered, 'search-results');
-        }
-    });
-}
-
-window.addEventListener('click', function(event) {
-    const nav = document.getElementById("sideNav");
-    const menuIcon = document.querySelector('.menu-icon');
-    if (nav && nav.style.width === "250px" && menuIcon) {
-        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-            nav.style.width = "0px";
-        }
-    }
-});
-
-const banners = [
-    "https://i.ibb.co.com/0jLfN5Sq/Ubay.png",
-    "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png",
-    "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png",
-    "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
-];
-let idx = 0;
-setInterval(() => {
-    const img = document.getElementById('banner-img');
-    if(img) {
-        idx = (idx + 1) % banners.length;
-        img.src = banners[idx];
-    }
-}, 4000);               
+};                

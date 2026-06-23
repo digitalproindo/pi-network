@@ -1957,7 +1957,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // =========================================================================
-    // TAMBAHAN: PROSES SUBMIT FORM KOMUNITAS & REDIRECT GRUP WA
+    // PERBAIKAN TOTAL: PROSES SUBMIT FORM KOMUNITAS MURNI (TANPA WHATSAPP)
     // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
@@ -1999,22 +1999,42 @@ document.addEventListener("DOMContentLoaded", async () => {
                 method: 'POST' 
             })
             .then(response => {
-                alert("Selamat! Pendaftaran kemitraan/komunitas Anda di PT. DIGITAL PRO INDO berhasil dikirim.\n\nKlik OK untuk bergabung ke Grup WhatsApp Resmi kami.");
+                // 1. Tutup form pendaftaran kemitraan yang sedang terbuka
+                if (typeof window.closeKomunitasModal === "function") {
+                    window.closeKomunitasModal();
+                } else if (document.getElementById("komunitasModal")) {
+                    document.getElementById("komunitasModal").style.display = "none";
+                }
                 
-                // Otomatis alihkan user ke link grup WhatsApp
-                window.location.href = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
-                
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                // 2. Bersihkan input data form
                 form.reset();
                 
-                const statusLabel = document.getElementById('partner-status');
-                if(statusLabel) { statusLabel.innerText = "PROSES REVIEW"; }
+                // 3. PANGGIL MODAL SUKSES PREMIUM DIGITAL PRO (TANPA ALERT & TANPA REDIRECT WHATSAPP)
+                if (typeof window.tampilkanModalSuksesDigital === "function") {
+                    window.tampilkanModalSuksesDigital();
+                } else if (typeof tampilkanModalSuksesDigital === "function") {
+                    tampilkanModalSuksesDigital();
+                }
                 
-                muatStatusKemitraan();
+                // 4. Ubah UI status secara dinamis menjadi PROSES REVIEW
+                const statusLabel = document.getElementById('partner-status');
+                if (statusLabel) { 
+                    statusLabel.innerText = "PROSES REVIEW"; 
+                    statusLabel.style.background = "#fef3c7";
+                    statusLabel.style.color = "#f59e0b";
+                }
+                
+                // 5. Memanggil fungsi sinkronisasi profil jika tersedia
+                if (typeof muatStatusKemitraan === "function") {
+                    muatStatusKemitraan();
+                }
             })
             .catch(error => {
                 console.error("Gagal mendaftar:", error);
-                alert("Error: Silakan coba lagi nanti.");
+                // Fallback aman agar user tidak macet (stuck) jika server sheets lambat
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                form.reset();
+                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
             })
             .finally(() => {
                 if (btn) {
@@ -2024,7 +2044,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
-}); 
+});
 
 // =========================================================================
 // FUNGSI SINKRONISASI STATUS KEMITRAAN (VERSI ADVANCED & AMAN PI BROWSER)

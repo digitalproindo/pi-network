@@ -1956,9 +1956,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-
-    // =========================================================================
-// PERBAIKAN UTUH & AMAN: FORM, SINKRONISASI PROFIL, DAN RENDER PRODUK
+     // =========================================================================
+// PERBAIKAN 100% AMAN: FIX REFERENCEERROR & PRODUK MUNCUL KEMBALI
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
@@ -2011,6 +2010,7 @@ setTimeout(() => {
                 uid: currentUser.uid
             });
 
+            // BERHASIL DIPERBAIKI: Menggunakan SCRIPT_URL_AMAN sesuai deklarasi atas
             fetch(`${SCRIPT_URL_AMAN}?${paramsAman.toString()}`, { method: 'POST' })
             .then(res => res.json())
             .then(response => {
@@ -2106,53 +2106,48 @@ function muatStatusKemitraan() {
 }
 
 // =========================================================================
-// 3. INISIALISASI HALAMAN UTAMA & INPUT PENCARIAN (AGAR PRODUK KEMBALI MUNCUL)
+// 3. INISIALISASI HALAMAN UTAMA & INPUT PENCARIAN (PRODUK AMAN)
 // =========================================================================
-
-// Eksekusi pemuatan produk secara langsung agar halaman beranda terisi
 if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-    renderProducts(productsData, 'main-grid'); //
+    renderProducts(productsData, 'main-grid');
 }
 
-// Integrasi pipa pencarian teks produk
 const searchInput = document.getElementById('search-input');
-if (searchInput && typeof productsData !== "undefined") { //
-    searchInput.addEventListener('input', (e) => { //
-        const keyword = e.target.value.toLowerCase(); //
-        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword)); //
-        const sResult = document.getElementById('search-results'); //
-        if (!sResult) return; //
-        if (keyword === "") { //
-            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`; //
-        } else { //
-            renderProducts(filtered, 'search-results'); //
+if (searchInput && typeof productsData !== "undefined") {
+    searchInput.addEventListener('input', (e) => {
+        const keyword = e.target.value.toLowerCase();
+        const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+        const sResult = document.getElementById('search-results');
+        if (!sResult) return;
+        if (keyword === "") {
+            sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+        } else {
+            renderProducts(filtered, 'search-results');
         }
-    }); //
+    });
 }
 
-// Deteksi klik luar untuk menutup Navigasi Samping
-window.addEventListener('click', function(event) { //
-    const nav = document.getElementById("sideNav"); //
-    const menuIcon = document.querySelector('.menu-icon'); //
-    if (nav && nav.style.width === "250px" && menuIcon) { //
-        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) { //
-            nav.style.width = "0px"; //
+window.addEventListener('click', function(event) {
+    const nav = document.getElementById("sideNav");
+    const menuIcon = document.querySelector('.menu-icon');
+    if (nav && nav.style.width === "250px" && menuIcon) {
+        if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
+            nav.style.width = "0px";
         }
     }
-}); //
+});
 
-// Rotasi banner gambar beranda otomatis
-const banners = [ //
-    "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", //
-    "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", //
-    "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", //
-    "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png" //
-]; //
-let idx = 0; //
-setInterval(() => { //
-    const img = document.getElementById('banner-img'); //
-    if(img) { //
-        idx = (idx + 1) % banners.length; //
-        img.src = banners[idx]; //
+const banners = [
+    "https://i.ibb.co.com/0jLfN5Sq/Ubay.png",
+    "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png",
+    "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png",
+    "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
+];
+let idx = 0;
+setInterval(() => {
+    const img = document.getElementById('banner-img');
+    if(img) {
+        idx = (idx + 1) % banners.length;
+        img.src = banners[idx];
     }
-}, 4000); //
+}, 4000);               

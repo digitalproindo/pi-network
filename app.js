@@ -2179,28 +2179,61 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // =========================================================================
-// PERBAIKAN TOTAL: MODAL BERHASIL DENGAN TOMBOL (X) SANGAT JELAS & KONTRAS
+// PERBAIKAN PRESISI: MODAL SUKSES ASLI (DARK THEME) + TOMBOL (X) EMAS DI POJOK KANAN ATAS
 // =========================================================================
 window.tampilkanModalSuksesDigital = function() {
-    // 1. Mempertahankan overlay asli sistem Anda
+    // 1. Overlay latar belakang gelap dengan blur halus
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px); font-family:'Inter', sans-serif;";
     
-    // 2. Mempertahankan struktur dalam box asli Anda (Warna background, ukuran text, dan padding dipertahankan 100%)
+    // 2. STRUKTUR BOX ASLI (Gradasi Gelap, Border Emas, Radius Sesuai Screenshot Anda)
     overlay.innerHTML = `
-        <div style="background:white; padding:40px 25px 35px; border-radius:30px; max-width:380px; width:100%; text-align:center; position:relative; box-shadow: 0 20px 40px rgba(0,0,0,0.3);">
+        <div style="background: linear-gradient(135deg, #140727 0%, #091424 100%); border: 2px solid #FFD700; padding: 45px 22px 30px; border-radius: 25px; max-width: 350px; width: 100%; text-align: center; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.5); box-sizing: border-box;">
             
-            <button id="close-overlay-sukses" type="button" style="position:absolute; top:15px; right:15px; background:rgba(0, 0, 0, 0.08); color:#1a0033; border:none; font-size:22px; font-weight:bold; line-height:1; width:34px; height:34px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; z-index:10001;">&times;</button>
+            <button id="close-overlay-sukses" type="button" style="position:absolute; top:15px; right:15px; background:rgba(255, 215, 0, 0.1); color:#FFD700; border:1px solid rgba(255, 215, 0, 0.3); font-size:20px; font-weight:bold; line-height:1; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; z-index:10002; font-family:Arial, sans-serif;">&times;</button>
             
-            <div style="font-size:45px; margin-bottom:15px;">✅</div>
-            <h2 style="color:#1a0033; margin:0; font-weight:800; font-size:1.4rem;">Pendaftaran Berhasil!</h2>
-            <p style="color:#64748b; margin-top:10px; font-size:0.9rem; line-height:1.4;">Data kemitraan Anda telah sukses direkam dan sedang dalam antrean review sistem.</p>
+            <div style="width: 70px; height: 70px; border: 3px solid #00f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <span style="color: #00f2fe; font-size: 32px; font-weight: bold;">✓</span>
+            </div>
             
-            <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="display:block; background:#25D366; color:white; text-decoration:none; padding:15px; border-radius:12px; font-weight:bold; margin-top:25px; font-size:0.95rem; box-shadow: 0 4px 12px rgba(37,211,102,0.3);">MASUK GRUP WHATSAPP</a>
-            <button id="btn-kembali-beranda" style="background:none; border:none; color:#94a3b8; margin-top:18px; cursor:pointer; font-size:0.85rem; font-weight:500;">Kembali ke Beranda</button>
+            <h2 style="color:#ffffff; margin:0; font-weight:700; font-size:1.45rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h2>
+            <p style="color:#a0aec0; margin:12px 0 25px; font-size:0.88rem; line-height:1.5; padding:0 5px;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+            
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; margin-bottom: 25px; text-align: left;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="color: #718096; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;">STATUS</span>
+                    <span style="color: #FFA500; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;">PROSES REVIEW</span>
+                </div>
+                <p style="color: #a0aec0; margin: 0; font-size: 0.8rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+            </div>
+            
+            <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #00b4db 0%, #00ff87 100%); color:#091424; text-decoration:none; padding:15px; border-radius:14px; font-weight:bold; font-size:0.95rem; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,255,135,0.35);">
+                GABUNG GRUP WHATSAPP
+            </a>
+            
+            <button id="btn-kembali-beranda" type="button" style="background:none; border:none; color:#4a5568; margin-top:18px; cursor:pointer; font-size:0.85rem; font-weight:600; width:100%;">Nanti Saja</button>
         </div>`;
         
     document.body.appendChild(overlay);
+
+    // 3. Kontrol Aksi Tombol (X)
+    const closeBtn = overlay.querySelector('#close-overlay-sukses');
+    
+    // Efek transisi warna tombol (X) saat di-hover/sentuh jari
+    closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; closeBtn.style.borderColor = "#ef4444"; };
+    closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(255, 215, 0, 0.1)"; closeBtn.style.color = "#FFD700"; closeBtn.style.borderColor = "rgba(255, 215, 0, 0.3)"; };
+    
+    closeBtn.onclick = (e) => {
+        e.stopPropagation();
+        overlay.remove();
+    };
+
+    // Kontrol tombol "Nanti Saja" di bagian bawah
+    const btnBeranda = overlay.querySelector('#btn-kembali-beranda');
+    btnBeranda.onclick = () => { 
+        overlay.remove(); 
+    };
+};
 
     // 3. Logika interaksi dan penutupan tombol (X)
     const closeBtn = overlay.querySelector('#close-overlay-sukses');

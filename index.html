@@ -424,7 +424,7 @@
 <script src="app.js?v=4.2"></script>
 <script src="/dpi-bot.js"></script>
 <script>   
-        function toggleMenu() {
+     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         if (sideNav) {
             sideNav.style.width = (sideNav.style.width === "280px") ? "0" : "280px";
@@ -450,7 +450,7 @@
     }
 
     // =========================================================================
-    // 2. SUBMIT FORM + INTEGRASI POP-UP SUKSES CUSTOM "DIGITAL PRO"
+    // 2. SUBMIT FORM & SINKRONISASI DATA KE GOOGLE SHEETS
     // =========================================================================
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
     const form = document.getElementById('formKomunitas');
@@ -491,10 +491,14 @@
             
             fetch(`${scriptURL}?${params.toString()}`, { method: 'POST' })
             .then(response => {
+                // Tutup form pendaftaran & reset inputan
                 closeKomunitasModal();
                 form.reset();
+                
+                // PANGGIL LANGSUNG MODAL SUKSES PREMIUM DIGITAL PRO 
                 tampilkanModalSuksesDigital();
                 
+                // Perbarui status label di profil menjadi PROSES REVIEW
                 const statusLabel = document.getElementById('partner-status');
                 if (statusLabel) { 
                     statusLabel.innerText = "PROSES REVIEW"; 
@@ -508,7 +512,7 @@
             })
             .catch(error => {
                 console.error("Gagal mendaftar:", error);
-                alert("Error: Silakan coba lagi nanti.");
+                alert("Error: Koneksi bermasalah, silakan coba lagi.");
             })
             .finally(() => {
                 if (btn) {
@@ -520,7 +524,7 @@
     }
 
     // =========================================================================
-    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (BERSIH & FUTURISTIK)
+    // 3. FUNGSI LAYOUT MODAL SUKSES PREMIUM "DIGITAL PRO" (BERSIH - TANPA WA)
     // =========================================================================
     function tampilkanModalSuksesDigital() {
         let suksesModal = document.getElementById("digitalSuksesModal");
@@ -528,7 +532,6 @@
         if (!suksesModal) {
             suksesModal = document.createElement("div");
             suksesModal.id = "digitalSuksesModal";
-            // Efek background semi-transparan dengan blur kaca premium (Glassmorphism)
             suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(8, 2, 18, 0.85); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:20px; font-family:'Inter', sans-serif;";
             
             suksesModal.innerHTML = `
@@ -548,7 +551,7 @@
                     <h3 style="margin:0 0 10px 0; color:#ffffff; font-size:24px; font-weight:800; letter-spacing:-0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Pendaftaran Berhasil!</h3>
                     
                     <p style="margin:0 0 25px 0; color:#b3c3d6; font-size:13.5px; line-height:1.6; padding:0 10px;">
-                        Hak otoritas kemitraan wilayah Anda telah aman terenkripsi dan tercatat ke dalam basis data ekosistem perdagangan logistik.
+                        Hak otoritas kemitraan wilayah Anda telah aman terenkripsi dan tercatat ke dalam basis data ekosistem perdagangan logistik kami.
                     </p>
                     
                     <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.07); border-radius:16px; padding:16px; text-align:left; margin-bottom:30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);">
@@ -582,46 +585,6 @@
         }
         suksesModal.style.display = "flex";
     }
-
-    function salinLinkGrupDigital(button) {
-        const waLink = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1";
-        
-        // Fallback pemicu salin text di berbagai versi mobile webview
-        const el = document.createElement('textarea');
-        el.value = waLink;
-        el.setAttribute('readonly', '');
-        el.style.position = 'absolute';
-        el.style.left = '-9999px';
-        document.body.appendChild(el);
-        el.select();
-        el.setSelectionRange(0, 99999); // Untuk perangkat iOS
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        
-        // Berikan respon visual sukses salin kepada pengguna
-        button.innerHTML = "✨ Tautan Berhasil Disalin!";
-        button.style.background = "#2ecc71";
-        
-        alert("📋 Tautan grup berhasil disalin! Silakan tempel (paste) di Chrome atau kirim langsung ke chat WhatsApp Anda untuk bergabung.");
-    }
-
-    function bukaGrupWhatsAppDigital() {
-    const waLink = "whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q";
-    // Trik Bypass Pi Browser: Membuat elemen tautan tak terlihat lalu memicu klik murni keluar
-    const downloader = document.createElement('a');
-    downloader.href = waLink;
-    downloader.target = '_blank';
-    downloader.rel = 'noopener noreferrer';
-    document.body.appendChild(downloader);
-    downloader.click();
-    document.body.removeChild(downloader);
-    
-    // Menutup modal sukses setelah melempar user ke WhatsApp
-    setTimeout(() => {
-        const modal = document.getElementById("digitalSuksesModal");
-        if(modal) modal.style.display = "none";
-    }, 1500);
-}
 
     // =========================================================================
     // 4. LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC
@@ -704,7 +667,7 @@
     }
 
     // =========================================================================
-    // 5. PENYELAMAT KLIK GLOBAL (MEMAKSA TOMBOL PERBARUI & AJUKAN DI PI BROWSER AKTIF)
+    // 5. PENYELAMAT KLIK GLOBAL PI BROWSER (MEMAKSA TOMBOL PERBARUI / AJUKAN AKTIF)
     // =========================================================================
     function paksaAktifTombolWilayah() {
         const semuaTombol = document.querySelectorAll("button");
@@ -725,4 +688,5 @@
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>
-</html>
+</html>   
+    

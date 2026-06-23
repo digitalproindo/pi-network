@@ -2034,7 +2034,7 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION WITH CLOSE BUTTON
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
@@ -2096,9 +2096,58 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 7. PENANGANAN SUBMIT FORM KOMUNITAS 
-   const formAman = document.getElementById('formKomunitas');
+    // 7. PENANGANAN SUBMIT FORM KOMUNITAS & TOMBOL CLOSING (X)
+    const formAman = document.getElementById('formKomunitas');
     if (formAman) {
+        // --- AWAL INJEKSI TOMBOL (X) POJOK KANAN ATAS ---
+        formAman.style.position = "relative"; // Pengunci koordinat absolute
+
+        const closeBtn = document.createElement('button');
+        closeBtn.type = "button"; // Mencegah pemicuan submit form secara tidak sengaja
+        closeBtn.innerHTML = "&times;"; // Karakter silang (X) HTML semantik
+        
+        // Atur gaya desain lingkaran transparan modern di sudut kanan atas form
+        closeBtn.style.cssText = `
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: none;
+            font-size: 24px;
+            font-weight: bold;
+            line-height: 1;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            z-index: 100;
+        `;
+
+        // Animasi hover warna merah saat disorot kursor / sentuhan jari
+        closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; };
+        closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(255, 255, 255, 0.1)"; closeBtn.style.color = "#ffffff"; };
+
+        // Logika penutupan modal saat (X) diklik
+        closeBtn.onclick = (e) => {
+            e.preventDefault();
+            if (typeof window.closeKomunitasModal === "function") {
+                window.closeKomunitasModal();
+            } else {
+                // Aturan fallback jika pembungkus modal langsung berupa parentElement
+                const modalParent = formAman.closest('[id*="modal"]') || formAman.parentElement;
+                if (modalParent) modalParent.style.display = "none";
+            }
+        };
+
+        // Pasang elemen tombol silang ke formKomunitas
+        formAman.appendChild(closeBtn);
+        // --- AKHIR INJEKSI TOMBOL (X) ---
+
         formAman.addEventListener('submit', e => {
             e.preventDefault();
             
@@ -2143,7 +2192,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 uid: currentUser.uid
             };
 
-            // PERBAIKAN UTAMA: Kirim data menggunakan URLSearchParams di dalam BODY POST agar dibaca sempurna oleh doPost() Google Apps Script
             fetch(SCRIPT_URL_AMAN, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -2194,7 +2242,6 @@ window.muatStatusKemitraan = function() {
         return;
     }
     
-    // Kirim parameter action=cekStatus via GET agar dapet dibaca doGet(e) di Apps Script
     fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
     .then(res => {
         if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
@@ -2237,4 +2284,4 @@ window.muatStatusKemitraan = function() {
     .catch(err => {
         console.error("Gagal melakukan sinkronisasi profil:", err);
     });
-};                
+};

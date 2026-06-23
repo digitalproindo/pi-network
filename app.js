@@ -1394,7 +1394,7 @@ function configureLogoutButton() {
     }
 }
 // =========================================================================
-// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC)
+// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC) - FIXED VERSION
 // =========================================================================
 window.handleAuth = async () => {
     if (!isPiInitialized) {
@@ -1448,6 +1448,14 @@ window.handleAuth = async () => {
             </div>`;
 
         configureLogoutButton();
+
+        // =========================================================================
+        // PERBAIKAN: Ambil status kemitraan setelah login manual sukses
+        // =========================================================================
+        if (typeof muatStatusKemitraan === "function") {
+            muatStatusKemitraan();
+        }
+
         setTimeout(() => { loadingOverlay.remove(); }, 2500);
     } catch (err) { 
         console.error(err); 

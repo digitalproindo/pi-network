@@ -424,6 +424,54 @@
 <script src="app.js?v=4.2"></script>
 <script src="/dpi-bot.js"></script>
 <script>
+    // Inisialisasi awal variabel user jika file app.js lambat memuat
+    if (typeof currentUser === 'undefined') {
+        var currentUser = null;
+    }
+
+    // =========================================================================
+    // SYSTEM SISTEM AUTO LOGIN / RE-AUTHENTICATE (MENCEGAH LOGOUT SETELAH COMMIT)
+    // =========================================================================
+    function inisialisasiAutoLoginPi() {
+        if (typeof Pi !== 'undefined') {
+            Pi.init({ version: "2.0", sandbox: false });
+            
+            // Lakukan Otentikasi Latar Belakang Tanpa Memaksa Klik Tombol
+            const scopes = ['username', 'payments', 'wallet_address'];
+            Pi.authenticate(scopes, onIncompletePaymentFound)
+            .then(function(auth) {
+                currentUser = auth.user;
+                console.log("Auto-login sukses untuk user:", currentUser.username);
+                
+                // Update Elemen Tampilan UI secara Realtime
+                const loginBtn = document.getElementById('login-btn');
+                if (loginBtn) {
+                    loginBtn.innerText = currentUser.username;
+                    loginBtn.style.background = "linear-gradient(to right, #2ecc71, #27ae60)";
+                    loginBtn.style.color = "white";
+                }
+                
+                const profUser = document.getElementById('profile-username');
+                if (profUser) profUser.innerText = currentUser.username;
+                
+                const profAddr = document.getElementById('profile-address');
+                if (profAddr && currentUser.uid) profAddr.innerText = currentUser.uid;
+            })
+            .catch(function(error) {
+                console.error("Gagal melakukan otentikasi otomatis Pi:", error);
+            });
+        }
+    }
+
+    function onIncompletePaymentFound(payment) {
+        console.log("Ditemukan transaksi tertunda:", payment);
+    }
+
+    function handleSignIn() {
+        if (currentUser) return; // Sudah login
+        inisialisasiAutoLoginPi();
+    }
+
     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         if (sideNav) {
@@ -442,7 +490,6 @@
         if(sideNav) sideNav.style.width = "0";
     }
 
-    // MEMASTIKAN POPUP KOMUNITAS TERTUTUP BERSIH
     function closeKomunitasModal() {
         document.getElementById("komunitasModal").style.display = "none";
     }
@@ -527,7 +574,6 @@
         });
     }
 
-    // SYSTEM NAVIGASI BALIK KE BERANDA JIKA CLOSE DIKLIK
     function tutupModalSukses() {
         const suksesModal = document.getElementById("digitalSuksesModal");
         if (suksesModal) {
@@ -540,7 +586,6 @@
         }
     }
 
-    // MODAL DIGITAL SUCCESS PREMIUM MODERN
     function tampilkanModalSuksesDigitalTerbaru() {
         let suksesModal = document.getElementById("digitalSuksesModal");
         
@@ -584,7 +629,6 @@
         suksesModal.style.display = "flex";
     }                    
 
-    // DROPDOWN API REGIONAL WILAYAH INDONESIA AUTOMATIC
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
     const kecSelect = document.getElementById('selectKecamatan');
@@ -662,7 +706,6 @@
         }
     }
 
-    // ANTI MALFUNGSI TOMBOL DI PI BROWSER
     function paksaAktifTombolWilayah() {
         const semuaTombol = document.querySelectorAll("button");
         semuaTombol.forEach(btn => {
@@ -677,8 +720,20 @@
         });
     }
     
-    document.addEventListener("DOMContentLoaded", paksaAktifTombolWilayah);
-    window.addEventListener("load", paksaAktifTombolWilayah);
+    // PEMICU UTAMA JALANNYA AUTO LOGIN SAAT HALAMAN SELESAI DI-LOAD
+    document.addEventListener("DOMContentLoaded", function() {
+        paksaAktifTombolWilayah();
+        inisialisasiAutoLoginPi();
+    });
+    
+    window.addEventListener("load", function() {
+        paksaAktifTombolWilayah();
+        // Fallback pemicu jika DOMContentLoaded terlewatkan karena proses render server
+        if (!currentUser) {
+            inisialisasiAutoLoginPi();
+        }
+    });
+    
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>

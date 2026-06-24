@@ -2088,15 +2088,14 @@ function inisialisasiGayaDigitalPro() {
 }
 
 // =========================================================================
-// 8B. SINKRONISASI STATUS PROFIL & BANNER INVESTOR MODAL
+// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
 // =========================================================================
 
-// Engine Cek Perubahan Status Terhadap Data Lokal Browser
 function cekPerubahanStatusSistem(statusBaru) {
     if (!statusBaru) return;
     const statusLama = localStorage.getItem('dpi_last_known_status');
     
-    // BANNER HANYA LETUP JIKA STATUS BERUBAH (Misal dari REVIEW jadi DEVELOPER IT)
+    // Tampilkan Banner Atas otomatis jika statusnya berubah dari riwayat sebelumnya
     if (statusLama && statusLama !== statusBaru) {
         tampilkanBannerNotifikasiSistem(statusBaru);
     }
@@ -2110,16 +2109,16 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     const banner = document.createElement('div');
     banner.id = 'dpi-top-banner';
     banner.className = 'notif-banner-pro';
-    banner.style.cssText = "position: fixed; top: 15px; left: 5%; width: 90%; max-width: 420px; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px; z-index: 999999; cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-family: sans-serif;";
+    // Penyesuaian Sisi Kanan Kiri (Masing-masing 5%) dan rata tengah otomatis
+    banner.style.cssText = "position: fixed; top: 15px; left: 5%; right: 5%; max-width: 420px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px; z-index: 999999; cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-family: sans-serif; box-sizing: border-box;";
 
     banner.innerHTML = `
-        <div style="background: rgba(147, 51, 234, 0.15); width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0;"><span style="font-size: 18px;">📢</span></div>
+        <div style="background: rgba(147, 51, 234, 0.15); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0;"><span style="font-size: 18px;">🔔</span></div>
         <div style="flex-grow: 1;">
-            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Pemberitahuan Status</div>
-            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 1px;">Kemitraan Berubah: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
-            <div style="color: #94a3b8; font-size: 0.75rem; margin-top: 1px;">Klik untuk melihat peluang pengembangan baru.</div>
+            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Pemberitahuan Status</div>
+            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 1px;">Kemitraan Menjadi: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
         </div>
-        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 8px; font-weight: bold; cursor: pointer;">✕</div>
+        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 6px; font-weight: bold; cursor: pointer;">✕</div>
     `;
     document.body.appendChild(banner);
 
@@ -2136,24 +2135,25 @@ function bukaModalInvestorDigitalPro() {
 
     const overlay = document.createElement('div');
     overlay.id = 'dpi-modal-investor-pro';
-    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); z-index: 1000000; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; font-family: sans-serif;";
+    // Menambahkan padding 20px kanan kiri agar modal memiliki jarak aman dari pinggir layar handphone
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); z-index: 1000000; display: flex; align-items: center; justify-content: center; padding: 0 20px; box-sizing: border-box; font-family: sans-serif;";
 
     overlay.innerHTML = `
-        <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 450px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative;">
+        <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 82vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
             <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
-            <div style="text-align: center; margin-bottom: 25px;">
-                <span style="font-size: 40px; display: block; margin-bottom: 8px;">📢</span>
-                <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.25rem;">Kesempatan Menjadi Bagian dari <span style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Pengembangan Digital Pro Indo</span></h2>
+            <div style="text-align: center; margin-bottom: 22px;">
+                <span style="font-size: 36px; display: block; margin-bottom: 6px;">📢</span>
+                <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1.4;">Kesempatan Bagian Pengembangan <span style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Digital Pro Indo</span></h2>
             </div>
-            <div style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.6;">
+            <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: justify;">
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
-                <p>Digital Pro Indo lahir dari komitmen menghadirkan inovasi digital karya anak bangsa. Kami membuka kesempatan bagi anggota visi misi sama untuk bergabung sebagai <strong>Investor & Mitra Strategis</strong>.</p>
-                <p style="background: rgba(168, 85, 247, 0.08); border-left: 3px solid #a855f7; padding: 12px; border-radius: 0 12px 12px 0; color: #e2e8f0;">🚀 Bergabunglah dalam mengelola arah pertumbuhan ekosistem digital kedepan.</p>
-                <p>📞 Hubungi manajemen kami untuk mendapatkan info lengkap mengenai skema kerja sama.</p>
+                <p>Digital Pro Indo lahir dari komitmen menghadirkan inovasi karya anak bangsa. Kami mengundang anggota dengan kesamaan visi untuk bersinergi sebagai <strong>Investor &amp; Mitra Strategis</strong>.</p>
+                <p style="background: rgba(168, 85, 247, 0.08); border-left: 3px solid #a855f7; padding: 12px; border-radius: 0 12px 12px 0; color: #e2e8f0; font-weight: 600;">🚀 Ambil peran dalam mengelola arah pertumbuhan ekosistem digital bersama kami.</p>
+                <p>📞 Hubungi hub manajemen untuk info lengkap mengenai skema kerja sama.</p>
             </div>
             <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
-                <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase;">Hubungi Hub Manajemen</button>
-                <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer;">Kembali ke Profil</button>
+                <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Hubungi Hub Manajemen</button>
+                <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer; font-size: 0.8rem;">Kembali ke Profil</button>
             </div>
         </div>
     `;
@@ -2165,6 +2165,32 @@ function bukaModalInvestorDigitalPro() {
     overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
         window.open("whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
     });
+}
+
+// Fungsi Menyuntikkan Icon Lonceng ke Sebelah Label Status Kemitraan secara Real-time
+function injeksiLoncengNotifikasiProfil() {
+    const penunjukStatus = document.getElementById('partner-status');
+    if (!penunjukStatus) return;
+
+    // Hapus lonceng lama jika sudah ada agar tidak terjadi duplikasi elemen
+    const loncengLama = document.getElementById('dpi-profile-bell');
+    if (loncengLama) loncengLama.remove();
+
+    // Buat element lonceng baru
+    const lonceng = document.createElement('span');
+    lonceng.id = 'dpi-profile-bell';
+    lonceng.className = 'bell-bounce';
+    lonceng.innerHTML = '🔔';
+    lonceng.title = 'Lihat Informasi Investor';
+    
+    // Taruh lonceng tepat setelah badge status (Misal di samping teks DEVELOPER IT)
+    penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
+
+    // Daftarkan event klik agar jika lonceng ditekan, pop-up promosi muncul kembali
+    lonceng.onclick = (e) => {
+        e.stopPropagation();
+        bukaModalInvestorDigitalPro();
+    };
 }
 
 // Fungsi Utama Sinkronisasi Profil Kemitraan
@@ -2193,7 +2219,6 @@ window.muatStatusKemitraan = function() {
             if (penunjukStatus) {
                 penunjukStatus.innerText = statusFinal;
                 
-                // Mendukung status kustom dinamis (DISETUJUI, DEVELOPER IT, dll)
                 if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT") {
                     penunjukStatus.style.background = "#d1fae5"; 
                     penunjukStatus.style.color = "#065f46";      
@@ -2209,7 +2234,10 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
-            // Evaluasi Pelacak Perubahan Status
+            // 1. Suntik Lonceng Notifikasi di halaman profil pengguna
+            injeksiLoncengNotifikasiProfil();
+
+            // 2. Evaluasi Pelacak Perubahan Status
             cekPerubahanStatusSistem(statusFinal);
             
         } else {

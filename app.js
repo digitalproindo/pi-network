@@ -1951,21 +1951,23 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (REVISED CENTER)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FIXED RENDER)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // Suntik Gaya Animasi, Tata Letak Center, & Efek Lonceng ke Dokumen
-    InisialisasiGayaDigitalPro();
+    // 1. Suntik Gaya Animasi & Desain Futuristik (Nama Fungsi Sudah Disamakan)
+    inisialisasiGayaDigitalPro();
 
-    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
+    } else {
+        console.warn("Fungsi renderProducts atau data produk belum siap.");
     }
 
-    // 2. Hubungkan pipa pencarian input
+    // 3. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {
@@ -1976,12 +1978,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (keyword === "") {
                 sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
             } else {
-                renderProducts(filtered, 'search-results');
+                if (typeof renderProducts === "function") {
+                    renderProducts(filtered, 'search-results');
+                }
             }
         });
     }
 
-    // 3. Deteksi klik di luar untuk menutup SideNav
+    // 4. Deteksi klik di luar untuk menutup SideNav
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1992,7 +1996,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 4. Rotasi Banner Otomatis
+    // 5. Rotasi Banner Otomatis
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -2005,18 +2009,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // 5. Jalankan pipeline login otomatis Pi Network SDK
+    // 6. Jalankan pipeline login otomatis Pi Network SDK
     if (typeof initPi === "function") {
-        try { await initPi(); } catch(e) { console.error(e); }
+        try { await initPi(); } catch(e) { console.error("Gagal initPi:", e); }
     }
     
-    // 6. Bind tombol login manual awal sebelum ter-otentikasi
+    // 7. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 7. PENANGANAN SUBMIT FORM KOMUNITAS
+    // 8. PENANGANAN SUBMIT FORM KOMUNITAS
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -2150,7 +2154,7 @@ function bukaModalInvestorDigitalPro() {
                 </h2>
             </div>
 
-            <!-- TEKS KONTEN UTAN TANPA DIKUTIP/DIPOTONG -->
+            <!-- KONTEN -->
             <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
                 <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa. Hingga saat ini, aplikasi ini terus berkembang meskipun dibangun dengan keterbatasan sumber daya dan tanpa dukungan modal besar.</p>
@@ -2226,7 +2230,6 @@ function injeksiLoncengNotifikasiProfil() {
     };
 }
 
-// Fungsi Utama Sinkronisasi Profil Kemitraan
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share'); 
@@ -2267,10 +2270,7 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
-            // 1. Suntik Lonceng Notifikasi di halaman profil pengguna
             injeksiLoncengNotifikasiProfil();
-
-            // 2. Evaluasi Pelacak Perubahan Status
             cekPerubahanStatusSistem(statusFinal);
             
         } else {
@@ -2285,3 +2285,5 @@ window.muatStatusKemitraan = function() {
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
 };
+    
+    

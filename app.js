@@ -1951,72 +1951,16 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & PEMBERSIH MASSAL)
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION
 // =========================================================================
-window.tampilkanModalSuksesDigital = () => {
-    // 1. HANCURKAN semua modal lama yang tersisa di layar tanpa ampun
-    const modalLama = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
-    modalLama.forEach(m => m.remove());
+const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+let statusKirimKomunitas = false;
 
-    // 2. Buat elemen overlay baru
-    const overlaySukses = document.createElement('div');
-    overlaySukses.id = "modal-sukses-komunitas";
-    overlaySukses.className = "modal-sukses-premium-pro"; // Tag kelas untuk pembersihan massal
-    overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
-    
-    // 3. Fungsi sakral untuk menutup modal dan kembali ke Beranda secara bersih
-    const aksiSapuBersihDanHome = (e) => {
-        if(e) { e.preventDefault(); e.stopPropagation(); }
-        
-        // Hancurkan semua modal yang aktif di DOM
-        const semuaModalAktif = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
-        semuaModalAktif.forEach(m => m.remove());
-        
-        // Paksa navigasi kembali ke Beranda (Home)
-        if (typeof window.switchPage === 'function') {
-            window.switchPage('home');
-        } else {
-            // Jika fungsi switchPage gagal/tidak global, muat ulang halaman sebagai cadangan
-            window.location.hash = "#home"; 
-            location.reload();
-        }
-    };
-
-    overlaySukses.innerHTML = `
-        <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 30px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
-            
-            <div class="tombol-silang-penutup" 
-                 style="position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; z-index: 100008;">
-                 ✕
-            </div>
-
-            <div style="background: rgba(0, 242, 254, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; border: 3px solid #00f2fe;">
-                <span style="font-size: 35px; color: #00f2fe;">✓</span>
-            </div>
-            
-            <h2 style="color: #ffffff; margin: 0 0 10px 0; font-weight: 800; font-size: 1.5rem;">Pendaftaran Berhasil!</h2>
-            <p style="color: #94a3b8; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-            
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 25px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #64748b; text-transform: uppercase;">Status</span>
-                    <span style="color: #FFA500; text-transform: uppercase;">Proses Review</span>
-                </div>
-                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-            </div>
-
-            <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
-            
-            <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
-        </div>
-    `;
-    
-    document.body.appendChild(overlaySukses);
-
-    // 4. Pasang event listener ke elemen tombol internal
-    overlaySukses.querySelector('.tombol-silang-penutup').addEventListener('click', aksiSapuBersihDanHome);
-    overlaySukses.querySelector('.tombol-nanti-penutup').addEventListener('click', aksiSapuBersihDanHome);
-};
+document.addEventListener("DOMContentLoaded", async () => {
+    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+        renderProducts(productsData, 'main-grid');
+    }
 
     // 2. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
@@ -2126,12 +2070,10 @@ window.tampilkanModalSuksesDigital = () => {
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 
-                // Memanggil modal baru yang bersih
+                // Memanggil modal baru yang terisolasi di bawah
                 if (typeof window.tampilkanModalSuksesDigital === "function") {
                     window.tampilkanModalSuksesDigital();
                 }
-                
-                // PERBAIKAN: SETTIMEOUT LAMA TELAH DIHAPUS AGAR TIDAK TERJADI BENTROK RE-ROUTE DI PI BROWSER
                 
                 if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
@@ -2149,6 +2091,68 @@ window.tampilkanModalSuksesDigital = () => {
         });
     }
 });
+
+// =========================================================================
+// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & PEMBERSIH MASSAL DI LUAR DOM)
+// =========================================================================
+window.tampilkanModalSuksesDigital = () => {
+    // Sapu bersih modal lama agar tidak double
+    const modalLama = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
+    modalLama.forEach(m => m.remove());
+
+    const overlaySukses = document.createElement('div');
+    overlaySukses.id = "modal-sukses-komunitas";
+    overlaySukses.className = "modal-sukses-premium-pro";
+    overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
+    
+    const aksiSapuBersihDanHome = (e) => {
+        if(e) { e.preventDefault(); e.stopPropagation(); }
+        
+        const semuaModalAktif = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
+        semuaModalAktif.forEach(m => m.remove());
+        
+        if (typeof window.switchPage === 'function') {
+            window.switchPage('home');
+        } else {
+            window.location.hash = "#home"; 
+            location.reload();
+        }
+    };
+
+    overlaySukses.innerHTML = `
+        <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 30px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
+            
+            <div class="tombol-silang-penutup" 
+                 style="position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; z-index: 100008;">
+                 ✕
+            </div>
+
+            <div style="background: rgba(0, 242, 254, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; border: 3px solid #00f2fe;">
+                <span style="font-size: 35px; color: #00f2fe;">✓</span>
+            </div>
+            
+            <h2 style="color: #ffffff; margin: 0 0 10px 0; font-weight: 800; font-size: 1.5rem;">Pendaftaran Berhasil!</h2>
+            <p style="color: #94a3b8; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+            
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 25px;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">
+                    <span style="color: #64748b; text-transform: uppercase;">Status</span>
+                    <span style="color: #FFA500; text-transform: uppercase;">Proses Review</span>
+                </div>
+                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+            </div>
+
+            <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
+            
+            <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
+        </div>
+    `;
+    
+    document.body.appendChild(overlaySukses);
+
+    overlaySukses.querySelector('.tombol-silang-penutup').addEventListener('click', aksiSapuBersihDanHome);
+    overlaySukses.querySelector('.tombol-nanti-penutup').addEventListener('click', aksiSapuBersihDanHome);
+};
 
 // 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 window.muatStatusKemitraan = function() {

@@ -2205,7 +2205,7 @@ function bukaModalInvestorDigitalPro() {
     overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
     overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
     overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
-        window.open("whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
+        window.open("whatsapp:6287759002419", "_blank");
     });
 }
 

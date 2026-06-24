@@ -1950,7 +1950,7 @@ window.toggleDropdown = () => {
     }
 };
 
-// =========================================================================
+        // =========================================================================
 // 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
@@ -2096,10 +2096,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & MANAJEMEN TOMBOL TOTAL)
+// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & SECURE DEEP-LINK PI BROWSER)
 // =========================================================================
 window.tampilkanModalSuksesDigital = () => {
-    // Bersihkan penumpukan modal lama yang berpotensi menyisa di layar
+    // Kunci Pengaman Utama: Hancurkan semua modal sejenis yang eksis di halaman sebelum render baru
     const modalLama = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
     modalLama.forEach(m => m.remove());
 
@@ -2108,6 +2108,7 @@ window.tampilkanModalSuksesDigital = () => {
     overlaySukses.className = "modal-sukses-premium-pro";
     overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
     
+    // Fungsi penutupan bersih total
     const aksiSapuBersihDanHome = (e) => {
         if(e) { e.preventDefault(); e.stopPropagation(); }
         
@@ -2145,17 +2146,26 @@ window.tampilkanModalSuksesDigital = () => {
                 <p style="color: #94a3b8; margin: 0; font-size: 0.85rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
             </div>
 
-            <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
+            <button class="tombol-gabung-wa" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
             
             <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 8px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: block; margin: 0 auto;">Nanti Saja</button>
 
-            <button class="tombol-bawah-penutup" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ef4444; width: 100%; padding: 12px 0; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s;">Tutup Aplikasi</button>
+            <button class="tombol-bawah-penutup" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ef4444; width: 100%; padding: 12px 0; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Tutup Aplikasi</button>
         </div>
     `;
     
     document.body.appendChild(overlaySukses);
 
-    // Sambungkan fungsionalitas penutupan bersih ke semua tombol aksi keluar
+    // Penanganan klik tombol WhatsApp khusus Pi Browser
+    overlaySukses.querySelector('.tombol-gabung-wa').addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        // Membuka tautan menggunakan API window resmi agar Pi browser tidak merefresh halaman dasar
+        window.open("whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
+    });
+
+    // Jalur keluar aman dari modal
     overlaySukses.querySelector('.tombol-silang-penutup').addEventListener('click', aksiSapuBersihDanHome);
     overlaySukses.querySelector('.tombol-nanti-penutup').addEventListener('click', aksiSapuBersihDanHome);
     overlaySukses.querySelector('.tombol-bawah-penutup').addEventListener('click', aksiSapuBersihDanHome);
@@ -2218,4 +2228,4 @@ window.muatStatusKemitraan = function() {
     .catch(err => {
         console.error("Gagal melakukan sinkronisasi profil:", err);
     });
-};    
+};                

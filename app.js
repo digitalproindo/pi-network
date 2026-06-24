@@ -1961,49 +1961,68 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
     }
-// =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (DENGAN RE-ROUTE KE BERANDA SAAT CLOSE)
-// =========================================================================
-window.tampilkanModalSuksesDigital = () => {
-    const overlaySukses = document.createElement('div');
-    overlaySukses.id = "modal-sukses-komunitas";
-    overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
-    
-    overlaySukses.innerHTML = `
-        <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 30px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
-            
-            <!-- TOMBOL CLOSE (X) DI POJOK KANAN ATAS -->
-            <div onclick="document.getElementById('modal-sukses-komunitas').remove()" 
-                 style="position: absolute; top: 15px; right: 15px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; transition: background 0.2s;"
-                 onmouseover="this.style.background='rgba(255,255,255,0.2)'" 
-                 onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-                 ✕
-            </div>
 
-            <!-- KONTEN MODAL -->
-            <div style="background: rgba(0, 242, 254, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; border: 3px solid #00f2fe;">
-                <span style="font-size: 35px; color: #00f2fe;">✓</span>
-            </div>
+    // =========================================================================
+    // MODAL POPUP SUKSES PENDAFTARAN (DENGAN RE-ROUTE KE BERANDA SAAT CLOSE)
+    // =========================================================================
+    window.tampilkanModalSuksesDigital = () => {
+        // Hapus modal jika ada duplikasi penggantung di DOM sebelum membuat baru
+        const sisaModal = document.querySelectorAll('[id^="modal-sukses-komunitas"]');
+        sisaModal.forEach(modal => modal.remove());
+
+        const overlaySukses = document.createElement('div');
+        overlaySukses.id = "modal-sukses-komunitas";
+        overlaySukses.className = "modal-sukses-premium-pro";
+        overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
+        
+        // Fungsi pembersih total untuk menutup modal dan kembali ke Beranda
+        const aksiTutupDanKeBeranda = (e) => {
+            if(e) { e.preventDefault(); e.stopPropagation(); }
+            const semuaModalAktif = document.querySelectorAll('.modal-sukses-premium-pro');
+            semuaModalAktif.forEach(m => m.remove());
             
-            <h2 style="color: #ffffff; margin: 0 0 10px 0; font-weight: 800; font-size: 1.5rem;">Pendaftaran Berhasil!</h2>
-            <p style="color: #94a3b8; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-            
-            <!-- STATUS BOX -->
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 25px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #64748b;">STATUS</span>
-                    <span style="color: #FFA500;">PROSES REVIEW</span>
+            if (typeof window.switchPage === 'function') {
+                window.switchPage('home'); // Memaksa UI kembali ke halaman Home Anda
+            } else {
+                location.reload(); 
+            }
+        };
+
+        overlaySukses.innerHTML = `
+            <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 30px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
+                
+                <div class="tombol-silang-penutup" 
+                     style="position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; z-index: 100008;">
+                     ✕
                 </div>
-                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-            </div>
 
-            <!-- TOMBOL AKSI -->
-            <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
-            <button onclick="document.getElementById('modal-sukses-komunitas').remove()" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
-        </div>
-    `;
-    document.body.appendChild(overlaySukses);
-};
+                <div style="background: rgba(0, 242, 254, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; border: 3px solid #00f2fe;">
+                    <span style="font-size: 35px; color: #00f2fe;">✓</span>
+                </div>
+                
+                <h2 style="color: #ffffff; margin: 0 0 10px 0; font-weight: 800; font-size: 1.5rem;">Pendaftaran Berhasil!</h2>
+                <p style="color: #94a3b8; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+                
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">
+                        <span style="color: #64748b;">STATUS</span>
+                        <span style="color: #FFA500;">PROSES REVIEW</span>
+                    </div>
+                    <p style="color: #94a3b8; margin: 0; font-size: 0.85rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+                </div>
+
+                <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
+                
+                <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
+            </div>
+        `;
+        document.body.appendChild(overlaySukses);
+
+        // Pasang Event Listener klik ke fungsi penutup Beranda
+        overlaySukses.querySelector('.tombol-silang-penutup').addEventListener('click', aksiTutupDanKeBeranda);
+        overlaySukses.querySelector('.tombol-nanti-penutup').addEventListener('click', aksiTutupDanKeBeranda);
+    };
+
     // 2. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
@@ -2102,7 +2121,6 @@ window.tampilkanModalSuksesDigital = () => {
                 uid: currentUser.uid
             };
 
-            // PERBAIKAN UTAMA: Kirim data menggunakan URLSearchParams di dalam BODY POST agar dibaca sempurna oleh doPost() Google Apps Script
             fetch(SCRIPT_URL_AMAN, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -2113,14 +2131,13 @@ window.tampilkanModalSuksesDigital = () => {
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 
+                // Memanggil modal baru yang bersih
                 if (typeof window.tampilkanModalSuksesDigital === "function") {
                     window.tampilkanModalSuksesDigital();
                 }
                 
-                setTimeout(() => {
-                    window.location.href = "whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q";
-                }, 1000);
-
+                // PERBAIKAN: SETTIMEOUT LAMA TELAH DIHAPUS AGAR TIDAK TERJADI BENTROK RE-ROUTE DI PI BROWSER
+                
                 if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
             .catch(err => {
@@ -2138,7 +2155,7 @@ window.tampilkanModalSuksesDigital = () => {
     }
 });
 
-// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL (DITEMPEL KE WINDOW AGAR GLOBAL)
+// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share'); 
@@ -2153,7 +2170,6 @@ window.muatStatusKemitraan = function() {
         return;
     }
     
-    // Kirim parameter action=cekStatus via GET agar dapet dibaca doGet(e) di Apps Script
     fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
     .then(res => {
         if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
@@ -2196,4 +2212,4 @@ window.muatStatusKemitraan = function() {
     .catch(err => {
         console.error("Gagal melakukan sinkronisasi profil:", err);
     });
-};                
+};            

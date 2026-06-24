@@ -2034,12 +2034,27 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - UPDATED CLOSING BUTTON LOGIC
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIX BLOCKCHAIN KONEKSI
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
+let isBlockchainReady = false; // Penanda global status kesiapan Blockchain Pi
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // KUNCI UTAMA: Pindahkan inisialisasi Pi SDK ke urutan paling atas agar langsung siap
+    if (typeof initPi === "function") {
+        try {
+            await initPi();
+            isBlockchainReady = true;
+            console.log("✓ Pi Blockchain Bridge Siap.");
+        } catch (piErr) {
+            console.error("Gagal inisialisasi Pi SDK awal:", piErr);
+            isBlockchainReady = false;
+        }
+    } else if (typeof Pi !== "undefined") {
+        isBlockchainReady = true;
+    }
+
     // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
@@ -2084,19 +2099,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
-
-    // 5. Jalankan pipeline login otomatis Pi Network SDK
-    if (typeof initPi === "function") {
-        await initPi();
-    }
     
-    // 6. Bind tombol login manual awal sebelum ter-otentikasi
+    // 5. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 7. PENANGANAN SUBMIT FORM KOMUNITAS (TANDA X DI SINI SUDAH DIHILANGKAN)
+    // 6. PENANGANAN SUBMIT FORM KOMUNITAS (TANDA X DI SINI SUDAH DIHILANGKAN)
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -2177,7 +2187,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
-
 // =========================================================================
 // PERBAIKAN PRESISI: MODAL SUKSES ASLI (DARK THEME) + TOMBOL (X) EMAS DI POJOK KANAN ATAS
 // =========================================================================

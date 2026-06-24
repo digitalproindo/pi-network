@@ -1854,7 +1854,7 @@ window.handlePayment = async (amount, name) => {
                 if (res.ok) { 
   
 // =========================================================================
-// 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION
+// 7. SIDEBAR MENU & BANNER LOGIC - VERSI UTUH & FINAL
 // =========================================================================
 window.toggleMenu = () => {
     const nav = document.getElementById("sideNav");
@@ -1876,28 +1876,26 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIX BLOCKCHAIN KONEKSI
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - VERSI UTUH & FINAL
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
-let isBlockchainReady = false; // Penanda global status kesiapan Blockchain Pi
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // KUNCI UTAMA: Pindahkan inisialisasi Pi SDK ke urutan paling atas agar langsung siap
-    if (typeof initPi === "function") {
+    // 🟢 INITIALIZATION POINT: Mengaktifkan jembatan blockchain global saat aplikasi dibuka
+    if (typeof window.initPi === "function") {
         try {
-            await initPi();
-            isBlockchainReady = true;
-            console.log("✓ Pi Blockchain Bridge Siap.");
+            await window.initPi();
+            console.log("✓ Pipeline Pi Blockchain Bridge Siap Dioperasikan.");
         } catch (piErr) {
             console.error("Gagal inisialisasi Pi SDK awal:", piErr);
-            isBlockchainReady = false;
+            window.isBlockchainReady = false;
         }
-    } else if (typeof Pi !== "undefined") {
-        isBlockchainReady = true;
+    } else if (typeof window.Pi !== "undefined") {
+        window.isBlockchainReady = true;
     }
 
-    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG DI BERANDA
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
     }
@@ -1918,7 +1916,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 3. Deteksi klik di luar untuk menutup SideNav
+    // 3. Deteksi klik di luar untuk menutup SideNav otomatis
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1929,7 +1927,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 4. Rotasi Banner Otomatis
+    // 4. Rotasi Banner Otomatis (4 Detik)
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1944,11 +1942,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     
     // 5. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
+    if (loginBtn && (typeof window.currentUser === "undefined" || !window.currentUser)) {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 6. PENANGANAN SUBMIT FORM KOMUNITAS (TANDA X DI SINI SUDAH DIHILANGKAN)
+    // 6. PENANGANAN SUBMIT FORM KOMUNITAS / KEMITRAAN
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -1956,7 +1954,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             if (statusKirimKomunitas) return;
             
-            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+            if (typeof window.currentUser === 'undefined' || !window.currentUser || !window.currentUser.uid) {
                 alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
                 return;
             }
@@ -1992,7 +1990,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 kota: kotaUser,
                 kecamatan: kecUser,
                 kelurahan: kelUser,
-                uid: currentUser.uid
+                uid: window.currentUser.uid
             };
 
             fetch(SCRIPT_URL_AMAN, { 
@@ -2031,14 +2029,14 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // =========================================================================
-// PERBAIKAN PRESISI: MODAL SUKSES ASLI (DARK THEME) + TOMBOL (X) EMAS DI POJOK KANAN ATAS
+// 9. MODAL SUKSES (DARK THEME) + SINKRONISASI STATUS KEMITRAAN PROFIL
 // =========================================================================
 window.tampilkanModalSuksesDigital = function() {
     // 1. Overlay latar belakang gelap dengan blur halus
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px); font-family:'Inter', sans-serif;";
     
-    // 2. STRUKTUR BOX ASLI (Gradasi Gelap, Border Emas, Radius Sesuai Screenshot Anda)
+    // 2. STRUKTUR BOX ASLI (Gradasi Gelap, Border Emas, Radius Sesuai Tema Digital Pro)
     overlay.innerHTML = `
         <div style="background: linear-gradient(135deg, #140727 0%, #091424 100%); border: 2px solid #FFD700; padding: 45px 22px 30px; border-radius: 25px; max-width: 350px; width: 100%; text-align: center; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.5); box-sizing: border-box;">
             
@@ -2068,10 +2066,9 @@ window.tampilkanModalSuksesDigital = function() {
         
     document.body.appendChild(overlay);
 
-    // 3. Kontrol Aksi Tombol (X)
+    // 3. Kontrol Aksi Tombol (X) Emas dengan efek transisi warna saat disentuh
     const closeBtn = overlay.querySelector('#close-overlay-sukses');
     
-    // Efek transisi warna tombol (X) saat di-hover/sentuh jari
     closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; closeBtn.style.borderColor = "#ef4444"; };
     closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(255, 215, 0, 0.1)"; closeBtn.style.color = "#FFD700"; closeBtn.style.borderColor = "rgba(255, 215, 0, 0.3)"; };
     
@@ -2093,7 +2090,8 @@ window.muatStatusKemitraan = function() {
     const labelLogistik = document.getElementById('logistik-share'); 
     const labelItem = document.getElementById('item-terproses');     
     
-    if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
+    // Proteksi scope window.currentUser agar anti-eror saat memuat data secara async
+    if (typeof window.currentUser === "undefined" || !window.currentUser || !window.currentUser.uid) {
         if (penunjukStatus) {
             penunjukStatus.innerText = "BELUM LOGIN";
             penunjukStatus.style.background = "#f1f5f9";
@@ -2102,7 +2100,10 @@ window.muatStatusKemitraan = function() {
         return;
     }
     
-    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    // Mengambil SCRIPT_URL_AMAN secara aman dari scope pipeline
+    const urlDatabase = typeof SCRIPT_URL_AMAN !== 'undefined' ? SCRIPT_URL_AMAN : "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+
+    fetch(`${urlDatabase}?action=cekStatus&uid=${encodeURIComponent(window.currentUser.uid)}`)
     .then(res => {
         if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
         return res.json();

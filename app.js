@@ -2187,6 +2187,36 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 });
+
+// =========================================================================
+// 9. LOGIKA TRANSAKSI & TOMBOL BELI (TARUH DI SINI / DI LUAR DOM LOAD)
+// =========================================================================
+
+// Ganti atau sinkronkan fungsi handle beli Anda dengan skrip ini:
+window.prosesBeliProduk = function(idProduk) {
+    if (typeof currentUser === "undefined" || !currentUser) {
+        alert("⚠️ Anda harus terotentikasi di dalam Pi Browser terlebih dahulu.");
+        return;
+    }
+
+    if (!isBlockchainReady) {
+        if (typeof initPi === "function") {
+            initPi().then(() => {
+                isBlockchainReady = true;
+                eksekusiTransaksiPi(idProduk); 
+            }).catch(() => {
+                alert("Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
+            });
+        } else {
+            alert("Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
+        }
+        return;
+    }
+
+    // Jalankan transaksi asli jika blockchain sudah siap
+    eksekusiTransaksiPi(idProduk);
+};
+
 // =========================================================================
 // PERBAIKAN PRESISI: MODAL SUKSES ASLI (DARK THEME) + TOMBOL (X) EMAS DI POJOK KANAN ATAS
 // =========================================================================

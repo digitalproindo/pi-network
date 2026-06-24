@@ -2285,5 +2285,3 @@ window.muatStatusKemitraan = function() {
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
 };
-    
-    

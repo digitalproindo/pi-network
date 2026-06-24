@@ -2002,9 +2002,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // 5. Jalankan pipeline login otomatis Pi Network SDK
+    // 5. POSISI DIKOREKSI: Jalankan pipeline login otomatis Pi Network SDK secara mandiri
     if (typeof initPi === "function") {
-        await initPi();
+        try {
+            await initPi();
+        } catch(err) {
+            console.error("Gagal inisialisasi SDK otomatis:", err);
+        }
     }
     
     // 6. Bind tombol login manual awal sebelum ter-otentikasi
@@ -2070,7 +2074,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 
-                // Memanggil modal baru yang terisolasi di bawah
+                // Panggil modal sukses
                 if (typeof window.tampilkanModalSuksesDigital === "function") {
                     window.tampilkanModalSuksesDigital();
                 }
@@ -2093,10 +2097,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & PEMBERSIH MASSAL DI LUAR DOM)
+// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & GLOBAL DI LUAR DOM LOAD)
 // =========================================================================
 window.tampilkanModalSuksesDigital = () => {
-    // Sapu bersih modal lama agar tidak double
+    // Bersihkan sisa modal lama agar tidak menumpuk ganda
     const modalLama = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
     modalLama.forEach(m => m.remove());
 
@@ -2211,4 +2215,4 @@ window.muatStatusKemitraan = function() {
     .catch(err => {
         console.error("Gagal melakukan sinkronisasi profil:", err);
     });
-};            
+};           

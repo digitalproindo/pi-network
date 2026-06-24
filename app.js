@@ -4,6 +4,7 @@
 window.currentUser = null; 
 let cart = [];
 let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
+window.isBlockchainReady = false; 
 let isPiInitialized = false; 
 const ADMIN_WA = "6281906066757";
 
@@ -1306,6 +1307,8 @@ const productsData = [
         desc: "Satu ekor ayam kampung asli yang sudah dipotong dan diungkep dengan bumbu kuning rempah tradisional. Tekstur daging empuk, meresap, siap digoreng atau dibakar."
     }
 ];
+
+
 // =========================================================================
 // 2. PI BLOCKCHAIN BRIDGE INITIALIZATION (ANTI-DELAY SDK)
 // =========================================================================
@@ -1320,13 +1323,9 @@ window.initPi = async function() {
         }
 
         try {
-            // Menginisialisasi Pi SDK
             window.Pi.init({ version: "2.0", sandbox: false });
-            
-            // Set kedua indikator menjadi TRUE agar fungsi render produk tidak terkunci
             window.isBlockchainReady = true;
             isPiInitialized = true;
-            
             console.log("✓ Jembatan Node Pi SDK Berhasil Diaktifkan.");
             resolve(true);
         } catch (err) {
@@ -1339,7 +1338,7 @@ window.initPi = async function() {
 };
 
 // =========================================================================
-// 3. AUTHENTICATION & SESSION MANAGEMENT (SILENT AUTO-LOGIN FINAL)
+// 3. AUTHENTICATION & SESSION MANAGEMENT (SILENT AUTO-LOGIN)
 // =========================================================================
 window.handleAuth = async () => {
     if (!window.Pi) {
@@ -1356,20 +1355,15 @@ window.handleAuth = async () => {
     try {
         const scopes = ['username', 'payments', 'wallet_address'];
         
-        // Membuka jembatan otentikasi resmi Pi Network
         const auth = await window.Pi.authenticate(scopes, (payment) => {
-            console.log("Deteksi transaksi tertunda:", payment);
+            console.log("Deteksi transaksi tunda:", payment);
             if (typeof handleIncompletePayment === 'function') {
                 handleIncompletePayment(payment);
             }
         });
 
         window.currentUser = auth.user;
-        
-        // Simpan sesi login lokal agar saat berpindah menu tidak meminta login kembali
         localStorage.setItem('pi_user_session', JSON.stringify(auth.user));
-        
-        // Perbarui tampilan profil pengguna secara instan
         window.updateProfileUI();
         
         if (typeof window.muatStatusKemitraan === "function") {
@@ -1422,7 +1416,6 @@ window.handleLogout = () => {
     if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
 };
 
-// PEMICU CHECKPOINT: Memulihkan sesi aktif secara otomatis saat refresh halaman tanpa nunggu klik
 (() => {
     const savedSession = localStorage.getItem('pi_user_session');
     if (savedSession) {
@@ -1434,18 +1427,16 @@ window.handleLogout = () => {
         }
     }
 })();
-        
-
 
 // =========================================================================
-// 4. RENDERING & UI FUNCTIONS - VERSI UTUH & SINKRON BLOCKCHAIN
+// 4. RENDERING & UI FUNCTIONS
 // =========================================================================
 function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
     if (!grid) return;
     grid.innerHTML = "";
     
-    if (data.length === 0) {
+    if (!data || data.length === 0) {
         grid.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Produk tidak ditemukan.</p>`;
         return;
     }
@@ -1518,7 +1509,7 @@ window.closeProductDetail = () => {
 
 window.filterCategory = (category, element) => {
     if (typeof productsData === 'undefined') return;
-    const filtered = category === 'all' ? productsData : productsData.filter(p => p.category === category);
+    const filtered = category === 'all' ? productsData : productsData.filter(p => p.category.toLowerCase() === category.toLowerCase());
     renderProducts(filtered, 'main-grid');
     if (element) {
         document.querySelectorAll('.category-pill').forEach(pill => pill.classList.remove('active'));
@@ -1527,7 +1518,7 @@ window.filterCategory = (category, element) => {
 };
 
 // =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS - UTUH & SINKRON
+// 5. CART & SHIPPING ADDRESS ACTIONS
 // =========================================================================
 window.showAddressForm = () => {
     const overlay = document.createElement('div');
@@ -1720,7 +1711,6 @@ window.updateCartUI = () => {
         </div>`;
 };
 
-// JEMBATAN FILTRASI CHECKOUT KERANJANG ANTI-DELAY
 window.prosesCheckoutKeranjang = function(totalTagihan) {
     if (typeof window.currentUser === 'undefined' || !window.currentUser) {
         if (typeof showLoginPrompt === 'function') return showLoginPrompt();
@@ -1730,7 +1720,6 @@ window.prosesCheckoutKeranjang = function(totalTagihan) {
         if (typeof showAddressPrompt === 'function') return showAddressPrompt();
         return alert('⚠️ Silakan lengkapi alamat pengiriman Anda terlebih dahulu.');
     }
-    // Cek Kesiapan Jembatan Blockchain Global
     if (!window.isBlockchainReady) {
         if (typeof window.initPi === "function") {
             window.initPi().then(() => {
@@ -1749,7 +1738,6 @@ window.prosesCheckoutKeranjang = function(totalTagihan) {
         window.handlePayment(totalTagihan, 'Total Keranjang');
     }
 };
-
 window.switchPage = (pageId) => {
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
         const el = document.getElementById(p);
@@ -1771,23 +1759,19 @@ window.switchPage = (pageId) => {
     }
 };
 
-
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - UTUH & ANTI EROR KONEKSI
+// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS
 // =========================================================================
-
-// STRATEGI PINTAR: Tombol "Beli" depan toko mengarah ke sini terlebih dahulu
 window.prosesBeliProduk = function(productId) {
     if (typeof productsData === 'undefined') return;
     const p = productsData.find(x => x.id === productId);
     if (!p) return;
 
     if (typeof window.currentUser === 'undefined' || !window.currentUser) {
-        if (typeof showLoginPrompt === 'function') return showLoginPrompt();
-        return alert('⚠️ Silakan login terlebih dahulu melalui menu Profil.');
+        alert('⚠️ Silakan login terlebih dahulu melalui menu Profil.');
+        return;
     }
 
-    // Jika status ready masih false, paksa re-connect secara halus di latar belakang
     if (!window.isBlockchainReady) {
         if (typeof window.initPi === "function") {
             window.initPi().then(() => {
@@ -1809,13 +1793,12 @@ window.prosesBeliProduk = function(productId) {
 };
 
 window.handlePayment = async (amount, name) => {
-    // Gunakan pengecekan gabungan agar sinkron total dengan status inisialisasi awal browser
     if (!window.isBlockchainReady && !isPiInitialized) {
         alert("⚠️ Jaringan Blockchain sedang memuat di latar belakang. Mohon tunggu beberapa detik.");
         return;
     }
-    if (!window.currentUser) { if (typeof showLoginPrompt === 'function') showLoginPrompt(); return; }
-    if (!userAddress.nama) { if (typeof showAddressPrompt === 'function') showAddressPrompt(); return; }
+    if (!window.currentUser) { return alert('⚠️ Silakan login terlebih dahulu.'); }
+    if (!userAddress.nama) { return alert('⚠️ Mohon lengkapi alamat pengiriman Anda.'); }
 
     let detailedItemName = name;
     if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
@@ -1858,9 +1841,68 @@ window.handlePayment = async (amount, name) => {
                     body: JSON.stringify({paymentId, txid}) 
                 });
                 if (res.ok) { 
-  
+                    showSuccessOverlay(secureAmountString, detailedItemName, txid);
+                    if(name === 'Total Keranjang') { 
+                        cart = []; 
+                        if (typeof window.updateCartUI === 'function') window.updateCartUI(); 
+                    }
+                }
+            },
+            onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
+            onError: (error, payment) => { 
+                console.error("Payment Error:", error); 
+                if(payment && typeof handleIncompletePayment === 'function') handleIncompletePayment(payment); 
+            }
+        });
+    } catch (err) { 
+        console.error("Execution Error:", err); 
+    }
+};
+
+function showSuccessOverlay(amount, name, txid) {
+    const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    
+    const dataTransaksi = {
+        tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
+        penerima: userAddress.nama,
+        username: window.currentUser ? window.currentUser.username : "User Pi",
+        item: name,
+        total: amount,
+        txid: txid,
+        alamat: userAddress.alamatLengkap,
+        telepon: userAddress.telepon
+    };
+
+    const googleFormBody = new URLSearchParams(dataTransaksi);
+
+    fetch(excelWebhookUrl, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
+        body: googleFormBody.toString() 
+    })
+    .then(() => console.log("Data pesanan berhasil disinkronkan ke server Google Sheets."))
+    .catch(err => console.error("Gagal catat Excel:", err));
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
+    
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(userAddress.nama)}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${encodeURIComponent(userAddress.alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+
+    const nomorAdminSempurna = typeof ADMIN_WA !== 'undefined' ? ADMIN_WA : "6281906066757";
+
+    overlay.innerHTML = `
+        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif;">
+            <div style="font-size:45px; margin-bottom:20px;">✅</div>
+            <h2 style="color:#1a0033; margin:0; font-weight:800;">Pembayaran Berhasil!</h2>
+            <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
+            <a href="https://wa.me/${nomorAdminSempurna}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
+            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
+        </div>`;
+    document.body.appendChild(overlay);
+}
+
 // =========================================================================
-// 7. SIDEBAR MENU & BANNER LOGIC - VERSI UTUH & FINAL
+// 7. SIDEBAR MENU & BANNER LOGIC
 // =========================================================================
 window.toggleMenu = () => {
     const nav = document.getElementById("sideNav");
@@ -1881,181 +1923,21 @@ window.toggleDropdown = () => {
     }
 };
 
- // =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - REVISI ANTI-MOGOK
-// =========================================================================
-const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-let statusKirimKomunitas = false;
-
-document.addEventListener("DOMContentLoaded", async () => {
-    
-    // 🟢 PERBAIKAN UTAMA: Dibungkus try-catch terisolasi agar jika Pi error, produk TETAP MUNCUL
-    try {
-        if (typeof window.initPi === "function") {
-            await window.initPi();
-            console.log("✓ Pipeline Pi Blockchain Bridge Siap Dioperasikan.");
-        } else if (typeof window.Pi !== "undefined") {
-            window.isBlockchainReady = true;
-            if (typeof isPiInitialized !== "undefined") isPiInitialized = true;
-        }
-    } catch (piErr) {
-        console.warn("⚠️ SDK Pi belum siap atau dibuka di luar Pi Browser, tapi produk tetap ditampilkan:", piErr);
-    }
-
-    // 1. EKSEKUSI RENDER PRODUK (Sekarang aman dari risiko script terhenti)
-    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-        renderProducts(productsData, 'main-grid');
-    }
-
-    // 2. Hubungkan pipa pencarian input
-    const searchInput = document.getElementById('search-input');
-    if (searchInput && typeof productsData !== "undefined") {
-        searchInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-            const sResult = document.getElementById('search-results');
-            if (!sResult) return;
-            if (keyword === "") {
-                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
-            } else {
-                renderProducts(filtered, 'search-results');
-            }
-        });
-    }
-
-    // 3. Deteksi klik di luar untuk menutup SideNav otomatis
-    window.addEventListener('click', function(event) {
-        const nav = document.getElementById("sideNav");
-        const menuIcon = document.querySelector('.menu-icon');
-        if (nav && nav.style.width === "250px" && menuIcon) {
-            if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-                nav.style.width = "0px";
-            }
-        }
-    });
-
-    // 4. Rotasi Banner Otomatis (4 Detik)
-    const banners = [
-        "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
-        "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
-        "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", 
-        "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
-    ];
-    let idx = 0;
-    setInterval(() => { 
-        const img = document.getElementById('banner-img');
-        if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
-    }, 4000);
-    
-    // 5. Bind tombol login manual awal sebelum ter-otentikasi
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn && (typeof window.currentUser === "undefined" || !window.currentUser)) {
-        loginBtn.onclick = window.handleAuth;
-    }
-
-    // 6. PENANGANAN SUBMIT FORM KOMUNITAS / KEMITRAAN
-    const formAman = document.getElementById('formKomunitas');
-    if (formAman) {
-        formAman.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            if (statusKirimKomunitas) return;
-            
-            if (typeof window.currentUser === 'undefined' || !window.currentUser || !window.currentUser.uid) {
-                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-                return;
-            }
-
-            const btnAman = document.getElementById('btnKirim');
-            if (btnAman) {
-                btnAman.innerText = "MENGIRIM...";
-                btnAman.disabled = true;
-            }
-
-            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-            
-            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
-                return;
-            }
-
-            statusKirimKomunitas = true;
-
-            const dataKomunitas = {
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: window.currentUser.uid
-            };
-
-            fetch(SCRIPT_URL_AMAN, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dataKomunitas).toString()
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                formAman.reset();
-                
-                if (typeof window.tampilkanModalSuksesDigital === "function") {
-                    window.tampilkanModalSuksesDigital();
-                }
-                
-                setTimeout(() => {
-                    window.location.href = "whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q";
-                }, 1000);
-
-                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-            })
-            .catch(err => {
-                console.error("Eror form komunitas:", err);
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            })
-            .finally(() => {
-                statusKirimKomunitas = false;
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
-            });
-        });
-    }
-});                   
-
 // =========================================================================
 // 9. MODAL SUKSES (DARK THEME) + SINKRONISASI STATUS KEMITRAAN PROFIL
 // =========================================================================
 window.tampilkanModalSuksesDigital = function() {
-    // 1. Overlay latar belakang gelap dengan blur halus
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px); font-family:'Inter', sans-serif;";
     
-    // 2. STRUKTUR BOX ASLI (Gradasi Gelap, Border Emas, Radius Sesuai Tema Digital Pro)
     overlay.innerHTML = `
         <div style="background: linear-gradient(135deg, #140727 0%, #091424 100%); border: 2px solid #FFD700; padding: 45px 22px 30px; border-radius: 25px; max-width: 350px; width: 100%; text-align: center; position: relative; box-shadow: 0 15px 40px rgba(0,0,0,0.5); box-sizing: border-box;">
-            
             <button id="close-overlay-sukses" type="button" style="position:absolute; top:15px; right:15px; background:rgba(255, 215, 0, 0.1); color:#FFD700; border:1px solid rgba(255, 215, 0, 0.3); font-size:20px; font-weight:bold; line-height:1; width:32px; height:32px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all 0.2s ease; z-index:10002; font-family:Arial, sans-serif;">&times;</button>
-            
             <div style="width: 70px; height: 70px; border: 3px solid #00f2fe; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
                 <span style="color: #00f2fe; font-size: 32px; font-weight: bold;">✓</span>
             </div>
-            
             <h2 style="color:#ffffff; margin:0; font-weight:700; font-size:1.45rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h2>
             <p style="color:#a0aec0; margin:12px 0 25px; font-size:0.88rem; line-height:1.5; padding:0 5px;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-            
             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 15px; padding: 15px; margin-bottom: 25px; text-align: left;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                     <span style="color: #718096; font-size: 0.75rem; font-weight: bold; letter-spacing: 1px;">STATUS</span>
@@ -2063,41 +1945,27 @@ window.tampilkanModalSuksesDigital = function() {
                 </div>
                 <p style="color: #a0aec0; margin: 0; font-size: 0.8rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
             </div>
-            
             <a href="whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q" style="display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #00b4db 0%, #00ff87 100%); color:#091424; text-decoration:none; padding:15px; border-radius:14px; font-weight:bold; font-size:0.95rem; text-transform: uppercase; letter-spacing: 1px; box-shadow: 0 4px 15px rgba(0,255,135,0.35);">
                 GABUNG GRUP WHATSAPP
             </a>
-            
             <button id="btn-kembali-beranda" type="button" style="background:none; border:none; color:#4a5568; margin-top:18px; cursor:pointer; font-size:0.85rem; font-weight:600; width:100%;">Nanti Saja</button>
         </div>`;
         
     document.body.appendChild(overlay);
 
-    // 3. Kontrol Aksi Tombol (X) Emas dengan efek transisi warna saat disentuh
     const closeBtn = overlay.querySelector('#close-overlay-sukses');
-    
     closeBtn.onmouseenter = () => { closeBtn.style.background = "#ef4444"; closeBtn.style.color = "#ffffff"; closeBtn.style.borderColor = "#ef4444"; };
     closeBtn.onmouseleave = () => { closeBtn.style.background = "rgba(255, 215, 0, 0.1)"; closeBtn.style.color = "#FFD700"; closeBtn.style.borderColor = "rgba(255, 215, 0, 0.3)"; };
     
-    closeBtn.onclick = (e) => {
-        e.stopPropagation();
-        overlay.remove();
-    };
-
-    // Kontrol tombol "Nanti Saja" di bagian bawah
-    const btnBeranda = overlay.querySelector('#btn-kembali-beranda');
-    btnBeranda.onclick = () => { 
-        overlay.remove(); 
-    };
+    closeBtn.onclick = (e) => { e.stopPropagation(); overlay.remove(); };
+    overlay.querySelector('#btn-kembali-beranda').onclick = () => { overlay.remove(); };
 };
 
-// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share'); 
     const labelItem = document.getElementById('item-terproses');     
     
-    // Proteksi scope window.currentUser agar anti-eror saat memuat data secara async
     if (typeof window.currentUser === "undefined" || !window.currentUser || !window.currentUser.uid) {
         if (penunjukStatus) {
             penunjukStatus.innerText = "BELUM LOGIN";
@@ -2107,49 +1975,34 @@ window.muatStatusKemitraan = function() {
         return;
     }
     
-    // Mengambil SCRIPT_URL_AMAN secara aman dari scope pipeline
     const urlDatabase = typeof SCRIPT_URL_AMAN !== 'undefined' ? SCRIPT_URL_AMAN : "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 
     fetch(`${urlDatabase}?action=cekStatus&uid=${encodeURIComponent(window.currentUser.uid)}`)
-    .then(res => {
-        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
-        return res.json();
-    })
+    .then(res => { if (!res.ok) throw new Error("Respon bermasalah"); return res.json(); })
     .then(data => {
         if (!data) return;
-        
         if (data.status === "ditemukan") {
             const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
-            
             if (penunjukStatus) {
                 penunjukStatus.innerText = statusFinal;
-                
                 if (statusFinal === "DISETUJUI") {
-                    penunjukStatus.style.background = "#d1fae5"; 
-                    penunjukStatus.style.color = "#065f46";      
+                    penunjukStatus.style.background = "#d1fae5"; penunjukStatus.style.color = "#065f46";      
                 } else if (statusFinal === "PROSES REVIEW") {
-                    penunjukStatus.style.background = "#fef3c7"; 
-                    penunjukStatus.style.color = "#92400e";      
+                    penunjukStatus.style.background = "#fef3c7"; penunjukStatus.style.color = "#92400e";      
                 } else {
-                    penunjukStatus.style.background = "#fee2e2"; 
-                    penunjukStatus.style.color = "#991b1b";
+                    penunjukStatus.style.background = "#fee2e2"; penunjukStatus.style.color = "#991b1b";
                 }
             }
-            
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
-            
         } else {
             if (penunjukStatus) {
                 penunjukStatus.innerText = "BELUM TERDAFTAR";
-                penunjukStatus.style.background = "#f1f5f9";
-                penunjukStatus.style.color = "#64748b";
+                penunjukStatus.style.background = "#f1f5f9"; penunjukStatus.style.color = "#64748b";
             }
             if (labelLogistik) labelLogistik.innerText = "0.00 %";
             if (labelItem) labelItem.innerText = "0 Item";
         }
     })
-    .catch(err => {
-        console.error("Gagal melakukan sinkronisasi profil:", err);
-    });
+    .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
 };

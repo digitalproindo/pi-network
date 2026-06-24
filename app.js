@@ -1881,27 +1881,28 @@ window.toggleDropdown = () => {
     }
 };
 
-// =========================================================================
-// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - VERSI UTUH & FINAL
+ // =========================================================================
+// 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - REVISI ANTI-MOGOK
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 🟢 INITIALIZATION POINT: Mengaktifkan jembatan blockchain global saat aplikasi dibuka
-    if (typeof window.initPi === "function") {
-        try {
+    
+    // 🟢 PERBAIKAN UTAMA: Dibungkus try-catch terisolasi agar jika Pi error, produk TETAP MUNCUL
+    try {
+        if (typeof window.initPi === "function") {
             await window.initPi();
             console.log("✓ Pipeline Pi Blockchain Bridge Siap Dioperasikan.");
-        } catch (piErr) {
-            console.error("Gagal inisialisasi Pi SDK awal:", piErr);
-            window.isBlockchainReady = false;
+        } else if (typeof window.Pi !== "undefined") {
+            window.isBlockchainReady = true;
+            if (typeof isPiInitialized !== "undefined") isPiInitialized = true;
         }
-    } else if (typeof window.Pi !== "undefined") {
-        window.isBlockchainReady = true;
+    } catch (piErr) {
+        console.warn("⚠️ SDK Pi belum siap atau dibuka di luar Pi Browser, tapi produk tetap ditampilkan:", piErr);
     }
 
-    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG DI BERANDA
+    // 1. EKSEKUSI RENDER PRODUK (Sekarang aman dari risiko script terhenti)
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
     }
@@ -2032,7 +2033,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
-});
+});                   
 
 // =========================================================================
 // 9. MODAL SUKSES (DARK THEME) + SINKRONISASI STATUS KEMITRAAN PROFIL

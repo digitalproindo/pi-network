@@ -1950,13 +1950,16 @@ window.toggleDropdown = () => {
     }
 };
 
- // =========================================================================
-// 8A. CORE PIPELINE (DOM LOAD INITIALIZATION) - MODULAR VERSION
+// =========================================================================
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    // Suntik Gaya Animasi & Desain Futuristik ke Dokumen
+    inisialisasiGayaDigitalPro();
+
     // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
@@ -2004,7 +2007,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 5. Jalankan pipeline login otomatis Pi Network SDK
     if (typeof initPi === "function") {
-        await initPi();
+        try { await initPi(); } catch(e) { console.error(e); }
     }
     
     // 6. Bind tombol login manual awal sebelum ter-otentikasi
@@ -2018,7 +2021,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (formAman) {
         formAman.addEventListener('submit', e => {
             e.preventDefault();
-            
             if (statusKirimKomunitas) return;
             
             if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
@@ -2027,10 +2029,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const btnAman = document.getElementById('btnKirim');
-            if (btnAman) {
-                btnAman.innerText = "MENGIRIM...";
-                btnAman.disabled = true;
-            }
+            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
 
             const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
             const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
@@ -2041,26 +2040,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             
             if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
                 alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
                 return;
             }
 
             statusKirimKomunitas = true;
+            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
-            const dataKomunitas = {
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: currentUser.uid
-            };
-
-            // Kirim data menggunakan URLSearchParams di dalam BODY POST
             fetch(SCRIPT_URL_AMAN, { 
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -2068,15 +2054,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .then(res => res.json())
             .then(response => {
-                // 1. Tutup modal form pendaftaran utama
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
-                
-                // 2. Tampilkan modal sukses 
-                if (typeof window.tampilkanModalSuksesDigital === "function") {
-                    window.tampilkanModalSuksesDigital();
-                }
-
+                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
                 if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
             .catch(err => {
@@ -2085,18 +2065,109 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .finally(() => {
                 statusKirimKomunitas = false;
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
             });
         });
     }
-});           
+});
+
+function inisialisasiGayaDigitalPro() {
+    if (document.getElementById('digital-pro-premium-styles')) return;
+    const styleEl = document.createElement('style');
+    styleEl.id = 'digital-pro-premium-styles';
+    styleEl.innerHTML = `
+        @keyframes digitalBgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes slideInNotif { 0% { transform: translateY(-120%) scale(0.9); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.5); } 70% { box-shadow: 0 0 0 15px rgba(147, 51, 234, 0); } 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); } }
+        .digital-bg-animated { background: linear-gradient(-45deg, #090514, #120a2a, #030f26, #0d0b18); background-size: 400% 400%; animation: digitalBgMove 8s ease infinite; }
+        .notif-banner-pro { animation: slideInNotif 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards, pulseGlow 2.5s infinite; }
+        .custom-pro-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
+    `;
+    document.head.appendChild(styleEl);
+}
 
 // =========================================================================
-// 8B. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
+// 8B. SINKRONISASI STATUS PROFIL & BANNER INVESTOR MODAL
 // =========================================================================
+
+// Engine Cek Perubahan Status Terhadap Data Lokal Browser
+function cekPerubahanStatusSistem(statusBaru) {
+    if (!statusBaru) return;
+    const statusLama = localStorage.getItem('dpi_last_known_status');
+    
+    // BANNER HANYA LETUP JIKA STATUS BERUBAH (Misal dari REVIEW jadi DEVELOPER IT)
+    if (statusLama && statusLama !== statusBaru) {
+        tampilkanBannerNotifikasiSistem(statusBaru);
+    }
+    localStorage.setItem('dpi_last_known_status', statusBaru);
+}
+
+function tampilkanBannerNotifikasiSistem(statusTerbaru) {
+    const bannerEksis = document.getElementById('dpi-top-banner');
+    if (bannerEksis) bannerEksis.remove();
+
+    const banner = document.createElement('div');
+    banner.id = 'dpi-top-banner';
+    banner.className = 'notif-banner-pro';
+    banner.style.cssText = "position: fixed; top: 15px; left: 5%; width: 90%; max-width: 420px; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px; z-index: 999999; cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-family: sans-serif;";
+
+    banner.innerHTML = `
+        <div style="background: rgba(147, 51, 234, 0.15); width: 42px; height: 42px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0;"><span style="font-size: 18px;">📢</span></div>
+        <div style="flex-grow: 1;">
+            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;">Pemberitahuan Status</div>
+            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 1px;">Kemitraan Berubah: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
+            <div style="color: #94a3b8; font-size: 0.75rem; margin-top: 1px;">Klik untuk melihat peluang pengembangan baru.</div>
+        </div>
+        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 8px; font-weight: bold; cursor: pointer;">✕</div>
+    `;
+    document.body.appendChild(banner);
+
+    banner.addEventListener('click', (e) => {
+        if (e.target.classList.contains('close-banner-x')) { e.stopPropagation(); banner.remove(); return; }
+        banner.remove();
+        bukaModalInvestorDigitalPro();
+    });
+}
+
+function bukaModalInvestorDigitalPro() {
+    const modalEksis = document.getElementById('dpi-modal-investor-pro');
+    if (modalEksis) modalEksis.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'dpi-modal-investor-pro';
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); z-index: 1000000; display: flex; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box; font-family: sans-serif;";
+
+    overlay.innerHTML = `
+        <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 450px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative;">
+            <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
+            <div style="text-align: center; margin-bottom: 25px;">
+                <span style="font-size: 40px; display: block; margin-bottom: 8px;">📢</span>
+                <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.25rem;">Kesempatan Menjadi Bagian dari <span style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Pengembangan Digital Pro Indo</span></h2>
+            </div>
+            <div style="color: #cbd5e1; font-size: 0.88rem; line-height: 1.6;">
+                <p>Halo Sahabat Digital Pro Indo! 👋</p>
+                <p>Digital Pro Indo lahir dari komitmen menghadirkan inovasi digital karya anak bangsa. Kami membuka kesempatan bagi anggota visi misi sama untuk bergabung sebagai <strong>Investor & Mitra Strategis</strong>.</p>
+                <p style="background: rgba(168, 85, 247, 0.08); border-left: 3px solid #a855f7; padding: 12px; border-radius: 0 12px 12px 0; color: #e2e8f0;">🚀 Bergabunglah dalam mengelola arah pertumbuhan ekosistem digital kedepan.</p>
+                <p>📞 Hubungi manajemen kami untuk mendapatkan info lengkap mengenai skema kerja sama.</p>
+            </div>
+            <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
+                <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase;">Hubungi Hub Manajemen</button>
+                <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer;">Kembali ke Profil</button>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const tutup = () => overlay.remove();
+    overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
+    overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
+    overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
+        window.open("whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
+    });
+}
+
+// Fungsi Utama Sinkronisasi Profil Kemitraan
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share'); 
@@ -2112,10 +2183,7 @@ window.muatStatusKemitraan = function() {
     }
     
     fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
-    .then(res => {
-        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
-        return res.json();
-    })
+    .then(res => { if (!res.ok) throw new Error("Respon jaringan bermasalah"); return res.json(); })
     .then(data => {
         if (!data) return;
         
@@ -2125,7 +2193,8 @@ window.muatStatusKemitraan = function() {
             if (penunjukStatus) {
                 penunjukStatus.innerText = statusFinal;
                 
-                if (statusFinal === "DISETUJUI") {
+                // Mendukung status kustom dinamis (DISETUJUI, DEVELOPER IT, dll)
+                if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT") {
                     penunjukStatus.style.background = "#d1fae5"; 
                     penunjukStatus.style.color = "#065f46";      
                 } else if (statusFinal === "PROSES REVIEW") {
@@ -2140,6 +2209,9 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
+            // Evaluasi Pelacak Perubahan Status
+            cekPerubahanStatusSistem(statusFinal);
+            
         } else {
             if (penunjukStatus) {
                 penunjukStatus.innerText = "BELUM TERDAFTAR";
@@ -2150,7 +2222,5 @@ window.muatStatusKemitraan = function() {
             if (labelItem) labelItem.innerText = "0 Item";
         }
     })
-    .catch(err => {
-        console.error("Gagal melakukan sinkronisasi profil:", err);
-    });
+    .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
 };

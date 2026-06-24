@@ -4,7 +4,11 @@
 window.currentUser = null; 
 let cart = [];
 let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
-window.isBlockchainReady = false; // Penanda global utama untuk tombol Beli & Checkout
+
+// Aktifkan kedua variabel penanda agar tidak bentrok dengan fungsi pengecekan lama
+window.isBlockchainReady = false; 
+let isPiInitialized = false; 
+
 const ADMIN_WA = "6281906066757";
 
 // Mock Data Produk (Pastikan ID unik dan format harga sesuai)
@@ -1314,19 +1318,25 @@ window.initPi = async function() {
         if (!window.Pi) {
             console.error("Aplikasi tidak dibuka dari Pi Browser.");
             window.isBlockchainReady = false;
+            isPiInitialized = false;
             reject("No Pi SDK");
             return;
         }
 
         try {
-            // Menginisialisasi Pi SDK dengan konfigurasi sandbox sesuai lingkungan
+            // Menginisialisasi Pi SDK
             window.Pi.init({ version: "2.0", sandbox: false });
+            
+            // Set kedua indikator menjadi TRUE agar fungsi render produk tidak terkunci
             window.isBlockchainReady = true;
+            isPiInitialized = true;
+            
             console.log("✓ Jembatan Node Pi SDK Berhasil Diaktifkan.");
             resolve(true);
         } catch (err) {
             console.error("Gagal melakukan jabat tangan Pi SDK:", err);
             window.isBlockchainReady = false;
+            isPiInitialized = false;
             reject(err);
         }
     });

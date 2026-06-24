@@ -1957,201 +1957,201 @@ const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
-    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-        renderProducts(productsData, 'main-grid');
-    }
+    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+        renderProducts(productsData, 'main-grid');
+    }
 
-    // 2. Hubungkan pipa pencarian input
-    const searchInput = document.getElementById('search-input');
-    if (searchInput && typeof productsData !== "undefined") {
-        searchInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-            const sResult = document.getElementById('search-results');
-            if (!sResult) return;
-            if (keyword === "") {
-                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
-            } else {
-                renderProducts(filtered, 'search-results');
-            }
-        });
-    }
+    // 2. Hubungkan pipa pencarian input
+    const searchInput = document.getElementById('search-input');
+    if (searchInput && typeof productsData !== "undefined") {
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+            const sResult = document.getElementById('search-results');
+            if (!sResult) return;
+            if (keyword === "") {
+                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+            } else {
+                renderProducts(filtered, 'search-results');
+            }
+        });
+    }
 
-    // 3. Deteksi klik di luar untuk menutup SideNav
-    window.addEventListener('click', function(event) {
-        const nav = document.getElementById("sideNav");
-        const menuIcon = document.querySelector('.menu-icon');
-        if (nav && nav.style.width === "250px" && menuIcon) {
-            if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-                nav.style.width = "0px";
-            }
-        }
-    });
+    // 3. Deteksi klik di luar untuk menutup SideNav
+    window.addEventListener('click', function(event) {
+        const nav = document.getElementById("sideNav");
+        const menuIcon = document.querySelector('.menu-icon');
+        if (nav && nav.style.width === "250px" && menuIcon) {
+            if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
+                nav.style.width = "0px";
+            }
+        }
+    });
 
-    // 4. Rotasi Banner Otomatis
-    const banners = [
-        "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
-        "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
-        "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", 
-        "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
-    ];
-    let idx = 0;
-    setInterval(() => { 
-        const img = document.getElementById('banner-img');
-        if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
-    }, 4000);
+    // 4. Rotasi Banner Otomatis
+    const banners = [
+        "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
+        "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
+        "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", 
+        "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
+    ];
+    let idx = 0;
+    setInterval(() => { 
+        const img = document.getElementById('banner-img');
+        if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
+    }, 4000);
 
-    // 5. Jalankan pipeline login otomatis Pi Network SDK
-    if (typeof initPi === "function") {
-        await initPi();
-    }
-    
-    // 6. Bind tombol login manual awal sebelum ter-otentikasi
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
-        loginBtn.onclick = window.handleAuth;
-    }
+    // 5. Jalankan pipeline login otomatis Pi Network SDK
+    if (typeof initPi === "function") {
+        await initPi();
+    }
+    
+    // 6. Bind tombol login manual awal sebelum ter-otentikasi
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
+        loginBtn.onclick = window.handleAuth;
+    }
 
-    // 7. PENANGANAN SUBMIT FORM KOMUNITAS
-    const formAman = document.getElementById('formKomunitas');
-    if (formAman) {
-        formAman.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            if (statusKirimKomunitas) return;
-            
-            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-                return;
-            }
+    // 7. PENANGANAN SUBMIT FORM KOMUNITAS
+    const formAman = document.getElementById('formKomunitas');
+    if (formAman) {
+        formAman.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            if (statusKirimKomunitas) return;
+            
+            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+                return;
+            }
 
-            const btnAman = document.getElementById('btnKirim');
-            if (btnAman) {
-                btnAman.innerText = "MENGIRIM...";
-                btnAman.disabled = true;
-            }
+            const btnAman = document.getElementById('btnKirim');
+            if (btnAman) {
+                btnAman.innerText = "MENGIRIM...";
+                btnAman.disabled = true;
+            }
 
-            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-            
-            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
-                return;
-            }
+            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
+            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
+            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+            
+            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+                if (btnAman) {
+                    btnAman.innerText = "DAFTAR SEKARANG";
+                    btnAman.disabled = false;
+                }
+                return;
+            }
 
-            statusKirimKomunitas = true;
+            statusKirimKomunitas = true;
 
-            const dataKomunitas = {
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: currentUser.uid
-            };
+            const dataKomunitas = {
+                nama: namaUser,
+                whatsapp: waUser,
+                provinsi: provUser,
+                kota: kotaUser,
+                kecamatan: kecUser,
+                kelurahan: kelUser,
+                uid: currentUser.uid
+            };
 
-            // PERBAIKAN UTAMA: Kirim data menggunakan URLSearchParams di dalam BODY POST agar dibaca sempurna oleh doPost() Google Apps Script
-            fetch(SCRIPT_URL_AMAN, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dataKomunitas).toString()
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                formAman.reset();
-                
-                if (typeof window.tampilkanModalSuksesDigital === "function") {
-                    window.tampilkanModalSuksesDigital();
-                }
-                
-                setTimeout(() => {
-                    window.location.href = "whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q";
-                }, 1000);
+            // Kirim data menggunakan URLSearchParams di dalam BODY POST
+            fetch(SCRIPT_URL_AMAN, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dataKomunitas).toString()
+            })
+            .then(res => res.json())
+            .then(response => {
+                // 1. Tutup modal form pendaftaran utama
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                formAman.reset();
+                
+                // 2. Tampilkan modal sukses 
+                if (typeof window.tampilkanModalSuksesDigital === "function") {
+                    window.tampilkanModalSuksesDigital();
+                }
+                
+                // PERBAIKAN: setTimeout otomatis ke WhatsApp dihapus dari sini agar tidak terjadi double action/tabrakan.
+                // Pengguna sekarang bisa menutup modal sukses dengan bersih (Close murni).
 
-                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-            })
-            .catch(err => {
-                console.error("Eror form komunitas:", err);
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            })
-            .finally(() => {
-                statusKirimKomunitas = false;
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
-            });
-        });
-    }
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+            })
+            .catch(err => {
+                console.error("Eror form komunitas:", err);
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            })
+            .finally(() => {
+                statusKirimKomunitas = false;
+                if (btnAman) {
+                    btnAman.innerText = "DAFTAR SEKARANG";
+                    btnAman.disabled = false;
+                }
+            });
+        });
+    }
 });
 
-// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL (DITEMPEL KE WINDOW AGAR GLOBAL)
+// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
 window.muatStatusKemitraan = function() {
-    const penunjukStatus = document.getElementById('partner-status');
-    const labelLogistik = document.getElementById('logistik-share'); 
-    const labelItem = document.getElementById('item-terproses');     
-    
-    if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
-        if (penunjukStatus) {
-            penunjukStatus.innerText = "BELUM LOGIN";
-            penunjukStatus.style.background = "#f1f5f9";
-            penunjukStatus.style.color = "#64748b";
-        }
-        return;
-    }
-    
-    // Kirim parameter action=cekStatus via GET agar dapet dibaca doGet(e) di Apps Script
-    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
-    .then(res => {
-        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
-        return res.json();
-    })
-    .then(data => {
-        if (!data) return;
-        
-        if (data.status === "ditemukan") {
-            const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
-            
-            if (penunjukStatus) {
-                penunjukStatus.innerText = statusFinal;
-                
-                if (statusFinal === "DISETUJUI") {
-                    penunjukStatus.style.background = "#d1fae5"; 
-                    penunjukStatus.style.color = "#065f46";      
-                } else if (statusFinal === "PROSES REVIEW") {
-                    penunjukStatus.style.background = "#fef3c7"; 
-                    penunjukStatus.style.color = "#92400e";      
-                } else {
-                    penunjukStatus.style.background = "#fee2e2"; 
-                    penunjukStatus.style.color = "#991b1b";
-                }
-            }
-            
-            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
-            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
-            
-        } else {
-            if (penunjukStatus) {
-                penunjukStatus.innerText = "BELUM TERDAFTAR";
-                penunjukStatus.style.background = "#f1f5f9";
-                penunjukStatus.style.color = "#64748b";
-            }
-            if (labelLogistik) labelLogistik.innerText = "0.00 %";
-            if (labelItem) labelItem.innerText = "0 Item";
-        }
-    })
-    .catch(err => {
-        console.error("Gagal melakukan sinkronisasi profil:", err);
-    });
-};                                         
+    const penunjukStatus = document.getElementById('partner-status');
+    const labelLogistik = document.getElementById('logistik-share'); 
+    const labelItem = document.getElementById('item-terproses');     
+    
+    if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
+        if (penunjukStatus) {
+            penunjukStatus.innerText = "BELUM LOGIN";
+            penunjukStatus.style.background = "#f1f5f9";
+            penunjukStatus.style.color = "#64748b";
+        }
+        return;
+    }
+    
+    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    .then(res => {
+        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        
+        if (data.status === "ditemukan") {
+            const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
+            
+            if (penunjukStatus) {
+                penunjukStatus.innerText = statusFinal;
+                
+                if (statusFinal === "DISETUJUI") {
+                    penunjukStatus.style.background = "#d1fae5"; 
+                    penunjukStatus.style.color = "#065f46";      
+                } else if (statusFinal === "PROSES REVIEW") {
+                    penunjukStatus.style.background = "#fef3c7"; 
+                    penunjukStatus.style.color = "#92400e";      
+                } else {
+                    penunjukStatus.style.background = "#fee2e2"; 
+                    penunjukStatus.style.color = "#991b1b";
+                }
+            }
+            
+            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
+            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
+            
+        } else {
+            if (penunjukStatus) {
+                penunjukStatus.innerText = "BELUM TERDAFTAR";
+                penunjukStatus.style.background = "#f1f5f9";
+                penunjukStatus.style.color = "#64748b";
+            }
+            if (labelLogistik) labelLogistik.innerText = "0.00 %";
+            if (labelItem) labelItem.innerText = "0 Item";
+        }
+    })
+    .catch(err => {
+        console.error("Gagal melakukan sinkronisasi profil:", err);
+    });
+};                

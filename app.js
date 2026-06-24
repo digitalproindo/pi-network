@@ -2002,7 +2002,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
 
-    // 5. POSISI DIKOREKSI: Jalankan pipeline login otomatis Pi Network SDK secara mandiri
+    // 5. Jalankan pipeline login otomatis Pi Network SDK
     if (typeof initPi === "function") {
         try {
             await initPi();
@@ -2074,11 +2074,10 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 
-                // Panggil modal sukses
                 if (typeof window.tampilkanModalSuksesDigital === "function") {
                     window.tampilkanModalSuksesDigital();
                 }
-                
+
                 if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
             .catch(err => {
@@ -2097,10 +2096,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & GLOBAL DI LUAR DOM LOAD)
+// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & MANAJEMEN TOMBOL TOTAL)
 // =========================================================================
 window.tampilkanModalSuksesDigital = () => {
-    // Bersihkan sisa modal lama agar tidak menumpuk ganda
+    // Bersihkan penumpukan modal lama yang berpotensi menyisa di layar
     const modalLama = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
     modalLama.forEach(m => m.remove());
 
@@ -2124,7 +2123,7 @@ window.tampilkanModalSuksesDigital = () => {
     };
 
     overlaySukses.innerHTML = `
-        <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 30px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
+        <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 25px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
             
             <div class="tombol-silang-penutup" 
                  style="position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; z-index: 100008;">
@@ -2148,14 +2147,18 @@ window.tampilkanModalSuksesDigital = () => {
 
             <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
             
-            <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
+            <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 8px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: block; margin: 0 auto;">Nanti Saja</button>
+
+            <button class="tombol-bawah-penutup" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ef4444; width: 100%; padding: 12px 0; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.5px; transition: background 0.2s;">Tutup Aplikasi</button>
         </div>
     `;
     
     document.body.appendChild(overlaySukses);
 
+    // Sambungkan fungsionalitas penutupan bersih ke semua tombol aksi keluar
     overlaySukses.querySelector('.tombol-silang-penutup').addEventListener('click', aksiSapuBersihDanHome);
     overlaySukses.querySelector('.tombol-nanti-penutup').addEventListener('click', aksiSapuBersihDanHome);
+    overlaySukses.querySelector('.tombol-bawah-penutup').addEventListener('click', aksiSapuBersihDanHome);
 };
 
 // 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
@@ -2215,4 +2218,4 @@ window.muatStatusKemitraan = function() {
     .catch(err => {
         console.error("Gagal melakukan sinkronisasi profil:", err);
     });
-};           
+};    

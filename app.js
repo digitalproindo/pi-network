@@ -1962,7 +1962,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderProducts(productsData, 'main-grid');
     }
 // =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (DENGAN TOMBOL CLOSE X)
+// MODAL POPUP SUKSES PENDAFTARAN (DENGAN RE-ROUTE KE BERANDA SAAT CLOSE)
 // =========================================================================
 window.tampilkanModalSuksesDigital = () => {
     // Jalankan efek suara sukses jika diinginkan (opsional)
@@ -1971,8 +1971,8 @@ window.tampilkanModalSuksesDigital = () => {
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // Node C5
-        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // Node E5
+        osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); 
+        osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); 
         gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
         osc.connect(gain);
@@ -1981,17 +1981,29 @@ window.tampilkanModalSuksesDigital = () => {
         osc.stop(audioCtx.currentTime + 0.4);
     } catch (e) { console.log("Audio otomatis diblokir browser"); }
 
+    // Hapus modal lama jika sempat menduplikasi/menumpuk di DOM
+    const modalLama = document.getElementById('modal-sukses-komunitas');
+    if (modalLama) { modalLama.remove(); }
+
     const overlaySukses = document.createElement('div');
     overlaySukses.id = "modal-sukses-komunitas";
     overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
     
+    // Fungsi pembersih untuk menutup modal dan langsung kembali ke Beranda
+    const aksiTutupDanKembali = () => {
+        document.getElementById('modal-sukses-komunitas').remove();
+        if (typeof window.switchPage === 'function') {
+            window.switchPage('home'); // Memaksa UI kembali ke halaman Home
+        } else {
+            location.reload(); // Fallback jika fungsi navigasi tidak terbaca
+        }
+    };
+
     overlaySukses.innerHTML = `
         <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 30px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
             
-            <div onclick="document.getElementById('modal-sukses-komunitas').remove()" 
-                 style="position: absolute; top: 18px; right: 18px; width: 30px; height: 30px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; transition: background 0.2s;"
-                 onmouseover="this.style.background='rgba(255,255,255,0.2)'" 
-                 onmouseout="this.style.background='rgba(255,255,255,0.1)'">
+            <div id="btn-close-x-komunitas" 
+                 style="position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; transition: background 0.2s;">
                  ✕
             </div>
 
@@ -2011,10 +2023,16 @@ window.tampilkanModalSuksesDigital = () => {
             </div>
 
             <button onclick="window.location.href='whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q'" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
-            <button onclick="document.getElementById('modal-sukses-komunitas').remove()" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
+            
+            <button id="btn-nanti-komunitas" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 10px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer;">Nanti Saja</button>
         </div>
     `;
+    
     document.body.appendChild(overlaySukses);
+
+    // Pasangkan listener klik ke fungsi penyelamat agar tidak bentrok dengan innerHTML render
+    document.getElementById('btn-close-x-komunitas').addEventListener('click', aksiTutupDanKembali);
+    document.getElementById('btn-nanti-komunitas').addEventListener('click', aksiTutupDanKembali);
 };
     // 2. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');

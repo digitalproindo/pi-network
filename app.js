@@ -1592,7 +1592,7 @@ function showAddressPrompt() {
 
 
 // =========================================================================
-// 4. RENDERING & UI FUNCTIONS - FIXED VERSION
+// 4. RENDERING & UI FUNCTIONS - VERSI UTUH & SINKRON BLOCKCHAIN
 // =========================================================================
 function renderProducts(data, targetGridId) {
     const grid = document.getElementById(targetGridId);
@@ -1622,7 +1622,7 @@ function renderProducts(data, targetGridId) {
                 <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
                 <div class="card-bottom">
                     <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment(${p.price}, '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu melalui menu Profil.'); }">Beli</button>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); window.prosesBeliProduk('${p.id}');">Beli</button>
                 </div>
             </div>`;
         grid.appendChild(card);
@@ -1657,7 +1657,7 @@ window.openProductDetail = (productId) => {
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
                     <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment(${p.price}, '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); }" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
+                    <button onclick="window.prosesBeliProduk('${p.id}')" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
         </div>`;
@@ -1681,7 +1681,7 @@ window.filterCategory = (category, element) => {
 };
 
 // =========================================================================
-// 5. CART & SHIPPING ADDRESS ACTIONS - FIXED VERSION
+// 5. CART & SHIPPING ADDRESS ACTIONS - UTUH & SINKRON
 // =========================================================================
 window.showAddressForm = () => {
     const overlay = document.createElement('div');
@@ -1714,10 +1714,8 @@ window.saveAddress = () => {
         return alert("⚠️ Mohon lengkapi seluruh data alamat pengiriman Anda!"); 
     }
 
-    // Set ke variabel global secara aman
     userAddress = { nama: valName, telepon: valPhone, alamatLengkap: valAddr };
     
-    // 🔊 EFEK SUARA ELEKTRONIK KUSTOM
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         if (audioCtx.state === 'suspended') { audioCtx.resume(); }
@@ -1739,7 +1737,6 @@ window.saveAddress = () => {
     
     window.updateCartUI();
 
-    // 🌟 SEKSI POPUP NOTIFIKASI KUSTOM ALAMAT DISIMPAN
     const successPopup = document.createElement('div');
     successPopup.id = "digital-pro-success-alert";
     successPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 100005; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.3s ease; font-family: 'Inter', sans-serif;";
@@ -1870,11 +1867,41 @@ window.updateCartUI = () => {
                 <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; border-top:2px solid #f8fafc; padding-top:15px;"><span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span></div>
                 
                 <button style="width:100%; padding:16px; border-radius:16px; background:#6748d7; color:white; font-weight:800; border:none; cursor:pointer;" 
-                        onclick="if(typeof currentUser === 'undefined' || !currentUser) { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); } else if(!userAddress.nama || !userAddress.alamatLengkap) { if(typeof showAddressPrompt === 'function') showAddressPrompt(); else alert('Silakan lengkapi alamat pengiriman Anda terlebih dahulu.'); } else { window.handlePayment(${total}, 'Total Keranjang'); }">
+                        onclick="window.prosesCheckoutKeranjang('${total}')">
                     CHECKOUT SEKARANG 🚀
                 </button>
             </div>
         </div>`;
+};
+
+// JEMBATAN FILTRASI CHECKOUT KERANJANG ANTI-DELAY
+window.prosesCheckoutKeranjang = function(totalTagihan) {
+    if (typeof window.currentUser === 'undefined' || !window.currentUser) {
+        if (typeof showLoginPrompt === 'function') return showLoginPrompt();
+        return alert('⚠️ Silakan login terlebih dahulu melalui menu Profil.');
+    }
+    if (!userAddress.nama || !userAddress.alamatLengkap) {
+        if (typeof showAddressPrompt === 'function') return showAddressPrompt();
+        return alert('⚠️ Silakan lengkapi alamat pengiriman Anda terlebih dahulu.');
+    }
+    // Cek Kesiapan Jembatan Blockchain Global
+    if (!window.isBlockchainReady) {
+        if (typeof window.initPi === "function") {
+            window.initPi().then(() => {
+                if (typeof window.handlePayment === "function") {
+                    window.handlePayment(totalTagihan, 'Total Keranjang');
+                }
+            }).catch(() => {
+                alert("⚠️ Menghubungkan ulang Node Blockchain... Silakan tunggu 2 detik dan tekan Checkout kembali.");
+            });
+        } else {
+            alert("⚠️ Sinkronisasi jaringan sedang berjalan. Mohon tunggu beberapa saat.");
+        }
+        return;
+    }
+    if (typeof window.handlePayment === "function") {
+        window.handlePayment(totalTagihan, 'Total Keranjang');
+    }
 };
 
 window.switchPage = (pageId) => {
@@ -1898,23 +1925,57 @@ window.switchPage = (pageId) => {
     }
 };
 
+
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - FIXED VERSION
+// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - UTUH & ANTI EROR KONEKSI
 // =========================================================================
-window.handlePayment = async (amount, name) => {
-    if (!isPiInitialized) {
-        alert("Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
+
+// STRATEGI PINTAR: Tombol "Beli" depan toko mengarah ke sini terlebih dahulu
+window.prosesBeliProduk = function(productId) {
+    if (typeof productsData === 'undefined') return;
+    const p = productsData.find(x => x.id === productId);
+    if (!p) return;
+
+    if (typeof window.currentUser === 'undefined' || !window.currentUser) {
+        if (typeof showLoginPrompt === 'function') return showLoginPrompt();
+        return alert('⚠️ Silakan login terlebih dahulu melalui menu Profil.');
+    }
+
+    // Jika status ready masih false, paksa re-connect secara halus di latar belakang
+    if (!window.isBlockchainReady) {
+        if (typeof window.initPi === "function") {
+            window.initPi().then(() => {
+                if (typeof window.handlePayment === "function") {
+                    window.handlePayment(p.price, p.name);
+                }
+            }).catch(() => {
+                alert("⚠️ Sistem berhasil memulihkan jembatan Node. Silakan klik tombol 'Beli' sekali lagi.");
+            });
+        } else {
+            alert("⚠️ Jaringan Pi SDK sedang sinkronisasi. Harap tunggu beberapa saat.");
+        }
         return;
     }
-    if (!currentUser) { showLoginPrompt(); return; }
-    if (!userAddress.nama) { showAddressPrompt(); return; }
+
+    if (typeof window.handlePayment === "function") {
+        window.handlePayment(p.price, p.name);
+    }
+};
+
+window.handlePayment = async (amount, name) => {
+    // Gunakan pengecekan gabungan agar sinkron total dengan status inisialisasi awal browser
+    if (!window.isBlockchainReady && !isPiInitialized) {
+        alert("⚠️ Jaringan Blockchain sedang memuat di latar belakang. Mohon tunggu beberapa detik.");
+        return;
+    }
+    if (!window.currentUser) { if (typeof showLoginPrompt === 'function') showLoginPrompt(); return; }
+    if (!userAddress.nama) { if (typeof showAddressPrompt === 'function') showAddressPrompt(); return; }
 
     let detailedItemName = name;
     if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
         detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
     }
 
-    // PERBAIKAN 1: Amankan konversi agar parameter angka maupun string tidak memicu eror .toFixed()
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount)) {
         alert("⚠️ Format harga tidak valid.");
@@ -1951,66 +2012,7 @@ window.handlePayment = async (amount, name) => {
                     body: JSON.stringify({paymentId, txid}) 
                 });
                 if (res.ok) { 
-                    showSuccessOverlay(secureAmountString, detailedItemName, txid);
-                    if(name === 'Total Keranjang') { 
-                        cart = []; 
-                        if (typeof window.updateCartUI === 'function') window.updateCartUI(); 
-                    }
-                }
-            },
-            onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
-            onError: (error, payment) => { 
-                console.error("Payment Error:", error); 
-                if(payment && typeof handleIncompletePayment === 'function') handleIncompletePayment(payment); 
-            }
-        });
-    } catch (err) { 
-        console.error("Execution Error:", err); 
-    }
-};
-
-function showSuccessOverlay(amount, name, txid) {
-    // Gunakan SCRIPT_URL yang terpadu agar tidak terjadi bentrok variabel
-    const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-    
-    const dataTransaksi = {
-        tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
-        penerima: userAddress.nama,
-        username: currentUser.username,
-        item: name,
-        total: amount,
-        txid: txid,
-        alamat: userAddress.alamatLengkap,
-        telepon: userAddress.telepon
-    };
-
-    // PERBAIKAN 2: Gunakan URLSearchParams + metode POST biasa tanpa 'no-cors' agar data bodi masuk sempurna ke Google Sheets
-    const googleFormBody = new URLSearchParams(dataTransaksi);
-
-    fetch(excelWebhookUrl, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
-        body: googleFormBody.toString() 
-    })
-    .then(() => console.log("Data pesanan berhasil disinkronkan ke server Google Sheets."))
-    .catch(err => console.error("Gagal catat Excel:", err));
-
-    const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
-    
-    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(userAddress.nama)}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${encodeURIComponent(userAddress.alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
-
-    overlay.innerHTML = `
-        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif;">
-            <div style="font-size:45px; margin-bottom:20px;">✅</div>
-            <h2 style="color:#1a0033; margin:0; font-weight:800;">Pembayaran Berhasil!</h2>
-            <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
-            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
-            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
-        </div>`;
-    document.body.appendChild(overlay);
-}
-
+  
 // =========================================================================
 // 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION
 // =========================================================================

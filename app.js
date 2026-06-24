@@ -33,6 +33,28 @@ const productsData = [
         desc: "Mesin: 998cc Desmosedici Stradale V4 R. Tenaga: 218 HP @ 15.500 RPM. Fitur: Sayap Karbon (Aero Winglets), Öhlins Suspension."
     },
     {
+        id: "prod-001",
+        name: "Smartphone Premium Pro Max 5G",
+        price: 0.00050,
+        discount: 10,
+        images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"],
+        rating: "4.9",
+        sold: 142,
+        category: "elektronik",
+        desc: "Spesifikasi Flagship tertinggi dengan kapasitas RAM 12GB, Internal 512GB. Mendukung jaringan Pi Decentralized Web3 secara instan."
+    },
+    {
+        id: "bike-001",
+        name: "Ducati Panigale V4 R",
+        price: 0.01500,
+        discount: 0,
+        images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
+        rating: "5.0",
+        sold: 1,
+        category: "Motor",
+        desc: "Mesin: 998cc Desmosedici Stradale V4 R. Tenaga: 218 HP @ 15.500 RPM. Fitur: Sayap Karbon (Aero Winglets), Öhlins Suspension."
+    },
+    {
         id: "bike-002",
         name: "Kawasaki Ninja H2R (Track Only)",
         price: 0.01800,

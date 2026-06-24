@@ -289,11 +289,11 @@
             </span>
             
             <span style="margin-right: 40px; display: inline-flex; align-items: center; gap: 4px;">
-                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Tesnet:</span>
+                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Testnet:</span>
                 <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-testnet">4.892 Tx</span>
-                <span style="color: #2ecc71; font-size: 9px;">▲ +1.2%</span>
+                <span style="color: #2ecc71; font-size: 9px;">▲ Live</span>
             </span>
-            
+
             <span style="margin-right: 40px; display: inline-flex; align-items: center; gap: 4px;">
                 <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Otoritas:</span>
                 <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-staking">34 Provinsi</span>
@@ -431,9 +431,6 @@
         }
     }
 
-    // =========================================================================
-    // 1. MANAGEMENT UTAMA MODAL (BUKA / TUTUP)
-    // =========================================================================
     function openModal() { document.getElementById("comingSoonModal").style.display = "flex"; }
     function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
     function openLoginModal() { document.getElementById("loginModal").style.display = "flex"; }
@@ -445,148 +442,149 @@
         if(sideNav) sideNav.style.width = "0";
     }
 
+    // MEMASTIKAN POPUP KOMUNITAS TERTUTUP BERSIH
     function closeKomunitasModal() {
         document.getElementById("komunitasModal").style.display = "none";
     }
 
-    // =========================================================================
-    // 2. SUBMIT FORM (MURNI TANPA REDIRECT / TANPA ALERT WHATSAPP)
-    // =========================================================================
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec';
-    // =========================================================================
-// PERBAIKAN TOTAL: PENANGANAN SUBMIT & LINK WHATSAPP AMAN PI BROWSER
-// =========================================================================
-const form = document.getElementById('formKomunitas');
-if (form) {
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        
-        // Proteksi Otorisasi Pi
-        if (!currentUser || !currentUser.uid) {
-            alert("⚠️ Otorisasi login Pi belum terbaca. Harap muat ulang aplikasi Anda.");
-            return;
-        }
-
-        // Ambil Elemen Formulir & Dropdown Wilayah
-        const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value.trim() : "";
-        const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value.trim() : "";
-        
-        const provSelect = document.getElementById('selectProvinsi');
-        const kotaSelect = document.getElementById('selectKota');
-        const kecSelect = document.getElementById('selectKecamatan');
-        const kelSelect = document.getElementById('selectKelurahan');
-
-        const provUser = provSelect ? provSelect.value : "";
-        const kotaUser = kotaSelect ? kotaSelect.value : "";
-        const kecUser = kecSelect ? kecSelect.value : "";
-        const kelUser = kelSelect ? kelSelect.value : "";
-        
-        // Validasi Ketat: Cegah data kosong dikirim
-        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-            alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-            return;
-        }
-
-        // Kunci tombol kirim untuk mencegah spam klik (Penyebab baris kosong berulang)
-        const btn = document.getElementById('btnKirim');
-        if (btn) {
-            btn.innerText = "MENGIRIM...";
-            btn.disabled = true;
-        }
-        
-        const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-        
-        const params = new URLSearchParams({
-            nama: namaUser,
-            whatsapp: waUser,
-            provinsi: provUser,
-            kota: kotaUser,
-            kecamatan: kecUser,
-            kelurahan: kelUser,
-            uid: currentUser.uid
-        });
-
-        fetch(`${scriptURL}?${params.toString()}`, { 
-            method: 'POST' 
-        })
-        .then(response => {
-            // 1. Reset form dan tutup modal pendaftaran agar tidak bisa diklik dua kali
-            form.reset();
-            if (document.getElementById("komunitasModal")) {
-                document.getElementById("komunitasModal").style.display = "none";
-            }
+    const form = document.getElementById('formKomunitas');
+    if (form) {
+        form.addEventListener('submit', e => {
+            e.preventDefault();
             
-            // 2. Tampilkan Modal Sukses Premium Digital Pro yang Baru
-            tampilkanModalSuksesDigitalTerbaru();
-            
-            // 3. Update Status Kemitraan di UI Profil menjadi PROSES REVIEW secara realtime
-            const statusLabel = document.getElementById('partner-status');
-            if (statusLabel) { 
-                statusLabel.innerText = "PROSES REVIEW"; 
-                statusLabel.className = "status-badge proses-review"; // Sesuaikan dengan class css Anda
+            if (!currentUser || !currentUser.uid) {
+                alert("⚠️ Otorisasi login Pi belum terbaca. Harap muat ulang aplikasi Anda.");
+                return;
             }
+
+            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value.trim() : "";
+            const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value.trim() : "";
             
-            if (typeof muatStatusKemitraan === "function") {
-                muatStatusKemitraan();
+            const provSelect = document.getElementById('selectProvinsi');
+            const kotaSelect = document.getElementById('selectKota');
+            const kecSelect = document.getElementById('selectKecamatan');
+            const kelSelect = document.getElementById('selectKelurahan');
+
+            const provUser = provSelect ? provSelect.value : "";
+            const kotaUser = kotaSelect ? kotaSelect.value : "";
+            const kecUser = kecSelect ? kecSelect.value : "";
+            const kelUser = kelSelect ? kelSelect.value : "";
+            
+            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+                return;
             }
-        })
-        .catch(error => {
-            console.error("Eror pengiriman database:", error);
-            // Tetap berikan pengalaman sukses ke pengguna jika skrip macet di tengah jalan
-            form.reset();
-            tampilkanModalSuksesDigitalTerbaru();
-        })
-        .finally(() => {
+
+            const btn = document.getElementById('btnKirim');
             if (btn) {
-                btn.innerText = "DAFTAR SEKARANG";
-                btn.disabled = false;
+                btn.innerText = "MENGIRIM...";
+                btn.disabled = true;
             }
+            
+            const scriptURL = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+            
+            const params = new URLSearchParams({
+                nama: namaUser,
+                whatsapp: waUser,
+                provinsi: provUser,
+                kota: kotaUser,
+                kecamatan: kecUser,
+                kelurahan: kelUser,
+                uid: currentUser.uid
+            });
+
+            fetch(`${scriptURL}?${params.toString()}`, { 
+                method: 'POST' 
+            })
+            .then(response => {
+                form.reset();
+                if (document.getElementById("komunitasModal")) {
+                    document.getElementById("komunitasModal").style.display = "none";
+                }
+                
+                tampilkanModalSuksesDigitalTerbaru();
+                
+                const statusLabel = document.getElementById('partner-status');
+                if (statusLabel) { 
+                    statusLabel.innerText = "PROSES REVIEW"; 
+                }
+                
+                if (typeof muatStatusKemitraan === "function") {
+                    muatStatusKemitraan();
+                }
+            })
+            .catch(error => {
+                console.error("Eror pengiriman database:", error);
+                form.reset();
+                tampilkanModalSuksesDigitalTerbaru();
+            })
+            .finally(() => {
+                if (btn) {
+                    btn.innerText = "DAFTAR SEKARANG";
+                    btn.disabled = false;
+                }
+            });
         });
-    });
-}
-
-// Fungsi Modal Baru: Menggunakan window.open agar link WA terbuka di browser HP luar, bukan di dalam aplikasi Pi
-function tampilkanModalSuksesDigitalTerbaru() {
-    let suksesModal = document.getElementById("digitalSuksesModal");
-    
-    if (!suksesModal) {
-        suksesModal = document.createElement("div");
-        suksesModal.id = "digitalSuksesModal";
-        suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 2, 14, 0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:16px; box-sizing:border-box; font-family:sans-serif;";
-        
-        suksesModal.innerHTML = `
-            <div style="background:linear-gradient(145deg, #160829 0%, #08020e 100%); width:100%; max-width:420px; border-radius:24px; text-align:center; padding:40px 24px 30px; border: 1.5px solid rgba(241, 196, 15, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.5); box-sizing:border-box;">
-                
-                <div style="width:80px; height:80px; background:rgba(0, 240, 225, 0.1); border: 2px solid #00f0e1; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
-                    <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00f0e1" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                </div>
-                
-                <h3 style="margin:0 0 10px 0; color:#ffffff; font-size:22px; font-weight:800;">Pendaftaran Berhasil!</h3>
-                <p style="margin:0 0 24px 0; color:#a2b4ca; font-size:13.5px; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-                
-                <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius:14px; padding:14px; text-align:left; margin-bottom:24px;">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                        <span style="font-size:11px; color:#6f85a0; font-weight:700;">STATUS</span>
-                        <span style="font-size:10px; color:#f39c12; font-weight:800;">PROSES REVIEW</span>
-                    </div>
-                    <p style="margin:0; font-size:11.5px; color:#8899af; line-height:1.5;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-                </div>
-                
-                <button onclick="window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1', '_blank'); document.getElementById('digitalSuksesModal').style.display='none';" style="width:100%; background:linear-gradient(90deg, #25d366 0%, #128c7e 100%); color:#ffffff; border:none; padding:15px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">
-                    Gabung Grup WhatsApp
-                </button>
-                
-                <button onclick="tutupModalSukses()" class="btn-close">CLOSE</button>
-            </div>
-        `;
-        document.body.appendChild(suksesModal);
     }
-    suksesModal.style.display = "flex";
-}                    
 
-    // =========================================================================
-    // 4. LOGIKA DROPDOWN WILAYAH INDONESIA AUTOMATIC
-    // =========================================================================
+    // SYSTEM NAVIGASI BALIK KE BERANDA JIKA CLOSE DIKLIK
+    function tutupModalSukses() {
+        const suksesModal = document.getElementById("digitalSuksesModal");
+        if (suksesModal) {
+            suksesModal.style.display = "none";
+        }
+        if (typeof switchPage === "function") {
+            switchPage('home');
+        } else {
+            window.location.href = "#";
+        }
+    }
+
+    // MODAL DIGITAL SUCCESS PREMIUM MODERN
+    function tampilkanModalSuksesDigitalTerbaru() {
+        let suksesModal = document.getElementById("digitalSuksesModal");
+        
+        if (!suksesModal) {
+            suksesModal = document.createElement("div");
+            suksesModal.id = "digitalSuksesModal";
+            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 2, 14, 0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:16px; box-sizing:border-box; font-family:sans-serif;";
+            
+            suksesModal.innerHTML = `
+                <div style="background:linear-gradient(145deg, #160829 0%, #08020e 100%); width:100%; max-width:420px; border-radius:24px; text-align:center; padding:40px 24px 30px; border: 1.5px solid rgba(241, 196, 15, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.5); box-sizing:border-box;">
+                    
+                    <div style="width:80px; height:80px; background:rgba(0, 240, 225, 0.1); border: 2px solid #00f0e1; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00f0e1" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    </div>
+                    
+                    <h3 style="margin:0 0 10px 0; color:#ffffff; font-size:22px; font-weight:800;">Pendaftaran Berhasil!</h3>
+                    <p style="margin:0 0 24px 0; color:#a2b4ca; font-size:13.5px; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+                    
+                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius:14px; padding:14px; text-align:left; margin-bottom:24px;">
+                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                            <span style="font-size:11px; color:#6f85a0; font-weight:700;">STATUS</span>
+                            <span style="font-size:10px; color:#f39c12; font-weight:800;">PROSES REVIEW</span>
+                        </div>
+                        <p style="margin:0; font-size:11.5px; color:#8899af; line-height:1.5;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+                    </div>
+                    
+                    <button onclick="window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1', '_blank'); document.getElementById('digitalSuksesModal').style.display='none';" style="width:100%; background:linear-gradient(90deg, #25d366 0%, #128c7e 100%); color:#ffffff; border:none; padding:15px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);">
+                        Gabung Grup WhatsApp
+                    </button>
+                    
+                    <button onclick="tutupModalSukses()" style="width:100%; background:linear-gradient(135deg, #64748b 0%, #475569 100%); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:13px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; display:inline-flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); transition: all 0.3s ease;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="margin-right:8px; vertical-align:middle;">
+                            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
+                        </svg>
+                        Kembali ke Beranda
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(suksesModal);
+        }
+        suksesModal.style.display = "flex";
+    }                    
+
+    // DROPDOWN API REGIONAL WILAYAH INDONESIA AUTOMATIC
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
     const kecSelect = document.getElementById('selectKecamatan');
@@ -664,9 +662,7 @@ function tampilkanModalSuksesDigitalTerbaru() {
         }
     }
 
-    // =========================================================================
-    // 5. PENYELAMAT KLIK GLOBAL PI BROWSER
-    // =========================================================================
+    // ANTI MALFUNGSI TOMBOL DI PI BROWSER
     function paksaAktifTombolWilayah() {
         const semuaTombol = document.querySelectorAll("button");
         semuaTombol.forEach(btn => {

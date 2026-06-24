@@ -1950,282 +1950,208 @@ window.toggleDropdown = () => {
     }
 };
 
-        // =========================================================================
+// =========================================================================
 // 8. CORE PIPELINE (DOM LOAD INITIALIZATION) - FIXED & CLEAN VERSION
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
-    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-        renderProducts(productsData, 'main-grid');
-    }
+    // 1. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+        renderProducts(productsData, 'main-grid');
+    }
 
-    // 2. Hubungkan pipa pencarian input
-    const searchInput = document.getElementById('search-input');
-    if (searchInput && typeof productsData !== "undefined") {
-        searchInput.addEventListener('input', (e) => {
-            const keyword = e.target.value.toLowerCase();
-            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
-            const sResult = document.getElementById('search-results');
-            if (!sResult) return;
-            if (keyword === "") {
-                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
-            } else {
-                renderProducts(filtered, 'search-results');
-            }
-        });
-    }
+    // 2. Hubungkan pipa pencarian input
+    const searchInput = document.getElementById('search-input');
+    if (searchInput && typeof productsData !== "undefined") {
+        searchInput.addEventListener('input', (e) => {
+            const keyword = e.target.value.toLowerCase();
+            const filtered = productsData.filter(p => p.name.toLowerCase().includes(keyword) || p.category.toLowerCase().includes(keyword));
+            const sResult = document.getElementById('search-results');
+            if (!sResult) return;
+            if (keyword === "") {
+                sResult.innerHTML = `<p style="grid-column: span 2; text-align: center; color: #999; padding: 20px;">Cari produk premium favoritmu...</p>`;
+            } else {
+                renderProducts(filtered, 'search-results');
+            }
+        });
+    }
 
-    // 3. Deteksi klik di luar untuk menutup SideNav
-    window.addEventListener('click', function(event) {
-        const nav = document.getElementById("sideNav");
-        const menuIcon = document.querySelector('.menu-icon');
-        if (nav && nav.style.width === "250px" && menuIcon) {
-            if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
-                nav.style.width = "0px";
-            }
-        }
-    });
+    // 3. Deteksi klik di luar untuk menutup SideNav
+    window.addEventListener('click', function(event) {
+        const nav = document.getElementById("sideNav");
+        const menuIcon = document.querySelector('.menu-icon');
+        if (nav && nav.style.width === "250px" && menuIcon) {
+            if (!nav.contains(event.target) && !menuIcon.contains(event.target)) {
+                nav.style.width = "0px";
+            }
+        }
+    });
 
-    // 4. Rotasi Banner Otomatis
-    const banners = [
-        "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
-        "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
-        "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", 
-        "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
-    ];
-    let idx = 0;
-    setInterval(() => { 
-        const img = document.getElementById('banner-img');
-        if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
-    }, 4000);
+    // 4. Rotasi Banner Otomatis
+    const banners = [
+        "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
+        "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
+        "https://i.ibb.co.com/Q5bxMN0/Banner-dpi.png", 
+        "https://i.ibb.co.com/W4RZCvCL/ORANG-PERTAMA-20260205-080941-0000.png"
+    ];
+    let idx = 0;
+    setInterval(() => { 
+        const img = document.getElementById('banner-img');
+        if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
+    }, 4000);
 
-    // 5. Jalankan pipeline login otomatis Pi Network SDK
-    if (typeof initPi === "function") {
-        try {
-            await initPi();
-        } catch(err) {
-            console.error("Gagal inisialisasi SDK otomatis:", err);
-        }
-    }
-    
-    // 6. Bind tombol login manual awal sebelum ter-otentikasi
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
-        loginBtn.onclick = window.handleAuth;
-    }
+    // 5. Jalankan pipeline login otomatis Pi Network SDK
+    if (typeof initPi === "function") {
+        await initPi();
+    }
+    
+    // 6. Bind tombol login manual awal sebelum ter-otentikasi
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
+        loginBtn.onclick = window.handleAuth;
+    }
 
-    // 7. PENANGANAN SUBMIT FORM KOMUNITAS
-    const formAman = document.getElementById('formKomunitas');
-    if (formAman) {
-        formAman.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            if (statusKirimKomunitas) return;
-            
-            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-                return;
-            }
+    // 7. PENANGANAN SUBMIT FORM KOMUNITAS
+    const formAman = document.getElementById('formKomunitas');
+    if (formAman) {
+        formAman.addEventListener('submit', e => {
+            e.preventDefault();
+            
+            if (statusKirimKomunitas) return;
+            
+            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+                return;
+            }
 
-            const btnAman = document.getElementById('btnKirim');
-            if (btnAman) {
-                btnAman.innerText = "MENGIRIM...";
-                btnAman.disabled = true;
-            }
+            const btnAman = document.getElementById('btnKirim');
+            if (btnAman) {
+                btnAman.innerText = "MENGIRIM...";
+                btnAman.disabled = true;
+            }
 
-            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-            
-            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
-                return;
-            }
+            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
+            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
+            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+            
+            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+                if (btnAman) {
+                    btnAman.innerText = "DAFTAR SEKARANG";
+                    btnAman.disabled = false;
+                }
+                return;
+            }
 
-            statusKirimKomunitas = true;
+            statusKirimKomunitas = true;
 
-            const dataKomunitas = {
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: currentUser.uid
-            };
+            const dataKomunitas = {
+                nama: namaUser,
+                whatsapp: waUser,
+                provinsi: provUser,
+                kota: kotaUser,
+                kecamatan: kecUser,
+                kelurahan: kelUser,
+                uid: currentUser.uid
+            };
 
-            fetch(SCRIPT_URL_AMAN, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dataKomunitas).toString()
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                formAman.reset();
-                
-                if (typeof window.tampilkanModalSuksesDigital === "function") {
-                    window.tampilkanModalSuksesDigital();
-                }
+            // PERBAIKAN UTAMA: Kirim data menggunakan URLSearchParams di dalam BODY POST agar dibaca sempurna oleh doPost() Google Apps Script
+            fetch(SCRIPT_URL_AMAN, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dataKomunitas).toString()
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                formAman.reset();
+                
+                if (typeof window.tampilkanModalSuksesDigital === "function") {
+                    window.tampilkanModalSuksesDigital();
+                }
+                
+                setTimeout(() => {
+                    window.location.href = "whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q";
+                }, 1000);
 
-                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-            })
-            .catch(err => {
-                console.error("Eror form komunitas:", err);
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            })
-            .finally(() => {
-                statusKirimKomunitas = false;
-                if (btnAman) {
-                    btnAman.innerText = "DAFTAR SEKARANG";
-                    btnAman.disabled = false;
-                }
-            });
-        });
-    }
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+            })
+            .catch(err => {
+                console.error("Eror form komunitas:", err);
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            })
+            .finally(() => {
+                statusKirimKomunitas = false;
+                if (btnAman) {
+                    btnAman.innerText = "DAFTAR SEKARANG";
+                    btnAman.disabled = false;
+                }
+            });
+        });
+    }
 });
 
-// =========================================================================
-// MODAL POPUP SUKSES PENDAFTARAN (ANTI-DOUBLE & SECURE DEEP-LINK PI BROWSER)
-// =========================================================================
-window.tampilkanModalSuksesDigital = () => {
-    // Kunci Pengaman Utama: Hancurkan semua modal sejenis yang eksis di halaman sebelum render baru
-    const modalLama = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
-    modalLama.forEach(m => m.remove());
-
-    const overlaySukses = document.createElement('div');
-    overlaySukses.id = "modal-sukses-komunitas";
-    overlaySukses.className = "modal-sukses-premium-pro";
-    overlaySukses.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); backdrop-filter:blur(5px); z-index:100006; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; font-family:'Inter', sans-serif;";
-    
-    // Fungsi penutupan bersih total
-    const aksiSapuBersihDanHome = (e) => {
-        if(e) { e.preventDefault(); e.stopPropagation(); }
-        
-        const semuaModalAktif = document.querySelectorAll('.modal-sukses-premium-pro, #modal-sukses-komunitas');
-        semuaModalAktif.forEach(m => m.remove());
-        
-        if (typeof window.switchPage === 'function') {
-            window.switchPage('home');
-        } else {
-            window.location.hash = "#home"; 
-            location.reload();
-        }
-    };
-
-    overlaySukses.innerHTML = `
-        <div style="background: linear-gradient(135deg, #100a1c 0%, #07111a 100%); border: 2px solid #FFD700; padding: 40px 20px 25px; border-radius: 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative;">
-            
-            <div class="tombol-silang-penutup" 
-                 style="position: absolute; top: 18px; right: 18px; width: 32px; height: 32px; background: rgba(255,255,255,0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; color: #ffffff; font-size: 14px; z-index: 100008;">
-                 ✕
-            </div>
-
-            <div style="background: rgba(0, 242, 254, 0.1); width: 80px; height: 80px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 25px; border: 3px solid #00f2fe;">
-                <span style="font-size: 35px; color: #00f2fe;">✓</span>
-            </div>
-            
-            <h2 style="color: #ffffff; margin: 0 0 10px 0; font-weight: 800; font-size: 1.5rem;">Pendaftaran Berhasil!</h2>
-            <p style="color: #94a3b8; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-            
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); padding: 15px; border-radius: 16px; text-align: left; margin-bottom: 25px;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: bold; margin-bottom: 5px;">
-                    <span style="color: #64748b; text-transform: uppercase;">Status</span>
-                    <span style="color: #FFA500; text-transform: uppercase;">Proses Review</span>
-                </div>
-                <p style="color: #94a3b8; margin: 0; font-size: 0.85rem; line-height: 1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-            </div>
-
-            <button class="tombol-gabung-wa" style="background: linear-gradient(90deg, #00b09b 0%, #96c93d 100%); color: white; border: none; padding: 16px 0; width: 100%; border-radius: 16px; font-weight: 800; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 176, 155, 0.4); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">GABUNG GRUP WHATSAPP</button>
-            
-            <button class="tombol-nanti-penutup" style="background: transparent; color: #64748b; border: none; width: 100%; padding: 8px 0; font-weight: 600; font-size: 0.95rem; cursor: pointer; display: block; margin: 0 auto;">Nanti Saja</button>
-
-            <button class="tombol-bawah-penutup" style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #ef4444; width: 100%; padding: 12px 0; border-radius: 14px; font-weight: 700; font-size: 0.9rem; cursor: pointer; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Tutup Aplikasi</button>
-        </div>
-    `;
-    
-    document.body.appendChild(overlaySukses);
-
-    // Penanganan klik tombol WhatsApp khusus Pi Browser
-    overlaySukses.querySelector('.tombol-gabung-wa').addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        
-        // Membuka tautan menggunakan API window resmi agar Pi browser tidak merefresh halaman dasar
-        window.open("whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
-    });
-
-    // Jalur keluar aman dari modal
-    overlaySukses.querySelector('.tombol-silang-penutup').addEventListener('click', aksiSapuBersihDanHome);
-    overlaySukses.querySelector('.tombol-nanti-penutup').addEventListener('click', aksiSapuBersihDanHome);
-    overlaySukses.querySelector('.tombol-bawah-penutup').addEventListener('click', aksiSapuBersihDanHome);
-};
-
-// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL
+// 2. FUNGSI SINKRONISASI STATUS KEMITRAAN DI HALAMAN PROFIL (DITEMPEL KE WINDOW AGAR GLOBAL)
 window.muatStatusKemitraan = function() {
-    const penunjukStatus = document.getElementById('partner-status');
-    const labelLogistik = document.getElementById('logistik-share'); 
-    const labelItem = document.getElementById('item-terproses');     
-    
-    if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
-        if (penunjukStatus) {
-            penunjukStatus.innerText = "BELUM LOGIN";
-            penunjukStatus.style.background = "#f1f5f9";
-            penunjukStatus.style.color = "#64748b";
-        }
-        return;
-    }
-    
-    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
-    .then(res => {
-        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
-        return res.json();
-    })
-    .then(data => {
-        if (!data) return;
-        
-        if (data.status === "ditemukan") {
-            const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
-            
-            if (penunjukStatus) {
-                penunjukStatus.innerText = statusFinal;
-                
-                if (statusFinal === "DISETUJUI") {
-                    penunjukStatus.style.background = "#d1fae5"; 
-                    penunjukStatus.style.color = "#065f46";      
-                } else if (statusFinal === "PROSES REVIEW") {
-                    penunjukStatus.style.background = "#fef3c7"; 
-                    penunjukStatus.style.color = "#92400e";      
-                } else {
-                    penunjukStatus.style.background = "#fee2e2"; 
-                    penunjukStatus.style.color = "#991b1b";
-                }
-            }
-            
-            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
-            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
-            
-        } else {
-            if (penunjukStatus) {
-                penunjukStatus.innerText = "BELUM TERDAFTAR";
-                penunjukStatus.style.background = "#f1f5f9";
-                penunjukStatus.style.color = "#64748b";
-            }
-            if (labelLogistik) labelLogistik.innerText = "0.00 %";
-            if (labelItem) labelItem.innerText = "0 Item";
-        }
-    })
-    .catch(err => {
-        console.error("Gagal melakukan sinkronisasi profil:", err);
-    });
-};                
+    const penunjukStatus = document.getElementById('partner-status');
+    const labelLogistik = document.getElementById('logistik-share'); 
+    const labelItem = document.getElementById('item-terproses');     
+    
+    if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
+        if (penunjukStatus) {
+            penunjukStatus.innerText = "BELUM LOGIN";
+            penunjukStatus.style.background = "#f1f5f9";
+            penunjukStatus.style.color = "#64748b";
+        }
+        return;
+    }
+    
+    // Kirim parameter action=cekStatus via GET agar dapet dibaca doGet(e) di Apps Script
+    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    .then(res => {
+        if (!res.ok) throw new Error("Respon jaringan dari Google Apps Script bermasalah");
+        return res.json();
+    })
+    .then(data => {
+        if (!data) return;
+        
+        if (data.status === "ditemukan") {
+            const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
+            
+            if (penunjukStatus) {
+                penunjukStatus.innerText = statusFinal;
+                
+                if (statusFinal === "DISETUJUI") {
+                    penunjukStatus.style.background = "#d1fae5"; 
+                    penunjukStatus.style.color = "#065f46";      
+                } else if (statusFinal === "PROSES REVIEW") {
+                    penunjukStatus.style.background = "#fef3c7"; 
+                    penunjukStatus.style.color = "#92400e";      
+                } else {
+                    penunjukStatus.style.background = "#fee2e2"; 
+                    penunjukStatus.style.color = "#991b1b";
+                }
+            }
+            
+            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
+            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
+            
+        } else {
+            if (penunjukStatus) {
+                penunjukStatus.innerText = "BELUM TERDAFTAR";
+                penunjukStatus.style.background = "#f1f5f9";
+                penunjukStatus.style.color = "#64748b";
+            }
+            if (labelLogistik) labelLogistik.innerText = "0.00 %";
+            if (labelItem) labelItem.innerText = "0 Item";
+        }
+    })
+    .catch(err => {
+        console.error("Gagal melakukan sinkronisasi profil:", err);
+    });
+};                                         

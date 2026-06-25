@@ -12,7 +12,7 @@ const productsData = [
     {
         id: "prod-001",
         name: "Smartphone Premium Pro Max 5G",
-        price: 0.00050,
+        price: 0,00050,
         discount: 10,
         images: ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"],
         rating: "4.9",
@@ -23,7 +23,7 @@ const productsData = [
     {
         id: "bike-001",
         name: "Ducati Panigale V4 R",
-        price: 0.01500,
+        price: 0,01500,
         discount: 0,
         images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?auto=format&fit=crop&w=800&q=80"],
         rating: "5.0",
@@ -34,7 +34,7 @@ const productsData = [
     {
         id: "bike-002",
         name: "Kawasaki Ninja H2R (Track Only)",
-        price: 0.01800,
+        price: 0,01800,
         discount: 0,
         images: ["https://i.ibb.co.com/jZ6LvJTB/Desain-tanpa-judul-20260207-131613-0000.png"],
         rating: "5.0",

@@ -1,73 +1,104 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS)
+    // 1. Injeksi Gaya Tampilan (CSS) - Di-poles Premium Tanpa Merusak Struktur
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
             position: fixed;
             bottom: 90px;
             right: 20px;
-            background: #25d366;
+            background: linear-gradient(135deg, #25d366 0%, #128c7e 100%);
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 22px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 6px 16px rgba(18, 140, 126, 0.4);
             z-index: 9999;
-            transition: all 0.3s ease;
+            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
+        }
+        .bot-widget-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(18, 140, 126, 0.5);
         }
         .bot-widget-container {
             position: fixed;
-            bottom: 155px;
+            bottom: 160px;
             right: 20px;
             width: 360px;
             max-width: 90%;
             background: #ffffff;
-            border-radius: 16px;
-            box-shadow: 0px 8px 24px rgba(0,0,0,0.15);
+            border-radius: 20px;
+            box-shadow: 0px 12px 35px rgba(0,0,0,0.15);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             z-index: 9999;
             display: none; 
             flex-direction: column;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
         }
-        .bot-header { background: #25d366; color: white; padding: 14px; display: flex; align-items: center; justify-content: space-between; }
+        .bot-header { 
+            background: linear-gradient(90deg, #25d366 0%, #128c7e 100%); 
+            color: white; 
+            padding: 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: space-between; 
+        }
         .bot-profile { display: flex; align-items: center; gap: 10px; }
-        .bot-avatar { width: 35px; height: 35px; background: #e6f9ed; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #25d366; font-size: 16px; }
-        .bot-info h4 { margin: 0; font-size: 14px; }
-        .bot-info span { font-size: 11px; opacity: 0.9; display: flex; align-items: center; gap: 4px; }
-        .status-dot { width: 6px; height: 6px; background: #ffffff; border-radius: 50%; display: inline-block; }
+        .bot-avatar { width: 38px; height: 38px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px; }
+        .bot-info h4 { margin: 0; font-size: 14px; font-weight: 700; letter-spacing: 0.3px; }
+        .bot-info span { font-size: 11px; opacity: 0.9; display: flex; align-items: center; gap: 5px; margin-top: 2px; }
+        .status-dot { width: 7px; height: 7px; background: #25d366; border: 1.5px solid white; border-radius: 50%; display: inline-block; animation: pulseBot 2s infinite; }
         
-        .bot-chat-body { height: 240px; padding: 14px; overflow-y: auto; background: #f4f7f5; display: flex; flex-direction: column; gap: 10px; }
-        .msg-bubble { max-width: 80%; padding: 10px 12px; border-radius: 12px; font-size: 13px; line-height: 1.4; }
-        .msg-bot { background: #e6f9ed; color: #333; align-self: flex-start; border-top-left-radius: 0px; }
-        .msg-user { background: #25d366; color: white; align-self: flex-end; border-top-right-radius: 0px; }
-        .faq-section { padding: 8px 14px; display: flex; flex-wrap: wrap; gap: 6px; background: #f4f7f5; }
-        .faq-btn { background: white; color: #25d366; border: 1px solid #c7f2d6; padding: 6px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; }
-        .action-buttons { display: flex; gap: 6px; padding: 10px 14px; background: #f4f7f5; }
-        .action-btn { flex: 1; padding: 8px 4px; border: none; border-radius: 8px; font-weight: bold; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; }
-        .btn-lacak { background: #e6f9ed; color: #25d366; }
-        .btn-ongkir { background: #e1f5fe; color: #0288d1; }
-        .btn-wa { background: #128c7e; color: white; }
-        .bot-input-area { display: flex; padding: 10px 14px; background: white; border-top: 1px solid #eee; gap: 8px; }
-        .bot-input-area input { flex: 1; border: 1px solid #ddd; padding: 8px 12px; border-radius: 20px; outline: none; font-size: 13px; }
-        .btn-send { background: #25d366; color: white; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-        
-        .lacak-input-container { display: none; padding: 10px 14px; background: #fff3cd; border-top: 1px solid #ffeeba; gap: 6px; font-size: 12px; align-items: center; }
-        .lacak-input-container input { flex: 1; padding: 6px; border: 1px solid #ffc107; border-radius: 4px; font-size: 12px; }
-        .lacak-input-container button { background: #ffc107; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        @keyframes pulseBot {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 5px rgba(255,255,255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255,255,255, 0); }
+        }
 
-        .ongkir-input-container { display: none; padding: 12px 14px; background: #e3f2fd; border-top: 1px solid #bbdefb; flex-direction: column; gap: 8px; font-size: 12px; }
+        .bot-chat-body { height: 260px; padding: 16px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; }
+        .msg-bubble { max-width: 85%; padding: 11px 14px; border-radius: 16px; font-size: 13px; line-height: 1.5; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .msg-bot { background: white; color: #334155; align-self: flex-start; border-top-left-radius: 4px; border: 1px solid #e2e8f0; }
+        .msg-user { background: #25d366; color: white; align-self: flex-end; border-top-right-radius: 4px; font-weight: 500; }
+        
+        /* Desain badge instruksi langkah pada obrolan gambar tutorial */
+        .step-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; color: white; font-size: 10px; font-weight: bold; margin-right: 4px; vertical-align: middle; }
+        .badge-green { background: #16a34a; }
+        .badge-purple { background: #7c3aed; }
+
+        .faq-section { padding: 10px 16px; display: flex; flex-wrap: wrap; gap: 6px; background: #f8fafc; border-top: 1px dashed #e2e8f0; }
+        .faq-btn { background: white; color: #128c7e; border: 1px solid #e2e8f0; padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .faq-btn:hover { background: #e6f9ed; border-color: #25d366; color: #128c7e; transform: translateY(-1px); }
+        
+        .action-buttons { display: flex; gap: 6px; padding: 0 16px 12px 16px; background: #f8fafc; }
+        .action-btn { flex: 1; padding: 10px 4px; border: none; border-radius: 10px; font-weight: 700; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; transition: all 0.2s ease; box-shadow: 0 2px 5px rgba(0,0,0,0.04); }
+        .action-btn:hover { transform: translateY(-1px); filter: brightness(0.96); }
+        .btn-lacak { background: #e6f9ed; color: #128c7e; }
+        .btn-ongkir { background: #e0f2fe; color: #0369a1; }
+        .btn-wa { background: #25d366; color: white; box-shadow: 0 3px 8px rgba(37,211,102,0.3); }
+        
+        .bot-input-area { display: flex; padding: 12px 16px; background: white; border-top: 1px solid #f1f5f9; gap: 8px; align-items: center; }
+        .bot-input-area input { flex: 1; border: 1px solid #e2e8f0; padding: 10px 16px; border-radius: 24px; outline: none; font-size: 13px; transition: border 0.2s ease; background: #f8fafc; }
+        .bot-input-area input:focus { border-color: #25d366; background: #fff; }
+        .btn-send { background: #25d366; color: white; border: none; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+        .btn-send:hover { background: #128c7e; transform: scale(1.05); }
+        
+        .lacak-input-container { display: none; padding: 12px 16px; background: #fef9c3; border-top: 1px solid #fef08a; gap: 6px; font-size: 12px; align-items: center; }
+        .lacak-input-container input { flex: 1; padding: 8px 12px; border: 1px solid #facc15; border-radius: 8px; font-size: 12px; outline: none; }
+        .lacak-input-container button { background: #facc15; border: none; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-weight: bold; color: #713f12; }
+
+        .ongkir-input-container { display: none; padding: 14px 16px; background: #e0f2fe; border-top: 1px solid #bae6fd; flex-direction: column; gap: 8px; font-size: 12px; }
         .ongkir-grid { display: flex; flex-direction: column; gap: 6px; }
-        .ongkir-grid textarea { width: 100%; height: 55px; padding: 8px; border: 1px solid #2196f3; border-radius: 6px; font-size: 12px; font-family: inherit; background: white; box-sizing: border-box; resize: none; outline: none; }
-        .ongkir-grid input { width: 100%; padding: 7px 10px; border: 1px solid #2196f3; border-radius: 6px; font-size: 12px; background: white; box-sizing: border-box; outline: none; }
+        .ongkir-grid textarea { width: 100%; height: 55px; padding: 8px 12px; border: 1px solid #38bdf8; border-radius: 8px; font-size: 12px; font-family: inherit; background: white; box-sizing: border-box; resize: none; outline: none; }
+        .ongkir-grid input { width: 100%; padding: 8px 12px; border: 1px solid #38bdf8; border-radius: 8px; font-size: 12px; background: white; box-sizing: border-box; outline: none; }
         .ongkir-row { display: flex; gap: 6px; }
-        .ongkir-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 2px; }
-        .btn-proses-ongkir { background: #2196f3; color: white; border: none; padding: 6px 16px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .ongkir-actions { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+        .btn-proses-ongkir { background: #0284c7; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: bold; }
     `;
     document.head.appendChild(style);
 
@@ -80,7 +111,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot
+    // 3. Inject Struktur HTML Widget Bot (Ditambah FAQ baru "Tidak bisa login?")
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -97,24 +128,24 @@
                 <i class="fa-solid fa-minus" id="botMinimize" style="cursor:pointer; opacity:0.7;"></i>
             </div>
             <div class="bot-chat-body" id="botChatBody">
-                </div>
+            </div>
             
             <div class="lacak-input-container" id="lacakForm">
                 <input type="text" id="noInvoice" placeholder="Masukkan nomor invoice...">
                 <button id="btnProsesLacak">Cek</button>
-                <span id="btnTutupLacak" style="cursor:pointer; margin-left:5px; color:red;"><i class="fa-solid fa-xmark"></i></span>
+                <span id="btnTutupLacak" style="cursor:pointer; margin-left:5px; color:#ef4444;"><i class="fa-solid fa-xmark"></i></span>
             </div>
 
             <div class="ongkir-input-container" id="ongkirForm">
                 <div class="ongkir-grid">
-                    <div style="font-size: 11px; color: #555; margin-bottom: 2px;">📦 Pengirim: <strong>Jakarta (Gudang Utama)</strong></div>
+                    <div style="font-size: 11px; color: #475569; margin-bottom: 2px;">📦 Pengirim: <strong>Jakarta (Gudang Utama)</strong></div>
                     <textarea id="inputAlamatLengkap" placeholder="Ketik Alamat Lengkap Tujuan...&#10;(Kelurahan, Kecamatan, Kota, Provinsi)"></textarea>
                     <div class="ongkir-row">
                         <input type="number" id="inputBerat" placeholder="Berat Barang (Gram)" value="1000">
                     </div>
                 </div>
                 <div class="ongkir-actions">
-                    <span id="btnTutupOngkir" style="cursor:pointer; color:red; font-weight:bold;"><i class="fa-solid fa-xmark"></i> Batal</span>
+                    <span id="btnTutupOngkir" style="cursor:pointer; color:#ef4444; font-weight:bold;"><i class="fa-solid fa-xmark"></i> Batal</span>
                     <button class="btn-proses-ongkir" id="btnProsesOngkir">Cek Tarif</button>
                 </div>
             </div>
@@ -123,6 +154,8 @@
                 <button class="faq-btn" data-reply="Sistem kami terhubung otomatis dengan Pi SDK. Cukup pilih produk aset digital atau properti yang Anda inginkan, klik 'Beli', lalu selesaikan pembayaran aman lewat jendela pop-up dompet Pi Browser Anda.">Cara beli asset?</button>
                 <button class="faq-btn" data-reply="Saat ini kami melayani transaksi komersial eksklusif menggunakan koin di jaringan Pi Testnet sebagai simulasi validasi ekosistem sebelum berlanjut penuh ke fase Open Mainnet.">Metode pembayaran?</button>
                 <button class="faq-btn" data-reply="PT. Digital Pro Indo adalah platform e-commerce dan marketplace berbadan hukum resmi di Indonesia yang terdaftar sah dalam jajaran utilitas Pi Developer Studio.">Legalitas Perusahaan?</button>
+                
+                <button class="faq-btn" data-reply="Jika aplikasi mengalami kendala autentikasi atau gagal memuat data profil, mohon ikuti petunjuk berikut:<br><br><span class='step-badge badge-green'>1</span> Klik tulisan <strong>'Hapus URL yang Baru Dikunjungi'</strong> pada menu utama Pi Browser Anda.<br><br><span class='step-badge badge-purple'>2</span> Setelah itu, ketuk tombol <strong>'Refresh'</strong> (ikon panah melingkar ↻) pada kolom pencarian berwarna abu-abu di pojok kanan atas layar Anda untuk menyinkronkan ulang data login Pi SDK.">Tidak bisa login?</button>
             </div>
             <div class="action-buttons">
                 <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-truck"></i> Lacak</button>
@@ -163,17 +196,14 @@
 
     // --- FUNGSI UTAMA REFRESH/RESET STATE CHATBOT ---
     function resetChatbotState() {
-        // Kosongkan riwayat chat body dan kembalikan ke pesan pertama
         botChatBody.innerHTML = `
             <div class="msg-bubble msg-bot">
                 Halo! 👋 Saya <strong>DPI Bot</strong>.<br>Ada yang bisa saya bantu seputar transaksi produk atau properti di PT. Digital Pro Indo? Silakan pilih FAQ di bawah.
             </div>
         `;
-        // Tutup semua sub-formulir yang terbuka
         lacakForm.style.display = 'none';
         ongkirForm.style.display = 'none';
         
-        // Bersihkan seluruh teks input lama
         botUserInput.value = '';
         inputAlamatLengkap.value = '';
         document.getElementById('noInvoice').value = '';
@@ -188,11 +218,9 @@
     // Buka atau Tutup Kontainer Chat Lewat Tombol Lingkaran Ikon Utama
     botToggle.addEventListener('click', () => {
         if (botContainer.style.display === 'flex') {
-            // JIKA SEDANG TERBUKA LALU DIKLIK -> TUTUP DAN REFRESH TOTAL
             botContainer.style.display = 'none';
             resetChatbotState();
         } else {
-            // JIKA SEDANG TERTUTUP LALU DIKLIK -> BUKA SEPERTI BIASA
             botContainer.style.display = 'flex';
             botChatBody.scrollTop = botChatBody.scrollHeight;
         }

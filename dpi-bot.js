@@ -311,7 +311,7 @@
                 if (pertanyaan.includes("Tidak bisa login?")) {
                     jawaban += `
                         <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e1; background: #fff; padding: 4px;">
-                            <img src="https://i.ibb.co/6wDdfzK/IMG-20260625-WA0007.jpg" 
+                            <img src="https://i.ibb.co.com/Tq1kD21V/IMG-20260625-WA0045.jpg" 
                                  alt="Panduan Reset Pi Browser" 
                                  style="width: 100%; height: auto; display: block; border-radius: 8px;"
                                  onload="document.getElementById('botChatBody').scrollTop = document.getElementById('botChatBody').scrollHeight;"

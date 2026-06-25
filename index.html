@@ -478,7 +478,7 @@
         inisialisasiAutoLoginPi();
     }
 
-    // =========================================================================
+// =========================================================================
     // FUNGSI SINKRONISASI COBALT DATA PROFILE REALTIME DARI GOOGLE SHEET (GET)
     // =========================================================================
     function muatStatusKemitraan() {
@@ -528,13 +528,19 @@
     function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
 
     function openKomunitasModal() {
-        document.getElementById("komunitasModal").style.display = "flex";
+        const modalK = document.getElementById("komunitasModal");
+        if (modalK) {
+            modalK.style.display = "flex";
+        }
         var sideNav = document.getElementById("sideNav");
         if(sideNav) sideNav.style.width = "0";
     }
 
     function closeKomunitasModal() {
-        document.getElementById("komunitasModal").style.display = "none";
+        const modalK = document.getElementById("komunitasModal");
+        if (modalK) {
+            modalK.style.display = "none";
+        }
     }
 
     // =========================================================================
@@ -591,13 +597,8 @@
             })
             .then(response => {
                 form.reset();
-                if (document.getElementById("komunitasModal")) {
-                    document.getElementById("komunitasModal").style.display = "none";
-                }
-                
+                closeKomunitasModal();
                 tampilkanModalSuksesDigitalTerbaru();
-                
-                // Refresh data UI profil secara berkala setelah pendaftaran baru
                 setTimeout(muatStatusKemitraan, 2000);
             })
             .catch(error => {
@@ -660,7 +661,7 @@
             document.body.appendChild(suksesModal);
         }
         suksesModal.style.display = "flex";
-    }                    
+    }                     
 
     // =========================================================================
     // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF
@@ -670,7 +671,6 @@
     const kecSelect = document.getElementById('selectKecamatan');
     const kelSelect = document.getElementById('selectKelurahan');
 
-    // Deklarasi Fallback URL jika di bagian atas index.html Anda belum ada
     if (typeof SCRIPT_URL_UTAMA === 'undefined') {
         var SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
     }
@@ -745,6 +745,22 @@
         target.disabled = true;
     }
 
+    // =========================================================================
+    // SYSTEM PENANGKAP KLIK GLOBAL (BYPASS UTAMA AGAR TOMBOL PASTI BERFUNGSI)
+    // =========================================================================
+    document.addEventListener('click', function(e) {
+        const targetButton = e.target.closest('button');
+        if (targetButton) {
+            const txt = targetButton.innerText ? targetButton.innerText.toUpperCase() : "";
+            if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH") || txt.includes("GABUNG") || txt.includes("KOMUNITAS")) {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log("Klik bypass global berhasil menangkap ketukan tombol!");
+                openKomunitasModal();
+            }
+        }
+    }, true); 
+
     window.onclick = function(event) {
         if (event.target.className === "modal-overlay") {
             event.target.style.display = "none";
@@ -752,7 +768,7 @@
     }
 
     // =========================================================================
-    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
+    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL NATIVE ANTI-CRASH
     // =========================================================================
     function paksaAktifTombolWilayah() {
         try {
@@ -760,47 +776,31 @@
             if (!semuaTombol) return;
 
             semuaTombol.forEach(btn => {
-                // Pengaman jika innerText kosong atau null agar tidak membuat script mogok
                 if (!btn || !btn.innerText) return; 
                 
                 const txt = btn.innerText.toUpperCase();
                 
                 if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH") || txt.includes("GABUNG") || txt.includes("KOMUNITAS")) {
                     
-                    // Kembalikan status klik tombol
                     btn.removeAttribute("disabled");
                     btn.disabled = false;
                     btn.style.pointerEvents = "auto";
                     btn.style.cursor = "pointer";
                     
-                    // Kunci Pelindung Event Listener
                     if (!btn.hasAttribute('data-click-bound')) {
                         btn.setAttribute('data-click-bound', 'true');
-                        
-                        // Bersihkan sisa inline onclick lama
                         btn.removeAttribute("onclick");
                         btn.onclick = null; 
                         
-                        // Pasang fungsi klik secara native
                         btn.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log("Memicu pembukaan modal pendaftaran wilayah...");
-                            
-                            // Eksekusi fungsi pembukaan modal pendaftaran
-                            if (typeof openKomunitasModal === "function") {
-                                openKomunitasModal();
-                            } else {
-                                // Alternatif jika fungsi openKomunitasModal hilang, langsung paksa munculkan elemen modalnya
-                                const modalK = document.getElementById("komunitasModal");
-                                if (modalK) modalK.style.display = "flex";
-                            }
+                            openKomunitasModal();
                         });
                     }
                 }
             });
         } catch (error) {
-            // Menangkap eror di latar belakang tanpa menghentikan sistem UI browser
             console.log("Sistem mendeteksi tombol non-teks, diabaikan dengan aman:", error.message);
         }
     }
@@ -815,9 +815,7 @@
         paksaAktifTombolWilayah();
     });
     
-    // Lakukan pemindaian tombol berkala secara aman
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>
-</html>    
-    
+</html>                                

@@ -298,25 +298,37 @@
         }, 1500);
     });
 
-    // FAQ Otomatis
+    // FAQ Otomatis dengan Dukungan Tampilan Gambar Ilustrasi Langkah
     document.querySelectorAll('.faq-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const pertanyaan = this.innerText;
-            const jawaban = this.getAttribute('data-reply');
+            let jawaban = this.getAttribute('data-reply');
+            
+            // Kirim pesan user dulu ke chat body
             appendBotMsg(pertanyaan, 'user');
-            setTimeout(() => { appendBotMsg(jawaban, 'bot'); }, 500);
-        });
+            
+            setTimeout(() => {
+                // DETEKSI KHUSUS: Jika user mengklik pertanyaan "Tidak bisa login?"
+                if (pertanyaan.includes("Tidak bisa login?")) {
+                    // Masukkan struktur gambar ilustrasi di bawah teks jawaban resmi
+                    jawaban += `
+                        <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e1; background: #fff; padding: 4px;">
+                            <img src="https://i.ibb.co/6wDdfzK/IMG-20260625-WA0007.jpg" 
+                                 alt="Panduan Reset Pi Browser" 
+                                 style="width: 100%; height: auto; display: block; border-radius: 8px;"
+                                 onload="document.getElementById('botChatBody').scrollTop = document.getElementById('botChatBody').scrollHeight;"
+                            />
+                            <div style="font-size: 10px; color: #64748b; text-align: center; margin-top: 4px; font-style: italic;">
+                                💡 Gambar Panduan Langkah 1 & Langkah 2
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                // Tampilkan jawaban utuh (Teks + Gambar jika ada) ke dalam balon chat bot
+                appendBotMsg(jawaban, 'bot');
+            }, 500);
     });
-
-    // Fitur pesan bawaan
-    function eksekusiKirim() {
-        const text = botUserInput.value.trim();
-        if(!text) return;
-        appendBotMsg(text, 'user');
-        botUserInput.value = '';
-        setTimeout(() => {
-            appendBotMsg("Pertanyaan Anda telah kami rekam. Untuk bantuan respon kilat langsung terhubung manusia, silakan klik tombol **WA Admin** di bawah ini.", 'bot');
-        }, 800);
     }
     botBtnSend.addEventListener('click', eksekusiKirim);
     botUserInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') eksekusiKirim(); });

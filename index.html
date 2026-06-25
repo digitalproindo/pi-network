@@ -663,7 +663,7 @@
     }                    
 
     // =========================================================================
-    // API PEMETAAN DAERAH (EMSIFA)
+    // API PEMETAAN DAERAH (EMSIFA) - AMAN & RE-OPTIMIZED
     // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
@@ -681,7 +681,8 @@
                     opt.innerHTML = p.name;
                     provSelect.appendChild(opt);
                 });
-            });
+            })
+            .catch(err => console.error("Gagal memuat data provinsi:", err));
 
         provSelect.addEventListener('change', function() {
             const id = this.options[this.selectedIndex].dataset.id;
@@ -742,16 +743,37 @@
         }
     }
 
+    // =========================================================================
+    // REVISI TOTAL: SYSTEM AKTIVASI TOMBOL TANPA OVERWRITE STRUKTUR
+    // =========================================================================
     function paksaAktifTombolWilayah() {
         const semuaTombol = document.querySelectorAll("button");
         semuaTombol.forEach(btn => {
             const txt = btn.innerText ? btn.innerText.toUpperCase() : "";
-            if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH")) {
+            
+            // Cek apakah tombol mengandung kata kunci target pendaftaran komunitas
+            if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH") || txt.includes("KOMUNITAS")) {
+                
+                // Pastikan tombol aktif secara visual dan sistem
                 btn.removeAttribute("disabled");
                 btn.disabled = false;
                 btn.style.pointerEvents = "auto";
                 btn.style.cursor = "pointer";
-                btn.setAttribute("onclick", "openKomunitasModal()");
+                
+                // Gunakan flag data-attribute agar Event Listener hanya dipasang 1 KALI saja (mencegah double click/freeze)
+                if (!btn.hasAttribute('data-click-bound')) {
+                    btn.setAttribute('data-click-bound', 'true');
+                    
+                    // Hapus attribute onclick bawaan yang merusak sistem lama
+                    btn.removeAttribute("onclick");
+                    
+                    // Daftarkan fungsi klik baru secara native dan aman
+                    btn.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        console.log("Membuka Modal Komunitas Wilayah via Safe Listener.");
+                        openKomunitasModal();
+                    });
+                }
             }
         });
     }
@@ -759,18 +781,22 @@
     // BOOTSTRAP EVENT TRIGGERS
     document.addEventListener("DOMContentLoaded", function() {
         paksaAktifTombolWilayah();
-        inisialisasiAutoLoginPi();
-    });
-    
-    window.addEventListener("load", function() {
-        paksaAktifTombolWilayah();
-        if (!currentUser) {
+        if (typeof inisialisasiAutoLoginPi === "function") {
             inisialisasiAutoLoginPi();
         }
     });
     
-    setInterval(paksaAktifTombolWilayah, 1500);
+    window.addEventListener("load", function() {
+        paksaAktifTombolWilayah();
+        if (typeof currentUser !== 'undefined' && !currentUser) {
+            if (typeof inisialisasiAutoLoginPi === "function") {
+                inisialisasiAutoLoginPi();
+            }
+        }
+    });
+    
+    // Tetap scan tombol baru setiap 2 detik dengan metode pasang-aman (tidak crash)
+    setInterval(paksaAktifTombolWilayah, 2000);
 </script>
 </body>
 </html>
-    

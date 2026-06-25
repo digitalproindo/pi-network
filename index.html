@@ -626,6 +626,14 @@
         }
     }
 
+    function bukaGrupWhatsApp() {
+        // Membuka link grup WA resmi Anda di tab baru
+        window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1', '_blank');
+        // Menyembunyikan modal sukses setelah tombol diklik
+        const suksesModal = document.getElementById('digitalSuksesModal');
+        if (suksesModal) suksesModal.style.display = 'none';
+    }
+
     function tampilkanModalSuksesDigitalTerbaru() {
         let suksesModal = document.getElementById("digitalSuksesModal");
         
@@ -648,7 +656,7 @@
                         </div>
                         <p style="margin:0; font-size:11.5px; color:#8899af; line-height:1.5;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
                     </div>
-                    <button onclick="window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sh&p=a&mlu=2&amv=1', '_blank'); document.getElementById('digitalSuksesModal').style.display='none';" style="width:100%; background:linear-gradient(90deg, #25d366 0%, #128c7e 100%); color:#ffffff; border:none; padding:15px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);">
+                    <button onclick="bukaGrupWhatsApp()" style="width:100%; background:linear-gradient(90deg, #25d366 0%, #128c7e 100%); color:#ffffff; border:none; padding:15px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);">
                         Gabung Grup WhatsApp
                     </button>
                     <button onclick="tutupModalSukses()" style="width:100%; background:linear-gradient(135deg, #64748b 0%, #475569 100%); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:13px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; display:inline-flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); transition: all 0.3s ease;">
@@ -662,7 +670,7 @@
             document.body.appendChild(suksesModal);
         }
         suksesModal.style.display = "flex";
-    }                    
+    }
 
     // =========================================================================
     // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF

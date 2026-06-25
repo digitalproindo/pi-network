@@ -1887,42 +1887,51 @@ window.handlePayment = async (amount, name) => {
 };
 
 function showSuccessOverlay(amount, name, txid) {
-    // Gunakan SCRIPT_URL yang terpadu agar tidak terjadi bentrok variabel
+    // URL Apps Script Utama (Omnibus Version)
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
     
+    // KUNCI REVISI: Menyertakan 'action' dan menyesuaikan 'totalPi' agar dibaca oleh Jalur 2 Apps Script
     const dataTransaksi = {
-        tanggal: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' }),
-        penerima: userAddress.nama,
-        username: currentUser.username,
-        item: name,
-        total: amount,
-        txid: txid,
-        alamat: userAddress.alamatLengkap,
-        telepon: userAddress.telepon
+        action: "transaksi", 
+        penerima: userAddress.nama || "",
+        username: (currentUser && currentUser.username) ? currentUser.username : "User Pi",
+        item: name || "",
+        totalPi: amount || "", // Diubah dari 'total' menjadi 'totalPi' agar sesuai dengan script Google
+        txid: txid || "",
+        alamat: userAddress.alamatLengkap || "",
+        telepon: userAddress.telepon || ""
     };
 
-    // PERBAIKAN 2: Gunakan URLSearchParams + metode POST biasa tanpa 'no-cors' agar data bodi masuk sempurna ke Google Sheets
+    // Mengubah objek menjadi URLSearchParams agar bodi data x-www-form-urlencoded terbentuk sempurna
     const googleFormBody = new URLSearchParams(dataTransaksi);
 
+    // Kirim data ke Google Apps Script menggunakan metode POST
     fetch(excelWebhookUrl, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
         body: googleFormBody.toString() 
     })
-    .then(() => console.log("Data pesanan berhasil disinkronkan ke server Google Sheets."))
+    .then(response => response.json())
+    .then(res => console.log("Respon Sinkronisasi Google Sheets:", res.message))
     .catch(err => console.error("Gagal catat Excel:", err));
 
+    // =========================================================================
+    // TAMPILAN OVERLAY SUKSES & INTEGRASI WHATSAPP ADMIN
+    // =========================================================================
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
     
     const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(userAddress.nama)}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${encodeURIComponent(userAddress.alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+
+    // Pastikan variabel ADMIN_WA global sudah terdefinisi di tempat lain, jika tidak berikan fallback nomor
+    const nomorAdmin = typeof ADMIN_WA !== 'undefined' ? ADMIN_WA : "628xxxxxxxxxx";
 
     overlay.innerHTML = `
         <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif;">
             <div style="font-size:45px; margin-bottom:20px;">✅</div>
             <h2 style="color:#1a0033; margin:0; font-weight:800;">Pembayaran Berhasil!</h2>
             <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
-            <a href="https://wa.me/${ADMIN_WA}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
+            <a href="https://wa.me/${nomorAdmin}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
             <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
         </div>`;
     document.body.appendChild(overlay);

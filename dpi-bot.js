@@ -1,5 +1,5 @@
 (function() {
-    // 1. Injeksi Gaya Tampilan (CSS) - Di-poles Premium Tanpa Merusak Struktur
+    // 1. Injeksi Gaya Tampilan (CSS) - Versi Premium & Responsif Gambar
     const style = document.createElement('style');
     style.innerHTML = `
         .bot-widget-toggle {
@@ -66,7 +66,7 @@
         .msg-bot { background: white; color: #334155; align-self: flex-start; border-top-left-radius: 4px; border: 1px solid #e2e8f0; }
         .msg-user { background: #25d366; color: white; align-self: flex-end; border-top-right-radius: 4px; font-weight: 500; }
         
-        /* Desain badge instruksi langkah pada obrolan gambar tutorial */
+        /* Gaya dekorasi lencana nomor langkah */
         .step-badge { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; color: white; font-size: 10px; font-weight: bold; margin-right: 4px; vertical-align: middle; }
         .badge-green { background: #16a34a; }
         .badge-purple { background: #7c3aed; }
@@ -111,7 +111,7 @@
         document.head.appendChild(fa);
     }
 
-    // 3. Inject Struktur HTML Widget Bot (Ditambah FAQ baru "Tidak bisa login?")
+    // 3. Inject Struktur HTML Widget Bot
     const botHtml = `
         <div class="bot-widget-toggle" id="botToggle">
             <i class="fa-solid fa-comments"></i>
@@ -155,7 +155,7 @@
                 <button class="faq-btn" data-reply="Saat ini kami melayani transaksi komersial eksklusif menggunakan koin di jaringan Pi Testnet sebagai simulasi validasi ekosistem sebelum berlanjut penuh ke fase Open Mainnet.">Metode pembayaran?</button>
                 <button class="faq-btn" data-reply="PT. Digital Pro Indo adalah platform e-commerce dan marketplace berbadan hukum resmi di Indonesia yang terdaftar sah dalam jajaran utilitas Pi Developer Studio.">Legalitas Perusahaan?</button>
                 
-                <button class="faq-btn" data-reply="Jika aplikasi mengalami kendala autentikasi atau gagal memuat data profil, mohon ikuti petunjuk berikut:<br><br><span class='step-badge badge-green'>1</span> Klik tulisan <strong>'Hapus URL yang Baru Dikunjungi'</strong> pada menu utama Pi Browser Anda.<br><br><span class='step-badge badge-purple'>2</span> Setelah itu, ketuk tombol <strong>'Refresh'</strong> (ikon panah melingkar ↻) pada kolom pencarian berwarna abu-abu di pojok kanan atas layar Anda untuk menyinkronkan ulang data login Pi SDK.">Tidak bisa login?</button>
+                <button class="faq-btn" data-reply="Jika aplikasi mengalami kendala autentikasi atau gagal memuat data profil, mohon ikuti petunjuk berikut:<br><br><span class='step-badge badge-green'>1</span> Klik tulisan <strong>'Hapus URL yang Baru Dikunjungi'</strong> pada menu utama Pi Browser Anda.<br><br><span class='step-badge badge-purple'>2</span> Setelah itu, ketuk tombol <strong>'Refresh'</strong> (ikon panah melingkar ↻) pada kolom pencarian berwarna abu-abu di pojok kanan atas layar Anda untuk menyinkronkan data login Pi SDK.">Tidak bisa login?</button>
             </div>
             <div class="action-buttons">
                 <button class="action-btn btn-lacak" id="btnMenuLacak"><i class="fa-solid fa-truck"></i> Lacak</button>
@@ -298,19 +298,17 @@
         }, 1500);
     });
 
-    // FAQ Otomatis dengan Dukungan Tampilan Gambar Ilustrasi Langkah
+    // FAQ Otomatis dengan Dukungan Tampilan Gambar Panduan Langkah demi Langkah
     document.querySelectorAll('.faq-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const pertanyaan = this.innerText;
             let jawaban = this.getAttribute('data-reply');
             
-            // Kirim pesan user dulu ke chat body
             appendBotMsg(pertanyaan, 'user');
             
             setTimeout(() => {
-                // DETEKSI KHUSUS: Jika user mengklik pertanyaan "Tidak bisa login?"
+                // LOGIKA KHUSUS: Jika menekan "Tidak bisa login?" maka sisipkan element gambar ilustrasi
                 if (pertanyaan.includes("Tidak bisa login?")) {
-                    // Masukkan struktur gambar ilustrasi di bawah teks jawaban resmi
                     jawaban += `
                         <div style="margin-top: 12px; border-radius: 10px; overflow: hidden; border: 1px solid #cbd5e1; background: #fff; padding: 4px;">
                             <img src="https://i.ibb.co/6wDdfzK/IMG-20260625-WA0007.jpg" 
@@ -324,11 +322,20 @@
                         </div>
                     `;
                 }
-                
-                // Tampilkan jawaban utuh (Teks + Gambar jika ada) ke dalam balon chat bot
                 appendBotMsg(jawaban, 'bot');
             }, 500);
+        });
     });
+
+    // Fitur kirim pesan input manual bawaan
+    function eksekusiKirim() {
+        const text = botUserInput.value.trim();
+        if(!text) return;
+        appendBotMsg(text, 'user');
+        botUserInput.value = '';
+        setTimeout(() => {
+            appendBotMsg("Pertanyaan Anda telah kami rekam. Untuk bantuan respon kilat langsung terhubung manusia, silakan klik tombol **WA Admin** di bawah ini.", 'bot');
+        }, 800);
     }
     botBtnSend.addEventListener('click', eksekusiKirim);
     botUserInput.addEventListener('keypress', (e) => { if(e.key === 'Enter') eksekusiKirim(); });

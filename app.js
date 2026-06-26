@@ -1755,43 +1755,59 @@ window.switchPage = (pageId) => {
 };
 
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - FIXED VERSION
+// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - FIXED VERSION (ANTI-FREEZE)
 // =========================================================================
 window.handlePayment = async (amount, name) => {
-    // PERBAIKAN 1: Deteksi window.isPiInitialized secara eksplisit agar sinkron dengan Bagian 2
-    if (!window.isPiInitialized) {
-        alert("Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
-        return;
-    }
-
-    // PERBAIKAN 2: Deteksi window.currentUser secara eksplisit
-    const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
-    if (!userAktif) { 
-        if (typeof showLoginPrompt === 'function') showLoginPrompt(); 
-        return; 
-    }
-    
-    if (!userAddress.nama) { showAddressPrompt(); return; }
-
-    let detailedItemName = name;
-    if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
-        detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
-    }
-
-    // Amankan konversi agar parameter angka maupun string tidak memicu eror .toFixed()
-    const parsedAmount = parseFloat(amount);
-    if (isNaN(parsedAmount)) {
-        alert("⚠️ Format harga tidak valid.");
-        return;
-    }
-    const secureAmountString = parsedAmount.toFixed(7).toString();
-
     try {
-        if (!window.Pi) {
-            alert("Buka aplikasi ini dari dalam Pi Browser untuk melakukan pembayaran.");
+        // 1. Verifikasi Koneksi SDK Blockchain
+        if (!window.isPiInitialized) {
+            alert("⚠️ Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
             return;
         }
 
+        // 2. Verifikasi Sesi User Aktif (Fail-Safe Scope)
+        const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
+        if (!userAktif) { 
+            if (typeof showLoginPrompt === 'function') {
+                showLoginPrompt();
+            } else {
+                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+            }
+            return; 
+        }
+        
+        // 3. Verifikasi Data Alamat Pengiriman
+        if (typeof userAddress === 'undefined' || !userAddress || !userAddress.nama) { 
+            if (typeof showAddressPrompt === 'function') {
+                showAddressPrompt();
+            } else {
+                alert("⚠️ Mohon lengkapi alamat pengiriman Anda terlebih dahulu!");
+            }
+            return; 
+        }
+
+        let detailedItemName = name;
+        if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
+            detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
+        }
+
+        // 4. Amankan Konversi Nilai Pi (Mencegah string .toFixed error)
+        const parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount)) {
+            alert("⚠️ Format harga tidak valid.");
+            return;
+        }
+        const secureAmountString = parsedAmount.toFixed(7).toString();
+
+        // 5. Validasi Keberadaan Objek Pi Utama Browser
+        if (!window.Pi) {
+            alert("⚠️ Buka aplikasi ini dari dalam Pi Browser untuk melakukan transaksi.");
+            return;
+        }
+
+        console.log("🚀 Memulai proses createPayment untuk:", detailedItemName, "Jumlah:", secureAmountString);
+
+        // 6. Eksekusi Jendela Pembayaran Dompet Pi Wallet
         await window.Pi.createPayment({
             amount: secureAmountString,
             memo: `Pembelian ${name}`,
@@ -1801,58 +1817,77 @@ window.handlePayment = async (amount, name) => {
             },
         }, {
             onReadyForServerApproval: async (paymentId) => {
-                const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({paymentId}) 
-                });
-                return res.ok;
-            },
-            onReadyForServerCompletion: async (paymentId, txid) => {
-                const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
-                    method: 'POST', 
-                    headers: {'Content-Type': 'application/json'}, 
-                    body: JSON.stringify({paymentId, txid}) 
-                });
-                if (res.ok) { 
-                    showSuccessOverlay(secureAmountString, detailedItemName, txid);
-                    if(name === 'Total Keranjang') { 
-                        cart = []; 
-                        if (typeof window.updateCartUI === 'function') window.updateCartUI(); 
-                    }
+                console.log("Payment siap disetujui server, ID:", paymentId);
+                try {
+                    const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify({paymentId}) 
+                    });
+                    return res.ok;
+                } catch (e) {
+                    console.error("Gagal Approval Server:", e);
+                    return false;
                 }
             },
-            onCancel: () => { console.log("Pembayaran dibatalkan pembeli"); },
+            onReadyForServerCompletion: async (paymentId, txid) => {
+                console.log("Payment siap diselesaikan server, TXID:", txid);
+                try {
+                    const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
+                        method: 'POST', 
+                        headers: {'Content-Type': 'application/json'}, 
+                        body: JSON.stringify({paymentId, txid}) 
+                    });
+                    if (res.ok) { 
+                        showSuccessOverlay(secureAmountString, detailedItemName, txid);
+                        if(name === 'Total Keranjang') { 
+                            cart = []; 
+                            if (typeof window.updateCartUI === 'function') window.updateCartUI(); 
+                        }
+                    }
+                } catch (e) {
+                    console.error("Gagal Completion Server:", e);
+                }
+            },
+            onCancel: () => { 
+                console.log("Pembayaran dibatalkan oleh pembeli."); 
+            },
             onError: (error, payment) => { 
                 console.error("Payment Error:", error); 
-                if(payment && typeof handleIncompletePayment === 'function') handleIncompletePayment(payment); 
+                if(payment && typeof handleIncompletePayment === 'function') {
+                    handleIncompletePayment(payment);
+                } else {
+                    alert("⚠️ Terjadi kesalahan transaksi pada Pi Network.");
+                }
             }
         });
+
     } catch (err) { 
-        console.error("Execution Error:", err); 
+        console.error("Fatal Execution Error pada handlePayment:", err);
+        alert("⚠️ Terjadi kesalahan internal: " + err.message);
     }
 };
 
 function showSuccessOverlay(amount, name, txid) {
-    // URL Apps Script Utama (Omnibus Version)
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
     
-    // KUNCI REVISI: Menyertakan 'action' dan menyesuaikan 'totalPi' agar dibaca oleh Jalur 2 Apps Script
+    // Amankan pengambilan username tanpa memutus skrip
+    const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
+    const usernameFinal = (userAktif && userAktif.username) ? userAktif.username : "User Pi";
+
     const dataTransaksi = {
         action: "transaksi", 
-        penerima: userAddress.nama || "",
-        username: (currentUser && currentUser.username) ? currentUser.username : "User Pi",
+        penerima: (typeof userAddress !== 'undefined' && userAddress.nama) ? userAddress.nama : "",
+        username: usernameFinal,
         item: name || "",
-        totalPi: amount || "", // Diubah dari 'total' menjadi 'totalPi' agar sesuai dengan script Google
+        totalPi: amount || "", 
         txid: txid || "",
-        alamat: userAddress.alamatLengkap || "",
-        telepon: userAddress.telepon || ""
+        alamat: (typeof userAddress !== 'undefined' && userAddress.alamatLengkap) ? userAddress.alamatLengkap : "",
+        telepon: (typeof userAddress !== 'undefined' && userAddress.telepon) ? userAddress.telepon : ""
     };
 
-    // Mengubah objek menjadi URLSearchParams agar bodi data x-www-form-urlencoded terbentuk sempurna
     const googleFormBody = new URLSearchParams(dataTransaksi);
 
-    // Kirim data ke Google Apps Script menggunakan metode POST
     fetch(excelWebhookUrl, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
@@ -1862,16 +1897,16 @@ function showSuccessOverlay(amount, name, txid) {
     .then(res => console.log("Respon Sinkronisasi Google Sheets:", res.message))
     .catch(err => console.error("Gagal catat Excel:", err));
 
-    // =========================================================================
     // TAMPILAN OVERLAY SUKSES & INTEGRASI WHATSAPP ADMIN
-    // =========================================================================
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
     
-    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(userAddress.nama)}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${encodeURIComponent(userAddress.alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+    const namaPenerima = (typeof userAddress !== 'undefined' && userAddress.nama) ? userAddress.nama : "";
+    const telpPenerima = (typeof userAddress !== 'undefined' && userAddress.telepon) ? userAddress.telepon : "";
+    const alamatPenerima = (typeof userAddress !== 'undefined' && userAddress.alamatLengkap) ? userAddress.alamatLengkap : "";
 
-    // Pastikan variabel ADMIN_WA global sudah terdefinisi di tempat lain, jika tidak berikan fallback nomor
-    const nomorAdmin = typeof ADMIN_WA !== 'undefined' ? ADMIN_WA : "628xxxxxxxxxx";
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(namaPenerima)}%0A• *Telepon:* ${telpPenerima}%0A• *Alamat:* ${encodeURIComponent(alamatPenerima)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+    const nomorAdmin = typeof ADMIN_WA !== 'undefined' ? ADMIN_WA : "6281906066757";
 
     overlay.innerHTML = `
         <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif;">
@@ -1882,7 +1917,7 @@ function showSuccessOverlay(amount, name, txid) {
             <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
         </div>`;
     document.body.appendChild(overlay);
-}
+    }
 
 // =========================================================================
 // 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION

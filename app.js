@@ -1307,7 +1307,7 @@ const productsData = [
     }
 ];
 // =========================================================================
-// 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS) - FIXED VERSION
+// 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS) - FIXED SINKRONISASI
 // =========================================================================
 async function initPi() {
     try {
@@ -1340,11 +1340,12 @@ async function initPi() {
             configureLogoutButton();
 
             // =========================================================================
-            // PERBAIKAN UTAMA: Ambil data status kemitraan & produk secara realtime 
-            // tepat setelah User ID (UID) berhasil didapatkan dari server Pi Core Team.
+            // PERBAIKAN UTAMA: Memastikan pemanggilan window.muatStatusKemitraan sinkron
             // =========================================================================
-            if (typeof muatStatusKemitraan === "function") {
-                console.log("Menjalankan sinkronisasi status kemitraan awal...");
+            if (typeof window.muatStatusKemitraan === "function") {
+                console.log("Menjalankan sinkronisasi status kemitraan awal via Window Global...");
+                window.muatStatusKemitraan();
+            } else if (typeof muatStatusKemitraan === "function") {
                 muatStatusKemitraan();
             }
             
@@ -1356,45 +1357,8 @@ async function initPi() {
         isPiInitialized = false;
     }
 }
-
-// Fungsi Wajib dari Pi Core Team untuk menyelesaikan transaksi yang menggantung (Incomplete Payment)
-async function handleIncompletePayment(payment) {
-    console.log("Menangani pembayaran gantung ditemukan:", payment.identifier);
-    try {
-        await fetch('https://www.ptdigitalproindo.com/api/complete', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
-        });
-        console.log("Pembayaran gantung berhasil diselesaikan secara otomatis.");
-    } catch (err) {
-        console.error("Gagal menyelesaikan pembayaran gantung:", err);
-    }
-}
-
-// Helper untuk menyetel tombol logout secara aman tanpa duplikasi event listener
-function configureLogoutButton() {
-    const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        loginBtn.onclick = null; 
-        loginBtn.innerText = "LOGOUT";
-        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
-        
-        const logoutAction = (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            location.reload(); 
-        };
-        
-        const newLoginBtn = loginBtn.cloneNode(true);
-        newLoginBtn.addEventListener('click', logoutAction);
-        if(loginBtn.parentNode) {
-            loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
-        }
-    }
-}
 // =========================================================================
-// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC) - FIXED VERSION
+// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC) - FIXED TOTAL SINKRON
 // =========================================================================
 window.handleAuth = async () => {
     if (!isPiInitialized) {
@@ -1450,9 +1414,11 @@ window.handleAuth = async () => {
         configureLogoutButton();
 
         // =========================================================================
-        // PERBAIKAN: Ambil status kemitraan setelah login manual sukses
+        // PERBAIKAN MUTLAK: Mengarahkan eksekusi ke window.muatStatusKemitraan global
         // =========================================================================
-        if (typeof muatStatusKemitraan === "function") {
+        if (typeof window.muatStatusKemitraan === "function") {
+            window.muatStatusKemitraan();
+        } else if (typeof muatStatusKemitraan === "function") {
             muatStatusKemitraan();
         }
 
@@ -1465,48 +1431,6 @@ window.handleAuth = async () => {
         }
     }
 };
-
-function showLoginPrompt() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
-    overlay.innerHTML = `
-        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
-            <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Selamat Datang</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace DIGITAL PRO INDO</p>
-            <button id="modal-confirm-login-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LOGIN SEKARANG</button>
-            <button id="modal-cancel-login-btn" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Mungkin Nanti</button>
-        </div>`;
-    document.body.appendChild(overlay);
-
-    document.getElementById('modal-confirm-login-btn').addEventListener('click', function(e) {
-        e.preventDefault();
-        overlay.remove();
-        window.handleAuth();
-    });
-
-    document.getElementById('modal-cancel-login-btn').addEventListener('click', function() {
-        overlay.remove();
-    });
-}
-
-function showAddressPrompt() {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
-    overlay.innerHTML = `
-        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
-            <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
-            <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Alamat Kosong</h2>
-            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
-            <button id="modal-confirm-addr-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LENGKAPI ALAMAT</button>
-        </div>`;
-    document.body.appendChild(overlay);
-
-    document.getElementById('modal-confirm-addr-btn').addEventListener('click', function(e) {
-        e.preventDefault();
-        overlay.remove();
-        if (typeof window.showAddressForm === 'function') window.showAddressForm();
-    });
-}
 
 // =========================================================================
 // 4. RENDERING & UI FUNCTIONS - FIXED VERSION
@@ -1810,8 +1734,13 @@ window.switchPage = (pageId) => {
         renderProducts(productsData, 'main-grid');
     }
     
-    if(pageId === 'profile' && typeof muatStatusKemitraan === "function") {
-        muatStatusKemitraan();
+    // PERBAIKAN: Memastikan pemanggilan global window saat menu profil diakses
+    if(pageId === 'profile') {
+        if (typeof window.muatStatusKemitraan === "function") {
+            window.muatStatusKemitraan();
+        } else if (typeof muatStatusKemitraan === "function") {
+            muatStatusKemitraan();
+        }
     }
 };
 
@@ -1966,7 +1895,7 @@ const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Suntik Gaya Animasi & Desain Futuristik (Nama Fungsi Sudah Disamakan)
+    // 1. Suntik Gaya Animasi & Desain Futuristik
     inisialisasiGayaDigitalPro();
 
     // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
@@ -2029,72 +1958,70 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-   // =========================================================================
-// 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)
-// =========================================================================
-const formAman = document.getElementById('formKomunitas');
-if (formAman) {
-    formAman.addEventListener('submit', e => {
-        e.preventDefault();
-        if (statusKirimKomunitas) return;
-        
-        if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-            alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-            return;
-        }
-
-        const btnAman = document.getElementById('btnKirim');
-        if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
-
-        const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-        const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-        const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-        const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-        const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-        const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-        
-        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-            alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-            return;
-        }
-
-        statusKirimKomunitas = true;
-        const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
-
-        fetch(SCRIPT_URL_AMAN, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(dataKomunitas).toString()
-        })
-        .then(res => res.json())
-        .then(response => {
-            // Tutup form pengisian pendaftaran
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            formAman.reset();
+    // =========================================================================
+    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)
+    // =========================================================================
+    const formAman = document.getElementById('formKomunitas');
+    if (formAman) {
+        formAman.addEventListener('submit', e => {
+            e.preventDefault();
+            if (statusKirimKomunitas) return;
             
-            // PAKSA MATIKAN POPUP LAMA (GAMBAR 2 CLONE) AGAR TIDAK DOUBLE
-            const modalLamaCentang = document.getElementById('modalSuksesDigital') || document.getElementById('successOverlay'); 
-            if (modalLamaCentang) modalLamaCentang.remove();
+            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+                return;
+            }
 
-            // MUNCULKAN POPUP PREMIUM PILIHAN ANDA (GAMBAR 1)
-            tampilkanModalSuksesDPI();
+            const btnAman = document.getElementById('btnKirim');
+            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
+
+            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
+            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
+            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
             
-            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-        })
-        .catch(err => {
-            console.error("Eror form komunitas:", err);
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-        })
-        .finally(() => {
-            statusKirimKomunitas = false;
-            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+                return;
+            }
+
+            statusKirimKomunitas = true;
+            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
+
+            fetch(SCRIPT_URL_AMAN, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dataKomunitas).toString()
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                formAman.reset();
+                
+                const modalLamaCentang = document.getElementById('modalSuksesDigital') || document.getElementById('successOverlay'); 
+                if (modalLamaCentang) modalLamaCentang.remove();
+
+                tampilkanModalSuksesDPI();
+                
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+            })
+            .catch(err => {
+                console.error("Eror form komunitas:", err);
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            })
+            .finally(() => {
+                statusKirimKomunitas = false;
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+            });
         });
-    });
-}
+    }
+}); // <-- Menutup DOMContentLoaded utama aplikasi Anda
 
 // =========================================================================
-// FUNGSI POPUP SUKSES: STRUKTUR GAMBAR 1 DENGAN LOGO TRANSPARAN BERSIH
+// FUNGSI POPUP SUKSES: STRUKTUR DENGAN LOGO TRANSPARAN BERSIH
 // =========================================================================
 function tampilkanModalSuksesDPI() {
     const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
@@ -2109,35 +2036,28 @@ function tampilkanModalSuksesDPI() {
 
     overlay.innerHTML = `
         <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-            
             <div style="width:130px; height:130px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
                 <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain;">
             </div>
-            
             <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>
             <p style="color:#a4a2b6; font-size:0.9rem; margin:12px 0 24px 0; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-            
             <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left; margin-bottom:24px; box-sizing:border-box;">
-                <div style="display:flex; justify-content:between; align-items:center; width:100%; margin-bottom:6px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:6px;">
                     <span style="color:#767485; font-size:0.75rem; font-weight:700; letter-spacing:0.5px;">STATUS</span>
                     <span style="color:#d97706; font-size:0.75rem; font-weight:700; margin-left:auto;">PROSES REVIEW</span>
                 </div>
                 <p style="margin:0; color:#a4a2b6; font-size:0.8rem; line-height:1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
             </div>
-            
             <a href="${urlGrupWA}" target="_blank" style="display:block; background:linear-gradient(90deg, #10b981 0%, #059669 100%); color:#ffffff; text-decoration:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.95rem; text-align:center; margin-bottom:12px; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
                 GABUNG GRUP WHATSAPP
             </a>
-            
             <button id="btnKembaliBeranda" style="width:100%; background:#334155; color:#ffffff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.5px;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 KEMBALI KE BERANDA
             </button>
-        </div>
-    `;
+        </div>`;
     document.body.appendChild(overlay);
 
-    // ... baris terakhir dari fungsi tampilkanModalSuksesDPI() Anda ...
     document.getElementById('btnKembaliBeranda').onclick = () => {
         overlay.remove();
         if (typeof window.switchPage === 'function') {
@@ -2146,10 +2066,59 @@ function tampilkanModalSuksesDPI() {
             location.reload();
         }
     };
-} // <-- Menutup fungsi tampilkanModalSuksesDPI
+}
 
-// PENTING: PASTIKAN BARIS DI BAWAH INI ADA DI AKHIR FILE ANDA!
-}); // <-- Menutup DOMContentLoaded utama aplikasi Anda
+// =========================================================================
+// SUNTIKAN INTEGRASI: ELEMEN VISUAL LONCENG PROFIL & NOTIFIKASI BERANDA BANNER
+// =========================================================================
+function injeksiLoncengNotifikasiProfil() {
+    if (document.getElementById('dpi-profile-bell')) return;
+    const penunjukStatus = document.getElementById('partner-status');
+    if (!penunjukStatus) return;
+
+    const lonceng = document.createElement('span');
+    lonceng.id = 'dpi-profile-bell';
+    lonceng.className = 'bell-bounce';
+    lonceng.innerText = '🔔';
+    lonceng.style.cursor = 'pointer';
+
+    penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
+
+    lonceng.onclick = (e) => {
+        e.stopPropagation();
+        if (typeof window.bukaModalInvestorDigitalPro === "function") {
+            window.bukaModalInvestorDigitalPro();
+        } else {
+            alert("Informasi Investor Digital Pro siap disinkronisasikan!");
+        }
+    };
+}
+
+function tampilkanBannerNotifikasiSistem(statusFinal) {
+    if (document.getElementById('dpi-top-banner')) return;
+
+    const mainHeader = document.querySelector('header') || document.body;
+    const banner = document.createElement('div');
+    banner.id = 'dpi-top-banner';
+    banner.className = 'notif-banner-pro';
+    
+    banner.style.cssText = "background: linear-gradient(90deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 12px 16px; font-family: sans-serif; font-size: 0.85rem; font-weight: bold; text-align: center; position: relative; z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-bottom: 2px solid #ffd700; cursor: pointer;";
+    banner.innerHTML = `
+        <span>📢 Selamat! Status Anda Telah Diperbarui Menjadi <span style="color:#ffd700; text-transform:uppercase;">${statusFinal}</span>. Klik Untuk Informasi Selengkapnya!</span>
+        <span style="background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:8px; font-size:0.7rem; margin-left:10px;">LIHAT</span>
+    `;
+
+    mainHeader.parentNode.insertBefore(banner, mainHeader);
+
+    banner.onclick = () => {
+        if (typeof window.bukaModalInvestorDigitalPro === "function") {
+            window.bukaModalInvestorDigitalPro();
+        } else {
+            alert(`Selamat! Akun kemitraan Anda telah berstatus: ${statusFinal}`);
+        }
+    };
+}
+
 function inisialisasiGayaDigitalPro() {
     if (document.getElementById('digital-pro-premium-styles')) return;
     const styleEl = document.createElement('style');
@@ -2168,8 +2137,10 @@ function inisialisasiGayaDigitalPro() {
     `;
     document.head.appendChild(styleEl);
 }
-
 // =========================================================================
+// SELESAI - SKRIP INTEGRASI BERHASIL DISINKRONISASI TOTAL 
+// =========================================================================
+ // =========================================================================
 // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
 // =========================================================================
 
@@ -2191,21 +2162,28 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     const banner = document.createElement('div');
     banner.id = 'dpi-top-banner';
     banner.className = 'notif-banner-pro';
-    banner.style.cssText = "position: fixed; top: 15px; left: 5%; right: 5%; max-width: 420px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px; z-index: 999999; cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-family: sans-serif; box-sizing: border-box;";
+    
+    // PERBAIKAN DESAIN: Diubah menjadi inline layout-flow agar menyatu rapi dan tidak menutupi komponen header
+    banner.style.cssText = "width: 100%; background: linear-gradient(90deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 12px 16px; font-family: sans-serif; font-size: 0.85rem; font-weight: bold; text-align: center; position: relative; z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-bottom: 2px solid #ffd700; cursor: pointer; box-sizing: border-box;";
 
     banner.innerHTML = `
-        <div style="background: rgba(147, 51, 234, 0.15); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0;"><span style="font-size: 18px;">🔔</span></div>
-        <div style="flex-grow: 1;">
-            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Pemberitahuan Status</div>
-            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 1px;">Kemitraan Menjadi: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
+        <div style="background: rgba(255, 215, 0, 0.2); width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #ffd700; flex-shrink: 0;"><span style="font-size: 14px;">📢</span></div>
+        <div style="flex-grow: 1; text-align: left; line-height: 1.4;">
+            Selamat! Status Kemitraan Anda Telah Diperbarui Menjadi <span style="color: #ffd700; text-transform: uppercase; font-weight: 900;">${statusTerbaru}</span>. Klik untuk info detail program pengembangan.
         </div>
-        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 6px; font-weight: bold; cursor: pointer;">✕</div>
+        <div class="close-banner-x" style="color: rgba(255,255,255,0.6); font-size: 16px; padding: 0 8px; font-weight: bold; cursor: pointer; flex-shrink: 0;">✕</div>
     `;
-    document.body.appendChild(banner);
+
+    // Sisipkan banner di bagian paling atas, tepat di bawah elemen header utama
+    const headerAplikasi = document.querySelector('header') || document.body.firstChild;
+    if (headerAplikasi && headerAplikasi.parentNode) {
+        headerAplikasi.parentNode.insertBefore(banner, headerAplikasi.nextSibling);
+    } else {
+        document.body.insertBefore(banner, document.body.firstChild);
+    }
 
     banner.addEventListener('click', (e) => {
         if (e.target.classList.contains('close-banner-x')) { e.stopPropagation(); banner.remove(); return; }
-        banner.remove();
         bukaModalInvestorDigitalPro();
     });
 }
@@ -2222,7 +2200,6 @@ function bukaModalInvestorDigitalPro() {
         <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
             <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
             
-            <!-- HEADER -->
             <div style="text-align: center; margin-bottom: 22px;">
                 <span style="font-size: 36px; display: block; margin-bottom: 6px;">📢</span>
                 <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1.4;">
@@ -2230,7 +2207,6 @@ function bukaModalInvestorDigitalPro() {
                 </h2>
             </div>
 
-            <!-- KONTEN -->
             <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
                 <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa. Hingga saat ini, aplikasi ini terus berkembang meskipun dibangun dengan keterbatasan sumber daya dan tanpa dukungan modal besar.</p>
@@ -2268,7 +2244,6 @@ function bukaModalInvestorDigitalPro() {
                 </div>
             </div>
 
-            <!-- ACTION BUTTONS -->
             <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
                 <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Hubungi Hub Manajemen</button>
                 <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer; font-size: 0.8rem;">Kembali ke Profil</button>
@@ -2280,14 +2255,11 @@ function bukaModalInvestorDigitalPro() {
     const tutup = () => overlay.remove();
     overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
     overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
-    // INTEGRASI NOMOR WHATSAPP BARU DAN TEMPLATE PESAN OTOMATIS AMAN
+
     overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
-        const nomorWA = "6287759002419"; // Nomor baru Anda
-        
-        // Mengambil UID jika tersedia dari sistem login
+        const nomorWA = "6287759002419"; 
         const uidPioneer = (typeof currentUser !== "undefined" && currentUser && currentUser.uid) ? currentUser.uid : "-";
 
-        // Struktur teks yang digabung dengan aman menggunakan array join (\n = baris baru)
         const barisPesan = [
             "Halo Manajemen Digital Pro Indo,",
             "",
@@ -2300,10 +2272,8 @@ function bukaModalInvestorDigitalPro() {
             "Mohon informasi petunjuk teknis dan diskusi kerja samanya lebih lanjut. Terima kasih! 🚀✨"
         ];
 
-        // Menggabungkan baris menjadi satu teks utuh dengan enter, lalu di-encode agar aman untuk URL WhatsApp
         const teksFinalEnkripsi = encodeURIComponent(barisPesan.join("\n"));
         const urlWhatsApp = "https://wa.me/" + nomorWA + "?text=" + teksFinalEnkripsi;
-        
         window.open(urlWhatsApp, "_blank");
     });
 }
@@ -2330,7 +2300,6 @@ function injeksiLoncengNotifikasiProfil() {
 }
 
 window.muatStatusKemitraan = function() {
-    // Taruh di sini (Aman & Benar di dalam fungsi)
     localStorage.removeItem('dpi_last_known_status'); 
 
     const penunjukStatus = document.getElementById('partner-status');
@@ -2374,27 +2343,22 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik && data.logistikShare !== undefined) labelLogistik.innerText = data.logistikShare + " %";
             if (labelItem && data.produkTerproses !== undefined) labelItem.innerText = data.produkTerproses + " Item";
             
-            // =========================================================================
-// EKSEKUSI PANDUAN NOTIFIKASI SECARA AGRESIF (DENGAN JEDA RENDERING)
-// =========================================================================
-if (statusFinal !== "PROSES REVIEW") {
-    if (typeof inisialisasiGayaDigitalPro === "function") inisialisasiGayaDigitalPro();
-    
-    // Berikan jeda 300ms agar HTML dipastikan sudah siap di layar
-    setTimeout(() => {
-        injeksiLoncengNotifikasiProfil();
-        cekPerubahanStatusSistem(statusFinal);
-    }, 300);
-
-} else {
-    const loncengEksis = document.getElementById('dpi-profile-bell');
-    if (loncengEksis) loncengEksis.remove();
-    
-    const bannerEksis = document.getElementById('dpi-top-banner');
-    if (bannerEksis) bannerEksis.remove();
-    
-    localStorage.removeItem('dpi_last_known_status');
-}
+            if (statusFinal !== "PROSES REVIEW") {
+                if (typeof inisialisasiGayaDigitalPro === "function") inisialisasiGayaDigitalPro();
+                
+                setTimeout(() => {
+                    injeksiLoncengNotifikasiProfil();
+                    cekPerubahanStatusSistem(statusFinal);
+                }, 300);
+            } else {
+                const loncengEksis = document.getElementById('dpi-profile-bell');
+                if (loncengEksis) loncengEksis.remove();
+                
+                const bannerEksis = document.getElementById('dpi-top-banner');
+                if (bannerEksis) bannerEksis.remove();
+                
+                localStorage.removeItem('dpi_last_known_status');
+            }
             
         } else {
             if (penunjukStatus) {
@@ -2410,4 +2374,4 @@ if (statusFinal !== "PROSES REVIEW") {
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};
+};               

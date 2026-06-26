@@ -495,11 +495,10 @@
                 if (labelStatus) {
                     labelStatus.innerText = resData.statusKemitraan.toUpperCase();
                     
-                    // Variasi warna background berdasarkan status dari Google Sheet
                     if (resData.statusKemitraan.includes("VERIFIKASI") || resData.statusKemitraan.includes("REVIEW")) {
                         labelStatus.style.background = "#fef3c7"; labelStatus.style.color = "#f59e0b";
                     } else {
-                        labelStatus.style.background = "#d1fae5"; labelStatus.style.color = "#065f46"; // Sukses / Aktif
+                        labelStatus.style.background = "#d1fae5"; labelStatus.style.color = "#065f46";
                     }
                 }
 
@@ -537,13 +536,12 @@
         if(sideNav) sideNav.style.width = "0";
     }
 
-    // Mengubah fungsi close agar fleksibel dengan modularitas event
     function closeKomunitasModal() {
         document.getElementById("komunitasModal").style.display = "none";
     }
 
     // =========================================================================
-    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST)
+    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST) - FIXED
     // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
@@ -579,9 +577,8 @@
                 btn.disabled = true;
             }
             
-            // KUNCI UTAMA: Menyusun data payload POST lengkap dengan menyertakan parameter action
             const params = new URLSearchParams({
-                action: "gabungKomunitas", // <-- Jalur Eksekusi Database Google Sheet Anda
+                action: "gabungKomunitas",
                 nama: namaUser,
                 whatsapp: waUser,
                 provinsi: provUser,
@@ -597,15 +594,17 @@
             .then(response => {
                 form.reset();
                 closeKomunitasModal();
-                tampilkanModalSuksesDigitalTerbaru();
                 
-                // Refresh data UI profil setelah pendaftaran baru
+                // PANGGIL POPUP PREMIUM BARU PILIHAN ANDA (GAMBAR 1)
+                tampilkanModalSuksesDPI();
+                
                 setTimeout(muatStatusKemitraan, 2000);
             })
             .catch(error => {
                 console.error("Eror pengiriman database:", error);
                 form.reset();
-                tampilkanModalSuksesDigitalTerbaru();
+                closeKomunitasModal();
+                tampilkanModalSuksesDPI();
             })
             .finally(() => {
                 if (btn) {
@@ -616,64 +615,57 @@
         });
     }
 
-    function tutupModalSukses() {
-        const suksesModal = document.getElementById("digitalSuksesModal");
-        if (suksesModal) suksesModal.style.display = "none";
-        if (typeof switchPage === "function") {
-            switchPage('home');
-        } else {
-            window.location.href = "#";
-        }
-    }
+    // =========================================================================
+    // POPUP PREMIUM LOGO TRANSPARAN (GAMBAR 1) - BEBAS DOUBLE
+    // =========================================================================
+    function tampilkanModalSuksesDPI() {
+        const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
+        if (modalEksis) modalEksis.remove();
 
-    function bukaGrupWhatsApp() {
-        // Membuka link grup WA resmi Anda di tab baru
-        window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1', '_blank');
-        // Menyembunyikan modal sukses setelah tombol diklik
-        const suksesModal = document.getElementById('digitalSuksesModal');
-        if (suksesModal) suksesModal.style.display = 'none';
-    }
+        const overlay = document.createElement('div');
+        overlay.id = 'dpi-modal-sukses-daftar';
+        overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
 
-    function tampilkanModalSuksesDigitalTerbaru() {
-        let suksesModal = document.getElementById("digitalSuksesModal");
-        
-        if (!suksesModal) {
-            suksesModal = document.createElement("div");
-            suksesModal.id = "digitalSuksesModal";
-            suksesModal.style = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 2, 14, 0.92); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); display:flex; justify-content:center; align-items:center; z-index:100005; padding:16px; box-sizing:border-box; font-family:sans-serif;";
-            
-            suksesModal.innerHTML = `
-                <div style="background:linear-gradient(145deg, #160829 0%, #08020e 100%); width:100%; max-width:420px; border-radius:24px; text-align:center; padding:40px 24px 30px; border: 1.5px solid rgba(241, 196, 15, 0.4); box-shadow: 0 20px 40px rgba(0,0,0,0.5); box-sizing:border-box;">
-                    <div style="width:80px; height:80px; background:rgba(0, 240, 225, 0.1); border: 2px solid #00f0e1; border-radius:50%; display:flex; justify-content:center; align-items:center; margin:0 auto 20px;">
-                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#00f0e1" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
-                    </div>
-                    <h3 style="margin:0 0 10px 0; color:#ffffff; font-size:22px; font-weight:800;">Pendaftaran Berhasil!</h3>
-                    <p style="margin:0 0 24px 0; color:#a2b4ca; font-size:13.5px; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-                    <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.06); border-radius:14px; padding:14px; text-align:left; margin-bottom:24px;">
-                        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                            <span style="font-size:11px; color:#6f85a0; font-weight:700;">STATUS</span>
-                            <span style="font-size:10px; color:#f39c12; font-weight:800;">PROSES REVIEW</span>
-                        </div>
-                        <p style="margin:0; font-size:11.5px; color:#8899af; line-height:1.5;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-                    </div>
-                    <button onclick="bukaGrupWhatsApp()" style="width:100%; background:linear-gradient(90deg, #25d366 0%, #128c7e 100%); color:#ffffff; border:none; padding:15px; border-radius:12px; font-size:14px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);">
-                        Gabung Grup WhatsApp
-                    </button>
-                    <button onclick="tutupModalSukses()" style="width:100%; background:linear-gradient(135deg, #64748b 0%, #475569 100%); color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:13px; font-weight:800; cursor:pointer; text-transform:uppercase; letter-spacing:0.5px; display:inline-flex; align-items:center; justify-content:center; box-shadow: 0 4px 15px rgba(0,0,0,0.25); transition: all 0.3s ease;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="currentColor" viewBox="0 0 16 16" style="margin-right:8px;">
-                            <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L2 8.207V13.5A1.5 1.5 0 0 0 3.5 15h9a1.5 1.5 0 0 0 1.5-1.5V8.207l.646.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293zM13 7.207V13.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V7.207l5-5z"/>
-                        </svg>
-                        Kembali ke Beranda
-                    </button>
+        const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
+        const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
+
+        overlay.innerHTML = `
+            <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+                <div style="width:130px; height:130px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
+                    <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain;">
                 </div>
-            `;
-            document.body.appendChild(suksesModal);
-        }
-        suksesModal.style.display = "flex";
+                <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>
+                <p style="color:#a4a2b6; font-size:0.9rem; margin:12px 0 24px 0; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left; margin-bottom:24px; box-sizing:border-box;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:6px;">
+                        <span style="color:#767485; font-size:0.75rem; font-weight:700; letter-spacing:0.5px;">STATUS</span>
+                        <span style="color:#d97706; font-size:0.75rem; font-weight:700; margin-left:auto;">PROSES REVIEW</span>
+                    </div>
+                    <p style="margin:0; color:#a4a2b6; font-size:0.8rem; line-height:1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+                </div>
+                <a href="${urlGrupWA}" target="_blank" style="display:block; background:linear-gradient(90deg, #10b981 0%, #059669 100%); color:#ffffff; text-decoration:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.95rem; text-align:center; margin-bottom:12px; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
+                    GABUNG GRUP WHATSAPP
+                </a>
+                <button id="btnKembaliBeranda" style="width:100%; background:#334155; color:#ffffff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.5px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    KEMBALI KE BERANDA
+                </button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        document.getElementById('btnKembaliBeranda').onclick = () => {
+            overlay.remove();
+            if (typeof window.switchPage === 'function') {
+                window.switchPage('home');
+            } else {
+                location.reload();
+            }
+        };
     }
 
     // =========================================================================
-    // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF
+    // API PEMETAAN DAERAH (EMSIFA)
     // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
@@ -757,7 +749,7 @@
     }
 
     // =========================================================================
-    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
+    // SCRIPT AKTIVASI TOMBOL
     // =========================================================================
     function paksaAktifTombolWilayah() {
         try {
@@ -812,8 +804,8 @@
         paksaAktifTombolWilayah();
     });
     
-    // Lakukan pemindaian tombol berkala secara aman
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>
-</html>
+</html>       
+    

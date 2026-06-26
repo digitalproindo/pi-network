@@ -1,10 +1,10 @@
 // =========================================================================
 // 1. GLOBAL VARIABLES & CONFIGURATION
 // =========================================================================
-window.currentUser = null; // 🔴 Diubah menggunakan window. agar menjadi Global
+window.currentUser = null; 
+window.isPiInitialized = false;
 let cart = [];
 let userAddress = { nama: "", telepon: "", alamatLengkap: "" };
-let isPiInitialized = false; 
 const ADMIN_WA = "6281906066757";
 
 // Mock Data Produk (Pastikan ID unik dan format harga sesuai)

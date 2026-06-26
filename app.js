@@ -2029,8 +2029,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS
-    const formAman = document.getElementById('formKomunitas');
+   // =========================================================================
+// 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)
+// =========================================================================
+const formAman = document.getElementById('formKomunitas');
 if (formAman) {
     formAman.addEventListener('submit', e => {
         e.preventDefault();
@@ -2067,19 +2069,15 @@ if (formAman) {
         })
         .then(res => res.json())
         .then(response => {
+            // Tutup form pengisian pendaftaran
             if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
             formAman.reset();
             
-            // =========================================================================
-            // SOLUSI KRITIS: MATIKAN / BLOKIR POPUP LAMA AGAR TIDAK MUNCUL DOUBLE
-            // =========================================================================
-            // 1. Jangan panggil window.tampilkanModalSuksesDigital() bawaan script lama.
-            
-            // 2. Paksa hapus dari layar jika popup centang bulat telanjur ter-render di DOM
+            // PAKSA MATIKAN POPUP LAMA (GAMBAR 2 CLONE) AGAR TIDAK DOUBLE
             const modalLamaCentang = document.getElementById('modalSuksesDigital') || document.getElementById('successOverlay'); 
             if (modalLamaCentang) modalLamaCentang.remove();
 
-            // 3. Hanya tampilkan satu-satunya popup premium pilihan Anda (Gambar 1)
+            // MUNCULKAN POPUP PREMIUM PILIHAN ANDA (GAMBAR 1)
             tampilkanModalSuksesDPI();
             
             if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
@@ -2095,42 +2093,8 @@ if (formAman) {
     });
 }
 
-        statusKirimKomunitas = true;
-        const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
-
-        fetch(SCRIPT_URL_AMAN, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(dataKomunitas).toString()
-        })
-        .then(res => res.json())
-        .then(response => {
-            // 1. Tutup modal form pengisian agar bersih
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            formAman.reset();
-            
-            // 2. JALANKAN POPUP SUKSES DENGAN TOMBOL STRUKTUR BARU
-            tampilkanModalSuksesDPI();
-            
-            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-        })
-        .catch(err => {
-            console.error("Eror form komunitas:", err);
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-        })
-        // ... bagian akhir dari .finally() form komunitas
-        .finally(() => {
-            statusKirimKomunitas = false;
-            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-        }); // <-- Menutup .finally
-    }); // <-- Menutup addEventListener('submit')
-} // <-- Menutup if (formAman)
-
-// PASTIKAN SCRIPT UTAMA DOMContentLoaded DITUTUP DI AKHIR JIKA TIDAK ADA KODE LAIN LAGI:
-});
-
 // =========================================================================
-// FUNGSI POPUP SUKSES: PERBAIKAN TAUTAN GAMBER REMOVE-BG (FIXED)
+// FUNGSI POPUP SUKSES: STRUKTUR GAMBAR 1 DENGAN LOGO TRANSPARAN BERSIH
 // =========================================================================
 function tampilkanModalSuksesDPI() {
     const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
@@ -2141,8 +2105,6 @@ function tampilkanModalSuksesDPI() {
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
 
     const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
-    
-    // TAUTAN BERSIH: Mengambil langsung alamat gambar transparan Anda
     const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
 
     overlay.innerHTML = `

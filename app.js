@@ -2146,186 +2146,371 @@ function tampilkanModalSuksesDPI() {
 }
 
 // =========================================================================
+
 // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (PRESISI TOTAL)
+
 // =========================================================================
 
+
+
 function cekPerubahanStatusSistem(statusBaru) {
+
     if (!statusBaru) return;
+
     const statusLama = localStorage.getItem('dpi_last_known_status');
+
     
+
     // Dipaksa muncul saat pertama kali atau jika ada perbedaan riwayat status asli
+
     if (!statusLama || statusLama !== statusBaru) {
+
         tampilkanBannerNotifikasiSistem(statusBaru);
+
     }
+
     localStorage.setItem('dpi_last_known_status', statusBaru);
+
 }
+
+
 
 function tampilkanBannerNotifikasiSistem(statusTerbaru) {
+
     const bannerEksis = document.getElementById('dpi-top-banner');
+
     if (bannerEksis) bannerEksis.remove();
 
+
+
     const banner = document.createElement('div');
+
     banner.id = 'dpi-top-banner';
+
     banner.className = 'notif-banner-pro';
+
     
+
     // CSS PRESISI: Berada di posisi paling depan, melayang indah di atas header aplikasi Anda
+
     banner.style.cssText = "position: fixed !important; top: 15px !important; left: 5% !important; right: 5% !important; max-width: 420px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%) !important; border: 1.5px solid #9333ea !important; border-radius: 16px; padding: 12px 16px; z-index: 999999999 !important; cursor: pointer; box-shadow: 0 15px 40px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 12px; font-family: sans-serif; box-sizing: border-box;";
 
+
+
     banner.innerHTML = `
+
         <div style="background: rgba(147, 51, 234, 0.15); width: 36px; height: 36px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0; animation: pulseGlow 2s infinite;"><span style="font-size: 16px;">🔔</span></div>
+
         <div style="flex-grow: 1; text-align: left;">
+
             <div style="color: #a855f7; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Pemberitahuan Sistem</div>
+
             <div style="color: #ffffff; font-size: 0.8rem; font-weight: 700; margin-top: 1px;">Kemitraan: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
+
         </div>
+
         <div class="close-banner-x" style="color: #64748b; font-size: 14px; padding: 2px 4px; font-weight: bold; cursor: pointer;">✕</div>
+
     `;
+
     
+
     document.body.appendChild(banner);
 
+
+
     banner.addEventListener('click', (e) => {
+
         if (e.target.classList.contains('close-banner-x')) { 
+
             e.stopPropagation(); 
+
             banner.remove(); 
+
             return; 
+
         }
+
         banner.remove();
+
         bukaModalInvestorDigitalPro();
+
     });
+
 }
+
+
 
 function bukaModalInvestorDigitalPro() {
+
     const modalEksis = document.getElementById('dpi-modal-investor-pro');
+
     if (modalEksis) modalEksis.remove();
 
+
+
     const overlay = document.createElement('div');
+
     overlay.id = 'dpi-modal-investor-pro';
+
     overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); z-index: 10000000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; font-family: sans-serif;";
 
+
+
     overlay.innerHTML = `
+
         <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 30px 22px 20px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
+
             <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
+
             <div style="text-align: center; margin-bottom: 20px;">
+
                 <span style="font-size: 32px; display: block; margin-bottom: 4px;">📢</span>
+
                 <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.15rem; line-height: 1.4;">
+
                     Kesempatan Kemitraan & Pengembangan <span style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Digital Pro Indo</span>
+
                 </h2>
+
             </div>
+
             <div style="color: #cbd5e1; font-size: 0.85rem; line-height: 1.6; text-align: left;">
+
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
+
                 <p>Kami membuka kesempatan emas bagi anggota komunitas yang memiliki kesamaan visi untuk bergabung sebagai <strong>Investor dan Mitra Resmi Strategis Pengembangan Digital Pro Indo</strong>.</p>
+
                 <p style="background: rgba(168, 85, 247, 0.08); border-left: 3px solid #a855f7; padding: 10px; border-radius: 0 12px 12px 0; margin: 14px 0; color: #e2e8f0;">
+
                     🚀 Terlibat langsung dalam penentuan arah ekosistem platform digital premium karya anak bangsa demi masa depan yang lebih maju.
+
                 </p>
+
             </div>
+
             <div style="margin-top: 20px; display: flex; flex-direction: column; gap: 8px;">
+
                 <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 13px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; letter-spacing: 0.5px;">Hubungi Hub Manajemen</button>
+
                 <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 10px 0; border-radius: 10px; cursor: pointer; font-size: 0.75rem;">Kembali</button>
+
             </div>
+
         </div>
+
     `;
+
     document.body.appendChild(overlay);
 
+
+
     const tutup = () => overlay.remove();
+
     overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
+
     overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
+
     overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
+
         const nomorWA = "6287759002419"; 
+
         const uidPioneer = (typeof currentUser !== "undefined" && currentUser && currentUser.uid) ? currentUser.uid : "-";
+
         const barisPesan = [
+
             "Halo Hub Manajemen Digital Pro Indo,",
+
             "",
+
             "Saya tertarik berdiskusi lebih lanjut mengenai peluang kerja sama kemitraan dan investor.",
+
             "",
+
             "ID Akun: " + uidPioneer
+
         ];
+
         window.open("https://wa.me/" + nomorWA + "?text=" + encodeURIComponent(barisPesan.join("\n")), "_blank");
+
     });
+
 }
+
+
 
 function injeksiLoncengNotifikasiProfil() {
+
     // SANGAT TELITI: Mencari badge status yang tampil nyata seperti di screenshot Anda (id atau class)
+
     const penunjukStatus = document.getElementById('partner-status') || 
+
                            document.querySelector('.partner-status-val') ||
+
                            document.querySelector('.status-kemitraan');
+
                            
+
     if (!penunjukStatus) return false; // Berikan feedback jika element belum siap di layar
 
+
+
     const loncengLama = document.getElementById('dpi-profile-bell');
+
     if (loncengLama) loncengLama.remove();
 
+
+
     const lonceng = document.createElement('span');
+
     lonceng.id = 'dpi-profile-bell';
+
     lonceng.className = 'bell-bounce'; 
+
     lonceng.innerHTML = ' 🔔';
+
     lonceng.style.cssText = "cursor: pointer !important; display: inline-block !important; margin-left: 6px !important; font-size: 1rem !important; vertical-align: middle !important; position: relative; z-index: 9999;";
+
     
+
     // Menyisipkan ikon lonceng tepat masuk ke dalam baris teks status agar rapi dan presisi mengikuti layout ungu Anda
+
     penunjukStatus.appendChild(lonceng);
 
+
+
     lonceng.onclick = (e) => {
+
         e.stopPropagation();
+
         bukaModalInvestorDigitalPro();
+
     };
+
     return true; // Sukses render
+
 }
 
+
+
 window.muatStatusKemitraan = function() {
+
     const penunjukStatus = document.getElementById('partner-status') || document.querySelector('.partner-status-val') || document.querySelector('.status-kemitraan');
+
     const labelLogistik = document.getElementById('logistik-share') || document.querySelector('.logistik-share-val'); 
+
     const labelItem = document.getElementById('item-terproses') || document.querySelector('.item-terproses-val');     
+
     
+
     if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
+
         if (penunjukStatus) penunjukStatus.innerText = "BELUM LOGIN";
+
         return;
+
     }
+
     
+
     fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+
     .then(res => res.json())
+
     .then(data => {
+
         if (!data) return;
+
         
+
         if (data.status === "ditemukan") {
+
             const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
+
             
+
             if (penunjukStatus) {
+
                 penunjukStatus.innerText = statusFinal;
+
                 penunjukStatus.style.padding = "4px 10px";
+
                 penunjukStatus.style.borderRadius = "8px";
+
                 penunjukStatus.style.fontWeight = "bold";
+
                 
+
                 if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT") {
+
                     penunjukStatus.style.background = "#d1fae5"; 
+
                     penunjukStatus.style.color = "#065f46";      
+
                 } else if (statusFinal === "PROSES REVIEW") {
+
                     penunjukStatus.style.background = "#fef3c7"; 
+
                     penunjukStatus.style.color = "#92400e";      
+
                 } else {
+
                     penunjukStatus.style.background = "#fee2e2"; 
+
                     penunjukStatus.style.color = "#991b1b";
+
                 }
+
             }
+
             
+
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
+
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
+
             
+
             // BANNER SELALU BISA MUNCUL SECARA INSTAN DI ATAS LAYAR UTAMA
+
             cekPerubahanStatusSistem(statusFinal);
+
             
+
             // JALUR INDEPENDEN PENGAWAS: Karena halaman profil di-load belakangan saat menu diklik, 
+
             // Kita jalankan loop pengawas singkat (setiap 500ms) untuk memasang lonceng begitu element profil muncul di layar!
+
             const intervalLonceng = setInterval(() => {
+
                 const suksesRender = injeksiLoncengNotifikasiProfil();
+
                 if (suksesRender) {
+
                     clearInterval(intervalLonceng); // Hentikan pengawas jika lonceng sudah berhasil nempel dengan manis
+
                 }
+
             }, 500);
 
+
+
             // Batasi pengawas otomatis mati dalam 15 detik agar hemat memori ram hp jika user tidak buka profil
+
             setTimeout(() => clearInterval(intervalLonceng), 15000);
+
             
+
         } else {
+
+
+
             if (penunjukStatus) penunjukStatus.innerText = "BELUM TERDAFTAR";
+
         }
+
     })
+
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};
+
+};       

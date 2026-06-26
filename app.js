@@ -1988,19 +1988,46 @@ const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
+    
     // 1. Suntik Gaya Animasi & Desain Futuristik
     if (typeof inisialisasiGayaDigitalPro === "function") {
         inisialisasiGayaDigitalPro();
     }
 
-    // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
-    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-        renderProducts(productsData, 'main-grid');
-    } else {
-        console.warn("Fungsi renderProducts atau data produk belum siap.");
-    }
+    // =========================================================================
+    // POSISI PRESISI: TARUH BLOK PERBAIKAN RENDER DI SINI (MENGGANTIKAN LOGIKA RENDER LAMA)
+    // =========================================================================
+    const jalankanRenderAman = () => {
+        const targetGrid = document.getElementById('main-grid');
+        
+        if (!targetGrid) {
+            console.warn("⚠️ Elemen target 'main-grid' tidak ditemukan di DOM. Menunggu...");
+            return false;
+        }
+        
+        if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+            console.log("📦 Data produk siap, memulai rendering...");
+            renderProducts(productsData, 'main-grid');
+            return true;
+        } else {
+            console.warn("⚠️ Fungsi renderProducts atau data produk belum siap saat halaman dimuat.");
+            return false;
+        }
+    };
 
-    // 3. Hubungkan pipa pencarian input
+    // Eksekusi Tahap 1 (Langsung saat DOM siap)
+    const isRendered = jalankanRenderAman();
+
+    // Eksekusi Tahap 2 (Fallback / Cadangan jika file data produk Anda telat dimuat)
+    if (!isRendered) {
+        setTimeout(() => {
+            console.log("🔄 Menjalankan render cadangan (Fallback)...");
+            jalankanRenderAman();
+        }, 500);
+    }
+    // =========================================================================
+
+    // 3. Hubungkan pipa pencarian input (dan seterusnya ke bawah tetap sama...)
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {

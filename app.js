@@ -1977,7 +1977,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
-}); // Penutup DOMContentLoaded yang aman
+}); // 👈 UTAMA: Pastikan ada tanda ini untuk menutup document.addEventListener
+
+// 👈 UTAMA: Jika di baris paling atas file app.js Anda dibuka dengan (function() { atau sejenisnya, 
+// pastikan di baris paling akhir ini ada penutupnya seperti }); atau }
         
     // =========================================================================
     // 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)

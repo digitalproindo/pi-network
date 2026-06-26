@@ -2080,12 +2080,16 @@ if (formAman) {
             console.error("Eror form komunitas:", err);
             if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
         })
+        // ... bagian akhir dari .finally() form komunitas
         .finally(() => {
             statusKirimKomunitas = false;
             if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-        });
-    });
-}
+        }); // <-- Menutup .finally
+    }); // <-- Menutup addEventListener('submit')
+} // <-- Menutup if (formAman)
+
+// PASTIKAN SCRIPT UTAMA DOMContentLoaded DITUTUP DI AKHIR JIKA TIDAK ADA KODE LAIN LAGI:
+});
 
 // =========================================================================
 // FUNGSI POPUP SUKSES: GABUNG GRUP WHATSAPP & KEMBALI KE BERANDA

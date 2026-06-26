@@ -2081,20 +2081,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function tampilkanBannerNotifikasiSistem(statusTerbaru) {
+    function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     const bannerEksis = document.getElementById('dpi-top-banner');
     if (bannerEksis) bannerEksis.remove();
 
-    // Buat kontainer luar pembungkus banner untuk memberikan margin space kanan-kiri yang aman
+    // Kontainer luar pembungkus banner dengan padding proporsional
     const bannerWrapper = document.createElement('div');
     bannerWrapper.id = 'dpi-top-banner';
-    bannerWrapper.style.cssText = "width: 100%; padding: 10px 16px 0 16px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
+    bannerWrapper.style.cssText = "width: 100%; padding: 8px 16px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
 
-    // Buat elemen utama banner di dalam pembungkusnya
+    // Elemen utama banner dengan sudut melengkung mewah
     const banner = document.createElement('div');
     banner.className = 'notif-banner-pro';
-    
-    // Perbaikan Layout: Menggunakan border-radius melengkung elegan, box-shadow tipis, dan padding internal proporsional
-    banner.style.cssText = "width: 100%; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 12px 14px; font-size: 0.82rem; font-weight: bold; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255, 215, 0, 0.4); cursor: pointer; box-sizing: border-box; position: relative;";
+    banner.style.cssText = "width: 100%; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 11px 14px; font-size: 0.82rem; font-weight: bold; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255, 215, 0, 0.4); cursor: pointer; box-sizing: border-box; position: relative;";
 
     banner.innerHTML = `
         <div style="background: rgba(255, 215, 0, 0.2); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #ffd700; flex-shrink: 0;"><span style="font-size: 14px;">📢</span></div>
@@ -2106,15 +2105,22 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     bannerWrapper.appendChild(banner);
 
-    // Menyisipkan tepat di bawah elemen header agar otomatis mendorong konten di bawahnya ke area yang aman
-    const headerAplikasi = document.querySelector('header');
-    if (headerAplikasi) {
-        headerAplikasi.insertAdjacentElement('afterend', bannerWrapper);
+    // TARGET INJEKSI PRESISI: Tempatkan persis di bawah running text / di atas gambar banner
+    // Mencari elemen input pencarian, elemen teks selamat datang, atau kontainer slide banner utama
+    const sliderPromosi = document.getElementById('banner-img')?.parentElement || document.querySelector('.carousel') || document.querySelector('[style*="Ubay.png"]')?.parentElement;
+    const runningTextContainer = document.querySelector('[id*="running"]') || document.querySelector('[class*="marquee"]') || document.getElementById('search-input')?.parentElement;
+
+    if (sliderPromosi) {
+        // Jika pembungkus slide banner ditemukan, sisipkan NOTIFIKASI tepat SEBELUM slide banner tersebut
+        sliderPromosi.parentNode.insertBefore(bannerWrapper, sliderPromosi);
+    } else if (runningTextContainer) {
+        // Fallback 1: Jika slide banner tidak ketemu, sisipkan tepat SETELAH running text container
+        runningTextContainer.insertAdjacentElement('afterend', bannerWrapper);
     } else {
-        // Jika elemen <header> tidak ditemukan, cari elemen navbar atas atau tempatkan di atas body
-        const topBar = document.querySelector('.menu-icon')?.parentElement || document.body.firstChild;
-        if (topBar && topBar.parentNode) {
-            topBar.parentNode.insertBefore(bannerWrapper, topBar.nextSibling);
+        // Fallback 2: Jika semua gagal, letakkan di bawah header seperti sebelumnya
+        const headerAplikasi = document.querySelector('header');
+        if (headerAplikasi) {
+            headerAplikasi.insertAdjacentElement('afterend', bannerWrapper);
         } else {
             document.body.insertBefore(bannerWrapper, document.body.firstChild);
         }
@@ -2128,7 +2134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
         bukaModalInvestorDigitalPro();
     });
-}
+    }
 
     function bukaModalInvestorDigitalPro() {
         const modalEksis = document.getElementById('dpi-modal-investor-pro');

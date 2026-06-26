@@ -1966,7 +1966,7 @@ const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Suntik Gaya Animasi & Desain Futuristik (Nama Fungsi Sudah Disamakan)
+    // 1. Suntik Gaya Animasi & Desain Futuristik
     inisialisasiGayaDigitalPro();
 
     // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
@@ -2031,64 +2031,57 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 8. PENANGANAN SUBMIT FORM KOMUNITAS
     const formAman = document.getElementById('formKomunitas');
-if (formAman) {
-    formAman.addEventListener('submit', e => {
-        e.preventDefault();
-        if (statusKirimKomunitas) return;
-        
-        if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-            alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-            return;
-        }
-
-        const btnAman = document.getElementById('btnKirim');
-        if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
-
-        const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-        const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-        const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-        const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-        const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-        const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-        
-        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-            alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-            return;
-        }
-
-        statusKirimKomunitas = true;
-        const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
-
-        fetch(SCRIPT_URL_AMAN, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(dataKomunitas).toString()
-        })
-        .then(res => res.json())
-        .then(response => {
-            // 1. Tutup modal form pengisian agar bersih
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            formAman.reset();
+    if (formAman) {
+        formAman.addEventListener('submit', e => {
+            e.preventDefault();
+            if (statusKirimKomunitas) return;
             
-            // 2. JALANKAN POPUP SUKSES DENGAN TOMBOL STRUKTUR BARU
-            tampilkanModalSuksesDPI();
-            
-            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-        })
-        .catch(err => {
-            console.error("Eror form komunitas:", err);
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-        })
-        // ... bagian akhir dari .finally() form komunitas
-        .finally(() => {
-            statusKirimKomunitas = false;
-            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-        }); // <-- Menutup .finally
-    }); // <-- Menutup addEventListener('submit')
-} // <-- Menutup if (formAman)
+            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+                return;
+            }
 
-// PASTIKAN SCRIPT UTAMA DOMContentLoaded DITUTUP DI AKHIR JIKA TIDAK ADA KODE LAIN LAGI:
+            const btnAman = document.getElementById('btnKirim');
+            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
+
+            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
+            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
+            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+            
+            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+                return;
+            }
+
+            statusKirimKomunitas = true;
+            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
+
+            fetch(SCRIPT_URL_AMAN, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dataKomunitas).toString()
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                formAman.reset();
+                tampilkanModalSuksesDPI();
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+            })
+            .catch(err => {
+                console.error("Eror form komunitas:", err);
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            })
+            .finally(() => {
+                statusKirimKomunitas = false;
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+            });
+        });
+    }
 });
 
 // =========================================================================
@@ -2100,15 +2093,12 @@ function tampilkanModalSuksesDPI() {
 
     const overlay = document.createElement('div');
     overlay.id = 'dpi-modal-sukses-daftar';
-    // Overlay gelap dengan blur premium
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 4, 14, 0.88); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); font-family:'Inter', sans-serif;";
 
     const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
 
-    // Menyusun card dengan kombinasi animasi background bergerak & border gradien neon
     overlay.innerHTML = `
         <div class="digital-bg-animated" style="border: 2px solid #a855f7; padding: 40px 28px 30px; border-radius: 28px; max-width: 390px; width: 100%; text-align: center; box-shadow: 0 30px 70px rgba(147, 51, 234, 0.35); box-sizing: border-box; position: relative; overflow: hidden;">
-            
             <div style="position: absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: rgba(168, 85, 247, 0.2); filter: blur(40px); border-radius: 50%; pointer-events: none;"></div>
             <div style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: rgba(59, 130, 246, 0.15); filter: blur(40px); border-radius: 50%; pointer-events: none;"></div>
 
@@ -2136,7 +2126,6 @@ function tampilkanModalSuksesDPI() {
     `;
     document.body.appendChild(overlay);
 
-    // Efek Hover Interaktif & Handler Klik Tombol Beranda
     const btnWA = overlay.querySelector('a');
     const btnHome = document.getElementById('btnKembaliBeranda');
 
@@ -2155,6 +2144,7 @@ function tampilkanModalSuksesDPI() {
         }
     };
 }
+
 function inisialisasiGayaDigitalPro() {
     if (document.getElementById('digital-pro-premium-styles')) return;
     const styleEl = document.createElement('style');
@@ -2226,7 +2216,6 @@ function bukaModalInvestorDigitalPro() {
         <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
             <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
             
-            <!-- HEADER -->
             <div style="text-align: center; margin-bottom: 22px;">
                 <span style="font-size: 36px; display: block; margin-bottom: 6px;">📢</span>
                 <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1.4;">
@@ -2234,7 +2223,6 @@ function bukaModalInvestorDigitalPro() {
                 </h2>
             </div>
 
-            <!-- KONTEN -->
             <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
                 <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa. Hingga saat ini, aplikasi ini terus berkembang meskipun dibangun dengan keterbatasan sumber daya dan tanpa dukungan modal besar.</p>
@@ -2246,7 +2234,7 @@ function bukaModalInvestorDigitalPro() {
                 <h3 style="color: #f59e0b; font-size: 0.95rem; margin: 20px 0 8px 0; font-weight: 700;">💎 Mengapa Bergabung Sebagai Investor?</h3>
                 <ul style="margin: 0; padding-left: 0; list-style-type: none;">
                     <li style="margin-bottom: 6px;">✅ Menjadi bagian dari perjalanan pertumbuhan platform digital karya anak bangsa.</li>
-                    <li style="margin-bottom: 6px;">✅ Berkontribusi langsung dalam pengembangan fitur dan ekosistem Digital Pro Indo.</li>
+                    <li style="margin-bottom: 6px;">✅ Berkontribusi langsung dalam pengembangan fitur and ekosistem Digital Pro Indo.</li>
                     <li style="margin-bottom: 6px;">✅ Kesempatan terlibat dalam pengembangan dan arah pertumbuhan platform sesuai skema kerja sama yang disepakati.</li>
                     <li style="margin-bottom: 6px;">✅ Menjadi bagian dari fondasi awal yang akan mendukung perkembangan Digital Pro Indo di masa depan.</li>
                 </ul>
@@ -2272,7 +2260,6 @@ function bukaModalInvestorDigitalPro() {
                 </div>
             </div>
 
-            <!-- ACTION BUTTONS -->
             <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
                 <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Hubungi Hub Manajemen</button>
                 <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer; font-size: 0.8rem;">Kembali ke Profil</button>
@@ -2284,14 +2271,11 @@ function bukaModalInvestorDigitalPro() {
     const tutup = () => overlay.remove();
     overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
     overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
-    // INTEGRASI NOMOR WHATSAPP BARU DAN TEMPLATE PESAN OTOMATIS AMAN
+    
     overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
-        const nomorWA = "6287759002419"; // Nomor baru Anda
-        
-        // Mengambil UID jika tersedia dari sistem login
+        const nomorWA = "6287759002419"; 
         const uidPioneer = (typeof currentUser !== "undefined" && currentUser && currentUser.uid) ? currentUser.uid : "-";
 
-        // Struktur teks yang digabung dengan aman menggunakan array join (\n = baris baru)
         const barisPesan = [
             "Halo Manajemen Digital Pro Indo,",
             "",
@@ -2304,7 +2288,6 @@ function bukaModalInvestorDigitalPro() {
             "Mohon informasi petunjuk teknis dan diskusi kerja samanya lebih lanjut. Terima kasih! 🚀✨"
         ];
 
-        // Menggabungkan baris menjadi satu teks utuh dengan enter, lalu di-encode agar aman untuk URL WhatsApp
         const teksFinalEnkripsi = encodeURIComponent(barisPesan.join("\n"));
         const urlWhatsApp = "https://wa.me/" + nomorWA + "?text=" + teksFinalEnkripsi;
         
@@ -2387,4 +2370,4 @@ window.muatStatusKemitraan = function() {
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};
+};    

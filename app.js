@@ -2103,7 +2103,7 @@ function tampilkanModalSuksesDPI() {
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
 
     const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
-    const urlLogoPro = "https://i.ibb.co.com/FbJJ6jYn/Digital-Pro-Indo.png";
+    const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
 
     overlay.innerHTML = `
         <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">

@@ -1889,17 +1889,16 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (REVISI AUTOLOGIN FIXED)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (GARANSI PRODUK MUNCUL)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA
+    // 1. JALANKAN LOGIN OTOMATIS PI SDK
     if (typeof initPi === "function") {
         try { 
             await initPi(); 
-            // Mengaktifkan status kesiapan Blockchain tepat setelah login berhasil
             window.isPiInitialized = true;
             if (typeof isPiInitialized !== 'undefined') {
                 isPiInitialized = true;
@@ -1910,13 +1909,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // 2. Suntik Gaya Animasi & Desain Futuristik
-    inisialisasiGayaDigitalPro();
-
-    // 3. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
-    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-        renderProducts(productsData, 'main-grid');
-    } else {
-        console.warn("Fungsi renderProducts atau data produk belum siap.");
+    if (typeof inisialisasiGayaDigitalPro === "function") {
+        inisialisasiGayaDigitalPro();
     }
 
     // 4. Hubungkan pipa pencarian input
@@ -1961,7 +1955,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
     
-    // 7. PENANGANAN VISUAL TOMBOL LOGIN (REVISI SINKRONISASI OTOMATIS)
+    // 7. PENANGANAN VISUAL TOMBOL LOGIN
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
         loginBtn.onclick = window.handleAuth;
@@ -1977,11 +1971,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
-}); // 👈 UTAMA: Pastikan ada tanda ini untuk menutup document.addEventListener
+}); // 👈 Batas akhir penutup event DOM
 
-// 👈 UTAMA: Jika di baris paling atas file app.js Anda dibuka dengan (function() { atau sejenisnya, 
-// pastikan di baris paling akhir ini ada penutupnya seperti }); atau }
-        
+// =========================================================================
+// 🟢 JALUR AMAN MANDIRI: EKSEKUSI RENDER PRODUK DI LUAR EVENT BROWSER
+// =========================================================================
+if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+    renderProducts(productsData, 'main-grid');
+} else {
+    // Jalankan jeda darurat jika data produk membutuhkan waktu memuat lebih lama
+    setTimeout(() => {
+        if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+            renderProducts(productsData, 'main-grid');
+        }
+    }, 500);
+}
     // =========================================================================
     // 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)
     // =========================================================================

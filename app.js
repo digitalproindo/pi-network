@@ -2361,17 +2361,19 @@ window.muatStatusKemitraan = function() {
             }
             
         } else {
-            if (penunjukStatus) {
-                penunjukStatus.innerText = "BELUM TERDAFTAR";
-                penunjukStatus.style.background = "#f1f5f9";
-                penunjukStatus.style.color = "#64748b";
+                if (penunjukStatus) {
+                    penunjukStatus.innerText = "BELUM TERDAFTAR";
+                    penunjukStatus.style.background = "#f1f5f9";
+                    penunjukStatus.style.color = "#64748b";
+                }
+                if (labelLogistik) labelLogistik.innerText = "0.00 %";
+                if (labelItem) labelItem.innerText = "0 Item";
+                
+                const loncengEksis = document.getElementById('dpi-profile-bell');
+                if (loncengEksis) loncengEksis.remove();
             }
-            if (labelLogistik) labelLogistik.innerText = "0.00 %";
-            if (labelItem) labelItem.innerText = "0 Item";
-            
-            const loncengEksis = document.getElementById('dpi-profile-bell');
-            if (loncengEksis) loncengEksis.remove();
-        }
-    })
-    .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};               
+        })
+        .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
+    };
+
+}); // 🟢 TAMBAHKAN BARIS INI DI SINI SEBAGAI PENUTUP AKHIR FILE!

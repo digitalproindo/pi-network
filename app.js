@@ -2087,8 +2087,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Kontainer luar pembungkus banner dengan padding proporsional
     const bannerWrapper = document.createElement('div');
     bannerWrapper.id = 'dpi-top-banner';
-    bannerWrapper.style.cssText = "width: 100%; padding: 8px 16px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
-
+    bannerWrapper.style.cssText = "width: 100%; padding: 2px 16px 8px 16px; margin-top: -5px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
     // Elemen utama banner dengan sudut melengkung mewah
     const banner = document.createElement('div');
     banner.className = 'notif-banner-pro';

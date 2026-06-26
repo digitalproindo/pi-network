@@ -1897,12 +1897,21 @@ let statusKirimKomunitas = false;
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA
     if (typeof initPi === "function") {
-        try { 
-            await initPi(); 
-            
-            // 🟢 PAKSA SET TRUE DI SINI SETELAH initPi SELESAI DIEKSEKUSI
+        try {
+            await initPi();
+
+            // 🟢 PINDAHKAN KE DALAM TRY (Tepat di bawah await initPi)
             window.isPiInitialized = true;
-            if (typeof isPiInitialized !== 'undefined') isPiInitialized = true;
+            isPiInitialized = true;
+
+        } catch (e) {
+            // 🟢 SUNTIK PERBAIKAN SALTIK 'arrer' MENJADI 'error'
+            console.error("Gagal initPi otomatis:", e);
+        }
+    }
+    
+window.isPiInitialized = true;
+isPiInitialized = true;
 
         } catch(e) { 
             console.error("Gagal initPi otomatis:", e); 

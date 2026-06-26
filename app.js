@@ -2092,7 +2092,7 @@ if (formAman) {
 });
 
 // =========================================================================
-// FUNGSI POPUP SUKSES: STRUKTUR ASLI + INTEGRASI LOGO PREMIUM
+// FUNGSI POPUP SUKSES: MENGHILANGKAN BACKGROUND PUTIH LOGO (FIXED)
 // =========================================================================
 function tampilkanModalSuksesDPI() {
     const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
@@ -2108,8 +2108,8 @@ function tampilkanModalSuksesDPI() {
     overlay.innerHTML = `
         <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
             
-            <div style="width:90px; height:90px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center;">
-                <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 0 8px rgba(194,155,56,0.3));">
+            <div style="width:120px; height:120px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
+                <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply; filter:contrast(1.1);">
             </div>
             
             <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>

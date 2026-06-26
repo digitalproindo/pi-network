@@ -1888,18 +1888,29 @@ window.toggleDropdown = () => {
     }
 };
 
- // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (TOTAL REPAIR FIXED)
+// =========================================================================
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FORCED RENDER)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA (PALING ATAS)
+    // 🟢 PAKSA RENDER PRODUK DI BARIS PERTAMA (GARANSI PRODUK PASTI MUNCUL)
+    try {
+        if (typeof productsData !== "undefined") {
+            // Merender grid utama
+            if (document.getElementById('main-grid')) {
+                renderProducts(productsData, 'main-grid');
+            }
+        }
+    } catch (err) {
+        console.warn("Gagal render produk di awal:", err);
+    }
+
+    // 1. JALANKAN LOGIN OTOMATIS PI SDK DI LATAR BELAKANG
     if (typeof initPi === "function") {
         try { 
             await initPi(); 
-            // Langsung set koneksi blockchain aktif agar tombol beli langsung berfungsi
             window.isPiInitialized = true;
             if (typeof isPiInitialized !== 'undefined') {
                 isPiInitialized = true;
@@ -1912,13 +1923,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 2. Suntik Gaya Animasi & Desain Futuristik
     if (typeof inisialisasiGayaDigitalPro === "function") {
         inisialisasiGayaDigitalPro();
-    }
-
-    // 3. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
-    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
-        renderProducts(productsData, 'main-grid');
-    } else {
-        console.warn("Fungsi renderProducts atau data produk belum siap.");
     }
 
     // 4. Hubungkan pipa pencarian input
@@ -2040,7 +2044,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
-}); // <-- MENUTUP DOMCONTENTLOADED DENGAN BENAR DI SINI!
+}); 
 
 // =========================================================================
 // FUNGSI POPUP SUKSES & SISTEM GAYA (DI LUAR DOMCONTENTLOADED)
@@ -2108,7 +2112,8 @@ function inisialisasiGayaDigitalPro() {
         .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
     `;
     document.head.appendChild(styleEl);
-                          }
+}
+    
 
     // =========================================================================
     // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL

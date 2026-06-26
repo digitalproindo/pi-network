@@ -1316,28 +1316,37 @@ async function initPi() {
             
             // 1. Daftarkan konfigurasi aplikasi sandbox/production
             await window.Pi.init({ version: "2.0", sandbox: false });
-            isPiInitialized = true; 
+            
+            // PERBAIKAN 1: Ikat status ke Window Global agar terbaca oleh Bagian 6 (handlePayment)
+            window.isPiInitialized = true; 
             console.log("Pi SDK Berhasil Diinisialisasi.");
             
             // 2. Trigger autentikasi otomatis secara background
             const scopes = ['username', 'payments'];
             const auth = await window.Pi.authenticate(scopes, (payment) => {
-                handleIncompletePayment(payment);
+                if (typeof handleIncompletePayment === 'function') {
+                    handleIncompletePayment(payment);
+                }
             });
             
             // Jika berhasil masuk secara otomatis
-            currentUser = auth.user;
-            console.log("Login Otomatis Berhasil:", currentUser.username);
+            window.currentUser = auth.user;
+            if (typeof currentUser === 'undefined') {
+                currentUser = auth.user; // Fallback jika variabel lokal masih dipakai
+            }
+            console.log("Login Otomatis Berhasil:", auth.user.username);
             
             // Update UI Profil
             const profileDisplay = document.getElementById('profile-username') || document.querySelector('.username-text');
-            if (profileDisplay) profileDisplay.innerText = currentUser.username;
+            if (profileDisplay) profileDisplay.innerText = auth.user.username;
 
             const profileAddress = document.getElementById('profile-address');
-            if (profileAddress) profileAddress.innerText = currentUser.uid;
+            if (profileAddress) profileAddress.innerText = auth.user.uid;
 
             // Atur tombol utama menjadi LOGOUT jika auto-login sukses
-            configureLogoutButton();
+            if (typeof configureLogoutButton === "function") {
+                configureLogoutButton();
+            }
 
             // =========================================================================
             // PERBAIKAN UTAMA: Memastikan pemanggilan window.muatStatusKemitraan sinkron
@@ -1351,10 +1360,11 @@ async function initPi() {
             
         } else {
             console.warn("Membuka di luar Pi Browser. Fitur blockchain dinonaktifkan sementara.");
+            window.isPiInitialized = false;
         }
     } catch (err) {
         console.error("Gagal Autentikasi Otomatis:", err);
-        isPiInitialized = false;
+        window.isPiInitialized = false; // Pastikan menggunakan window. jika gagal
     }
 }
 // =========================================================================
@@ -1748,11 +1758,19 @@ window.switchPage = (pageId) => {
 // 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - FIXED VERSION
 // =========================================================================
 window.handlePayment = async (amount, name) => {
-    if (!isPiInitialized) {
+    // PERBAIKAN 1: Deteksi window.isPiInitialized secara eksplisit agar sinkron dengan Bagian 2
+    if (!window.isPiInitialized) {
         alert("Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
         return;
     }
-    if (!currentUser) { showLoginPrompt(); return; }
+
+    // PERBAIKAN 2: Deteksi window.currentUser secara eksplisit
+    const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
+    if (!userAktif) { 
+        if (typeof showLoginPrompt === 'function') showLoginPrompt(); 
+        return; 
+    }
+    
     if (!userAddress.nama) { showAddressPrompt(); return; }
 
     let detailedItemName = name;
@@ -1760,7 +1778,7 @@ window.handlePayment = async (amount, name) => {
         detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
     }
 
-    // PERBAIKAN 1: Amankan konversi agar parameter angka maupun string tidak memicu eror .toFixed()
+    // Amankan konversi agar parameter angka maupun string tidak memicu eror .toFixed()
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount)) {
         alert("⚠️ Format harga tidak valid.");

@@ -1889,23 +1889,32 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FIXED RENDER)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FIXED FAST AUTH)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Suntik Gaya Animasi & Desain Futuristik
+    // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA (PALING ATAS)
+    if (typeof initPi === "function") {
+        try { 
+            await initPi(); 
+        } catch(e) { 
+            console.error("Gagal initPi otomatis:", e); 
+        }
+    }
+
+    // 2. Suntik Gaya Animasi & Desain Futuristik
     inisialisasiGayaDigitalPro();
 
-    // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    // 3. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
     } else {
         console.warn("Fungsi renderProducts atau data produk belum siap.");
     }
 
-    // 3. Hubungkan pipa pencarian input
+    // 4. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {
@@ -1923,7 +1932,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 4. Deteksi klik di luar untuk menutup SideNav
+    // 5. Deteksi klik di luar untuk menutup SideNav
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1934,7 +1943,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 5. Rotasi Banner Otomatis
+    // 6. Rotasi Banner Otomatis
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1946,11 +1955,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
-
-    // 6. Jalankan pipeline login otomatis Pi Network SDK
-    if (typeof initPi === "function") {
-        try { await initPi(); } catch(e) { console.error("Gagal initPi:", e); }
-    }
     
     // 7. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');

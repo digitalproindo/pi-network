@@ -1755,36 +1755,38 @@ window.switchPage = (pageId) => {
 };
 
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - AUTO ADDRESS PROMPT VERSION
+// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - PRODUCTION SINKRON
 // =========================================================================
 window.handlePayment = async (amount, name) => {
     try {
-        // 1. Verifikasi Koneksi SDK Blockchain
+        // 1. Verifikasi Koneksi SDK Blockchain Pi
         if (!window.isPiInitialized) {
             alert("⚠️ Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
             return;
         }
 
-        // 2. Verifikasi Sesi User Aktif
+        // 2. Verifikasi Sesi User Aktif (Sinkronisasi Global/Lokal)
         const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
         if (!userAktif) { 
-            if (typeof showLoginPrompt === 'function') {
-                showLoginPrompt();
+            if (typeof inisialisasiAutoLoginPi === 'function') {
+                inisialisasiAutoLoginPi();
+            } else if (typeof handleSignIn === 'function') {
+                handleSignIn();
             } else {
-                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+                alert("⚠️ Sesi login Pi Browser Anda belum terdeteksi. Silakan muat ulang aplikasi.");
             }
             return; 
         }
         
-        // 3. REVISI UTAMA: Jika alamat kosong, langsung panggil Prompt Alamat alih-alih melempar alert block
+        // 3. KUNCI PERBAIKAN ALAMAT: Jika belum diisi, otomatis panggil modal alamat asli Anda
         if (typeof userAddress === 'undefined' || !userAddress || !userAddress.nama || !userAddress.alamatLengkap) { 
-            if (typeof showAddressPrompt === 'function') {
-                console.log("📍 Alamat belum lengkap. Membuka form pengisian alamat...");
-                showAddressPrompt();
+            if (typeof bukaModalAlamat === 'function') {
+                console.log("📍 Alamat belum lengkap. Membuka modal pengisian alamat...");
+                bukaModalAlamat(); // Memanggil fungsi bawaan kode Anda
             } else {
-                alert("⚠️ Mohon lengkapi data profile dan alamat pengiriman Anda terlebih dahulu di menu Profil!");
+                alert("⚠️ Mohon lengkapi data profil dan alamat pengiriman Anda terlebih dahulu melalui menu Profil!");
             }
-            return; // Hentikan createPayment sementara sampai user selesai mengisi alamat di modal prompt
+            return; // Hentikan checkout sampai user selesai mengisi alamat di modal
         }
 
         let detailedItemName = name;
@@ -1792,7 +1794,7 @@ window.handlePayment = async (amount, name) => {
             detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
         }
 
-        // 4. Amankan Konversi Nilai Pi
+        // 4. Amankan Konversi Nilai Pi (Mencegah string .toFixed error)
         const parsedAmount = parseFloat(amount);
         if (isNaN(parsedAmount)) {
             alert("⚠️ Format harga tidak valid.");
@@ -1802,13 +1804,13 @@ window.handlePayment = async (amount, name) => {
 
         // 5. Validasi Keberadaan Objek Pi Utama Browser
         if (!window.Pi) {
-            alert("⚠️ Buka aplikasi ini dari dalam Pi Browser untuk melakukan transaksi.");
+            alert("⚠️ Buka aplikasi ini dari dalam Pi Browser untuk melakukan transaksi asli.");
             return;
         }
 
         console.log("🚀 Memulai proses createPayment untuk:", detailedItemName, "Jumlah:", secureAmountString);
 
-        // 6. Eksekusi Jendela Pembayaran Dompet Pi Wallet
+        // 6. Eksekusi Pembayaran Dompet Pi Wallet Resmi
         await window.Pi.createPayment({
             amount: secureAmountString,
             memo: `Pembelian ${name}`,
@@ -1868,8 +1870,56 @@ window.handlePayment = async (amount, name) => {
         alert("⚠️ Terjadi kesalahan internal: " + err.message);
     }
 };
-            
 
+function showSuccessOverlay(amount, name, txid) {
+    const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+    
+    const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
+    const usernameFinal = (userAktif && userAktif.username) ? userAktif.username : "User Pi";
+
+    const dataTransaksi = {
+        action: "transaksi", 
+        penerima: (typeof userAddress !== 'undefined' && userAddress.nama) ? userAddress.nama : "",
+        username: usernameFinal,
+        item: name || "",
+        totalPi: amount || "", 
+        txid: txid || "",
+        alamat: (typeof userAddress !== 'undefined' && userAddress.alamatLengkap) ? userAddress.alamatLengkap : "",
+        telepon: (typeof userAddress !== 'undefined' && userAddress.telepon) ? userAddress.telepon : ""
+    };
+
+    const googleFormBody = new URLSearchParams(dataTransaksi);
+
+    fetch(excelWebhookUrl, { 
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
+        body: googleFormBody.toString() 
+    })
+    .then(response => response.json())
+    .then(res => console.log("Respon Sinkronisasi Google Sheets:", res.message))
+    .catch(err => console.error("Gagal catat Excel:", err));
+
+    // TAMPILAN OVERLAY SUKSES & INTEGRASI WHATSAPP ADMIN
+    const overlay = document.createElement('div');
+    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
+    
+    const namaPenerima = (typeof userAddress !== 'undefined' && userAddress.nama) ? userAddress.nama : "";
+    const telpPenerima = (typeof userAddress !== 'undefined' && userAddress.telepon) ? userAddress.telepon : "";
+    const alamatPenerima = (typeof userAddress !== 'undefined' && userAddress.alamatLengkap) ? userAddress.alamatLengkap : "";
+
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(namaPenerima)}%0A• *Telepon:* ${telpPenerima}%0A• *Alamat:* ${encodeURIComponent(alamatPenerima)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+    const nomorAdmin = "6281906066757";
+
+    overlay.innerHTML = `
+        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:sans-serif;">
+            <div style="font-size:45px; margin-bottom:20px;">✅</div>
+            <h2 style="color:#1a0033; margin:0; font-weight:800;">Pembayaran Berhasil!</h2>
+            <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
+            <a href="https://wa.me/${nomorAdmin}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
+            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
+        </div>`;
+    document.body.appendChild(overlay);
+                            }
 // =========================================================================
 // 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION
 // =========================================================================

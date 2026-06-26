@@ -1755,17 +1755,81 @@ window.switchPage = (pageId) => {
 };
 
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - PRODUCTION SINKRON
+// 6. ADDRESS & SHIPPING MODAL LOGIC (REGISTERED TO WINDOW GLOBAL)
 // =========================================================================
-window.handlePayment = async (amount, name) => {
-    try {
-        // 1. Verifikasi Koneksi SDK Blockchain Pi
-        if (!window.isPiInitialized) {
-            alert("⚠️ Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
+if (typeof userAddress === 'undefined') {
+    var userAddress = { nama: "", telepon: "", alamatLengkap: "" };
+}
+
+function setupAddressModalLogic() {
+    const btnSimpan = document.getElementById("btn-simpan-alamat");
+    if (!btnSimpan) return;
+
+    btnSimpan.addEventListener("click", () => {
+        const nama = document.getElementById("input-nama").value.trim();
+        const telp = document.getElementById("input-telepon").value.trim();
+        const alamat = document.getElementById("input-alamat").value.trim();
+
+        if (!nama || !telp || !alamat) {
+            if (typeof tampilkanNotifikasiGlobal === "function") {
+                tampilkanNotifikasiGlobal("Mohon lengkapi formulir alamat pengiriman.", "warning");
+            } else {
+                alert("⚠️ Mohon lengkapi formulir alamat pengiriman.");
+            }
             return;
         }
 
-        // 2. Verifikasi Sesi User Aktif (Sinkronisasi Global/Lokal)
+        // Menyimpan ke variabel global utama
+        userAddress = { nama, telepon: telp, alamatLengkap: alamat };
+        
+        if (typeof tampilkanNotifikasiGlobal === "function") {
+            tampilkanNotifikasiGlobal("Alamat pengiriman berhasil diperbarui!", "success");
+        } else {
+            alert("✅ Alamat pengiriman berhasil diperbarui!");
+        }
+        window.tutupModalAlamat();
+    });
+}
+
+// Mengikat fungsi buka modal ke Window agar bisa diakses dari tombol Beli
+window.bukaModalAlamat = function() {
+    const modal = document.getElementById("address-modal");
+    if (!modal) {
+        console.error("Elemen 'address-modal' tidak ditemukan di struktur HTML.");
+        alert("⚠️ Elemen form alamat ('address-modal') tidak ditemukan di halaman ini.");
+        return;
+    }
+
+    document.getElementById("input-nama").value = userAddress.nama || "";
+    document.getElementById("input-telepon").value = userAddress.telepon || "";
+    document.getElementById("input-alamat").value = userAddress.alamatLengkap || "";
+
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+};
+
+// Mengikat fungsi tutup modal ke Window
+window.tutupModalAlamat = function() {
+    const modal = document.getElementById("address-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+};
+
+
+// =========================================================================
+// 6B. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - PRODUCTION BALANCED
+// =========================================================================
+window.handlePayment = async (amount, name) => {
+    try {
+        // 1. Validasi Status Inisialisasi SDK Blockchain Pi Network
+        if (!window.isPiInitialized) {
+            alert("⚠️ Koneksi Blockchain belum siap atau Anda membuka di luar Pi Browser. Mohon tunggu beberapa detik atau muat ulang halaman.");
+            return;
+        }
+
+        // 2. Validasi Sesi Autentikasi Pengguna Pi (Mendukung Global & Lokal)
         const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
         if (!userAktif) { 
             if (typeof inisialisasiAutoLoginPi === 'function') {
@@ -1773,20 +1837,22 @@ window.handlePayment = async (amount, name) => {
             } else if (typeof handleSignIn === 'function') {
                 handleSignIn();
             } else {
-                alert("⚠️ Sesi login Pi Browser Anda belum terdeteksi. Silakan muat ulang aplikasi.");
+                alert("⚠️ Otorisasi Akun Pi Anda belum terbaca sempurna. Harap klik tombol Login Pi atau muat ulang halaman.");
             }
             return; 
         }
         
-        // 3. KUNCI PERBAIKAN ALAMAT: Jika belum diisi, otomatis panggil modal alamat asli Anda
-        if (typeof userAddress === 'undefined' || !userAddress || !userAddress.nama || !userAddress.alamatLengkap) { 
-            if (typeof bukaModalAlamat === 'function') {
+        // 3. Validasi Alamat: Jika kosong, otomatis panggil modal alamat global Anda
+        if (!userAddress || !userAddress.nama || !userAddress.alamatLengkap) { 
+            if (typeof window.bukaModalAlamat === 'function') {
                 console.log("📍 Alamat belum lengkap. Membuka modal pengisian alamat...");
-                bukaModalAlamat(); // Memanggil fungsi bawaan kode Anda
+                window.bukaModalAlamat(); 
+            } else if (typeof bukaModalAlamat === 'function') {
+                bukaModalAlamat();
             } else {
-                alert("⚠️ Mohon lengkapi data profil dan alamat pengiriman Anda terlebih dahulu melalui menu Profil!");
+                alert("⚠️ Mohon lengkapi data nama dan alamat pengiriman Anda terlebih dahulu melalui menu Profil!");
             }
-            return; // Hentikan checkout sampai user selesai mengisi alamat di modal
+            return; // Menghentikan eksekusi createPayment agar user bisa isi alamat dulu
         }
 
         let detailedItemName = name;
@@ -1794,33 +1860,33 @@ window.handlePayment = async (amount, name) => {
             detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
         }
 
-        // 4. Amankan Konversi Nilai Pi (Mencegah string .toFixed error)
+        // 4. Standarisasi dan Pengamanan Nilai Desimal Pi (Mencegah eror string .toFixed)
         const parsedAmount = parseFloat(amount);
         if (isNaN(parsedAmount)) {
-            alert("⚠️ Format harga tidak valid.");
+            alert("⚠️ Format nilai/harga Pi tidak valid.");
             return;
         }
         const secureAmountString = parsedAmount.toFixed(7).toString();
 
-        // 5. Validasi Keberadaan Objek Pi Utama Browser
+        // 5. Validasi Keberadaan Objek Window Pi Core SDK
         if (!window.Pi) {
-            alert("⚠️ Buka aplikasi ini dari dalam Pi Browser untuk melakukan transaksi asli.");
+            alert("⚠️ Fitur transaksi hanya berfungsi di dalam ekosistem Pi Browser asli.");
             return;
         }
 
-        console.log("🚀 Memulai proses createPayment untuk:", detailedItemName, "Jumlah:", secureAmountString);
+        console.log("🚀 Menghubungkan ke Pi Wallet untuk:", detailedItemName, "Jumlah:", secureAmountString);
 
-        // 6. Eksekusi Pembayaran Dompet Pi Wallet Resmi
+        // 6. Request Jendela Pembayaran Dompet Resmi Pi Network
         await window.Pi.createPayment({
             amount: secureAmountString,
-            memo: `Pembelian ${name}`,
+            memo: `Pembelian ${name} - PT. Digital Pro Indo`,
             metadata: { 
                 productName: detailedItemName,
                 developer_domain: "www.ptdigitalproindo.com"
             },
         }, {
             onReadyForServerApproval: async (paymentId) => {
-                console.log("Payment siap disetujui server, ID:", paymentId);
+                console.log("Payment siap disetujui server, ID Transaksi:", paymentId);
                 try {
                     const res = await fetch('https://www.ptdigitalproindo.com/api/approval', { 
                         method: 'POST', 
@@ -1829,12 +1895,12 @@ window.handlePayment = async (amount, name) => {
                     });
                     return res.ok;
                 } catch (e) {
-                    console.error("Gagal Approval Server:", e);
+                    console.error("Gagal melakukan approval ke Server:", e);
                     return false;
                 }
             },
             onReadyForServerCompletion: async (paymentId, txid) => {
-                console.log("Payment siap diselesaikan server, TXID:", txid);
+                console.log("Payment disetujui Pioneer, memproses penyelesaian TXID:", txid);
                 try {
                     const res = await fetch('https://www.ptdigitalproindo.com/api/complete', { 
                         method: 'POST', 
@@ -1846,28 +1912,32 @@ window.handlePayment = async (amount, name) => {
                         if(name === 'Total Keranjang') { 
                             cart = []; 
                             if (typeof window.updateCartUI === 'function') window.updateCartUI(); 
+                            if (typeof updateCartCount === 'function') updateCartCount();
                         }
                     }
                 } catch (e) {
-                    console.error("Gagal Completion Server:", e);
+                    console.error("Gagal melakukan completion ke Server:", e);
                 }
             },
             onCancel: () => { 
-                console.log("Pembayaran dibatalkan oleh pembeli."); 
+                console.log("Transaksi dibatalkan secara sadar oleh pembeli."); 
+                if (typeof tampilkanNotifikasiGlobal === "function") {
+                    tampilkanNotifikasiGlobal("Pembayaran dibatalkan.", "warning");
+                }
             },
             onError: (error, payment) => { 
-                console.error("Payment Error:", error); 
+                console.error("Pi Payment Error:", error); 
                 if(payment && typeof handleIncompletePayment === 'function') {
                     handleIncompletePayment(payment);
                 } else {
-                    alert("⚠️ Terjadi kesalahan transaksi pada Pi Network.");
+                    alert("⚠️ Terjadi gangguan jaringan saat memproses transaksi pada Pi Network.");
                 }
             }
         });
 
     } catch (err) { 
-        console.error("Fatal Execution Error pada handlePayment:", err);
-        alert("⚠️ Terjadi kesalahan internal: " + err.message);
+        console.error("Fatal internal crash pada handlePayment:", err);
+        alert("⚠️ Terjadi kesalahan internal sistem: " + err.message);
     }
 };
 
@@ -1897,9 +1967,9 @@ function showSuccessOverlay(amount, name, txid) {
     })
     .then(response => response.json())
     .then(res => console.log("Respon Sinkronisasi Google Sheets:", res.message))
-    .catch(err => console.error("Gagal catat Excel:", err));
+    .catch(err => console.error("Gagal mencatat log ke Google Sheet Excel:", err));
 
-    // TAMPILAN OVERLAY SUKSES & INTEGRASI WHATSAPP ADMIN
+    // GENERATE BANNER NOTIFIKASI OVERLAY SUKSES & INTEGRASI WHATSAPP ADMIN
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
     
@@ -1914,12 +1984,20 @@ function showSuccessOverlay(amount, name, txid) {
         <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:sans-serif;">
             <div style="font-size:45px; margin-bottom:20px;">✅</div>
             <h2 style="color:#1a0033; margin:0; font-weight:800;">Pembayaran Berhasil!</h2>
-            <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
+            <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat secara otomatis di Google Database.</p>
             <a href="https://wa.me/${nomorAdmin}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
-            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
+            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer; font-weight:600;">Kembali ke Beranda</button>
         </div>`;
     document.body.appendChild(overlay);
-                            }
+}
+
+// Pastikan inisialisasi logika klik tombol simpan modal alamat langsung berjalan
+document.addEventListener("DOMContentLoaded", () => {
+    setupAddressModalLogic();
+});
+
+                    
+                            
 // =========================================================================
 // 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION
 // =========================================================================

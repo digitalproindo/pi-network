@@ -2137,6 +2137,7 @@ function tampilkanModalSuksesDPI() {
     `;
     document.body.appendChild(overlay);
 
+    // ... baris terakhir dari fungsi tampilkanModalSuksesDPI() Anda ...
     document.getElementById('btnKembaliBeranda').onclick = () => {
         overlay.remove();
         if (typeof window.switchPage === 'function') {
@@ -2145,7 +2146,10 @@ function tampilkanModalSuksesDPI() {
             location.reload();
         }
     };
-}
+} // <-- Menutup fungsi tampilkanModalSuksesDPI
+
+// PENTING: PASTIKAN BARIS DI BAWAH INI ADA DI AKHIR FILE ANDA!
+}); // <-- Menutup DOMContentLoaded utama aplikasi Anda
 function inisialisasiGayaDigitalPro() {
     if (document.getElementById('digital-pro-premium-styles')) return;
     const styleEl = document.createElement('style');

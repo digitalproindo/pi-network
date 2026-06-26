@@ -2092,7 +2092,7 @@ if (formAman) {
 });
 
 // =========================================================================
-// FUNGSI POPUP SUKSES: MENGHILANGKAN BACKGROUND PUTIH LOGO (FIXED)
+// FUNGSI POPUP SUKSES: PERBAIKAN TAUTAN GAMBER REMOVE-BG (FIXED)
 // =========================================================================
 function tampilkanModalSuksesDPI() {
     const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
@@ -2103,13 +2103,15 @@ function tampilkanModalSuksesDPI() {
     overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
 
     const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
+    
+    // TAUTAN BERSIH: Mengambil langsung alamat gambar transparan Anda
     const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
 
     overlay.innerHTML = `
         <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
             
-            <div style="width:120px; height:120px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
-                <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain; mix-blend-mode:multiply; filter:contrast(1.1);">
+            <div style="width:130px; height:130px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
+                <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain;">
             </div>
             
             <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>

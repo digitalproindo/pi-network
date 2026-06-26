@@ -2067,6 +2067,44 @@ if (formAman) {
         })
         .then(res => res.json())
         .then(response => {
+            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            formAman.reset();
+            
+            // =========================================================================
+            // SOLUSI KRITIS: MATIKAN / BLOKIR POPUP LAMA AGAR TIDAK MUNCUL DOUBLE
+            // =========================================================================
+            // 1. Jangan panggil window.tampilkanModalSuksesDigital() bawaan script lama.
+            
+            // 2. Paksa hapus dari layar jika popup centang bulat telanjur ter-render di DOM
+            const modalLamaCentang = document.getElementById('modalSuksesDigital') || document.getElementById('successOverlay'); 
+            if (modalLamaCentang) modalLamaCentang.remove();
+
+            // 3. Hanya tampilkan satu-satunya popup premium pilihan Anda (Gambar 1)
+            tampilkanModalSuksesDPI();
+            
+            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+        })
+        .catch(err => {
+            console.error("Eror form komunitas:", err);
+            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+        })
+        .finally(() => {
+            statusKirimKomunitas = false;
+            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+        });
+    });
+}
+
+        statusKirimKomunitas = true;
+        const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
+
+        fetch(SCRIPT_URL_AMAN, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(dataKomunitas).toString()
+        })
+        .then(res => res.json())
+        .then(response => {
             // 1. Tutup modal form pengisian agar bersih
             if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
             formAman.reset();

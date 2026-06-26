@@ -2330,6 +2330,9 @@ function injeksiLoncengNotifikasiProfil() {
 }
 
 window.muatStatusKemitraan = function() {
+    // Taruh di sini (Aman & Benar di dalam fungsi)
+    localStorage.removeItem('dpi_last_known_status'); 
+
     const penunjukStatus = document.getElementById('partner-status');
     const labelLogistik = document.getElementById('logistik-share-val'); 
     const labelItem = document.getElementById('produk-terproses-val');     
@@ -2372,22 +2375,26 @@ window.muatStatusKemitraan = function() {
             if (labelItem && data.produkTerproses !== undefined) labelItem.innerText = data.produkTerproses + " Item";
             
             // =========================================================================
-            // EKSEKUSI PANDUAN NOTIFIKASI SECARA AGRESIF
-            // =========================================================================
-            if (statusFinal !== "PROSES REVIEW") {
-                if (typeof inisialisasiGayaDigitalPro === "function") inisialisasiGayaDigitalPro();
-                
-                injeksiLoncengNotifikasiProfil();
-                cekPerubahanStatusSistem(statusFinal);
-            } else {
-                const loncengEksis = document.getElementById('dpi-profile-bell');
-                if (loncengEksis) loncengEksis.remove();
-                
-                const bannerEksis = document.getElementById('dpi-top-banner');
-                if (bannerEksis) bannerEksis.remove();
-                
-                localStorage.removeItem('dpi_last_known_status');
-            }
+// EKSEKUSI PANDUAN NOTIFIKASI SECARA AGRESIF (DENGAN JEDA RENDERING)
+// =========================================================================
+if (statusFinal !== "PROSES REVIEW") {
+    if (typeof inisialisasiGayaDigitalPro === "function") inisialisasiGayaDigitalPro();
+    
+    // Berikan jeda 300ms agar HTML dipastikan sudah siap di layar
+    setTimeout(() => {
+        injeksiLoncengNotifikasiProfil();
+        cekPerubahanStatusSistem(statusFinal);
+    }, 300);
+
+} else {
+    const loncengEksis = document.getElementById('dpi-profile-bell');
+    if (loncengEksis) loncengEksis.remove();
+    
+    const bannerEksis = document.getElementById('dpi-top-banner');
+    if (bannerEksis) bannerEksis.remove();
+    
+    localStorage.removeItem('dpi_last_known_status');
+}
             
         } else {
             if (penunjukStatus) {

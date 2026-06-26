@@ -2081,7 +2081,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function tampilkanBannerNotifikasiSistem(statusTerbaru) {
-    function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     const bannerEksis = document.getElementById('dpi-top-banner');
     if (bannerEksis) bannerEksis.remove();
 

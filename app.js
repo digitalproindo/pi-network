@@ -2164,14 +2164,17 @@ function inisialisasiGayaDigitalPro() {
     document.head.appendChild(styleEl);
 }
 
-// =========================================================================
-// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
+
+ // =========================================================================
+// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (FIXED RENDER)
 // =========================================================================
 
 function cekPerubahanStatusSistem(statusBaru) {
     if (!statusBaru) return;
     const statusLama = localStorage.getItem('dpi_last_known_status');
     
+    // Perbaikan deteksi: Jika status lama kosong/belum diset, kita isi agar tidak memicu notifikasi berlebih di awal,
+    // namun jika ada PERUBAHAN status yang berbeda dari riwayat, jalankan banner notifikasi.
     if (statusLama && statusLama !== statusBaru) {
         tampilkanBannerNotifikasiSistem(statusBaru);
     }
@@ -2184,21 +2187,28 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
 
     const banner = document.createElement('div');
     banner.id = 'dpi-top-banner';
-    banner.className = 'notif-banner-pro';
-    banner.style.cssText = "position: fixed; top: 15px; left: 5%; right: 5%; max-width: 420px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px; z-index: 999999; cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-family: sans-serif; box-sizing: border-box;";
+    banner.className = 'notif-banner-pro'; // Menggunakan animasi slideInNotif yang sudah Anda suntik di bagian 8A
+    
+    // PENYEMPURNAAN CSS: Ditambahkan box-sizing, flex-layout yang kokoh, dan pembatasan z-index tertinggi agar tidak tertutup elemen lain
+    banner.style.cssText = "position: fixed; top: 20px; left: 5%; right: 5%; max-width: 400px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px 18px; z-index: 9999999; cursor: pointer; box-shadow: 0 20px 40px rgba(0,0,0,0.7); display: flex; align-items: center; gap: 14px; font-family: 'Inter', sans-serif; box-sizing: border-box;";
 
     banner.innerHTML = `
-        <div style="background: rgba(147, 51, 234, 0.15); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0;"><span style="font-size: 18px;">🔔</span></div>
-        <div style="flex-grow: 1;">
-            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Pemberitahuan Status</div>
-            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 1px;">Kemitraan Menjadi: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
+        <div style="background: rgba(147, 51, 234, 0.15); width: 38px; height: 38px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0; animation: pulseGlow 2s infinite;"><span style="font-size: 18px;">🔔</span></div>
+        <div style="flex-grow: 1; text-align: left;">
+            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px;">Pemberitahuan Status</div>
+            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 2px; line-height: 1.3;">Kemitraan Menjadi: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
         </div>
-        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 6px; font-weight: bold; cursor: pointer;">✕</div>
+        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 6px; font-weight: bold; cursor: pointer; transition: color 0.2s;">✕</div>
     `;
     document.body.appendChild(banner);
 
+    // Event listener interaktif banner
     banner.addEventListener('click', (e) => {
-        if (e.target.classList.contains('close-banner-x')) { e.stopPropagation(); banner.remove(); return; }
+        if (e.target.classList.contains('close-banner-x')) { 
+            e.stopPropagation(); 
+            banner.remove(); 
+            return; 
+        }
         banner.remove();
         bukaModalInvestorDigitalPro();
     });
@@ -2210,7 +2220,7 @@ function bukaModalInvestorDigitalPro() {
 
     const overlay = document.createElement('div');
     overlay.id = 'dpi-modal-investor-pro';
-    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); z-index: 1000000; display: flex; align-items: center; justify-content: center; padding: 0 20px; box-sizing: border-box; font-family: sans-serif;";
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); -webkit-backdrop-filter: blur(7px); z-index: 10000000; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; font-family: 'Inter', sans-serif;";
 
     overlay.innerHTML = `
         <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
@@ -2234,7 +2244,7 @@ function bukaModalInvestorDigitalPro() {
                 <h3 style="color: #f59e0b; font-size: 0.95rem; margin: 20px 0 8px 0; font-weight: 700;">💎 Mengapa Bergabung Sebagai Investor?</h3>
                 <ul style="margin: 0; padding-left: 0; list-style-type: none;">
                     <li style="margin-bottom: 6px;">✅ Menjadi bagian dari perjalanan pertumbuhan platform digital karya anak bangsa.</li>
-                    <li style="margin-bottom: 6px;">✅ Berkontribusi langsung dalam pengembangan fitur and ekosistem Digital Pro Indo.</li>
+                    <li style="margin-bottom: 6px;">✅ Berkontribusi langsung dalam pengembangan fitur dan ekosistem Digital Pro Indo.</li>
                     <li style="margin-bottom: 6px;">✅ Kesempatan terlibat dalam pengembangan dan arah pertumbuhan platform sesuai skema kerja sama yang disepakati.</li>
                     <li style="margin-bottom: 6px;">✅ Menjadi bagian dari fondasi awal yang akan mendukung perkembangan Digital Pro Indo di masa depan.</li>
                 </ul>
@@ -2282,7 +2292,6 @@ function bukaModalInvestorDigitalPro() {
             "Saya berminat untuk mengetahui lebih lanjut mengenai peluang kerja sama, roadmap, dan rencana pengembangan sebagai calon Investor / Mitra Strategis Digital Pro Indo.",
             "",
             "Berikut data akun saya:",
-            "• Username Pi: (Mohon isi username Anda di sini)",
             "• ID Autentikasi: " + uidPioneer,
             "",
             "Mohon informasi petunjuk teknis dan diskusi kerja samanya lebih lanjut. Terima kasih! 🚀✨"
@@ -2290,13 +2299,13 @@ function bukaModalInvestorDigitalPro() {
 
         const teksFinalEnkripsi = encodeURIComponent(barisPesan.join("\n"));
         const urlWhatsApp = "https://wa.me/" + nomorWA + "?text=" + teksFinalEnkripsi;
-        
         window.open(urlWhatsApp, "_blank");
     });
 }
 
 function injeksiLoncengNotifikasiProfil() {
-    const penunjukStatus = document.getElementById('partner-status');
+    // KUNCI PERBAIKAN: Kami menggunakan deteksi ganda (id atau class) agar penempatan elemen lonceng dijamin presisi dan tidak gagal render
+    const penunjukStatus = document.getElementById('partner-status') || document.querySelector('.partner-status-val');
     if (!penunjukStatus) return;
 
     const loncengLama = document.getElementById('dpi-profile-bell');
@@ -2304,10 +2313,12 @@ function injeksiLoncengNotifikasiProfil() {
 
     const lonceng = document.createElement('span');
     lonceng.id = 'dpi-profile-bell';
-    lonceng.className = 'bell-bounce';
-    lonceng.innerHTML = '🔔';
+    lonceng.className = 'bell-bounce'; // Menjalankan keyframe ringBell dari fungsi CSS Anda
+    lonceng.innerHTML = ' 🔔';
     lonceng.title = 'Lihat Informasi Investor';
+    lonceng.style.cssText = "cursor: pointer; display: inline-block; margin-left: 8px; vertical-align: middle;";
     
+    // Memasukkan lonceng tepat setelah teks status kemitraan
     penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
 
     lonceng.onclick = (e) => {
@@ -2317,9 +2328,9 @@ function injeksiLoncengNotifikasiProfil() {
 }
 
 window.muatStatusKemitraan = function() {
-    const penunjukStatus = document.getElementById('partner-status');
-    const labelLogistik = document.getElementById('logistik-share'); 
-    const labelItem = document.getElementById('item-terproses');     
+    const penunjukStatus = document.getElementById('partner-status') || document.querySelector('.partner-status-val');
+    const labelLogistik = document.getElementById('logistik-share') || document.querySelector('.logistik-share-val'); 
+    const labelItem = document.getElementById('item-terproses') || document.querySelector('.item-terproses-val');     
     
     if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
         if (penunjukStatus) {
@@ -2340,6 +2351,9 @@ window.muatStatusKemitraan = function() {
             
             if (penunjukStatus) {
                 penunjukStatus.innerText = statusFinal;
+                penunjukStatus.style.padding = "4px 8px";
+                penunjukStatus.style.borderRadius = "8px";
+                penunjukStatus.style.fontWeight = "bold";
                 
                 if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT") {
                     penunjukStatus.style.background = "#d1fae5"; 
@@ -2356,6 +2370,7 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
+            // JALANKAN EKSEKUSI UTAMA PENYUNTIKAN ELEMEN
             injeksiLoncengNotifikasiProfil();
             cekPerubahanStatusSistem(statusFinal);
             
@@ -2370,4 +2385,4 @@ window.muatStatusKemitraan = function() {
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};    
+};       

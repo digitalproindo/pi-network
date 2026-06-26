@@ -2031,59 +2031,63 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // 8. PENANGANAN SUBMIT FORM KOMUNITAS
     const formAman = document.getElementById('formKomunitas');
-    if (formAman) {
-        formAman.addEventListener('submit', e => {
-            e.preventDefault();
-            if (statusKirimKomunitas) return;
+if (formAman) {
+    formAman.addEventListener('submit', e => {
+        e.preventDefault();
+        if (statusKirimKomunitas) return;
+        
+        if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
+            alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
+            return;
+        }
+
+        const btnAman = document.getElementById('btnKirim');
+        if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
+
+        const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
+        const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
+        const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
+        const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
+        const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
+        const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
+        
+        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+            alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+            return;
+        }
+
+        statusKirimKomunitas = true;
+        const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
+
+        fetch(SCRIPT_URL_AMAN, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(dataKomunitas).toString()
+        })
+        .then(res => res.json())
+        .then(response => {
+            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            formAman.reset();
+            if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
+            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             
-            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-                return;
-            }
-
-            const btnAman = document.getElementById('btnKirim');
-            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
-
-            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-            
-            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-                return;
-            }
-
-            statusKirimKomunitas = true;
-            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
-
-            fetch(SCRIPT_URL_AMAN, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dataKomunitas).toString()
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                formAman.reset();
-                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
-                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-            })
-            .catch(err => {
-                console.error("Eror form komunitas:", err);
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            })
-            .finally(() => {
-                statusKirimKomunitas = false;
-                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-            });
+            // =========================================================================
+            // REVISI KRITIS: REDIRECT OTOMATIS KE GRUP WHATSAPP SETELAH SUKSES DAFTAR
+            // =========================================================================
+            const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
+            window.open(urlGrupWA, "_blank");
+        })
+        .catch(err => {
+            console.error("Eror form komunitas:", err);
+            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+        })
+        .finally(() => {
+            statusKirimKomunitas = false;
+            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
         });
-    }
-});
-
+    });
+}
 function inisialisasiGayaDigitalPro() {
     if (document.getElementById('digital-pro-premium-styles')) return;
     const styleEl = document.createElement('style');

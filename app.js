@@ -2370,10 +2370,10 @@ window.muatStatusKemitraan = function() {
                 if (labelItem) labelItem.innerText = "0 Item";
                 
                 const loncengEksis = document.getElementById('dpi-profile-bell');
-                if (loncengEksis) loncengEksis.remove();
-            }
-        })
-        .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-    };
+            if (loncengEksis) loncengEksis.remove();
+        }
+    })
+    .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
+};
 
-}); // 🟢 TAMBAHKAN BARIS INI DI SINI SEBAGAI PENUTUP AKHIR FILE!
+}); // 🟢 WAJIB TAMBAHKAN INI DI BARIS PALING AKHIR FILE ANDA!

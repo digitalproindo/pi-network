@@ -1899,6 +1899,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (typeof initPi === "function") {
         try { 
             await initPi(); 
+            
+            // 🟢 PAKSA SET TRUE DI SINI SETELAH initPi SELESAI DIEKSEKUSI
+            window.isPiInitialized = true;
+            if (typeof isPiInitialized !== 'undefined') isPiInitialized = true;
+
         } catch(e) { 
             console.error("Gagal initPi otomatis:", e); 
         }

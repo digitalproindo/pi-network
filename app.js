@@ -1889,43 +1889,23 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FORCED RENDER)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FIXED RENDER)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 🟢 PAKSA RENDER PRODUK DI BARIS PERTAMA (GARANSI PRODUK PASTI MUNCUL)
-    try {
-        if (typeof productsData !== "undefined") {
-            // Merender grid utama
-            if (document.getElementById('main-grid')) {
-                renderProducts(productsData, 'main-grid');
-            }
-        }
-    } catch (err) {
-        console.warn("Gagal render produk di awal:", err);
+    // 1. Suntik Gaya Animasi & Desain Futuristik
+    inisialisasiGayaDigitalPro();
+
+    // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
+        renderProducts(productsData, 'main-grid');
+    } else {
+        console.warn("Fungsi renderProducts atau data produk belum siap.");
     }
 
-    // 1. JALANKAN LOGIN OTOMATIS PI SDK DI LATAR BELAKANG
-    if (typeof initPi === "function") {
-        try { 
-            await initPi(); 
-            window.isPiInitialized = true;
-            if (typeof isPiInitialized !== 'undefined') {
-                isPiInitialized = true;
-            }
-        } catch(e) { 
-            console.error("Gagal initPi otomatis:", e); 
-        }
-    }
-
-    // 2. Suntik Gaya Animasi & Desain Futuristik
-    if (typeof inisialisasiGayaDigitalPro === "function") {
-        inisialisasiGayaDigitalPro();
-    }
-
-    // 4. Hubungkan pipa pencarian input
+    // 3. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {
@@ -1943,7 +1923,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 5. Deteksi klik di luar untuk menutup SideNav
+    // 4. Deteksi klik di luar untuk menutup SideNav
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1954,7 +1934,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 6. Rotasi Banner Otomatis
+    // 5. Rotasi Banner Otomatis
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1966,22 +1946,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
+
+    // 6. Jalankan pipeline login otomatis Pi Network SDK
+    if (typeof initPi === "function") {
+        try { await initPi(); } catch(e) { console.error("Gagal initPi:", e); }
+    }
     
-    // 7. PENANGANAN VISUAL TOMBOL LOGIN (SINKRONISASI REAL-TIME)
+    // 7. Bind tombol login manual awal sebelum ter-otentikasi
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
+    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
         loginBtn.onclick = window.handleAuth;
-
-        let intervalCekLogin = setInterval(() => {
-            const userTerautentikasi = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
-            if (userTerautentikasi) {
-                loginBtn.innerText = "PROFIL AKTIF";
-                loginBtn.style.cssText = "background: #10b981 !important; color: #ffffff !important; font-weight: bold;";
-                clearInterval(intervalCekLogin);
-            }
-        }, 300);
-
-        setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
 
     // =========================================================================
@@ -2044,76 +2018,54 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
-}); 
 
-// =========================================================================
-// FUNGSI POPUP SUKSES & SISTEM GAYA (DI LUAR DOMCONTENTLOADED)
-// =========================================================================
-function tampilkanModalSuksesDPI() {
-    const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
-    if (modalEksis) modalEksis.remove();
+    // =========================================================================
+    // FUNGSI POPUP SUKSES: STRUKTUR DENGAN LOGO TRANSPARAN BERSIH
+    // =========================================================================
+    function tampilkanModalSuksesDPI() {
+        const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
+        if (modalEksis) modalEksis.remove();
 
-    const overlay = document.createElement('div');
-    overlay.id = 'dpi-modal-sukses-daftar';
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
+        const overlay = document.createElement('div');
+        overlay.id = 'dpi-modal-sukses-daftar';
+        overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
 
-    const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
-    const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
+        const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
+        const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
 
-    overlay.innerHTML = `
-        <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-            <div style="width:130px; height:130px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
-                <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain;">
-            </div>
-            <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>
-            <p style="color:#a4a2b6; font-size:0.9rem; margin:12px 0 24px 0; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left; margin-bottom:24px; box-sizing:border-box;">
-                <div style="display:flex; justify-content:between; align-items:center; width:100%; margin-bottom:6px;">
-                    <span style="color:#767485; font-size:0.75rem; font-weight:700; letter-spacing:0.5px;">STATUS</span>
-                    <span style="color:#d97706; font-size:0.75rem; font-weight:700; margin-left:auto;">PROSES REVIEW</span>
+        overlay.innerHTML = `
+            <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
+                <div style="width:130px; height:130px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
+                    <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain;">
                 </div>
-                <p style="margin:0; color:#a4a2b6; font-size:0.8rem; line-height:1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-            </div>
-            <a href="${urlGrupWA}" target="_blank" style="display:block; background:linear-gradient(90deg, #10b981 0%, #059669 100%); color:#ffffff; text-decoration:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.95rem; text-align:center; margin-bottom:12px; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
-                GABUNG GRUP WHATSAPP
-            </a>
-            <button id="btnKembaliBeranda" style="width:100%; background:#334155; color:#ffffff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.5px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                KEMBALI KE BERANDA
-            </button>
-        </div>
-    `;
-    document.body.appendChild(overlay);
+                <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>
+                <p style="color:#a4a2b6; font-size:0.9rem; margin:12px 0 24px 0; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left; margin-bottom:24px; box-sizing:border-box;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:6px;">
+                        <span style="color:#767485; font-size:0.75rem; font-weight:700; letter-spacing:0.5px;">STATUS</span>
+                        <span style="color:#d97706; font-size:0.75rem; font-weight:700; margin-left:auto;">PROSES REVIEW</span>
+                    </div>
+                    <p style="margin:0; color:#a4a2b6; font-size:0.8rem; line-height:1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+                </div>
+                <a href="${urlGrupWA}" target="_blank" style="display:block; background:linear-gradient(90deg, #10b981 0%, #059669 100%); color:#ffffff; text-decoration:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.95rem; text-align:center; margin-bottom:12px; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
+                    GABUNG GRUP WHATSAPP
+                </a>
+                <button id="btnKembaliBeranda" style="width:100%; background:#334155; color:#ffffff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.5px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    KEMBALI KE BERANDA
+                </button>
+            </div>`;
+        document.body.appendChild(overlay);
 
-    document.getElementById('btnKembaliBeranda').onclick = () => {
-        overlay.remove();
-        if (typeof window.switchPage === 'function') {
-            window.switchPage('home');
-        } else {
-            location.reload();
-        }
-    };
-}
-
-function inisialisasiGayaDigitalPro() {
-    if (document.getElementById('digital-pro-premium-styles')) return;
-    const styleEl = document.createElement('style');
-    styleEl.id = 'digital-pro-premium-styles';
-    styleEl.innerHTML = `
-        @keyframes digitalBgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes slideInNotif { 0% { transform: translateY(-120%) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); } 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); } }
-        @keyframes ringBell { 0%, 100% { transform: rotate(0); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
-        
-        .digital-bg-animated { background: linear-gradient(-45deg, #090514, #120a2a, #030f26, #0d0b18); background-size: 400% 400%; animation: digitalBgMove 8s ease infinite; }
-        .notif-banner-pro { animation: slideInNotif 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, pulseGlow 2.5s infinite; }
-        .bell-bounce { display: inline-block; animation: ringBell 2s ease infinite; transform-origin: top center; cursor: pointer; font-size: 1.15rem; vertical-align: middle; margin-left: 6px; }
-        .custom-pro-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
-    `;
-    document.head.appendChild(styleEl);
-}
-    
+        document.getElementById('btnKembaliBeranda').onclick = () => {
+            overlay.remove();
+            if (typeof window.switchPage === 'function') {
+                window.switchPage('home');
+            } else {
+                location.reload();
+            }
+        };
+    }
 
     // =========================================================================
     // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
@@ -2135,7 +2087,8 @@ function inisialisasiGayaDigitalPro() {
     // Kontainer luar pembungkus banner dengan padding proporsional
     const bannerWrapper = document.createElement('div');
     bannerWrapper.id = 'dpi-top-banner';
-    bannerWrapper.style.cssText = "width: 100%; padding: 2px 16px 8px 16px; margin-top: -5px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
+    bannerWrapper.style.cssText = "width: 100%; padding: 8px 16px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
+
     // Elemen utama banner dengan sudut melengkung mewah
     const banner = document.createElement('div');
     banner.className = 'notif-banner-pro';

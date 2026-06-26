@@ -2092,7 +2092,7 @@ if (formAman) {
 });
 
 // =========================================================================
-// FUNGSI POPUP SUKSES: ULTRA PREMIUM DIGITAL PRO (CYBERPUNK GLASS VERSION)
+// FUNGSI POPUP SUKSES: STRUKTUR ASLI + INTEGRASI LOGO PREMIUM
 // =========================================================================
 function tampilkanModalSuksesDPI() {
     const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
@@ -2100,54 +2100,42 @@ function tampilkanModalSuksesDPI() {
 
     const overlay = document.createElement('div');
     overlay.id = 'dpi-modal-sukses-daftar';
-    // Overlay ultra gelap dengan efek blur bioskop (high cinematic blur)
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.92); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); font-family:'Inter', sans-serif;";
+    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
 
     const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
     const urlLogoPro = "https://i.ibb.co.com/FbJJ6jYn/Digital-Pro-Indo.png";
 
-    // Menyusun card premium dengan paduan animasi background, border neon, dan logo kustom Anda
     overlay.innerHTML = `
-        <div class="digital-bg-animated" style="border: 2px solid rgba(168, 85, 247, 0.6); padding: 45px 30px 35px; border-radius: 32px; max-width: 390px; width: 100%; text-align: center; box-shadow: 0 0 40px rgba(168, 85, 247, 0.25), inset 0 0 20px rgba(168, 85, 247, 0.15); box-sizing: border-box; position: relative; overflow: hidden; background: linear-gradient(145deg, rgba(15, 10, 30, 0.85) 0%, rgba(5, 5, 15, 0.95) 100%);">
+        <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
             
-            <div style="position: absolute; top: -60px; left: -60px; width: 180px; height: 180px; background: rgba(168, 85, 247, 0.3); filter: blur(50px); border-radius: 50%; pointer-events: none;"></div>
-            <div style="position: absolute; bottom: -60px; right: -60px; width: 180px; height: 180px; background: rgba(59, 130, 246, 0.25); filter: blur(50px); border-radius: 50%; pointer-events: none;"></div>
-
-            <div style="position: relative; width: 110px; height: 110px; margin: 0 auto 28px; display: flex; align-items: center; justify-content: center;">
-                <div style="position: absolute; width: 120%; height: 120%; background: rgba(168, 85, 247, 0.15); border-radius: 50%; filter: blur(15px); animation: pulseGlow 2.5s infinite;"></div>
-                <img src="${urlLogoPro}" alt="Digital Pro Indo Logo" style="width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.8)); position: relative; z-index: 2;">
+            <div style="width:90px; height:90px; margin:0 auto 20px; display:flex; align-items:center; justify-content:center;">
+                <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 0 8px rgba(194,155,56,0.3));">
             </div>
             
-            <h3 style="margin: 0; color: #ffffff; font-weight: 900; font-size: 1.6rem; letter-spacing: -0.5px; line-height: 1.2; text-transform: uppercase;">
-                Pendaftaran <span style="background: linear-gradient(90deg, #c084fc 0%, #6366f1 50%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 8px rgba(168,85,247,0.3));">Sukses!</span>
-            </h3>
+            <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>
+            <p style="color:#a4a2b6; font-size:0.9rem; margin:12px 0 24px 0; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
             
-            <p style="color: #94a3b8; font-size: 0.88rem; margin: 14px 0 32px 0; line-height: 1.6; font-weight: 400; letter-spacing: 0.2px;">
-                Selamat! Data Anda telah resmi diverifikasi dan diamankan ke dalam ekosistem eksklusif <strong style="color: #ffffff; text-shadow: 0 0 10px rgba(255,255,255,0.2);">PT. Digital Pro Indo</strong>.
-            </p>
+            <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left; margin-bottom:24px; box-sizing:border-box;">
+                <div style="display:flex; justify-content:between; align-items:center; width:100%; margin-bottom:6px;">
+                    <span style="color:#767485; font-size:0.75rem; font-weight:700; letter-spacing:0.5px;">STATUS</span>
+                    <span style="color:#d97706; font-size:0.75rem; font-weight:700; margin-left:auto;">PROSES REVIEW</span>
+                </div>
+                <p style="margin:0; color:#a4a2b6; font-size:0.8rem; line-height:1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
+            </div>
             
-            <a href="${urlGrupWA}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 12px; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: #ffffff; text-decoration: none; padding: 16px; border-radius: 16px; font-weight: 800; font-size: 0.95rem; text-align: center; margin-bottom: 14px; box-shadow: 0 0 20px rgba(34, 197, 94, 0.5); border: 1px solid rgba(255,255,255,0.2); letter-spacing: 0.5px; transition: all 0.25s ease;">
-                <span style="font-size: 1.2rem; filter: drop-shadow(0 0 4px #fff);">🟢</span> GABUNG GRUP WHATSAPP
+            <a href="${urlGrupWA}" target="_blank" style="display:block; background:linear-gradient(90deg, #10b981 0%, #059669 100%); color:#ffffff; text-decoration:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.95rem; text-align:center; margin-bottom:12px; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
+                GABUNG GRUP WHATSAPP
             </a>
             
-            <button id="btnKembaliBeranda" style="width: 100%; background: rgba(255, 255, 255, 0.04); color: #94a3b8; border: 1px solid rgba(255, 255, 255, 0.08); padding: 15px; border-radius: 16px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.25s ease; backdrop-filter: blur(5px); letter-spacing: 0.3px;">
-                ← KEMBALI KE BERANDA
+            <button id="btnKembaliBeranda" style="width:100%; background:#334155; color:#ffffff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.5px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                KEMBALI KE BERANDA
             </button>
         </div>
     `;
     document.body.appendChild(overlay);
 
-    // Animasi Mikro Interaktif Saat Disentuh / Hover Kursor
-    const btnWA = overlay.querySelector('a');
-    const btnHome = document.getElementById('btnKembaliBeranda');
-
-    btnWA.onmouseenter = () => { btnWA.style.transform = "translateY(-2px)"; btnWA.style.boxShadow = "0 0 28px rgba(34, 197, 94, 0.7)"; };
-    btnWA.onmouseleave = () => { btnWA.style.transform = "translateY(0)"; btnWA.style.boxShadow = "0 0 20px rgba(34, 197, 94, 0.5)"; };
-    
-    btnHome.onmouseenter = () => { btnHome.style.background = "rgba(255,255,255,0.09)"; btnHome.style.color = "#ffffff"; btnHome.style.borderColor = "rgba(168, 85, 247, 0.4)"; };
-    btnHome.onmouseleave = () => { btnHome.style.background = "rgba(255, 255, 255, 0.04)"; btnHome.style.color = "#94a3b8"; btnHome.style.borderColor = "rgba(255, 255, 255, 0.08)"; };
-
-    btnHome.onclick = () => {
+    document.getElementById('btnKembaliBeranda').onclick = () => {
         overlay.remove();
         if (typeof window.switchPage === 'function') {
             window.switchPage('home');

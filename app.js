@@ -1889,7 +1889,7 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (REVISI AUTOLOGIN)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (REVISI AUTOLOGIN FIXED)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
@@ -1897,22 +1897,13 @@ let statusKirimKomunitas = false;
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA
     if (typeof initPi === "function") {
-        try {
-            await initPi();
-
-            // 🟢 PINDAHKAN KE DALAM TRY (Tepat di bawah await initPi)
+        try { 
+            await initPi(); 
+            // Mengaktifkan status kesiapan Blockchain tepat setelah login berhasil
             window.isPiInitialized = true;
-            isPiInitialized = true;
-
-        } catch (e) {
-            // 🟢 SUNTIK PERBAIKAN SALTIK 'arrer' MENJADI 'error'
-            console.error("Gagal initPi otomatis:", e);
-        }
-    }
-    
-window.isPiInitialized = true;
-isPiInitialized = true;
-
+            if (typeof isPiInitialized !== 'undefined') {
+                isPiInitialized = true;
+            }
         } catch(e) { 
             console.error("Gagal initPi otomatis:", e); 
         }
@@ -1973,24 +1964,21 @@ isPiInitialized = true;
     // 7. PENANGANAN VISUAL TOMBOL LOGIN (REVISI SINKRONISASI OTOMATIS)
     const loginBtn = document.getElementById('login-btn');
     if (loginBtn) {
-        // Pasang fungsi klik manual sebagai fallback utama
         loginBtn.onclick = window.handleAuth;
 
-        // Lakukan pengecekan berkala terhadap status autentikasi Pi di latar belakang
         let intervalCekLogin = setInterval(() => {
             const userTerautentikasi = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
             if (userTerautentikasi) {
-                // Jika user terdeteksi sudah login otomatis lewat Pi SDK, ubah UI tombol kuning menjadi hijau aktif
                 loginBtn.innerText = "PROFIL AKTIF";
                 loginBtn.style.cssText = "background: #10b981 !important; color: #ffffff !important; font-weight: bold;";
                 clearInterval(intervalCekLogin);
             }
         }, 300);
 
-        // Batasi pengecekan selama maksimal 5 detik agar tidak membebani memori browser
         setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
-
+}); // Penutup DOMContentLoaded yang aman
+        
     // =========================================================================
     // 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)
     // =========================================================================

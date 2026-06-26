@@ -2330,8 +2330,8 @@ function injeksiLoncengNotifikasiProfil() {
 
 window.muatStatusKemitraan = function() {
     const penunjukStatus = document.getElementById('partner-status');
-    const labelLogistik = document.getElementById('logistik-share'); 
-    const labelItem = document.getElementById('item-terproses');     
+    const labelLogistik = document.getElementById('logistik-share-val'); // Disesuaikan dengan ID di index.html Anda
+    const labelItem = document.getElementById('produk-terproses-val'); // Disesuaikan dengan ID di index.html Anda
     
     if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
         if (penunjukStatus) {
@@ -2353,7 +2353,7 @@ window.muatStatusKemitraan = function() {
             if (penunjukStatus) {
                 penunjukStatus.innerText = statusFinal;
                 
-                if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT") {
+                if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT" || statusFinal === "AKTIF") {
                     penunjukStatus.style.background = "#d1fae5"; 
                     penunjukStatus.style.color = "#065f46";      
                 } else if (statusFinal === "PROSES REVIEW") {
@@ -2365,11 +2365,31 @@ window.muatStatusKemitraan = function() {
                 }
             }
             
-            if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
-            if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
+            // Sinkronisasi data share logistik dan item terproses
+            if (labelLogistik && data.logistikShare !== undefined) {
+                labelLogistik.innerText = data.logistikShare + " %";
+            }
+            if (labelItem && data.produkTerproses !== undefined) {
+                labelItem.innerText = data.produkTerproses + " Item";
+            }
             
-            injeksiLoncengNotifikasiProfil();
-            cekPerubahanStatusSistem(statusFinal);
+            // =========================================================================
+            // KUNCI LOGIKA: Notifikasi Lonceng & Banner Hanya Aktif Jika SelaIn PROSES REVIEW
+            // =========================================================================
+            if (statusFinal !== "PROSES REVIEW") {
+                // Inisialisasi animasi/gaya CSS pendukung jika belum terpasang
+                if (typeof inisialisasiGayaDigitalPro === "function") inisialisasiGayaDigitalPro();
+                
+                // Tampilkan lonceng di sebelah teks status di halaman profil
+                injeksiLoncengNotifikasiProfil();
+                
+                // Jalankan pengecekan memori lokal untuk memicu banner popup di beranda atas
+                cekPerubahanStatusSistem(statusFinal);
+            } else {
+                // Jika status kembali atau masih PROSES REVIEW, bersihkan lonceng jika ada
+                const loncengEksis = document.getElementById('dpi-profile-bell');
+                if (loncengEksis) loncengEksis.remove();
+            }
             
         } else {
             if (penunjukStatus) {
@@ -2379,6 +2399,9 @@ window.muatStatusKemitraan = function() {
             }
             if (labelLogistik) labelLogistik.innerText = "0.00 %";
             if (labelItem) labelItem.innerText = "0 Item";
+            
+            const loncengEksis = document.getElementById('dpi-profile-bell');
+            if (loncengEksis) loncengEksis.remove();
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });

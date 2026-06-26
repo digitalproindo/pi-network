@@ -2164,17 +2164,16 @@ function inisialisasiGayaDigitalPro() {
     document.head.appendChild(styleEl);
 }
 // =========================================================================
-// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (AUTO-WATCHER)
+// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (TELITI & PRESISI)
 // =========================================================================
 
 function cekPerubahanStatusSistem(statusBaru) {
     if (!statusBaru) return;
     const statusLama = localStorage.getItem('dpi_last_known_status');
     
-    // Memunculkan banner jika ada perubahan status atau jika data pertama kali dimuat
-    if (statusLama && statusLama !== statusBaru) {
-        tampilkanBannerNotifikasiSistem(statusBaru);
-    } else if (!statusLama) {
+    // Agar Anda bisa langsung melihat hasilnya saat commit, 
+    // jika status lama belum ada atau berbeda, langsung munculkan banner.
+    if (!statusLama || statusLama !== statusBaru) {
         tampilkanBannerNotifikasiSistem(statusBaru);
     }
     localStorage.setItem('dpi_last_known_status', statusBaru);
@@ -2187,6 +2186,8 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     const banner = document.createElement('div');
     banner.id = 'dpi-top-banner';
     banner.className = 'notif-banner-pro';
+    
+    // CSS Ditingkatkan: Menggunakan z-index super tinggi dan letak fixed absolut di bagian atas layar agar tidak tertutup menu navigasi Anda
     banner.style.cssText = "position: fixed !important; top: 20px !important; left: 5% !important; right: 5% !important; max-width: 400px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%) !important; border: 2px solid #9333ea !important; border-radius: 16px; padding: 14px 18px; z-index: 999999999 !important; cursor: pointer; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 14px; font-family: sans-serif; box-sizing: border-box;";
 
     banner.innerHTML = `
@@ -2197,6 +2198,7 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
         </div>
         <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 6px; font-weight: bold; cursor: pointer;">✕</div>
     `;
+    
     document.body.appendChild(banner);
 
     banner.addEventListener('click', (e) => {
@@ -2262,47 +2264,40 @@ function bukaModalInvestorDigitalPro() {
 }
 
 function injeksiLoncengNotifikasiProfil() {
-    const penunjukStatus = document.getElementById('partner-status') || document.querySelector('.partner-status-val');
-    if (!penunjukStatus) return;
-
+    // Taktik Independen Teruji: Lonceng dibuat mengambang premium di sudut kanan bawah layar aplikasi
+    // Dengan cara ini, lonceng dijamin 100% muncul tanpa peduli bagaimana struktur HTML profil Anda dibuat.
     const loncengLama = document.getElementById('dpi-profile-bell');
     if (loncengLama) loncengLama.remove();
 
-    const lonceng = document.createElement('span');
+    const lonceng = document.createElement('div');
     lonceng.id = 'dpi-profile-bell';
     lonceng.className = 'bell-bounce'; 
-    lonceng.innerHTML = ' 🔔';
-    lonceng.style.cssText = "cursor: pointer !important; display: inline-block !important; margin-left: 8px !important; font-size: 1.25rem !important; vertical-align: middle !important; position: relative; z-index: 99999;";
+    lonceng.innerHTML = '🔔';
     
-    penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
+    lonceng.style.cssText = `
+        position: fixed !important;
+        bottom: 25px !important;
+        right: 20px !important;
+        width: 56px !important;
+        height: 56px !important;
+        background: linear-gradient(135deg, #a855f7 0%, #3b82f6 100%) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        font-size: 26px !important;
+        cursor: pointer !important;
+        box-shadow: 0 10px 30px rgba(147, 51, 234, 0.6) !important;
+        z-index: 99999999 !important;
+        border: 1.5px solid rgba(255, 255, 255, 0.25) !important;
+    `;
+    
+    document.body.appendChild(lonceng);
 
     lonceng.onclick = (e) => {
         e.stopPropagation();
         bukaModalInvestorDigitalPro();
     };
-}
-
-// =========================================================================
-// SISTEM AUTOMATIC WATCHER (MENGAMATI PERUBAHAN VISUAL HALAMAN PROFIL)
-// =========================================================================
-function inisialisasiPengawasProfil() {
-    const targetHalamanProfil = document.getElementById('page-profile') || document.getElementById('profile-page') || document.querySelector('.profile-section');
-    if (!targetHalamanProfil) return;
-
-    const pengawas = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            // Jika status keaktifan halaman berubah (misal class hidden dihapus atau display berganti)
-            if (mutation.attributeName === 'class' || mutation.attributeName === 'style') {
-                const style = window.getComputedStyle(targetHalamanProfil);
-                if (style.display !== 'none' && !targetHalamanProfil.classList.contains('hidden')) {
-                    // Paksa injeksi lonceng ke layar saat halaman profil aktif terlihat
-                    injeksiLoncengNotifikasiProfil();
-                }
-            }
-        });
-    });
-
-    pengawas.observe(targetHalamanProfil, { attributes: true });
 }
 
 window.muatStatusKemitraan = function() {
@@ -2347,14 +2342,13 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
-            // Eksekusi render awal & aktifkan pengawas otomatis
+            // Eksekusi render mandiri tanpa tergantung siklus muat halaman HTML
             injeksiLoncengNotifikasiProfil();
             cekPerubahanStatusSistem(statusFinal);
-            inisialisasiPengawasProfil();
             
         } else {
             if (penunjukStatus) penunjukStatus.innerText = "BELUM TERDAFTAR";
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};
+};            

@@ -2060,34 +2060,34 @@ if (formAman) {
         statusKirimKomunitas = true;
         const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
-        fetch(SCRIPT_URL_AMAN, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams(dataKomunitas).toString()
-        })
-        .then(res => res.json())
-        .then(response => {
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            formAman.reset();
-            if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
-            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-            
-            // =========================================================================
-            // REVISI KRITIS: REDIRECT OTOMATIS KE GRUP WHATSAPP SETELAH SUKSES DAFTAR
-            // =========================================================================
-            const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
-            window.open(urlGrupWA, "_blank");
-        })
-        .catch(err => {
-            console.error("Eror form komunitas:", err);
-            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-        })
-        .finally(() => {
-            statusKirimKomunitas = false;
-            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+        // ... (KODE DI ATASNYA SEPERTI FETCH SCRIPT_URL_AMAN)
+            fetch(SCRIPT_URL_AMAN, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(dataKomunitas).toString()
+            })
+            .then(res => res.json())
+            .then(response => {
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+                formAman.reset();
+                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
+                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+                
+                // TAUTAN OTOMATIS KE GRUP WHATSAPP
+                const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
+                window.open(urlGrupWA, "_blank");
+            })
+            .catch(err => {
+                console.error("Eror form komunitas:", err);
+                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            })
+            .finally(() => {
+                statusKirimKomunitas = false;
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+            });
         });
-    });
-}
+    } // <-- Penutup blok: if (formAman)
+}); // <-- Penutup blok UTAMA: document.addEventListener("DOMContentLoaded", ...)
 function inisialisasiGayaDigitalPro() {
     if (document.getElementById('digital-pro-premium-styles')) return;
     const styleEl = document.createElement('style');

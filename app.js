@@ -2145,24 +2145,6 @@ function tampilkanModalSuksesDPI() {
     };
 }
 
-function inisialisasiGayaDigitalPro() {
-    if (document.getElementById('digital-pro-premium-styles')) return;
-    const styleEl = document.createElement('style');
-    styleEl.id = 'digital-pro-premium-styles';
-    styleEl.innerHTML = `
-        @keyframes digitalBgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes slideInNotif { 0% { transform: translateY(-120%) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); } 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); } }
-        @keyframes ringBell { 0%, 100% { transform: rotate(0); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
-        
-        .digital-bg-animated { background: linear-gradient(-45deg, #090514, #120a2a, #030f26, #0d0b18); background-size: 400% 400%; animation: digitalBgMove 8s ease infinite; }
-        .notif-banner-pro { animation: slideInNotif 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, pulseGlow 2.5s infinite; }
-        .bell-bounce { display: inline-block; animation: ringBell 2s ease infinite; transform-origin: top center; cursor: pointer; font-size: 1.15rem; vertical-align: middle; margin-left: 6px; }
-        .custom-pro-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
-    `;
-    document.head.appendChild(styleEl);
-}
 // =========================================================================
 // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (PRESISI TOTAL)
 // =========================================================================
@@ -2346,4 +2328,4 @@ window.muatStatusKemitraan = function() {
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};       
+};

@@ -1306,8 +1306,8 @@ const productsData = [
         desc: "Satu ekor ayam kampung asli yang sudah dipotong dan diungkep dengan bumbu kuning rempah tradisional. Tekstur daging empuk, meresap, siap digoreng atau dibakar."
     }
 ];
-// =========================================================================
-// 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS) - FIXED SINKRONISASI
+ // =========================================================================
+// 2. PI BLOCKCHAIN CORE INITIALIZATION (LOGIN OTOMATIS) - FIXED VERSION
 // =========================================================================
 async function initPi() {
     try {
@@ -1340,12 +1340,11 @@ async function initPi() {
             configureLogoutButton();
 
             // =========================================================================
-            // PERBAIKAN UTAMA: Memastikan pemanggilan window.muatStatusKemitraan sinkron
+            // PERBAIKAN UTAMA: Ambil data status kemitraan & produk secara realtime 
+            // tepat setelah User ID (UID) berhasil didapatkan dari server Pi Core Team.
             // =========================================================================
-            if (typeof window.muatStatusKemitraan === "function") {
-                console.log("Menjalankan sinkronisasi status kemitraan awal via Window Global...");
-                window.muatStatusKemitraan();
-            } else if (typeof muatStatusKemitraan === "function") {
+            if (typeof muatStatusKemitraan === "function") {
+                console.log("Menjalankan sinkronisasi status kemitraan awal...");
                 muatStatusKemitraan();
             }
             
@@ -1357,8 +1356,45 @@ async function initPi() {
         isPiInitialized = false;
     }
 }
+
+// Fungsi Wajib dari Pi Core Team untuk menyelesaikan transaksi yang menggantung (Incomplete Payment)
+async function handleIncompletePayment(payment) {
+    console.log("Menangani pembayaran gantung ditemukan:", payment.identifier);
+    try {
+        await fetch('https://www.ptdigitalproindo.com/api/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ paymentId: payment.identifier, txid: payment.transaction.txid })
+        });
+        console.log("Pembayaran gantung berhasil diselesaikan secara otomatis.");
+    } catch (err) {
+        console.error("Gagal menyelesaikan pembayaran gantung:", err);
+    }
+}
+
+// Helper untuk menyetel tombol logout secara aman tanpa duplikasi event listener
+function configureLogoutButton() {
+    const loginBtn = document.getElementById('login-btn');
+    if (loginBtn) {
+        loginBtn.onclick = null; 
+        loginBtn.innerText = "LOGOUT";
+        loginBtn.style.background = "linear-gradient(to right, #ef4444, #b91c1c)";
+        
+        const logoutAction = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            location.reload(); 
+        };
+        
+        const newLoginBtn = loginBtn.cloneNode(true);
+        newLoginBtn.addEventListener('click', logoutAction);
+        if(loginBtn.parentNode) {
+            loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
+        }
+    }
+}
 // =========================================================================
-// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC) - FIXED TOTAL SINKRON
+// 3. PI AUTHENTICATION SYSTEMS (MANUAL RESIGN-IN LOGIC) - FIXED VERSION
 // =========================================================================
 window.handleAuth = async () => {
     if (!isPiInitialized) {
@@ -1414,11 +1450,9 @@ window.handleAuth = async () => {
         configureLogoutButton();
 
         // =========================================================================
-        // PERBAIKAN MUTLAK: Mengarahkan eksekusi ke window.muatStatusKemitraan global
+        // PERBAIKAN: Ambil status kemitraan setelah login manual sukses
         // =========================================================================
-        if (typeof window.muatStatusKemitraan === "function") {
-            window.muatStatusKemitraan();
-        } else if (typeof muatStatusKemitraan === "function") {
+        if (typeof muatStatusKemitraan === "function") {
             muatStatusKemitraan();
         }
 
@@ -1430,6 +1464,55 @@ window.handleAuth = async () => {
             alert("Gagal Login: " + err.message);
         }
     }
+};
+
+function showLoginPrompt() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
+    overlay.innerHTML = `
+        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
+            <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Selamat Datang</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Silakan Login agar Anda bisa melanjutkan pembelian produk premium di Marketplace DIGITAL PRO INDO</p>
+            <button id="modal-confirm-login-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LOGIN SEKARANG</button>
+            <button id="modal-cancel-login-btn" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Mungkin Nanti</button>
+        </div>`;
+    document.body.appendChild(overlay);
+
+    document.getElementById('modal-confirm-login-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        overlay.remove();
+        window.handleAuth();
+    });
+
+    document.getElementById('modal-cancel-login-btn').addEventListener('click', function() {
+        overlay.remove();
+    });
+}
+
+function showAddressPrompt() {
+    const overlay = document.createElement('div');
+    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:20000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(8px); font-family:'Inter', sans-serif;";
+    overlay.innerHTML = `
+        <div style="background:#0b2135; border:2px solid #FFD700; padding:35px 25px; border-radius:25px; max-width:320px; width:100%; text-align:center;">
+            <div style="font-size: 50px; margin-bottom: 15px;">📍</div>
+            <h2 style="color:#FFD700; margin:0; font-weight:800; text-transform:uppercase;">Alamat Kosong</h2>
+            <p style="color:#f8fafc; margin:15px 0 25px; font-size:0.95rem;">Lengkapi alamat pengiriman Anda terlebih dahulu agar kami dapat mengirimkan produk dengan tepat.</p>
+            <button id="modal-confirm-addr-btn" style="background:linear-gradient(45deg, #FFD700, #FFA500); color:#0b2135; border:none; width:100%; padding:15px; border-radius:12px; font-weight:bold; cursor:pointer;">LENGKAPI ALAMAT</button>
+        </div>`;
+    document.body.appendChild(overlay);
+
+    document.getElementById('modal-confirm-addr-btn').addEventListener('click', function(e) {
+        e.preventDefault();
+        overlay.remove();
+        if (typeof window.showAddressForm === 'function') window.showAddressForm();
+    });
+}
+
+// Fungsi Global Baru untuk Membuka Grup WhatsApp resmi Anda secara Aman
+window.bukaGrupWhatsAppMitra = () => {
+    window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1', '_blank');
+    const suksesModal = document.getElementById('digitalSuksesModal');
+    if (suksesModal) suksesModal.style.display = 'none';
 };
 
 // =========================================================================
@@ -1449,6 +1532,9 @@ function renderProducts(data, targetGridId) {
         const displayPrice = p.price.toFixed(5); 
         const discountBadge = (p.discount && p.discount > 0) ? `<span class="discount-badge">-${p.discount}%</span>` : '';
 
+        // Formatisasi harga desimal khusus regional Indonesia (titik jadi koma) sebelum ditransfer ke payment handler
+        const formattedPriceString = p.price.toFixed(5).replace('.', ',');
+
         const card = document.createElement('div');
         card.className = 'product-card';
         card.innerHTML = `
@@ -1463,7 +1549,7 @@ function renderProducts(data, targetGridId) {
                 <div class="free-ship-tag"><img src="https://cdn-icons-png.flaticon.com/512/709/709790.png" width="12"> Gratis ongkir</div>
                 <div class="card-bottom">
                     <div class="rating-text"><span class="star">★</span> ${p.rating} | ${p.sold} terjual</div>
-                    <button class="btn-buy-now" onclick="event.stopPropagation(); if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment(${p.price}, '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu melalui menu Profil.'); }">Beli</button>
+                    <button class="btn-buy-now" onclick="event.stopPropagation(); if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment('${formattedPriceString}', '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu melalui menu Profil.'); }">Beli</button>
                 </div>
             </div>`;
         grid.appendChild(card);
@@ -1477,6 +1563,9 @@ window.openProductDetail = (productId) => {
 
     const bNav = document.querySelector('.bottom-nav');
     if(bNav) bNav.style.display = 'none';
+
+    // Format harga desimal regional Indonesia untuk pembelian langsung di halaman detail
+    const formattedPriceStringDetail = p.price.toFixed(5).replace('.', ',');
 
     document.getElementById('product-detail-page').scrollTop = 0;
     document.getElementById('detail-content').innerHTML = `
@@ -1498,7 +1587,7 @@ window.openProductDetail = (productId) => {
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 12px; margin-top:30px;">
                     <button onclick="window.addToCart('${p.id}')" style="background: white; color: #4a148c; border: 2px solid #4a148c; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer;">+ Keranjang</button>
-                    <button onclick="if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment(${p.price}, '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); }" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
+                    <button onclick="if(typeof currentUser !== 'undefined' && currentUser) { window.handlePayment('${formattedPriceStringDetail}', '${p.name}'); } else { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); }" style="background: #4a148c; color: white; border: none; padding: 18px; border-radius: 18px; font-weight: 800; cursor: pointer; box-shadow: 0 6px 20px rgba(74,20,140,0.3);">Beli Sekarang</button>
                 </div>
             </div>
         </div>`;
@@ -1534,189 +1623,8 @@ window.showAddressForm = () => {
             <h3 style="margin-top:0; margin-bottom:20px; text-align:center;">Alamat Pengiriman</h3>
             <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Nama Penerima</label><input type="text" id="ship-name" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.nama || ''}"></div>
             <div style="margin-bottom:12px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">No HP/WA</label><input type="number" id="ship-phone" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; box-sizing:border-box;" value="${userAddress.telepon || ''}"></div>
-            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap || ''}</textarea></div>
-            <button onclick="saveAddress()" style="width:100%; background:#6748d7; color:white; border:none; padding:14px; border-radius:10px; font-weight:bold; cursor:pointer;">Simpan Alamat</button>
-        </div>`;
-    document.body.appendChild(overlay);
-};
-
-window.saveAddress = () => {
-    const inputName = document.getElementById('ship-name');
-    const inputPhone = document.getElementById('ship-phone');
-    const inputAddr = document.getElementById('ship-address');
-
-    if (!inputName || !inputPhone || !inputAddr) return;
-
-    const valName = inputName.value.trim();
-    const valPhone = inputPhone.value.trim();
-    const valAddr = inputAddr.value.trim();
-    
-    if(!valName || !valPhone || !valAddr) {
-        return alert("⚠️ Mohon lengkapi seluruh data alamat pengiriman Anda!"); 
-    }
-
-    // Set ke variabel global secara aman
-    userAddress = { nama: valName, telepon: valPhone, alamatLengkap: valAddr };
-    
-    // 🔊 EFEK SUARA ELEKTRONIK KUSTOM
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); 
-        osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.08); 
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35); 
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.35);
-    } catch (e) { console.log("Audio diblokir:", e); }
-
-    const currentOverlay = document.getElementById('address-overlay');
-    if (currentOverlay) currentOverlay.remove();
-    
-    window.updateCartUI();
-
-    // 🌟 SEKSI POPUP NOTIFIKASI KUSTOM ALAMAT DISIMPAN
-    const successPopup = document.createElement('div');
-    successPopup.id = "digital-pro-success-alert";
-    successPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 100005; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.3s ease; font-family: 'Inter', sans-serif;";
-    successPopup.innerHTML = `
-        <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border: 2px solid #FFD700; padding: 30px 20px; border-radius: 24px; max-width: 320px; width: 100%; text-align: center; box-shadow: 0 15px 50px rgba(212, 175, 55, 0.2); transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);">
-            <div style="background: rgba(255, 215, 0, 0.1); width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 2px solid #FFD700;"><span style="font-size: 28px;">📍</span></div>
-            <h3 style="color: #FFD700; margin: 0 0 8px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 1.2rem;">Alamat Disimpan!</h3>
-            <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.9rem; line-height: 1.4;">Data pengiriman logistik Anda telah berhasil diperbarui di sistem kami.</p>
-            <button onclick="document.getElementById('digital-pro-success-alert').remove()" style="background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0b2135; border: none; padding: 12px 0; width: 100%; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3); text-transform: uppercase; letter-spacing: 0.5px;">Lanjutkan</button>
-        </div>`;
-    document.body.appendChild(successPopup);
-    
-    setTimeout(() => {
-        successPopup.style.opacity = "1";
-        successPopup.children[0].style.transform = "scale(1)";
-    }, 50);
-};
-
-window.addToCart = (id) => {
-    if (typeof productsData === 'undefined') return;
-    const p = productsData.find(x => x.id === id);
-    if(p) { 
-        cart.push(p); 
-        
-        try {
-            const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(1046.50, audioCtx.currentTime); 
-            osc.frequency.setValueAtTime(1396.91, audioCtx.currentTime + 0.07); 
-            gain.gain.setValueAtTime(0.25, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + 0.3);
-        } catch (e) { console.log("Audio block:", e); }
-        
-        let popupContainer = document.getElementById('digital-pro-popup-container');
-        if (!popupContainer) {
-            popupContainer = document.createElement('div');
-            popupContainer.id = 'digital-pro-popup-container';
-            popupContainer.style.cssText = `position: fixed; top: 50%; left: 50%; transform: translate(-50%, -100%) scale(0.8); background: linear-gradient(135deg, #1a0033 0%, #3d0066 100%); color: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 40px rgba(212, 175, 55, 0.25); border: 2px solid #d4af37; z-index: 100005; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 85%; width: 310px; text-align: center; font-family: 'Inter', sans-serif;`;
-            
-            popupContainer.innerHTML = `
-                <div style="background: rgba(212, 175, 55, 0.1); width: 55px; height: 55px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px dashed #d4af37; margin-bottom: 2px;"><span style="font-size: 24px; color: #d4af37;">🛒</span></div>
-                <div id="dp-popup-title" style="font-size: 14px; font-weight: 700; color: #ffffff; letter-spacing: 0.5px;">SUKSES KERANJANG</div>
-                <img id="dp-popup-img" src="${p.images[0]}" style="width: 85px; height: 85px; object-fit: cover; border-radius: 12px; border: 2px solid #d4af37; box-shadow: 0 5px 15px rgba(0,0,0,0.4); margin: 4px 0;">
-                <div id="dp-popup-text" style="font-size: 12px; color: #dfcbf2; line-height: 1.4; font-weight: 500; padding: 0 10px;">${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.</div>
-                <button onclick="closeDigitalProPopup()" style="background: linear-gradient(90deg, #d4af37 0%, #b89324 100%); color: #1a0033; border: none; padding: 10px 25px; border-radius: 25px; font-size: 12px; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); margin-top: 5px;">KONFIRMASI</button>
-            `;
-            document.body.appendChild(popupContainer);
-        } else {
-            document.getElementById('dp-popup-img').src = p.images[0];
-            document.getElementById('dp-popup-text').innerHTML = `${p.name} telah aman ditambahkan ke keranjang belanja digital Anda.`;
-        }
-        
-        setTimeout(() => {
-            popupContainer.style.transform = 'translate(-50%, -50%) scale(1)';
-            popupContainer.style.opacity = '1';
-            popupContainer.style.pointerEvents = 'auto';
-        }, 10);
-        
-        window.cartAutoCloseTimer = setTimeout(closeDigitalProPopup, 4000); 
-    }
-};
-
-window.closeDigitalProPopup = () => {
-    clearTimeout(window.cartAutoCloseTimer);
-    let popupContainer = document.getElementById('digital-pro-popup-container');
-    if (popupContainer) {
-        popupContainer.style.transform = 'translate(-50%, -100%) scale(0.8)';
-        popupContainer.style.opacity = '0';
-        popupContainer.style.pointerEvents = 'none';
-        window.updateCartUI();
-    }
-};
-
-window.removeFromCart = (index) => {
-    cart.splice(index, 1); 
-    window.updateCartUI(); 
-};
-
-window.updateCartUI = () => {
-    const grid = document.getElementById('cart-items');
-    if (!grid) return;
-
-    if (cart.length === 0) {
-        grid.innerHTML = `
-            <div style="text-align:center; padding:80px 24px; font-family:'Inter', sans-serif;">
-                <div style="margin-bottom: 25px;"><img src="https://cdn-icons-png.flaticon.com/512/1162/1162499.png" style="width: 120px; opacity: 0.8;"></div>
-                <h2 style="color:#1a1a1a; margin-bottom:12px; font-size:1.5rem; font-weight:800;">Keranjang Anda Kosong</h2>
-                <p style="color:#64748b; font-size:1rem; line-height:1.5; margin-bottom:30px;">Sepertinya Anda belum menambahkan produk premium.</p>
-                <button onclick="switchPage('home')" style="background:#6748d7; color:white; border:none; padding:16px 40px; border-radius:18px; font-weight:700; cursor:pointer;">Mulai Belanja</button>
-            </div>`;
-        return;
-    }
-
-    const total = cart.reduce((s, i) => s + i.price, 0).toFixed(5);
-    grid.innerHTML = `
-        <div style="padding: 15px; font-family:'Inter', sans-serif;">
-            <div onclick="window.showAddressForm()" style="background:#fdfaff; padding:15px; border-radius:15px; display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; border:1px dashed #6748d7; cursor:pointer;">
-                <div style="display:flex; align-items:center; gap:12px; text-align:left;">
-                    <span>📍</span>
-                    <div>
-                        <div style="font-size:0.7rem; color:#6748d7; font-weight:bold;">ALAMAT PENGIRIMAN</div>
-                        <div style="font-size:0.85rem; font-weight:700;">${userAddress.nama ? userAddress.nama + ' (' + userAddress.telepon + ')' : 'Klik untuk lengkapi alamat'}</div>
-                    </div>
-                </div>
-                <span>></span>
-            </div>
-            <div>
-                ${cart.map((item, index) => `
-                    <div style="display:flex; align-items:center; gap:12px; background:white; padding:12px; margin-bottom:12px; border-radius:18px; position:relative; border: 1px solid #f1f5f9;">
-                        <img src="${item.images[0]}" style="width:70px; height:70px; border-radius:12px; object-fit:cover;">
-                        <div style="flex:1; text-align:left;">
-                            <div style="font-size:0.85rem; font-weight:700; color:#333;">${item.name}</div>
-                            <div style="font-size:1rem; font-weight:800; color:#b71c1c;">π ${item.price.toFixed(5)}</div>
-                        </div>
-                        <div onclick="window.removeFromCart(${index})" style="position:absolute; top:10px; right:10px; width:26px; height:26px; background:#fff1f1; color:#ff4d4f; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:11px;">✕</div>
-                    </div>
-                `).join('')}
-            </div>
-            <div style="background:white; padding:20px; border-radius:22px; margin-top:20px; border: 1px solid #f1f5f9;">
-                <div style="display:flex; justify-content:space-between; margin-bottom:10px; color:#64748b;"><span>Subtotal (${cart.length} Produk)</span><span>π ${total}</span></div>
-                <div style="display:flex; justify-content:space-between; margin-bottom:20px; font-size:1.1rem; font-weight:800; border-top:2px solid #f8fafc; padding-top:15px;"><span>Total Tagihan</span><span style="color:#b71c1c;">π ${total}</span></div>
-                
-                <button style="width:100%; padding:16px; border-radius:16px; background:#6748d7; color:white; font-weight:800; border:none; cursor:pointer;" 
-                        onclick="if(typeof currentUser === 'undefined' || !currentUser) { if(typeof showLoginPrompt === 'function') showLoginPrompt(); else alert('Silakan login terlebih dahulu.'); } else if(!userAddress.nama || !userAddress.alamatLengkap) { if(typeof showAddressPrompt === 'function') showAddressPrompt(); else alert('Silakan lengkapi alamat pengiriman Anda terlebih dahulu.'); } else { window.handlePayment(${total}, 'Total Keranjang'); }">
-                    CHECKOUT SEKARANG 🚀
-                </button>
-            </div>
-        </div>`;
-};
+            <div style="margin-bottom:20px;"><label style="font-size:0.8rem; font-weight:bold; color:#666;">Alamat Lengkap</label><textarea id="ship-address" style="width:100%; padding:12px; margin-top:5px; border:1px solid #ddd; border-radius:8px; height:80px; box-sizing:border-box; resize:none;">${userAddress.alamatLengkap || ''} 
+            };
 
 window.switchPage = (pageId) => {
     ['page-home', 'page-cari', 'page-keranjang', 'page-profile'].forEach(p => {
@@ -1734,13 +1642,8 @@ window.switchPage = (pageId) => {
         renderProducts(productsData, 'main-grid');
     }
     
-    // PERBAIKAN: Memastikan pemanggilan global window saat menu profil diakses
-    if(pageId === 'profile') {
-        if (typeof window.muatStatusKemitraan === "function") {
-            window.muatStatusKemitraan();
-        } else if (typeof muatStatusKemitraan === "function") {
-            muatStatusKemitraan();
-        }
+    if(pageId === 'profile' && typeof muatStatusKemitraan === "function") {
+        muatStatusKemitraan();
     }
 };
 
@@ -1753,14 +1656,18 @@ window.handlePayment = async (amount, name) => {
         return;
     }
     if (!currentUser) { showLoginPrompt(); return; }
-    if (!userAddress.nama) { showAddressPrompt(); return; }
+    
+    // PENGAMAN: Pastikan objek userAddress ada sebelum membaca propertinya
+    if (typeof userAddress === 'undefined' || !userAddress || !userAddress.nama) { 
+        showAddressPrompt(); 
+        return; 
+    }
 
     let detailedItemName = name;
     if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
         detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
     }
 
-    // PERBAIKAN 1: Amankan konversi agar parameter angka maupun string tidak memicu eror .toFixed()
     const parsedAmount = parseFloat(amount);
     if (isNaN(parsedAmount)) {
         alert("⚠️ Format harga tidak valid.");
@@ -1816,25 +1723,26 @@ window.handlePayment = async (amount, name) => {
 };
 
 function showSuccessOverlay(amount, name, txid) {
-    // URL Apps Script Utama (Omnibus Version)
     const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
     
-    // KUNCI REVISI: Menyertakan 'action' dan menyesuaikan 'totalPi' agar dibaca oleh Jalur 2 Apps Script
+    // PENGAMAN BERLAPIS: Menggunakan penanganan fallback jika userAddress kosong
+    const namaPenerima = window.userAddress?.nama || "Pioneer";
+    const alamatLengkap = window.userAddress?.alamatLengkap || "-";
+    const teleponUser = window.userAddress?.telepon || "-";
+
     const dataTransaksi = {
         action: "transaksi", 
-        penerima: userAddress.nama || "",
+        penerima: namaPenerima,
         username: (currentUser && currentUser.username) ? currentUser.username : "User Pi",
         item: name || "",
-        totalPi: amount || "", // Diubah dari 'total' menjadi 'totalPi' agar sesuai dengan script Google
+        totalPi: amount || "", 
         txid: txid || "",
-        alamat: userAddress.alamatLengkap || "",
-        telepon: userAddress.telepon || ""
+        alamat: alamatLengkap,
+        telepon: teleponUser
     };
 
-    // Mengubah objek menjadi URLSearchParams agar bodi data x-www-form-urlencoded terbentuk sempurna
     const googleFormBody = new URLSearchParams(dataTransaksi);
 
-    // Kirim data ke Google Apps Script menggunakan metode POST
     fetch(excelWebhookUrl, { 
         method: 'POST', 
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
@@ -1850,9 +1758,8 @@ function showSuccessOverlay(amount, name, txid) {
     const overlay = document.createElement('div');
     overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
     
-    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(userAddress.nama)}%0A• *Telepon:* ${userAddress.telepon}%0A• *Alamat:* ${encodeURIComponent(userAddress.alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
+    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(namaPenerima)}%0A• *Telepon:* ${teleponUser}%0A• *Alamat:* ${encodeURIComponent(alamatLengkap)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
 
-    // Pastikan variabel ADMIN_WA global sudah terdefinisi di tempat lain, jika tidak berikan fallback nomor
     const nomorAdmin = typeof ADMIN_WA !== 'undefined' ? ADMIN_WA : "628xxxxxxxxxx";
 
     overlay.innerHTML = `
@@ -1889,37 +1796,20 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (REVISI AUTOLOGIN)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FIXED RENDER)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA
-    if (typeof initPi === "function") {
-        try { 
-            await initPi(); 
-            
-            // 🟢 PAKSA SET TRUE DI SINI SETELAH initPi SELESAI DIEKSEKUSI
-            window.isPiInitialized = true;
-            if (typeof isPiInitialized !== 'undefined') isPiInitialized = true;
-
-        } catch(e) { 
-            console.error("Gagal initPi otomatis:", e); 
-        }
-    }
-
-    // 2. Suntik Gaya Animasi & Desain Futuristik
     inisialisasiGayaDigitalPro();
 
-    // 3. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
     } else {
         console.warn("Fungsi renderProducts atau data produk belum siap.");
     }
 
-    // 4. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {
@@ -1937,7 +1827,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 5. Deteksi klik di luar untuk menutup SideNav
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -1948,7 +1837,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 6. Rotasi Banner Otomatis
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -1960,31 +1848,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
+
+    if (typeof initPi === "function") {
+        try { await initPi(); } catch(e) { console.error("Gagal initPi:", e); }
+    }
     
-    // 7. PENANGANAN VISUAL TOMBOL LOGIN (REVISI SINKRONISASI OTOMATIS)
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn) {
-        // Pasang fungsi klik manual sebagai fallback utama
+    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
         loginBtn.onclick = window.handleAuth;
-
-        // Lakukan pengecekan berkala terhadap status autentikasi Pi di latar belakang
-        let intervalCekLogin = setInterval(() => {
-            const userTerautentikasi = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
-            if (userTerautentikasi) {
-                // Jika user terdeteksi sudah login otomatis lewat Pi SDK, ubah UI tombol kuning menjadi hijau aktif
-                loginBtn.innerText = "PROFIL AKTIF";
-                loginBtn.style.cssText = "background: #10b981 !important; color: #ffffff !important; font-weight: bold;";
-                clearInterval(intervalCekLogin);
-            }
-        }, 300);
-
-        // Batasi pengecekan selama maksimal 5 detik agar tidak membebani memori browser
-        setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
 
-    // =========================================================================
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (VERSI LENGKAP & AMAN)
-    // =========================================================================
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -2024,12 +1897,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             .then(response => {
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
-                
-                const modalLamaCentang = document.getElementById('modalSuksesDigital') || document.getElementById('successOverlay'); 
-                if (modalLamaCentang) modalLamaCentang.remove();
-
-                tampilkanModalSuksesDPI();
-                
+                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
                 if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
             .catch(err => {
@@ -2042,272 +1910,85 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
+});
 
-    // =========================================================================
-    // FUNGSI POPUP SUKSES: STRUKTUR DENGAN LOGO TRANSPARAN BERSIH
-    // =========================================================================
-    function tampilkanModalSuksesDPI() {
-        const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
-        if (modalEksis) modalEksis.remove();
-
-        const overlay = document.createElement('div');
-        overlay.id = 'dpi-modal-sukses-daftar';
-        overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(4, 2, 10, 0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); font-family:sans-serif;";
-
-        const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
-        const urlLogoPro = "https://i.ibb.co.com/9kgBjCvq/1001964278-removebg-preview.png";
-
-        overlay.innerHTML = `
-            <div style="background:#0d081b; border:1px solid #c29b38; padding:35px 24px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-sizing:border-box; box-shadow:0 20px 50px rgba(0,0,0,0.6);">
-                <div style="width:130px; height:130px; margin:0 auto 15px; display:flex; align-items:center; justify-content:center;">
-                    <img src="${urlLogoPro}" alt="Digital Pro Indo" style="width:100%; height:100%; object-fit:contain;">
-                </div>
-                <h3 style="margin:0; color:#ffffff; font-weight:700; font-size:1.5rem; letter-spacing:0.5px;">Pendaftaran Berhasil!</h3>
-                <p style="color:#a4a2b6; font-size:0.9rem; margin:12px 0 24px 0; line-height:1.5;">Data Anda telah aman tersimpan dalam ekosistem database pusat.</p>
-                <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.05); border-radius:14px; padding:16px; text-align:left; margin-bottom:24px; box-sizing:border-box;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; width:100%; margin-bottom:6px;">
-                        <span style="color:#767485; font-size:0.75rem; font-weight:700; letter-spacing:0.5px;">STATUS</span>
-                        <span style="color:#d97706; font-size:0.75rem; font-weight:700; margin-left:auto;">PROSES REVIEW</span>
-                    </div>
-                    <p style="margin:0; color:#a4a2b6; font-size:0.8rem; line-height:1.4;">Tim kami sedang melakukan validasi berkas kemitraan wilayah Anda.</p>
-                </div>
-                <a href="${urlGrupWA}" target="_blank" style="display:block; background:linear-gradient(90deg, #10b981 0%, #059669 100%); color:#ffffff; text-decoration:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.95rem; text-align:center; margin-bottom:12px; letter-spacing:0.5px; box-shadow:0 4px 12px rgba(16,185,129,0.2);">
-                    GABUNG GRUP WHATSAPP
-                </a>
-                <button id="btnKembaliBeranda" style="width:100%; background:#334155; color:#ffffff; border:none; padding:15px; border-radius:14px; font-weight:700; font-size:0.9rem; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; letter-spacing:0.5px;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
-                    KEMBALI KE BERANDA
-                </button>
-            </div>`;
-        document.body.appendChild(overlay);
-
-        document.getElementById('btnKembaliBeranda').onclick = () => {
-            overlay.remove();
-            if (typeof window.switchPage === 'function') {
-                window.switchPage('home');
-            } else {
-                location.reload();
-            }
-        };
-    }
-
-    // =========================================================================
-    // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
-    // =========================================================================
-    function cekPerubahanStatusSistem(statusBaru) {
-        if (!statusBaru) return;
-        const statusLama = localStorage.getItem('dpi_last_known_status');
+function inisialisasiGayaDigitalPro() {
+    if (document.getElementById('digital-pro-premium-styles')) return;
+    const styleEl = document.createElement('style');
+    styleEl.id = 'digital-pro-premium-styles';
+    styleEl.innerHTML = `
+        @keyframes digitalBgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        @keyframes slideInNotif { 0% { transform: translateY(-120%) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); } 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); } }
+        @keyframes ringBell { 0%, 100% { transform: rotate(0); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
         
-        if (statusBaru !== "PROSES REVIEW" && (!statusLama || statusLama !== statusBaru)) {
-            tampilkanBannerNotifikasiSistem(statusBaru);
-        }
-        localStorage.setItem('dpi_last_known_status', statusBaru);
-    }
+        .digital-bg-animated { background: linear-gradient(-45deg, #090514, #120a2a, #030f26, #0d0b18); background-size: 400% 400%; animation: digitalBgMove 8s ease infinite; }
+        .notif-banner-pro { animation: slideInNotif 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, pulseGlow 2.5s infinite; }
+        .bell-bounce { display: inline-block; animation: ringBell 2s ease infinite; transform-origin: top center; cursor: pointer; font-size: 1.15rem; vertical-align: middle; margin-left: 6px; }
+        .custom-pro-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
+    `;
+    document.head.appendChild(styleEl);
+}
 
-    function tampilkanBannerNotifikasiSistem(statusTerbaru) {
+// =========================================================================
+// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
+// =========================================================================
+function cekPerubahanStatusSistem(statusBaru) {
+    if (!statusBaru) return;
+    const statusLama = localStorage.getItem('dpi_last_known_status');
+    
+    if (statusLama && statusLama !== statusBaru) {
+        tampilkanBannerNotifikasiSistem(statusBaru);
+    }
+    localStorage.setItem('dpi_last_known_status', statusBaru);
+}
+
+function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     const bannerEksis = document.getElementById('dpi-top-banner');
     if (bannerEksis) bannerEksis.remove();
 
-    // Kontainer luar pembungkus banner dengan padding proporsional
-    const bannerWrapper = document.createElement('div');
-    bannerWrapper.id = 'dpi-top-banner';
-    bannerWrapper.style.cssText = "width: 100%; padding: 2px 16px 8px 16px; margin-top: -5px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
-    // Elemen utama banner dengan sudut melengkung mewah
     const banner = document.createElement('div');
+    banner.id = 'dpi-top-banner';
     banner.className = 'notif-banner-pro';
-    banner.style.cssText = "width: 100%; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 11px 14px; font-size: 0.82rem; font-weight: bold; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255, 215, 0, 0.4); cursor: pointer; box-sizing: border-box; position: relative;";
+    banner.style.cssText = "position: fixed; top: 15px; left: 5%; right: 5%; max-width: 420px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%); border: 1.5px solid #9333ea; border-radius: 16px; padding: 14px; z-index: 999999; cursor: pointer; box-shadow: 0 12px 35px rgba(0,0,0,0.6); display: flex; align-items: center; gap: 12px; font-family: sans-serif; box-sizing: border-box;";
 
     banner.innerHTML = `
-        <div style="background: rgba(255, 215, 0, 0.2); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #ffd700; flex-shrink: 0;"><span style="font-size: 14px;">📢</span></div>
-        <div style="flex-grow: 1; text-align: left; line-height: 1.4; padding-right: 15px;">
-            Selamat! Status Kemitraan Anda Telah Diperbarui Menjadi <span style="color: #ffd700; text-transform: uppercase; font-weight: 900;">${statusTerbaru}</span>. Klik untuk info detail program pengembangan.
+        <div style="background: rgba(147, 51, 234, 0.15); width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #9333ea; flex-shrink: 0;"><span style="font-size: 18px;">🔔</span></div>
+        <div style="flex-grow: 1;">
+            <div style="color: #a855f7; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Pemberitahuan Status</div>
+            <div style="color: #ffffff; font-size: 0.85rem; font-weight: 700; margin-top: 1px;">Kemitraan Menjadi: <span style="color: #38bdf8;">${statusTerbaru}</span></div>
         </div>
-        <div class="close-banner-x" style="color: rgba(255,255,255,0.6); font-size: 16px; padding: 4px; font-weight: bold; cursor: pointer; flex-shrink: 0; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">✕</div>
+        <div class="close-banner-x" style="color: #64748b; font-size: 16px; padding: 4px 6px; font-weight: bold; cursor: pointer;">✕</div>
     `;
-
-    bannerWrapper.appendChild(banner);
-
-    // TARGET INJEKSI PRESISI: Tempatkan persis di bawah running text / di atas gambar banner
-    // Mencari elemen input pencarian, elemen teks selamat datang, atau kontainer slide banner utama
-    const sliderPromosi = document.getElementById('banner-img')?.parentElement || document.querySelector('.carousel') || document.querySelector('[style*="Ubay.png"]')?.parentElement;
-    const runningTextContainer = document.querySelector('[id*="running"]') || document.querySelector('[class*="marquee"]') || document.getElementById('search-input')?.parentElement;
-
-    if (sliderPromosi) {
-        // Jika pembungkus slide banner ditemukan, sisipkan NOTIFIKASI tepat SEBELUM slide banner tersebut
-        sliderPromosi.parentNode.insertBefore(bannerWrapper, sliderPromosi);
-    } else if (runningTextContainer) {
-        // Fallback 1: Jika slide banner tidak ketemu, sisipkan tepat SETELAH running text container
-        runningTextContainer.insertAdjacentElement('afterend', bannerWrapper);
-    } else {
-        // Fallback 2: Jika semua gagal, letakkan di bawah header seperti sebelumnya
-        const headerAplikasi = document.querySelector('header');
-        if (headerAplikasi) {
-            headerAplikasi.insertAdjacentElement('afterend', bannerWrapper);
-        } else {
-            document.body.insertBefore(bannerWrapper, document.body.firstChild);
-        }
-    }
+    document.body.appendChild(banner);
 
     banner.addEventListener('click', (e) => {
-        if (e.target.classList.contains('close-banner-x')) { 
-            e.stopPropagation(); 
-            bannerWrapper.remove(); 
-            return; 
-        }
+        if (e.target.classList.contains('close-banner-x')) { e.stopPropagation(); banner.remove(); return; }
+        banner.remove();
         bukaModalInvestorDigitalPro();
     });
-    }
+}
 
-    function bukaModalInvestorDigitalPro() {
-        const modalEksis = document.getElementById('dpi-modal-investor-pro');
-        if (modalEksis) modalEksis.remove();
+function bukaModalInvestorDigitalPro() {
+    const modalEksis = document.getElementById('dpi-modal-investor-pro');
+    if (modalEksis) modalEksis.remove();
 
-        const overlay = document.createElement('div');
-        overlay.id = 'dpi-modal-investor-pro';
-        overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); z-index: 1000000; display: flex; align-items: center; justify-content: center; padding: 0 20px; box-sizing: border-box; font-family: sans-serif;";
+    const overlay = document.createElement('div');
+    overlay.id = 'dpi-modal-investor-pro';
+    overlay.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(3, 2, 7, 0.85); backdrop-filter: blur(7px); z-index: 1000000; display: flex; align-items: center; justify-content: center; padding: 0 20px; box-sizing: border-box; font-family: sans-serif;";
 
-        overlay.innerHTML = `
-            <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
-                <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
-                <div style="text-align: center; margin-bottom: 22px;">
-                    <span style="font-size: 36px; display: block; margin-bottom: 6px;">📢</span>
-                    <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1.4;">
-                        Kesempatan Menjadi Bagian dari Pengembangan <span style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Digital Pro Indo</span>
-                    </h2>
-                </div>
-                <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
-                    <p>Halo Sahabat Digital Pro Indo! 👋</p>
-                    <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa.</p>
-                    <p style="background: rgba(168, 85, 247, 0.08); border-left: 3px solid #a855f7; padding: 12px; border-radius: 0 12px 12px 0; margin: 16px 0; color: #e2e8f0;">
-                        🚀 Kami membuka kesempatan bagi anggota yang memiliki visi yang sama untuk bergabung sebagai <strong>Investor dan Mitra Pengembangan Digital Pro Indo</strong>.
-                    </p>
-                    <h3 style="color: #f59e0b; font-size: 0.95rem; margin: 20px 0 8px 0; font-weight: 700;">💎 Mengapa Bergabung Sebagai Investor?</h3>
-                    <ul style="margin: 0; padding-left: 0; list-style-type: none;">
-                        <li style="margin-bottom: 6px;">✅ Menjadi bagian dari perjalanan pertumbuhan platform digital karya anak bangsa.</li>
-                        <li style="margin-bottom: 6px;">✅ Berkontribusi langsung dalam pengembangan ekosistem Digital Pro Indo.</li>
-                    </ul>
-                </div>
-                <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
-                    <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Hubungi Hub Manajemen</button>
-                    <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer; font-size: 0.8rem;">Kembali ke Profil</button>
-                </div>
-            </div>`;
-        document.body.appendChild(overlay);
-
-        const tutup = () => overlay.remove();
-        overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
-        overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
-
-        overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
-            const nomorWA = "6287759002419"; 
-            const uidPioneer = (typeof currentUser !== "undefined" && currentUser && currentUser.uid) ? currentUser.uid : "-";
-            const barisPesan = [
-                "Halo Manajemen Digital Pro Indo,",
-                "",
-                "Saya berminat untuk mengetahui lebih lanjut mengenai peluang kerja sama sebagai calon Investor Digital Pro Indo.",
-                "",
-                "ID Autentikasi: " + uidPioneer
-            ];
-            window.open("https://wa.me/" + nomorWA + "?text=" + encodeURIComponent(barisPesan.join("\n")), "_blank");
-        });
-    }
-
-    function injeksiLoncengNotifikasiProfil() {
-        const penunjukStatus = document.getElementById('partner-status');
-        if (!penunjukStatus) return;
-
-        const loncengLama = document.getElementById('dpi-profile-bell');
-        if (loncengLama) loncengLama.remove();
-
-        const lonceng = document.createElement('span');
-        lonceng.id = 'dpi-profile-bell';
-        lonceng.className = 'bell-bounce';
-        lonceng.innerHTML = '🔔';
-        
-        penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
-        lonceng.onclick = (e) => { e.stopPropagation(); bukaModalInvestorDigitalPro(); };
-    }
-
-    window.muatStatusKemitraan = function() {
-        localStorage.removeItem('dpi_last_known_status'); 
-        const penunjukStatus = document.getElementById('partner-status');
-        const labelLogistik = document.getElementById('logistik-share-val') || document.getElementById('logistik-share'); 
-        const labelItem = document.getElementById('produk-terproses-val') || document.getElementById('item-terproses');     
-        
-        if (typeof currentUser === "undefined" || !currentUser || !currentUser.uid) {
-            if (penunjukStatus) {
-                penunjukStatus.innerText = "BELUM LOGIN";
-                penunjukStatus.style.background = "#f1f5f9";
-                penunjukStatus.style.color = "#64748b";
-            }
-            return;
-        }
-        
-        const urlTargetAppsScript = (typeof SCRIPT_URL_AMAN !== "undefined") ? SCRIPT_URL_AMAN : SCRIPT_URL_UTAMA;
-        
-        fetch(`${urlTargetAppsScript}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
-        .then(res => { if (!res.ok) throw new Error("Respon jaringan bermasalah"); return res.json(); })
-        .then(data => {
-            if (!data) return;
-            if (data.status === "ditemukan") {
-         const statusFinal = data.statusKemitraan ? data.statusKemitraan.toUpperCase() : "PROSES REVIEW";
-                if (penunjukStatus) {
-                    penunjukStatus.innerText = statusFinal;
-                    if (statusFinal === "DISETUJUI" || statusFinal === "DEVELOPER IT" || statusFinal === "AKTIF") {
-                        penunjukStatus.style.background = "#d1fae5"; penunjukStatus.style.color = "#065f46";      
-                    } else if (statusFinal === "PROSES REVIEW") {
-                        penunjukStatus.style.background = "#fef3c7"; penunjukStatus.style.color = "#92400e";      
-                    } else {
-                        penunjukStatus.style.background = "#fee2e2"; penunjukStatus.style.color = "#991b1b";
-                    }
-                }
-                if (labelLogistik && data.logistikShare !== undefined) labelLogistik.innerText = data.logistikShare + " %";
-                if (labelItem && data.produkTerproses !== undefined) labelItem.innerText = data.produkTerproses + " Item";
+    overlay.innerHTML = `
+        <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
+            <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
+            <div style="text-align: center; margin-bottom: 22px;">
+                <span style="font-size: 36px; display: block; margin-bottom: 6px;">📢</span>
+                <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1.4;">
+                    Kesempatan Menjadi Bagian dari Pengembangan <span style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Digital Pro Indo</span>
+                </h2>
+            </div>
+            <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
+                <p>Halo Sahabat Digital Pro Indo! 👋</p>
+                <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa.</p>
+  
                 
-                if (statusFinal !== "PROSES REVIEW") {
-                    if (typeof inisialisasiGayaDigitalPro === "function") inisialisasiGayaDigitalPro();
-                    setTimeout(() => {
-                        injeksiLoncengNotifikasiProfil();
-                        cekPerubahanStatusSistem(statusFinal);
-                    }, 300);
-                    } else {
-                    const loncengEksis = document.getElementById('dpi-profile-bell');
-                    if (loncengEksis) loncengEksis.remove();
-                    const bannerEksis = document.getElementById('dpi-top-banner');
-                    if (bannerEksis) bannerEksis.remove();
-                }
-            } else {
-                if (penunjukStatus) {
-                    penunjukStatus.innerText = "BELUM TERDAFTAR";
-                    penunjukStatus.style.background = "#f1f5f9";
-                    penunjukStatus.style.color = "#64748b";
-                }
-                if (labelLogistik) labelLogistik.innerText = "0.00 %";
-                if (labelItem) labelItem.innerText = "0 Item";
-                const loncengEksis = document.getElementById('dpi-profile-bell');
-                if (loncengEksis) loncengEksis.remove();
-            }
-        })
-        .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-    };
-
-    function inisialisasiGayaDigitalPro() {
-        if (document.getElementById('digital-pro-premium-styles')) return;
-        const styleEl = document.createElement('style');
-        styleEl.id = 'digital-pro-premium-styles';
-        styleEl.innerHTML = `
-            @keyframes digitalBgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-            @keyframes slideInNotif { 0% { transform: translateY(-120%) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-            @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); } 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); } }
-            @keyframes ringBell { 0%, 100% { transform: rotate(0); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
-            .digital-bg-animated { background: linear-gradient(-45deg, #090514, #120a2a, #030f26, #0d0b18); background-size: 400% 400%; animation: digitalBgMove 8s ease infinite; }
-            .notif-banner-pro { animation: slideInNotif 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, pulseGlow 2.5s infinite; }
-            .bell-bounce { display: inline-block; animation: ringBell 2s ease infinite; transform-origin: top center; cursor: pointer; font-size: 1.15rem; vertical-align: middle; margin-left: 6px; }
-            .custom-pro-scroll::-webkit-scrollbar { width: 4px; }
-            .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
-        `;
-        document.head.appendChild(styleEl);
-    }
-
-}); 
- 

@@ -2081,34 +2081,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function tampilkanBannerNotifikasiSistem(statusTerbaru) {
-        const bannerEksis = document.getElementById('dpi-top-banner');
-        if (bannerEksis) bannerEksis.remove();
+    const bannerEksis = document.getElementById('dpi-top-banner');
+    if (bannerEksis) bannerEksis.remove();
 
-        const banner = document.createElement('div');
-        banner.id = 'dpi-top-banner';
-        banner.className = 'notif-banner-pro';
-        banner.style.cssText = "width: 100%; background: linear-gradient(90deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 12px 16px; font-family: sans-serif; font-size: 0.85rem; font-weight: bold; text-align: center; position: relative; z-index: 9999; display: flex; align-items: center; justify-content: center; gap: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); border-bottom: 2px solid #ffd700; cursor: pointer; box-sizing: border-box;";
+    // Buat kontainer luar pembungkus banner untuk memberikan margin space kanan-kiri yang aman
+    const bannerWrapper = document.createElement('div');
+    bannerWrapper.id = 'dpi-top-banner';
+    bannerWrapper.style.cssText = "width: 100%; padding: 10px 16px 0 16px; box-sizing: border-box; background: transparent; font-family: sans-serif;";
 
-        banner.innerHTML = `
-            <div style="background: rgba(255, 215, 0, 0.2); width: 28px; height: 28px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #ffd700; flex-shrink: 0;"><span style="font-size: 14px;">📢</span></div>
-            <div style="flex-grow: 1; text-align: left; line-height: 1.4;">
-                Selamat! Status Kemitraan Anda Telah Diperbarui Menjadi <span style="color: #ffd700; text-transform: uppercase; font-weight: 900;">${statusTerbaru}</span>. Klik untuk info detail program pengembangan.
-            </div>
-            <div class="close-banner-x" style="color: rgba(255,255,255,0.6); font-size: 16px; padding: 0 8px; font-weight: bold; cursor: pointer; flex-shrink: 0;">✕</div>
-        `;
+    // Buat elemen utama banner di dalam pembungkusnya
+    const banner = document.createElement('div');
+    banner.className = 'notif-banner-pro';
+    
+    // Perbaikan Layout: Menggunakan border-radius melengkung elegan, box-shadow tipis, dan padding internal proporsional
+    banner.style.cssText = "width: 100%; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #4a148c 0%, #673ab7 100%); color: #ffffff; padding: 12px 14px; font-size: 0.82rem; font-weight: bold; border-radius: 12px; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); border: 1px solid rgba(255, 215, 0, 0.4); cursor: pointer; box-sizing: border-box; position: relative;";
 
-        const headerAplikasi = document.querySelector('header');
-        if (headerAplikasi) {
-            headerAplikasi.insertAdjacentElement('afterend', banner);
+    banner.innerHTML = `
+        <div style="background: rgba(255, 215, 0, 0.2); width: 30px; height: 30px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 1px solid #ffd700; flex-shrink: 0;"><span style="font-size: 14px;">📢</span></div>
+        <div style="flex-grow: 1; text-align: left; line-height: 1.4; padding-right: 15px;">
+            Selamat! Status Kemitraan Anda Telah Diperbarui Menjadi <span style="color: #ffd700; text-transform: uppercase; font-weight: 900;">${statusTerbaru}</span>. Klik untuk info detail program pengembangan.
+        </div>
+        <div class="close-banner-x" style="color: rgba(255,255,255,0.6); font-size: 16px; padding: 4px; font-weight: bold; cursor: pointer; flex-shrink: 0; position: absolute; right: 10px; top: 50%; transform: translateY(-50%);">✕</div>
+    `;
+
+    bannerWrapper.appendChild(banner);
+
+    // Menyisipkan tepat di bawah elemen header agar otomatis mendorong konten di bawahnya ke area yang aman
+    const headerAplikasi = document.querySelector('header');
+    if (headerAplikasi) {
+        headerAplikasi.insertAdjacentElement('afterend', bannerWrapper);
+    } else {
+        // Jika elemen <header> tidak ditemukan, cari elemen navbar atas atau tempatkan di atas body
+        const topBar = document.querySelector('.menu-icon')?.parentElement || document.body.firstChild;
+        if (topBar && topBar.parentNode) {
+            topBar.parentNode.insertBefore(bannerWrapper, topBar.nextSibling);
         } else {
-            document.body.insertBefore(banner, document.body.firstChild);
+            document.body.insertBefore(bannerWrapper, document.body.firstChild);
         }
-
-        banner.addEventListener('click', (e) => {
-            if (e.target.classList.contains('close-banner-x')) { e.stopPropagation(); banner.remove(); return; }
-            bukaModalInvestorDigitalPro();
-        });
     }
+
+    banner.addEventListener('click', (e) => {
+        if (e.target.classList.contains('close-banner-x')) { 
+            e.stopPropagation(); 
+            bannerWrapper.remove(); 
+            return; 
+        }
+        bukaModalInvestorDigitalPro();
+    });
+}
 
     function bukaModalInvestorDigitalPro() {
         const modalEksis = document.getElementById('dpi-modal-investor-pro');

@@ -2177,7 +2177,8 @@ function cekPerubahanStatusSistem(statusBaru) {
     if (!statusBaru) return;
     const statusLama = localStorage.getItem('dpi_last_known_status');
     
-    if (statusLama && statusLama !== statusBaru) {
+    // Jika status bukan PROSES REVIEW, paksa jalankan banner notifikasi di beranda
+    if (statusBaru !== "PROSES REVIEW" && (!statusLama || statusLama !== statusBaru)) {
         tampilkanBannerNotifikasiSistem(statusBaru);
     }
     localStorage.setItem('dpi_last_known_status', statusBaru);

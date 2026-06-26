@@ -2060,34 +2060,75 @@ if (formAman) {
         statusKirimKomunitas = true;
         const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
-        // ... (KODE DI ATASNYA SEPERTI FETCH SCRIPT_URL_AMAN)
-            fetch(SCRIPT_URL_AMAN, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dataKomunitas).toString()
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                formAman.reset();
-                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
-                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-                
-                // TAUTAN OTOMATIS KE GRUP WHATSAPP
-                const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
-                window.open(urlGrupWA, "_blank");
-            })
-            .catch(err => {
-                console.error("Eror form komunitas:", err);
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            })
-            .finally(() => {
-                statusKirimKomunitas = false;
-                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-            });
+        fetch(SCRIPT_URL_AMAN, { 
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(dataKomunitas).toString()
+        })
+        .then(res => res.json())
+        .then(response => {
+            // 1. Tutup modal form pengisian agar bersih
+            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+            formAman.reset();
+            
+            // 2. JALANKAN POPUP SUKSES DENGAN TOMBOL STRUKTUR BARU
+            tampilkanModalSuksesDPI();
+            
+            if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
+        })
+        .catch(err => {
+            console.error("Eror form komunitas:", err);
+            if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
+        })
+        .finally(() => {
+            statusKirimKomunitas = false;
+            if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
         });
-    } // <-- Penutup blok: if (formAman)
-}); // <-- Penutup blok UTAMA: document.addEventListener("DOMContentLoaded", ...)
+    });
+}
+
+// =========================================================================
+// FUNGSI POPUP SUKSES: GABUNG GRUP WHATSAPP & KEMBALI KE BERANDA
+// =========================================================================
+function tampilkanModalSuksesDPI() {
+    // Bersihkan jika ada modal kembar bersarang
+    const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
+    if (modalEksis) modalEksis.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'dpi-modal-sukses-daftar';
+    // Menggunakan z-index tinggi agar mutlak muncul di atas komponen apa pun
+    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(3,2,7,0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(5px); font-family:sans-serif;";
+
+    const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
+
+    overlay.innerHTML = `
+        <div style="background:white; padding:35px 25px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); box-sizing:border-box;">
+            <div style="font-size:55px; margin-bottom:15px; animation: pulseGlow 2s infinite;">🎉</div>
+            <h3 style="margin:0; color:#1a0033; font-weight:800; font-size:1.4rem;">Pendaftaran Berhasil!</h3>
+            <p style="color:#64748b; font-size:0.9rem; margin:10px 0 25px 0; line-height:1.6;">Data kemitraan Anda telah aman tercatat di sistem PT. Digital Pro Indo.</p>
+            
+            <a href="${urlGrupWA}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:16px; border-radius:14px; font-weight:bold; font-size:0.95rem; text-align:center; margin-bottom:12px; box-shadow:0 4px 14px rgba(37,211,102,0.3); transition:0.2s;">
+                🟢 GABUNG GRUP WHATSAPP
+            </a>
+            
+            <button id="btnKembaliBeranda" style="width:100%; background:#f1f5f9; color:#475569; border:none; padding:14px; border-radius:14px; font-weight:bold; font-size:0.9rem; cursor:pointer; transition:0.2s;">
+                ← KEMBALI KE BERANDA
+            </button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    // Handler Tombol Kembali ke Beranda: Menutup popup dan reset halaman awal
+    document.getElementById('btnKembaliBeranda').onclick = () => {
+        overlay.remove();
+        if (typeof window.switchPage === 'function') {
+            window.switchPage('home');
+        } else {
+            location.reload();
+        }
+    };
+}
 function inisialisasiGayaDigitalPro() {
     if (document.getElementById('digital-pro-premium-styles')) return;
     const styleEl = document.createElement('style');

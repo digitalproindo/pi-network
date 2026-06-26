@@ -1755,7 +1755,7 @@ window.switchPage = (pageId) => {
 };
 
 // =========================================================================
-// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - FIXED VERSION (ANTI-FREEZE)
+// 6. GATEWAY PI BLOCKCHAIN & ALERTS PROMPTS - AUTO ADDRESS PROMPT VERSION
 // =========================================================================
 window.handlePayment = async (amount, name) => {
     try {
@@ -1765,7 +1765,7 @@ window.handlePayment = async (amount, name) => {
             return;
         }
 
-        // 2. Verifikasi Sesi User Aktif (Fail-Safe Scope)
+        // 2. Verifikasi Sesi User Aktif
         const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
         if (!userAktif) { 
             if (typeof showLoginPrompt === 'function') {
@@ -1776,14 +1776,15 @@ window.handlePayment = async (amount, name) => {
             return; 
         }
         
-        // 3. Verifikasi Data Alamat Pengiriman
-        if (typeof userAddress === 'undefined' || !userAddress || !userAddress.nama) { 
+        // 3. REVISI UTAMA: Jika alamat kosong, langsung panggil Prompt Alamat alih-alih melempar alert block
+        if (typeof userAddress === 'undefined' || !userAddress || !userAddress.nama || !userAddress.alamatLengkap) { 
             if (typeof showAddressPrompt === 'function') {
+                console.log("📍 Alamat belum lengkap. Membuka form pengisian alamat...");
                 showAddressPrompt();
             } else {
-                alert("⚠️ Mohon lengkapi alamat pengiriman Anda terlebih dahulu!");
+                alert("⚠️ Mohon lengkapi data profile dan alamat pengiriman Anda terlebih dahulu di menu Profil!");
             }
-            return; 
+            return; // Hentikan createPayment sementara sampai user selesai mengisi alamat di modal prompt
         }
 
         let detailedItemName = name;
@@ -1791,7 +1792,7 @@ window.handlePayment = async (amount, name) => {
             detailedItemName = `Keranjang (${cart.map(item => item.name).join(", ")})`;
         }
 
-        // 4. Amankan Konversi Nilai Pi (Mencegah string .toFixed error)
+        // 4. Amankan Konversi Nilai Pi
         const parsedAmount = parseFloat(amount);
         if (isNaN(parsedAmount)) {
             alert("⚠️ Format harga tidak valid.");
@@ -1867,57 +1868,7 @@ window.handlePayment = async (amount, name) => {
         alert("⚠️ Terjadi kesalahan internal: " + err.message);
     }
 };
-
-function showSuccessOverlay(amount, name, txid) {
-    const excelWebhookUrl = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
-    
-    // Amankan pengambilan username tanpa memutus skrip
-    const userAktif = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
-    const usernameFinal = (userAktif && userAktif.username) ? userAktif.username : "User Pi";
-
-    const dataTransaksi = {
-        action: "transaksi", 
-        penerima: (typeof userAddress !== 'undefined' && userAddress.nama) ? userAddress.nama : "",
-        username: usernameFinal,
-        item: name || "",
-        totalPi: amount || "", 
-        txid: txid || "",
-        alamat: (typeof userAddress !== 'undefined' && userAddress.alamatLengkap) ? userAddress.alamatLengkap : "",
-        telepon: (typeof userAddress !== 'undefined' && userAddress.telepon) ? userAddress.telepon : ""
-    };
-
-    const googleFormBody = new URLSearchParams(dataTransaksi);
-
-    fetch(excelWebhookUrl, { 
-        method: 'POST', 
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, 
-        body: googleFormBody.toString() 
-    })
-    .then(response => response.json())
-    .then(res => console.log("Respon Sinkronisasi Google Sheets:", res.message))
-    .catch(err => console.error("Gagal catat Excel:", err));
-
-    // TAMPILAN OVERLAY SUKSES & INTEGRASI WHATSAPP ADMIN
-    const overlay = document.createElement('div');
-    overlay.style.cssText = "position:fixed; top:0; left:0; right:0; bottom:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:10000; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter: blur(5px);";
-    
-    const namaPenerima = (typeof userAddress !== 'undefined' && userAddress.nama) ? userAddress.nama : "";
-    const telpPenerima = (typeof userAddress !== 'undefined' && userAddress.telepon) ? userAddress.telepon : "";
-    const alamatPenerima = (typeof userAddress !== 'undefined' && userAddress.alamatLengkap) ? userAddress.alamatLengkap : "";
-
-    const pesanWhatsApp = `*KONFIRMASI PEMBAYARAN PI NETWORK*%0A*PT. DIGITAL PRO INDO*%0A_______________________________%0A%0AHalo Admin, saya telah berhasil melakukan pembayaran produk premium melalui Pi Browser:%0A%0A*DETAIL TRANSAKSI:*%0A• *Item:* ${encodeURIComponent(name)}%0A• *Total:* ${amount} π%0A• *Status:* Success (Pi Network)%0A• *TXID:* \`${txid}\` %0A%0A*DATA PENGIRIMAN:*%0A• *Penerima:* ${encodeURIComponent(namaPenerima)}%0A• *Telepon:* ${telpPenerima}%0A• *Alamat:* ${encodeURIComponent(alamatPenerima)}%0A%0A_______________________________%0A*Mohon segera diproses dan informasikan nomor resi pengiriman. Terima kasih!*`;
-    const nomorAdmin = typeof ADMIN_WA !== 'undefined' ? ADMIN_WA : "6281906066757";
-
-    overlay.innerHTML = `
-        <div style="background:white; padding:35px 25px; border-radius:30px; max-width:380px; width:100%; text-align:center; font-family:'Inter', sans-serif;">
-            <div style="font-size:45px; margin-bottom:20px;">✅</div>
-            <h2 style="color:#1a0033; margin:0; font-weight:800;">Pembayaran Berhasil!</h2>
-            <p style="color:#64748b; margin-top:10px;">Data Pemesanan Anda telah tercatat di sistem kami.</p>
-            <a href="https://wa.me/${nomorAdmin}?text=${pesanWhatsApp}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:18px; border-radius:15px; font-weight:bold; margin-top:20px;">KIRIM DATA KE WHATSAPP</a>
-            <button onclick="location.reload()" style="background:none; border:none; color:#94a3b8; margin-top:20px; cursor:pointer;">Kembali ke Beranda</button>
-        </div>`;
-    document.body.appendChild(overlay);
-    }
+            
 
 // =========================================================================
 // 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION

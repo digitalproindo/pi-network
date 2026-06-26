@@ -2092,39 +2092,61 @@ if (formAman) {
 });
 
 // =========================================================================
-// FUNGSI POPUP SUKSES: GABUNG GRUP WHATSAPP & KEMBALI KE BERANDA
+// FUNGSI POPUP SUKSES: PREMIUM DIGITAL PRO (RE-DESIGNED VERSION)
 // =========================================================================
 function tampilkanModalSuksesDPI() {
-    // Bersihkan jika ada modal kembar bersarang
     const modalEksis = document.getElementById('dpi-modal-sukses-daftar');
     if (modalEksis) modalEksis.remove();
 
     const overlay = document.createElement('div');
     overlay.id = 'dpi-modal-sukses-daftar';
-    // Menggunakan z-index tinggi agar mutlak muncul di atas komponen apa pun
-    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(3,2,7,0.9); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(5px); font-family:sans-serif;";
+    // Overlay gelap dengan blur premium
+    overlay.style.cssText = "position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(6, 4, 14, 0.88); z-index:999999; display:flex; align-items:center; justify-content:center; padding:20px; box-sizing:border-box; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); font-family:'Inter', sans-serif;";
 
     const urlGrupWA = "https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1";
 
+    // Menyusun card dengan kombinasi animasi background bergerak & border gradien neon
     overlay.innerHTML = `
-        <div style="background:white; padding:35px 25px; border-radius:24px; max-width:380px; width:100%; text-align:center; box-shadow:0 25px 50px -12px rgba(0,0,0,0.5); box-sizing:border-box;">
-            <div style="font-size:55px; margin-bottom:15px; animation: pulseGlow 2s infinite;">🎉</div>
-            <h3 style="margin:0; color:#1a0033; font-weight:800; font-size:1.4rem;">Pendaftaran Berhasil!</h3>
-            <p style="color:#64748b; font-size:0.9rem; margin:10px 0 25px 0; line-height:1.6;">Data kemitraan Anda telah aman tercatat di sistem PT. Digital Pro Indo.</p>
+        <div class="digital-bg-animated" style="border: 2px solid #a855f7; padding: 40px 28px 30px; border-radius: 28px; max-width: 390px; width: 100%; text-align: center; box-shadow: 0 30px 70px rgba(147, 51, 234, 0.35); box-sizing: border-box; position: relative; overflow: hidden;">
             
-            <a href="${urlGrupWA}" target="_blank" style="display:block; background:#25D366; color:white; text-decoration:none; padding:16px; border-radius:14px; font-weight:bold; font-size:0.95rem; text-align:center; margin-bottom:12px; box-shadow:0 4px 14px rgba(37,211,102,0.3); transition:0.2s;">
-                🟢 GABUNG GRUP WHATSAPP
+            <div style="position: absolute; top: -50px; left: -50px; width: 150px; height: 150px; background: rgba(168, 85, 247, 0.2); filter: blur(40px); border-radius: 50%; pointer-events: none;"></div>
+            <div style="position: absolute; bottom: -50px; right: -50px; width: 150px; height: 150px; background: rgba(59, 130, 246, 0.15); filter: blur(40px); border-radius: 50%; pointer-events: none;"></div>
+
+            <div style="position: relative; width: 85px; height: 85px; margin: 0 auto 24px; display: flex; align-items: center; justify-content: center;">
+                <div style="position: absolute; width: 100%; height: 100%; background: rgba(168, 85, 247, 0.2); border-radius: 50%; animation: pulseGlow 2s infinite;"></div>
+                <div style="position: relative; font-size: 48px; filter: drop-shadow(0 0 10px rgba(168, 85, 247, 0.6));">🎉</div>
+            </div>
+            
+            <h3 style="margin: 0; color: #ffffff; font-weight: 800; font-size: 1.5rem; letter-spacing: -0.5px; line-height: 1.2;">
+                Pendaftaran <span style="background: linear-gradient(90deg, #c084fc 0%, #60a5fa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Berhasil!</span>
+            </h3>
+            
+            <p style="color: #94a3b8; font-size: 0.88rem; margin: 12px 0 30px 0; line-height: 1.6; font-weight: 400;">
+                Data kemitraan Anda telah aman dan terverifikasi di dalam sistem ekosistem <strong style="color: #e2e8f0;">PT. Digital Pro Indo</strong>.
+            </p>
+            
+            <a href="${urlGrupWA}" target="_blank" style="display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #22c55e 0%, #15803d 100%); color: #ffffff; text-decoration: none; padding: 16px; border-radius: 14px; font-weight: 700; font-size: 0.95rem; text-align: center; margin-bottom: 12px; box-shadow: 0 4px 20px rgba(34, 197, 94, 0.4); border: 1px solid rgba(255,255,255,0.1); transition: transform 0.2s, box-shadow 0.2s;">
+                <span style="font-size: 1.1rem;">🟢</span> GABUNG GRUP WHATSAPP
             </a>
             
-            <button id="btnKembaliBeranda" style="width:100%; background:#f1f5f9; color:#475569; border:none; padding:14px; border-radius:14px; font-weight:bold; font-size:0.9rem; cursor:pointer; transition:0.2s;">
+            <button id="btnKembaliBeranda" style="width: 100%; background: rgba(255, 255, 255, 0.05); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.1); padding: 14px; border-radius: 14px; font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: all 0.2s; backdrop-filter: blur(5px);">
                 ← KEMBALI KE BERANDA
             </button>
         </div>
     `;
     document.body.appendChild(overlay);
 
-    // Handler Tombol Kembali ke Beranda: Menutup popup dan reset halaman awal
-    document.getElementById('btnKembaliBeranda').onclick = () => {
+    // Efek Hover Interaktif & Handler Klik Tombol Beranda
+    const btnWA = overlay.querySelector('a');
+    const btnHome = document.getElementById('btnKembaliBeranda');
+
+    btnWA.onmouseenter = () => btnWA.style.transform = "scale(1.02)";
+    btnWA.onmouseleave = () => btnWA.style.transform = "scale(1)";
+    
+    btnHome.onmouseenter = () => { btnHome.style.background = "rgba(255,255,255,0.1)"; btnHome.style.color = "#ffffff"; };
+    btnHome.onmouseleave = () => { btnHome.style.background = "rgba(255,255,255,0.05)"; btnHome.style.color = "#cbd5e1"; };
+
+    btnHome.onclick = () => {
         overlay.remove();
         if (typeof window.switchPage === 'function') {
             window.switchPage('home');

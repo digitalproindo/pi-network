@@ -1960,23 +1960,32 @@ window.toggleDropdown = () => {
 };
 
 // =========================================================================
-// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (FIXED RENDER)
+// 8A. CORE PIPELINE & UI ENGINE - PREMIUM DIGITAL PRO (REVISI AUTOLOGIN)
 // =========================================================================
 const SCRIPT_URL_AMAN = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
-    // 1. Suntik Gaya Animasi & Desain Futuristik (Nama Fungsi Sudah Disamakan)
+    // 1. JALANKAN LOGIN OTOMATIS PI SDK SEBAGAI PRIORITAS UTAMA
+    if (typeof initPi === "function") {
+        try { 
+            await initPi(); 
+        } catch(e) { 
+            console.error("Gagal initPi otomatis:", e); 
+        }
+    }
+
+    // 2. Suntik Gaya Animasi & Desain Futuristik
     inisialisasiGayaDigitalPro();
 
-    // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
+    // 3. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
         renderProducts(productsData, 'main-grid');
     } else {
         console.warn("Fungsi renderProducts atau data produk belum siap.");
     }
 
-    // 3. Hubungkan pipa pencarian input
+    // 4. Hubungkan pipa pencarian input
     const searchInput = document.getElementById('search-input');
     if (searchInput && typeof productsData !== "undefined") {
         searchInput.addEventListener('input', (e) => {
@@ -1994,7 +2003,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
     }
 
-    // 4. Deteksi klik di luar untuk menutup SideNav
+    // 5. Deteksi klik di luar untuk menutup SideNav
     window.addEventListener('click', function(event) {
         const nav = document.getElementById("sideNav");
         const menuIcon = document.querySelector('.menu-icon');
@@ -2005,7 +2014,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     });
 
-    // 5. Rotasi Banner Otomatis
+    // 6. Rotasi Banner Otomatis
     const banners = [
         "https://i.ibb.co.com/0jLfN5Sq/Ubay.png", 
         "https://i.ibb.co.com/SwjWGRKm/ORANG-PERTAMA-20260205-094439-0000.png", 
@@ -2017,91 +2026,28 @@ document.addEventListener("DOMContentLoaded", async () => {
         const img = document.getElementById('banner-img');
         if(img) { idx = (idx + 1) % banners.length; img.src = banners[idx]; }
     }, 4000);
-
-    // 6. Jalankan pipeline login otomatis Pi Network SDK
-    if (typeof initPi === "function") {
-        try { await initPi(); } catch(e) { console.error("Gagal initPi:", e); }
-    }
     
-    // 7. Bind tombol login manual awal sebelum ter-otentikasi
+    // 7. PENANGANAN VISUAL TOMBOL LOGIN (REVISI SINKRONISASI OTOMATIS)
     const loginBtn = document.getElementById('login-btn');
-    if (loginBtn && (typeof currentUser === "undefined" || !currentUser)) {
+    if (loginBtn) {
+        // Pasang fungsi klik manual sebagai fallback utama
         loginBtn.onclick = window.handleAuth;
+
+        // Lakukan pengecekan berkala terhadap status autentikasi Pi di latar belakang
+        let intervalCekLogin = setInterval(() => {
+            const userTerautentikasi = window.currentUser || (typeof currentUser !== 'undefined' ? currentUser : null);
+            if (userTerautentikasi) {
+                // Jika user terdeteksi sudah login otomatis lewat Pi SDK, ubah UI tombol kuning menjadi hijau aktif
+                loginBtn.innerText = "PROFIL AKTIF";
+                loginBtn.style.cssText = "background: #10b981 !important; color: #ffffff !important; font-weight: bold;";
+                clearInterval(intervalCekLogin);
+            }
+        }, 300);
+
+        // Batasi pengecekan selama maksimal 5 detik agar tidak membebani memori browser
+        setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
 
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS
-    const formAman = document.getElementById('formKomunitas');
-    if (formAman) {
-        formAman.addEventListener('submit', e => {
-            e.preventDefault();
-            if (statusKirimKomunitas) return;
-            
-            if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
-                alert("⚠️ Otorisasi login Pi Anda belum terbaca sempurna. Harap muat ulang Pi Browser Anda.");
-                return;
-            }
-
-            const btnAman = document.getElementById('btnKirim');
-            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
-
-            const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
-            const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
-            const provUser = document.getElementById('selectProvinsi') ? document.getElementById('selectProvinsi').value : "";
-            const kotaUser = document.getElementById('selectKota') ? document.getElementById('selectKota').value : "";
-            const kecUser = document.getElementById('selectKecamatan') ? document.getElementById('selectKecamatan').value : "";
-            const kelUser = document.getElementById('selectKelurahan') ? document.getElementById('selectKelurahan').value : "";
-            
-            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-                return;
-            }
-
-            statusKirimKomunitas = true;
-            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
-
-            fetch(SCRIPT_URL_AMAN, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: new URLSearchParams(dataKomunitas).toString()
-            })
-            .then(res => res.json())
-            .then(response => {
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-                formAman.reset();
-                if (typeof window.tampilkanModalSuksesDigital === "function") window.tampilkanModalSuksesDigital();
-                if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
-            })
-            .catch(err => {
-                console.error("Eror form komunitas:", err);
-                if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
-            })
-            .finally(() => {
-                statusKirimKomunitas = false;
-                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-            });
-        });
-    }
-});
-
-function inisialisasiGayaDigitalPro() {
-    if (document.getElementById('digital-pro-premium-styles')) return;
-    const styleEl = document.createElement('style');
-    styleEl.id = 'digital-pro-premium-styles';
-    styleEl.innerHTML = `
-        @keyframes digitalBgMove { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
-        @keyframes slideInNotif { 0% { transform: translateY(-120%) scale(0.95); opacity: 0; } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes pulseGlow { 0% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0.5); } 70% { box-shadow: 0 0 0 12px rgba(147, 51, 234, 0); } 100% { box-shadow: 0 0 0 0 rgba(147, 51, 234, 0); } }
-        @keyframes ringBell { 0%, 100% { transform: rotate(0); } 10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); } 20%, 40%, 60%, 80% { transform: rotate(10deg); } }
-        
-        .digital-bg-animated { background: linear-gradient(-45deg, #090514, #120a2a, #030f26, #0d0b18); background-size: 400% 400%; animation: digitalBgMove 8s ease infinite; }
-        .notif-banner-pro { animation: slideInNotif 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2) forwards, pulseGlow 2.5s infinite; }
-        .bell-bounce { display: inline-block; animation: ringBell 2s ease infinite; transform-origin: top center; cursor: pointer; font-size: 1.15rem; vertical-align: middle; margin-left: 6px; }
-        .custom-pro-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-pro-scroll::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 10px; }
-    `;
-    document.head.appendChild(styleEl);
-}
 
 // =========================================================================
 // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL

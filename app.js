@@ -2047,7 +2047,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Batasi pengecekan selama maksimal 5 detik agar tidak membebani memori browser
         setTimeout(() => clearInterval(intervalCekLogin), 5000);
     }
-
+};
 
 // =========================================================================
 // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL

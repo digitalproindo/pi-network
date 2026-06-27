@@ -2213,8 +2213,31 @@ function bukaModalInvestorDigitalPro() {
     const tutup = () => overlay.remove();
     overlay.querySelector('.btn-close-pro-trigger').addEventListener('click', tutup);
     overlay.querySelector('.btn-close-pro-bawah').addEventListener('click', tutup);
+    // INTEGRASI NOMOR WHATSAPP BARU DAN TEMPLATE PESAN OTOMATIS AMAN
     overlay.querySelector('.btn-hubungi-manajemen').addEventListener('click', () => {
-        window.open("whatsapp://chat?code=JSa1D2JnoNL5HE5ruEuJ5q", "_blank");
+        const nomorWA = "6287759002419"; // Nomor baru Anda
+        
+        // Mengambil UID jika tersedia dari sistem login
+        const uidPioneer = (typeof currentUser !== "undefined" && currentUser && currentUser.uid) ? currentUser.uid : "-";
+
+        // Struktur teks yang digabung dengan aman menggunakan array join (\n = baris baru)
+        const barisPesan = [
+            "Halo Manajemen Digital Pro Indo,",
+            "",
+            "Saya berminat untuk mengetahui lebih lanjut mengenai peluang kerja sama, roadmap, dan rencana pengembangan sebagai calon Investor / Mitra Strategis Digital Pro Indo.",
+            "",
+            "Berikut data akun saya:",
+            "• Username Pi: (Mohon isi username Anda di sini)",
+            "• ID Autentikasi: " + uidPioneer,
+            "",
+            "Mohon informasi petunjuk teknis dan diskusi kerja samanya lebih lanjut. Terima kasih! 🚀✨"
+        ];
+
+        // Menggabungkan baris menjadi satu teks utuh dengan enter, lalu di-encode agar aman untuk URL WhatsApp
+        const teksFinalEnkripsi = encodeURIComponent(barisPesan.join("\n"));
+        const urlWhatsApp = "https://wa.me/" + nomorWA + "?text=" + teksFinalEnkripsi;
+        
+        window.open(urlWhatsApp, "_blank");
     });
 }
 

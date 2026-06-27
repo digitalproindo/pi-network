@@ -2,191 +2,524 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Pro Indo - Aplikasi Ekosistem</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Digital Pro Indo - Premium Marketplace</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0c061a; color: #ffffff; margin: 0; padding: 20px; }
-        
-        /* Navigasi Kontainer Halaman */
-        .app-page { display: none; max-width: 800px; margin: 0 auto; }
-        .active-page { display: block; }
+        :root {
+            --pi-color: #4a148c; 
+            --pi-gold: #d4af37;
+            --pi-red: #ef4444;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --bg-body: #f1f5f9;
+            --nav-bg: #ffffff;
+            --xtra-cyan: #00bfa5;
+            --discount-red: #ff4d4f;
+            --btn-purple: #9c27b0;
+        }
 
-        /* Komponen UI */
-        .dashboard-container { background: #130b24; padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; }
-        .stat-box { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 15px; display: inline-block; width: 45%; margin-right: 4%; box-sizing: border-box; }
-        .stat-box:last-child { margin-right: 0; }
-        .btn-utama { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: inline-block; margin-top: 10px; }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            padding-bottom: 100px;
+        }
+
+        .hidden { display: none !important; }
+
+        header {
+            background: linear-gradient(135deg, #1a0033 0%, #4a148c 100%);
+            color: white; padding: 40px 20px 80px 20px; text-align: left;
+            border-bottom-left-radius: 35px; border-bottom-right-radius: 35px;
+            box-shadow: 0 10px 30px rgba(26, 0, 51, 0.4); position: relative; z-index: 1;
+        }
+
+        .header-content { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+
+        .brand-logo { 
+            width: 60px; height: 60px; border-radius: 50%; background: #fff; 
+            padding: 2px; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+            object-fit: cover; border: 2px solid #d4af37; 
+        }
+
+        .header-ticker {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(5px);
+            border-radius: 10px; padding: 5px 10px; margin-top: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .auth-container { position: absolute; top: 15px; right: 15px; z-index: 20; }
+
+        .btn-auth { 
+            background: linear-gradient(to right, #d4af37, #f1c40f); 
+            color: #1a0033; border: none; padding: 6px 14px; 
+            border-radius: 8px; font-weight: 800; font-size: 0.65rem; 
+            cursor: pointer; text-transform: uppercase;
+        }
+
+        .banner-container {
+            padding: 15px 10px 0 10px; margin-top: -35px; 
+            position: relative; z-index: 15;
+        }
         
-        /* Modal Overlay */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 2, 14, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 9999; }
-        .modal-content { background: linear-gradient(145deg, #1a0d33 0%, #0e051d 100%); width: 100%; max-width: 450px; border-radius: 20px; padding: 30px; border: 1.5px solid rgba(241, 196, 15, 0.3); box-shadow: 0 15px 35px rgba(0,0,0,0.6); position: relative; box-sizing: border-box; }
-        .close-btn { position: absolute; top: 15px; right: 20px; color: #aaa; font-size: 28px; cursor: pointer; }
-        .close-btn:hover { color: #fff; }
+        .banner-box {
+            width: 100%; height: 120px; background: #ddd; border-radius: 20px;
+            overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .category-scroll {
+            display: flex; overflow-x: auto; padding: 15px 20px; gap: 12px;
+            scrollbar-width: none; margin-top: 5px; position: relative; z-index: 10;
+        }
         
-        /* Form Styling */
-        .form-group { margin-bottom: 16px; text-align: left; }
-        .form-group label { display: block; font-size: 12px; color: #a2b4ca; margin-bottom: 6px; font-weight: 600; }
-        .form-control { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box; }
-        .form-control:focus { border-color: #f1c40f; outline: none; background: rgba(255,255,255,0.08); }
-        .form-control:disabled { opacity: 0.4; cursor: not-allowed; }
+        .category-scroll::-webkit-scrollbar { display: none; }
         
-        /* Side Navigation */
-        #sideNav { height: 100%; width: 0; position: fixed; z-index: 10000; top: 0; left: 0; background-color: #110722; overflow-x: hidden; transition: 0.3s; padding-top: 60px; box-shadow: 5px 0 15px rgba(0,0,0,0.5); }
-        #sideNav a { padding: 8px 8px 8px 32px; text-decoration: none; font-size: 18px; color: #818181; display: block; transition: 0.3s; }
-        #sideNav a:hover { color: #f1c40f; }
+        .category-pill {
+            flex: 0 0 auto; background: white; padding: 12px 20px; border-radius: 15px;
+            font-size: 0.8rem; font-weight: 700; box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid #f1f5f9; cursor: pointer; transition: 0.3s;
+        }
+        
+        .category-pill.active { background: var(--pi-color); color: white; border-color: var(--pi-color); }
+
+        .marketplace-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 12px; padding: 10px 15px;
+        }
+
+        .product-card {
+            background: white; border-radius: 12px; overflow: hidden; 
+            display: flex; flex-direction: column; box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #edf2f7; margin: 0; 
+        }
+
+        .image-container {
+            position: relative; width: 100%; height: 200px;
+            background: #f8f9fa; overflow: hidden; margin: 0; padding: 0;
+        }
+
+        .image-container img {
+            width: 100%; height: 100%; object-fit: cover; 
+            object-position: center; display: block;
+        }
+
+        .xtra-label {
+            position: absolute; bottom: 0; left: 0; background: linear-gradient(45deg, #1a237e, #4a148c) !important;
+            color: white; padding: 2px 8px; border-top-right-radius: 8px;
+            z-index: 10; line-height: 1.2;
+        }
+        
+        .xtra-text { font-size: 0.65rem; font-weight: 900; letter-spacing: 0.5px; }
+        .ongkir-text { font-size: 0.55rem; font-weight: 600; }
+
+        .discount-badge {
+            position: absolute; top: 0; right: 0; background: var(--discount-red); 
+            color: white; font-size: 0.75rem; font-weight: bold; padding: 5px 10px;
+            border-bottom-left-radius: 12px; z-index: 5;
+        }
+        
+        .product-info { padding: 12px; display: flex; flex-direction: column; flex-grow: 1; }
+        
+        .product-name {
+            font-size: 0.85rem; font-weight: 500; color: #333; line-height: 1.3; 
+            height: 2.6em; overflow: hidden; display: -webkit-box; 
+            -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 5px; margin-top: 5px;
+        }
+        
+        .price { font-weight: 800; color: #b71c1c; font-size: 1.1rem; margin-bottom: 5px; }
+        
+        .free-ship-tag {
+            display: flex; align-items: center; gap: 4px; color: #00897b; 
+            font-size: 0.65rem; font-weight: 700; background: #e0f2f1; 
+            padding: 2px 6px; border-radius: 4px; width: fit-content; margin-bottom: 10px;
+        }
+
+        .card-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: auto; }
+        .rating-text { font-size: 0.65rem; color: #777; display: flex; align-items: center; gap: 2px; }
+        .star { color: #ffc107; font-size: 0.75rem; }
+
+        .btn-buy-now { 
+            background: var(--btn-purple); color: white; border: none; 
+            padding: 5px 15px; border-radius: 20px; font-weight: 700; font-size: 0.75rem; cursor: pointer;
+        }
+        
+        #page-profile { padding: 0 20px; margin-top: -45px; position: relative; z-index: 10; }
+        
+        .profile-card { background: white; border-radius: 35px; padding: 35px 20px; text-align: center; box-shadow: 0 15px 35px rgba(0,0,0,0.1); border: 1px solid rgba(0,0,0,0.05); }
+        .avatar-border { width: 100px; height: 100px; margin: 0 auto 20px; border: 4px solid #3b82f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; padding: 4px; background: white; }
+        .avatar-border img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+        .uid-box { font-size: 0.7rem; color: var(--text-muted); background: #f1f5f9; padding: 12px; border-radius: 12px; word-break: break-all; margin: 20px 0; border: 1px solid #e2e8f0; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; display: flex; padding: 10px 0 25px 0; border-top: 1px solid #eee; z-index: 1000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; color: #94a3b8; text-decoration: none; cursor: pointer; }
+        .nav-item.active { color: var(--pi-color); }
+        .nav-icon { font-size: 1.3rem; }
+        .nav-text { font-size: 0.6rem; font-weight: 700; }
+        
+        .search-wrapper { display: flex; justify-content: center; padding: 20px 15px; width: 100%; box-sizing: border-box; }
+        #search-input { width: 90%; max-width: 450px; padding: 14px 20px; border-radius: 30px; border: 2px solid #e2e8f0; outline: none; font-size: 0.9rem; background: #ffffff; box-shadow: 0 5px 15px rgba(0,0,0,0.05); transition: all 0.3s ease; }
+        #search-input:focus { border-color: var(--pi-color); box-shadow: 0 5px 20px rgba(74, 20, 140, 0.15); }
+
+        .menu-icon { position: absolute; top: 55px; right: 15px; cursor: pointer; z-index: 25; display: flex; flex-direction: column; gap: 4px; padding: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 8px; }
+        .menu-icon span { display: block; width: 20px; height: 2px; background-color: white; transition: 0.3s; }
+
+        .sidenav { height: 100%; width: 0; position: fixed; z-index: 999999 !important; top: 0; right: 0; background: #05010d url('https://www.transparenttextures.com/patterns/stardust.png'); overflow-x: hidden; transition: 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0); padding-top: 60px; box-shadow: -10px 0 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; }
+        .sidenav a { padding: 15px 25px; text-decoration: none; font-size: 1.1rem; color: white; display: block; border-bottom: 1px solid rgba(255,255,255,0.1); white-space: nowrap; transition: 0.3s; }
+        .sidenav .closebtn { position: absolute; top: 10px; left: 15px; font-size: 30px; border: none; }
+
+        .btn-converter { margin: 10px 20px; padding: 12px 15px; width: calc(100% - 40px); background: linear-gradient(135deg, #d4af37 0%, #f1c40f 100%); color: #1a0033; border: none; border-radius: 12px; font-size: 1.05rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: flex-start; gap: 15px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); transition: 0.3s; box-sizing: border-box; }
+        .btn-converter:hover { transform: translateX(5px); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+        .btn-converter span { font-size: 1.2rem; display: inline-block; width: 25px; text-align: center; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 1000001; }
+        .modal-content { background: #1a0b2e; border: 2px solid #d4af37; padding: 40px; border-radius: 25px; position: relative; text-align: center; width: 80%; max-width: 320px; }
+        .close-modal { position: absolute; top: 15px; right: 15px; color: #d4af37; font-size: 28px; cursor: pointer; }
+
+        .social-icon { transition: all 0.3s ease; display: flex; align-items: center; justify-content: center; }
+        .social-icon:hover { transform: scale(1.2); filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5)); }
+
+        .search-container { position: relative; z-index: 999; pointer-events: auto !important; }
+        .slider-container { width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0; }
+        .slider-container img { transition: opacity 0.5s ease-in-out; }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.6); }
+            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 191, 165, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 165, 0); }
+        }
     </style>
-
-    <script src="dpi-notif.js" defer></script>
 </head>
+
 <body>
 
-    <div style="max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
-        <h3 style="margin: 0; color: #f1c40f;">Digital Pro Indo</h3>
-        <button onclick="toggleMenu()" style="background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:8px 16px; cursor:pointer; border-radius:6px;">☰ Menu</button>
-    </div>
+<div id="sideNav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="toggleMenu()">×</a>
+    <div class="menu-list" style="margin-top: 20px;">
+        <a href="home.html"><span>🏠</span> Beranda Web</a>
+        <button class="btn-converter" onclick="openModal()"><span>🔄</span> CONVERTER</button>
+        <a href="faq.html"><span>❓</span> FAQ / Bantuan</a>
+        <a href="javascript:void(0)" onclick="openKomunitasModal()"><span>🤝</span> Gabung Komunitas</a>
+        <a href="privacypolicy.html"><span>🛡️</span> Privacy policy</a>
+        <a href="termsofservice.html"><span>📜</span> Terms of Service</a>
 
-    <div id="page-home" class="app-page active-page">
-        <div class="dashboard-container" style="text-align: center; padding: 50px 20px;">
-            <h1 style="margin-top: 0;">Selamat Datang di Beranda Utama</h1>
-            <p style="color: #a2b4ca; max-width: 500px; margin: 0 auto 30px;">Ini adalah halaman depan utama aplikasi Anda. Seluruh banner, informasi publik, fitur berita dPI-Notif, dan menu transaksi awal diletakkan di bagian ini.</p>
-            
-            <button onclick="switchPage('kemitraan')" class="btn-utama">Masuk Ke Dashboard Kemitraan</button>
+        <div style="text-align: center; margin-top: 40px;">
+            <img src="https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExM3A5dmF4amZhczN1MWNzdzZlYTd1cHFlZTlpNTBiNXI3dXJ0ZWpsbiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3ov9k1173PdfJWRsoE/giphy.gif" width="110" style="opacity: 0.9;">
         </div>
-    </div>
 
-
-    <div id="page-kemitraan" class="app-page">
-        <div class="dashboard-container">
-            <h2>Dashboard Kemitraan Wilayah</h2>
-            <p>Selamat datang di ekosistem digital terpusat.</p>
-            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-
-            <div class="stat-box">
-                <div style="font-size: 12px; color: #a2b4ca;">LOGISTIK SHARE</div>
-                <div id="logistik-share-val" style="font-size: 24px; font-weight: bold; color: #00f0e1;">0 %</div>
+        <div class="social-footer" style="margin-top: 20px; padding: 20px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3);">
+            <p style="font-size: 10px; color: #d4af37; margin-bottom: 12px; letter-spacing: 1.5px; font-weight: bold; text-transform: uppercase;">FOLLOW US</p>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px; max-width: 140px; margin: 0 auto; flex-wrap: nowrap;">
+                <a href="https://youtube.com/@username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1384/1384060.png" width="20" height="20">
+                </a>
+                <a href="https://facebook.com/username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/5968/5968764.png" width="20" height="20">
+                </a>
+                <a href="https://instagram.com/username" target="_blank" style="display: flex;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/174/174855.png" width="20" height="20">
+                </a>
+                <a href="https://x.com/username" target="_blank" style="display: flex; align-items: center;">
+                    <svg role="img" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="white">
+                        <path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/>
+                    </svg>
+                </a>
             </div>
-            <div class="stat-box">
-                <div style="font-size: 12px; color: #a2b4ca;">PRODUK TERPROSES</div>
-                <div id="produk-terproses-val" style="font-size: 24px; font-weight: bold; color: #f1c40f;">0 Item</div>
-            </div>
-
-            <br><br>
-            <button class="btn-utama" id="btnAjukanWilayah">Ajukan Kemitraan Wilayah</button>
-            <button onclick="switchPage('home')" style="background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.4); padding:12px 20px; margin-left:10px; cursor:pointer; border-radius:8px; font-weight: bold;">KEMBALI KE BERANDA</button>
         </div>
+    </div> 
+</div> 
+
+<div id="comingSoonModal" class="modal-overlay">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">×</span>
+        <div style="font-size: 50px; margin-bottom: 10px;">🚀</div>
+        <h2 style="color: #d4af37; margin: 0; font-size: 1.5rem;">Coming Soon!</h2>
+        <p style="color: #fff; opacity: 0.8; font-size: 0.9rem; margin-top: 10px;">Fitur Converter sedang dalam tahap pengembangan teknis.</p>
     </div>
+</div>
 
-
-    <div id="sideNav">
-        <a href="javascript:void(0)" onclick="toggleMenu()" style="position: absolute; top: 0; right: 25px; font-size: 36px; margin-left: 50px;">&times;</a>
-        <a href="javascript:void(0)" onclick="switchPage('home'); toggleMenu();">Beranda Utama</a>
-        <a href="javascript:void(0)" onclick="switchPage('kemitraan'); toggleMenu();">Dashboard Kemitraan</a>
-        <a href="javascript:void(0)" onclick="openKomunitasModal()">Gabung Komunitas</a>
-        <a href="javascript:void(0)" onclick="openModal()">Fitur Lain (Coming Soon)</a>
-    </div>
-
-
-    <div id="komunitasModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeKomunitasModal()">&times;</span>
-            <h3 style="margin-top: 0; color: #f1c40f; font-size: 20px;">Form Pendaftaran Komunitas</h3>
-            <p style="color: #a2b4ca; font-size: 13px; margin-bottom: 20px;">Silakan lengkapi biodata wilayah penugasan Anda.</p>
-            
+<div id="komunitasModal" class="modal-overlay" style="display:none; align-items: center; justify-content: center; z-index: 3000;">
+    <div class="modal-content" style="max-width: 350px; background-image: url('https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExeG10eHA4dm0wcGRuZDBuNHA5Z29kZmVxYWM5eGhnZjJ6cWk0NmFodiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7buijTqhjxjbEqjK/giphy.gif'); background-size: cover; background-position: center; border: 1px solid #d4af37; padding: 25px; border-radius: 20px; position: relative; box-shadow: 0 0 30px rgba(212, 175, 55, 0.2); overflow-y: auto; max-height: 90vh;">
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); border-radius: 20px; z-index: 0;"></div>
+        <div style="position: relative; z-index: 1;">
+            <span class="close-modal" onclick="closeKomunitasModal()" style="color: #fff;">×</span>
+            <h2 style="color: #d4af37; margin-bottom: 10px; font-size: 1.3rem; text-align: center; text-shadow: 2px 2px 4px rgba(0,0,0,0.8);">Gabung Komunitas</h2>
+            <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo Komunitas" style="width: 100%; max-width: 250px; height: auto; object-fit: contain;">
+            </div>
             <form id="formKomunitas">
-                <div class="form-group">
-                    <label>NAMA LENGKAP</label>
-                    <input type="text" name="nama" class="form-control" placeholder="Masukkan nama sesuai KTP" required>
+                <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+                <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+                <select id="selectProvinsi" name="provinsi" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;"><option value="">Pilih Provinsi</option></select>
+                <select id="selectKota" name="kota" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled><option value="">Pilih Kota/Kabupaten</option></select>
+                <select id="selectKecamatan" name="kecamatan" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled><option value="">Pilih Kecamatan</option></select>
+                <select id="selectKelurahan" name="kelurahan" required style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled><option value="">Pilih Kelurahan</option></select>
+                <div style="display: flex; justify-content: center; width: 100%;">
+                    <button type="submit" id="btnKirim" class="btn-converter" style="width: 100%; max-width: 280px; padding: 15px 0; background: linear-gradient(45deg, #d4af37, #f1c40f); border: none; border-radius: 12px; color: black; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5); text-align: center; display: flex; align-items: center; justify-content: center;">DAFTAR SEKARANG</button>
                 </div>
-                <div class="form-group">
-                    <label>NOMOR WHATSAPP</label>
-                    <input type="text" name="whatsapp" class="form-control" placeholder="Contoh: 081234567xxx" required>
-                </div>
-                <div class="form-group">
-                    <label>PROVINSI</label>
-                    <select id="selectProvinsi" class="form-control" required>
-                        <option value="">Pilih Provinsi</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>KOTA / KABUPATEN</label>
-                    <select id="selectKota" class="form-control" disabled required>
-                        <option value="">Pilih Kota/Kabupaten</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>KECAMATAN</label>
-                    <select id="selectKecamatan" class="form-control" disabled required>
-                        <option value="">Pilih Kecamatan</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>KELURAHAN / DESA</label>
-                    <select id="selectKelurahan" class="form-control" disabled required>
-                        <option value="">Pilih Kelurahan</option>
-                    </select>
-                </div>
-                
-                <button type="submit" id="btnKirim" class="btn-utama" style="width: 100%; margin-top: 10px;">DAFTAR SEKARANG</button>
             </form>
         </div>
     </div>
+</div>
 
-
-    <div id="comingSoonModal" class="modal-overlay" style="display: none;">
-        <div class="modal-content" style="text-align: center;">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <h3 style="color:#f1c40f;">Fitur Segera Hadir</h3>
-            <p style="color:#a2b4ca;">Sistem sedang dalam tahap standardisasi infrastruktur jaringan.</p>
+<header>
+    <div class="auth-container">
+        <button id="login-btn" class="btn-auth" onclick="handleSignIn()">Login Pi</button>
+    </div>
+    <div class="menu-icon" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+    <div class="header-content" style="display: flex; align-items: center; gap: 12px;">
+        <img src="https://i.ibb.co.com/HpgNHN3H/Desain-tanpa-judul-20260203-123543-0000.png" class="brand-logo" alt="Logo" style="width: 45px; height: 45px; object-fit: contain;">
+        <div>
+            <h1 style="margin:0; font-size: 1.3rem; font-weight: 800; line-height: 1.2;">DIGITAL PRO <span style="color: #d4af37;">INDO</span></h1>
+            <p style="margin:0; opacity: 0.9; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Premium Marketplace</p>
         </div>
     </div>
+    <div class="header-ticker">
+        <marquee style="font-size: 0.7rem; font-weight: 600; color: #fff;">Selamat datang di Digital Pro Indo! Gunakan koin Pi Anda untuk belanja produk premium.</marquee>
+    </div>
 
+    <div style="width: 100%; overflow: hidden; margin-top: 8px; padding: 4px 0;">
+        <marquee behavior="scroll" direction="left" scrollamount="4" style="color: #ffffff; font-size: 11px; display: flex; white-space: nowrap;">
+            <span style="margin-right: 40px; display: inline-flex; align-items: center; gap: 4px;">
+                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Pengunjung:</span>
+                <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-visitor">1.245</span>
+                <span style="color: #2ecc71; font-size: 9px;">▲ Live</span>
+            </span>
+            
+            <span style="margin-right: 40px; display: inline-flex; align-items: center; gap: 4px;">
+                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Testnet:</span>
+                <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-testnet">4.892 Tx</span>
+               <span style="color: #2ecc71; font-size: 9px;">▲ Live</span>
+            </span>
 
-    <script>
-    // 1. CONFIGURATION GLOBAL ENGINE
-    const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/CONTOH_ID/exec"; // Ganti dengan Web App URL Anda
-    
-    let currentUser = {
-        uid: "PiUser_" + Math.random().toString(36).substr(2, 9)
-    };
+            <span style="margin-right: 40px; display: inline-flex; align-items: center; gap: 4px;">
+                <span style="color: #dfcbf2; text-transform: uppercase; font-size: 9px; letter-spacing: 0.5px;">Total Otoritas:</span>
+                <span style="font-family: 'Courier New', Courier, monospace; font-weight: bold; color: #2ecc71;" id="stats-staking">34 Provinsi</span>
+                <span style="color: #f1c40f; font-size: 9px;">★ Active</span>
+            </span>
+        </marquee>
+    </div>
+</header>
 
-    // 2. VIRTUAL PAGE CONTROLLER ENGINE
-    function switchPage(pageId) {
-        console.log("Navigasi dialihkan ke halaman: " + pageId);
+<script src="/dpi-stats.js"></script>
+
+<div class="banner-container">
+    <div class="banner-box">
+        <img src="https://i.ibb.co.com/0jLfN5Sq/Ubay.png" style="width: 100%; height: 100%; object-fit: cover;" id="banner-img">
+    </div>
+</div>
+
+<main id="page-home">
+    <div style="margin: 15px 15px 20px 15px; padding: 20px; background: linear-gradient(135deg, #1f053d 0%, #0c011a 100%); border-radius: 20px; color: white; position: relative; overflow: hidden; box-shadow: 0 8px 25px rgba(74, 20, 140, 0.4); border: 2px solid var(--pi-gold);">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 191, 165, 0.15); border: 1px solid var(--xtra-cyan); padding: 4px 10px; border-radius: 20px; margin-bottom: 10px;">
+            <span style="width: 7px; height: 7px; background: var(--xtra-cyan); border-radius: 50%; display: inline-block; animation: pulse-glow 1.5s infinite;"></span>
+            <span style="font-size: 0.6rem; font-weight: 800; color: var(--xtra-cyan); letter-spacing: 0.5px; text-transform: uppercase;">Kemitraan Eksklusif</span>
+        </div>
+        <h2 style="margin: 0 0 6px 0; font-size: 1.15rem; font-weight: 800; line-height: 1.3;">
+            Jadilah Otoritas Tunggal <br>Perwakilan Wilayah di Provinsi Anda!
+        </h2>
+        <p style="margin: 0 0 15px 0; font-size: 0.75rem; color: #a4b3c6; line-height: 1.4;">
+            Kuota terbatas ketat 1 Orang per Provinsi untuk mengendalikan rantai pasok logistik ekosistem perdagangan PT. Digital Pro Indo.
+        </p>
+        <button onclick="openKomunitasModal()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, var(--pi-gold), #f1c40f); border: none; border-radius: 10px; color: black; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(212,175,55,0.3);">
+            🤝 Ajukan Otoritas Perwakilan Wilayah
+        </button>
+    </div>
+
+    <div class="category-scroll">
+        <div class="category-pill active" onclick="filterCategory('all', this)">Semua</div>
+        <div class="category-pill" onclick="filterCategory('Rumah', this)">🏠 Rumah</div>
+        <div class="category-pill" onclick="filterCategory('Mobil', this)">🚗 Mobil</div>
+        <div class="category-pill" onclick="filterCategory('Motor', this)">🏍️ Motor</div>
+        <div class="category-pill" onclick="filterCategory('Emas', this)">🟡 Emas</div>
+        <div class="category-pill" onclick="filterCategory('Herbal', this)">🍃 Herbal</div>
+        <div class="category-pill" onclick="filterCategory('Gadget', this)">📱 Gadget</div>
+        <div class="category-pill" onclick="filterCategory('Elektronik', this)">🔌 Elektronik</div>
+        <div class="category-pill" onclick="filterCategory('Jasa', this)">💼 Jasa</div>
+        <div class="category-pill" onclick="filterCategory('Makanan', this)">🍱 Makanan</div>
+        <div class="category-pill" onclick="filterCategory('Minuman', this)">🥤 Minuman</div>
+    </div>
+
+    <div id="main-grid" class="marketplace-grid"></div>
+</main>
+
+<main id="page-cari" class="hidden">
+    <div class="search-container" style="padding: 10px 0;">
+        <input type="text" id="search-input" placeholder="Cari produk premium...">
+    </div>
+    <div id="search-results" class="marketplace-grid">
+        <div id="search-placeholder" style="display: flex; justify-content: center; align-items: center; min-height: 300px; width: 100%; grid-column: 1 / -1;">
+            <p style="text-align: center; color: #94a3b8; font-size: 0.95rem;">Silakan masukkan nama produk...</p>
+        </div>
+    </div>
+</main>
+
+<main id="page-keranjang" class="hidden">
+    <h3 style="padding: 20px; margin:0; font-weight: 800;">Keranjang Saya</h3>
+    <div id="cart-items"></div>
+</main>
+
+<main id="page-profile" class="hidden">
+    <div class="profile-card" style="margin-top: 60px; margin-bottom: 20px;">
+        <div class="avatar-border">
+            <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
+        </div>
+        <h2 id="profile-username" class="profile-username">User</h2>
+        <div class="uid-box">
+            <strong>Wallet UID:</strong><br>
+            <span id="profile-address" style="font-family: monospace;">Belum Terhubung</span>
+        </div>
+        <div class="badge-verified">Status: Verified ✅</div>
+    </div>
+
+    <div style="background: white; border-radius: 25px; padding: 22px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #edf2f7;">
+        <h3 style="margin: 0 0 12px 0; font-size: 0.75rem; color: var(--pi-color); font-weight: 800; letter-spacing: 0.5px; text-transform: uppercase; display: flex; align-items: center; gap: 6px;">
+            <span>💼</span> STATUS KEMITRAAN & VENDOR
+        </h3>
         
-        // Hapus class aktif dari semua element halaman virtual
-        document.getElementById('page-home').classList.remove('active-page');
-        document.getElementById('page-kemitraan').classList.remove('active-page');
-        
-        // Aktifkan halaman yang dipanggil target
-        if (pageId === 'home') {
-            document.getElementById('page-home').classList.add('active-page');
-        } else if (pageId === 'kemitraan') {
-            document.getElementById('page-kemitraan').classList.add('active-page');
-            muatStatusKemitraan(); // Muat data data realtime hanya jika halaman dibuka
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #f8fafc; border-radius: 12px; margin-bottom: 12px; border: 1px solid #e2e8f0;">
+            <span style="font-size: 0.75rem; font-weight: 600; color: var(--text-main);">Pengajuan Hak Otoritas</span>
+            <span style="font-size: 0.7rem; font-weight: 700; color: #f59e0b; background: #fef3c7; padding: 3px 10px; border-radius: 20px;" id="partner-status">MENUNGGU VERIFIKASI</span>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+            <div style="padding: 10px; background: #f1f5f9; border-radius: 10px; text-align: center;">
+                <p style="margin: 0; font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">LOGISTIK SHARE</p>
+                <p id="logistik-share-val" style="margin: 4px 0 0 0; font-size: 0.95rem; font-weight: 800; color: var(--pi-color);">0.00 %</p>
+            </div>
+            <div style="padding: 10px; background: #f1f5f9; border-radius: 10px; text-align: center;">
+                <p style="margin: 0; font-size: 0.6rem; color: var(--text-muted); font-weight: 600;">PRODUK TERPROSES</p>
+                <p id="produk-terproses-val" style="margin: 4px 0 0 0; font-size: 0.95rem; font-weight: 800; color: var(--text-main);">0 Item</p>
+            </div>
+        </div>
+
+        <button type="button" onclick="openKomunitasModal()" style="width:100%; background:#4c1d95; color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(76,29,149,0.3); transition: all 0.3s;">
+            PERBARUI / AJUKAN WILAYAH BARU
+        </button>
+    </div>
+</main>
+
+<div id="product-detail-page" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; z-index: 2000; overflow-y: auto;">
+    <div id="detail-content"></div>
+</div>
+
+<nav class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+        <span class="nav-icon">🏠</span><span class="nav-text">Beranda</span>
+    </div>
+    <div class="nav-item" id="nav-cari" onclick="switchPage('cari')">
+        <span class="nav-icon">🔍</span><span class="nav-text">Cari</span>
+    </div>
+    <div class="nav-item" id="nav-keranjang" onclick="switchPage('keranjang')">
+        <span class="nav-icon">🛒</span><span class="nav-text">Keranjang</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+        <span class="nav-icon">👤</span><span class="nav-text">Profil</span>
+    </div>
+</nav>
+
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+<script src="app.js?v=4.2"></script>
+<script src="/dpi-bot.js"></script>
+
+<script>
+    // Inisialisasi awal variabel user jika file app.js lambat memuat
+    if (typeof currentUser === 'undefined') {
+        var currentUser = null;
+    }
+
+    // URL Apps Script Utama (Omnibus) Anda
+    const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
+
+    // =========================================================================
+    // SYSTEM AUTO LOGIN / RE-AUTHENTICATE (MENCEGAH LOGOUT SETELAH COMMIT)
+    // =========================================================================
+    function inisialisasiAutoLoginPi() {
+        if (typeof Pi !== 'undefined') {
+            Pi.init({ version: "2.0", sandbox: false });
+            
+            const scopes = ['username', 'payments', 'wallet_address'];
+            Pi.authenticate(scopes, onIncompletePaymentFound)
+            .then(function(auth) {
+                currentUser = auth.user;
+                console.log("Auto-login sukses untuk user:", currentUser.username);
+                
+                // Update Elemen Tampilan UI secara Realtime
+                const loginBtn = document.getElementById('login-btn');
+                if (loginBtn) {
+                    loginBtn.innerText = currentUser.username;
+                    loginBtn.style.background = "linear-gradient(to right, #2ecc71, #27ae60)";
+                    loginBtn.style.color = "white";
+                }
+                
+                const profUser = document.getElementById('profile-username');
+                if (profUser) profUser.innerText = currentUser.username;
+                
+                const profAddr = document.getElementById('profile-address');
+                if (profAddr && currentUser.uid) profAddr.innerText = currentUser.uid;
+
+                // OTOMATIS AMBIL DATA STATUS DARI GOOGLE SHEET SETELAH LOGIN SUKSES
+                muatStatusKemitraan();
+            })
+            .catch(function(error) {
+                console.error("Gagal melakukan otentikasi otomatis Pi:", error);
+            });
         }
     }
 
-    // 3. REALTIME DATA SINKRONISASI DATABASE PROFILE
-    function muatStatusKemitraan() {
-        console.log("Memperbarui sinkronisasi profil...");
-        
-        // Dummy mock data response (Ganti bagian ini dengan fungsi fetch data asli Anda dari DB)
-        let resData = { logistikShare: 15.5, produkTerproses: 350 };
-        
-        const shareBox = document.getElementById('logistik-share-val');
-        if (shareBox && resData.logistikShare !== undefined) {
-            shareBox.innerText = resData.logistikShare + " %";
-        }
+    function onIncompletePaymentFound(payment) {
+        console.log("Ditemukan transaksi tertunda:", payment);
+    }
 
-        const produkBox = document.getElementById('produk-terproses-val');
-        if (produkBox && resData.produkTerproses !== undefined) {
-            produkBox.innerText = resData.produkTerproses + " Item";
-        }
+    function handleSignIn() {
+        if (currentUser) return; 
+        inisialisasiAutoLoginPi();
     }
 
     // =========================================================================
-    // MODAL & INTERFACE NAVIGASI MANAGER
+    // FUNGSI SINKRONISASI DATA PROFILE REALTIME DARI GOOGLE SHEET (GET)
+    // =========================================================================
+    function muatStatusKemitraan() {
+        if (!currentUser || !currentUser.uid) return;
+
+        const cekURL = `${SCRIPT_URL_UTAMA}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`;
+
+        fetch(cekURL)
+        .then(res => res.json())
+        .then(resData => {
+            if (resData.status === "ditemukan") {
+                // Perbarui label status di Tab Profil
+                const labelStatus = document.getElementById('partner-status');
+                if (labelStatus) {
+                    labelStatus.innerText = resData.statusKemitraan.toUpperCase();
+                    
+                    // Variasi warna background berdasarkan status dari Google Sheet
+                    if (resData.statusKemitraan.includes("VERIFIKASI") || resData.statusKemitraan.includes("REVIEW")) {
+                        labelStatus.style.background = "#fef3c7"; labelStatus.style.color = "#f59e0b";
+                    } else {
+                        labelStatus.style.background = "#d1fae5"; labelStatus.style.color = "#065f46"; // Sukses / Aktif
+                    }
+                }
+
+                // Perbarui info Logistik Share & Produk Terproses secara Realtime
+                const shareBox = document.getElementById('logistik-share-val');
+                if (shareBox && resData.logistikShare !== undefined) {
+                    shareBox.innerText = resData.logistikShare + " %";
+                }
+
+                const produkBox = document.getElementById('produk-terproses-val');
+                if (produkBox && resData.produkTerproses !== undefined) {
+                    produkBox.innerText = resData.produkTerproses + " Item";
+                }
+            }
+        })
+        .catch(err => console.error("Gagal membaca profil dari Database:", err));
+    }
+
+    // =========================================================================
+    // NAVIGASI DAN MODAL INTERFACE
     // =========================================================================
     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
@@ -204,12 +537,13 @@
         if(sideNav) sideNav.style.width = "0";
     }
 
+    // Mengubah fungsi close agar fleksibel dengan modularitas event
     function closeKomunitasModal() {
         document.getElementById("komunitasModal").style.display = "none";
     }
 
     // =========================================================================
-    // DATA SUBMIT HANDLER (GOOGLE SHEETS POST INJECTOR)
+    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST)
     // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
@@ -245,8 +579,9 @@
                 btn.disabled = true;
             }
             
+            // KUNCI UTAMA: Menyusun data payload POST lengkap dengan menyertakan parameter action
             const params = new URLSearchParams({
-                action: "gabungKomunitas", 
+                action: "gabungKomunitas", // <-- Jalur Eksekusi Database Google Sheet Anda
                 nama: namaUser,
                 whatsapp: waUser,
                 provinsi: provUser,
@@ -263,6 +598,8 @@
                 form.reset();
                 closeKomunitasModal();
                 tampilkanModalSuksesDigitalTerbaru();
+                
+                // Refresh data UI profil setelah pendaftaran baru
                 setTimeout(muatStatusKemitraan, 2000);
             })
             .catch(error => {
@@ -282,12 +619,17 @@
     function tutupModalSukses() {
         const suksesModal = document.getElementById("digitalSuksesModal");
         if (suksesModal) suksesModal.style.display = "none";
-        switchPage('home');
+        if (typeof switchPage === "function") {
+            switchPage('home');
+        } else {
+            window.location.href = "#";
+        }
     }
 
-    // Link WhatsApp Group API
     function bukaGrupWhatsApp() {
+        // Membuka link grup WA resmi Anda di tab baru
         window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1', '_blank');
+        // Menyembunyikan modal sukses setelah tombol diklik
         const suksesModal = document.getElementById('digitalSuksesModal');
         if (suksesModal) suksesModal.style.display = 'none';
     }
@@ -331,7 +673,7 @@
     }
 
     // =========================================================================
-    // API WILAYAH INDONESIA (EMSIFA ENGINE)
+    // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF
     // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
@@ -350,7 +692,7 @@
                     provSelect.appendChild(opt);
                 });
             })
-            .catch(err => console.log("Menunggu API Wilayah..."));
+            .catch(err => console.log("Menunggu koneksi API Wilayah..."));
 
         provSelect.addEventListener('change', function() {
             const id = this.options[this.selectedIndex].dataset.id;
@@ -415,7 +757,7 @@
     }
 
     // =========================================================================
-    // OTO-AKTIVASI CRASH-PROTECTION AUTOMATION
+    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
     // =========================================================================
     function paksaAktifTombolWilayah() {
         try {
@@ -436,31 +778,41 @@
                     
                     if (!btn.hasAttribute('data-click-bound')) {
                         btn.setAttribute('data-click-bound', 'true');
+                        
                         btn.removeAttribute("onclick");
                         btn.onclick = null; 
                         
                         btn.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            openKomunitasModal();
+                            console.log("Memicu pembukaan modal pendaftaran wilayah...");
+                            
+                            if (typeof openKomunitasModal === "function") {
+                                openKomunitasModal();
+                            } else {
+                                const modalK = document.getElementById("komunitasModal");
+                                if (modalK) modalK.style.display = "flex";
+                            }
                         });
                     }
                 }
             });
         } catch (error) {
-            console.log("Proteksi Tombol Aktif:", error.message);
+            console.log("Sistem mendeteksi tombol non-teks, diabaikan dengan aman:", error.message);
         }
     }
     
-    // RUNNER EXECUTION CORE
+    // RUNNER EXECUTION
     document.addEventListener("DOMContentLoaded", function() {
         paksaAktifTombolWilayah();
+        if (typeof inisialisasiAutoLoginPi === "function") inisialisasiAutoLoginPi();
     });
     
     window.addEventListener("load", function() {
         paksaAktifTombolWilayah();
     });
     
+    // Lakukan pemindaian tombol berkala secara aman
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>

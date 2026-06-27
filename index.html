@@ -3,14 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Ekosistem & Pendaftaran Komunitas Wilayah</title>
+    <title>Digital Pro Indo - Aplikasi Ekosistem</title>
     
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0c061a; color: #ffffff; margin: 0; padding: 20px; }
-        .dashboard-container { max-width: 800px; margin: 0 auto; background: #130b24; padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); }
-        .stat-box { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 15px; display: inline-block; width: 45%; margin-right: 4%; }
+        
+        /* Navigasi Kontainer Halaman */
+        .app-page { display: none; max-width: 800px; margin: 0 auto; }
+        .active-page { display: block; }
+
+        /* Komponen UI */
+        .dashboard-container { background: #130b24; padding: 24px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05); margin-top: 20px; }
+        .stat-box { background: rgba(255,255,255,0.03); padding: 15px; border-radius: 10px; margin-bottom: 15px; display: inline-block; width: 45%; margin-right: 4%; box-sizing: border-box; }
         .stat-box:last-child { margin-right: 0; }
-        .btn-utama { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .btn-utama { background: linear-gradient(135deg, #f1c40f 0%, #f39c12 100%); color: #000; border: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: inline-block; margin-top: 10px; }
         
         /* Modal Overlay */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 2, 14, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 9999; }
@@ -19,7 +25,7 @@
         .close-btn:hover { color: #fff; }
         
         /* Form Styling */
-        .form-group { margin-bottom: 16px; }
+        .form-group { margin-bottom: 16px; text-align: left; }
         .form-group label { display: block; font-size: 12px; color: #a2b4ca; margin-bottom: 6px; font-weight: 600; }
         .form-control { width: 100%; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box; }
         .form-control:focus { border-color: #f1c40f; outline: none; background: rgba(255,255,255,0.08); }
@@ -35,31 +41,51 @@
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <h2>Dashboard Kemitraan Wilayah</h2>
-        <p>Selamat datang di ekosistem digital terpusat.</p>
-        <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-
-        <div class="stat-box">
-            <div style="font-size: 12px; color: #a2b4ca;">LOGISTIK SHARE</div>
-            <div id="logistik-share-val" style="font-size: 24px; font-weight: bold; color: #00f0e1;">0 %</div>
-        </div>
-        <div class="stat-box">
-            <div style="font-size: 12px; color: #a2b4ca;">PRODUK TERPROSES</div>
-            <div id="produk-terproses-val" style="font-size: 24px; font-weight: bold; color: #f1c40f;">0 Item</div>
-        </div>
-
-        <br><br>
-        <button class="btn-utama" id="btnAjukanWilayah">Ajukan Kemitraan Wilayah</button>
-        <button onclick="toggleMenu()" style="background:transparent; color:#fff; border:1px solid #fff; padding:10px; margin-left:10px; cursor:pointer; border-radius:8px;">Menu</button>
+    <div style="max-width: 800px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 10px 0;">
+        <h3 style="margin: 0; color: #f1c40f;">Digital Pro Indo</h3>
+        <button onclick="toggleMenu()" style="background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.3); padding:8px 16px; cursor:pointer; border-radius:6px;">☰ Menu</button>
     </div>
+
+    <div id="page-home" class="app-page active-page">
+        <div class="dashboard-container" style="text-align: center; padding: 50px 20px;">
+            <h1 style="margin-top: 0;">Selamat Datang di Beranda Utama</h1>
+            <p style="color: #a2b4ca; max-width: 500px; margin: 0 auto 30px;">Ini adalah halaman depan utama aplikasi Anda. Seluruh banner, informasi publik, fitur berita dPI-Notif, dan menu transaksi awal diletakkan di bagian ini.</p>
+            
+            <button onclick="switchPage('kemitraan')" class="btn-utama">Masuk Ke Dashboard Kemitraan</button>
+        </div>
+    </div>
+
+
+    <div id="page-kemitraan" class="app-page">
+        <div class="dashboard-container">
+            <h2>Dashboard Kemitraan Wilayah</h2>
+            <p>Selamat datang di ekosistem digital terpusat.</p>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #a2b4ca;">LOGISTIK SHARE</div>
+                <div id="logistik-share-val" style="font-size: 24px; font-weight: bold; color: #00f0e1;">0 %</div>
+            </div>
+            <div class="stat-box">
+                <div style="font-size: 12px; color: #a2b4ca;">PRODUK TERPROSES</div>
+                <div id="produk-terproses-val" style="font-size: 24px; font-weight: bold; color: #f1c40f;">0 Item</div>
+            </div>
+
+            <br><br>
+            <button class="btn-utama" id="btnAjukanWilayah">Ajukan Kemitraan Wilayah</button>
+            <button onclick="switchPage('home')" style="background:transparent; color:#fff; border:1px solid rgba(255,255,255,0.4); padding:12px 20px; margin-left:10px; cursor:pointer; border-radius:8px; font-weight: bold;">KEMBALI KE BERANDA</button>
+        </div>
+    </div>
+
 
     <div id="sideNav">
         <a href="javascript:void(0)" onclick="toggleMenu()" style="position: absolute; top: 0; right: 25px; font-size: 36px; margin-left: 50px;">&times;</a>
-        <a href="#" onclick="switchPage('home')">Beranda</a>
+        <a href="javascript:void(0)" onclick="switchPage('home'); toggleMenu();">Beranda Utama</a>
+        <a href="javascript:void(0)" onclick="switchPage('kemitraan'); toggleMenu();">Dashboard Kemitraan</a>
         <a href="javascript:void(0)" onclick="openKomunitasModal()">Gabung Komunitas</a>
         <a href="javascript:void(0)" onclick="openModal()">Fitur Lain (Coming Soon)</a>
     </div>
+
 
     <div id="komunitasModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
@@ -106,6 +132,7 @@
         </div>
     </div>
 
+
     <div id="comingSoonModal" class="modal-overlay" style="display: none;">
         <div class="modal-content" style="text-align: center;">
             <span class="close-btn" onclick="closeModal()">&times;</span>
@@ -114,27 +141,39 @@
         </div>
     </div>
 
+
     <script>
-    // KONFIGURASI INTEGRASI UTAMA (Sesuaikan Nilai Variabel Global Ini)
-    const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/CONTOH_ID/exec"; 
+    // 1. CONFIGURATION GLOBAL ENGINE
+    const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/CONTOH_ID/exec"; // Ganti dengan Web App URL Anda
     
-    // Objek Otentikasi User Pi Browser (Sistem Mock / Dummy untuk Proteksi)
     let currentUser = {
         uid: "PiUser_" + Math.random().toString(36).substr(2, 9)
     };
 
-    // Fungsi Pengarah Navigasi Aplikasi Multi-page virtual
+    // 2. VIRTUAL PAGE CONTROLLER ENGINE
     function switchPage(pageId) {
-        console.log("Navigasi internal dialihkan ke halaman: " + pageId);
+        console.log("Navigasi dialihkan ke halaman: " + pageId);
+        
+        // Hapus class aktif dari semua element halaman virtual
+        document.getElementById('page-home').classList.remove('active-page');
+        document.getElementById('page-kemitraan').classList.remove('active-page');
+        
+        // Aktifkan halaman yang dipanggil target
+        if (pageId === 'home') {
+            document.getElementById('page-home').classList.add('active-page');
+        } else if (pageId === 'kemitraan') {
+            document.getElementById('page-kemitraan').classList.add('active-page');
+            muatStatusKemitraan(); // Muat data data realtime hanya jika halaman dibuka
+        }
     }
 
-    // Fungsi penyegaran status profil
+    // 3. REALTIME DATA SINKRONISASI DATABASE PROFILE
     function muatStatusKemitraan() {
-        console.log("Memperbarui status sinkronisasi profil secara realtime...");
-        // Struktur data penampung simulasi respons database
+        console.log("Memperbarui sinkronisasi profil...");
+        
+        // Dummy mock data response (Ganti bagian ini dengan fungsi fetch data asli Anda dari DB)
         let resData = { logistikShare: 15.5, produkTerproses: 350 };
         
-        // Perbarui info Logistik Share & Produk Terproses secara Realtime
         const shareBox = document.getElementById('logistik-share-val');
         if (shareBox && resData.logistikShare !== undefined) {
             shareBox.innerText = resData.logistikShare + " %";
@@ -147,7 +186,7 @@
     }
 
     // =========================================================================
-    // NAVIGASI DAN MODAL INTERFACE
+    // MODAL & INTERFACE NAVIGASI MANAGER
     // =========================================================================
     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
@@ -170,7 +209,7 @@
     }
 
     // =========================================================================
-    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST)
+    // DATA SUBMIT HANDLER (GOOGLE SHEETS POST INJECTOR)
     // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
@@ -243,13 +282,10 @@
     function tutupModalSukses() {
         const suksesModal = document.getElementById("digitalSuksesModal");
         if (suksesModal) suksesModal.style.display = "none";
-        if (typeof switchPage === "function") {
-            switchPage('home');
-        } else {
-            window.location.href = "#";
-        }
+        switchPage('home');
     }
 
+    // Link WhatsApp Group API
     function bukaGrupWhatsApp() {
         window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1', '_blank');
         const suksesModal = document.getElementById('digitalSuksesModal');
@@ -295,7 +331,7 @@
     }
 
     // =========================================================================
-    // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF
+    // API WILAYAH INDONESIA (EMSIFA ENGINE)
     // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
@@ -314,7 +350,7 @@
                     provSelect.appendChild(opt);
                 });
             })
-            .catch(err => console.log("Menunggu koneksi API Wilayah..."));
+            .catch(err => console.log("Menunggu API Wilayah..."));
 
         provSelect.addEventListener('change', function() {
             const id = this.options[this.selectedIndex].dataset.id;
@@ -379,7 +415,7 @@
     }
 
     // =========================================================================
-    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
+    // OTO-AKTIVASI CRASH-PROTECTION AUTOMATION
     // =========================================================================
     function paksaAktifTombolWilayah() {
         try {
@@ -400,41 +436,31 @@
                     
                     if (!btn.hasAttribute('data-click-bound')) {
                         btn.setAttribute('data-click-bound', 'true');
-                        
                         btn.removeAttribute("onclick");
                         btn.onclick = null; 
                         
                         btn.addEventListener('click', function(e) {
                             e.preventDefault();
                             e.stopPropagation();
-                            console.log("Memicu pembukaan modal pendaftaran wilayah...");
-                            
-                            if (typeof openKomunitasModal === "function") {
-                                openKomunitasModal();
-                            } else {
-                                const modalK = document.getElementById("komunitasModal");
-                                if (modalK) modalK.style.display = "flex";
-                            }
+                            openKomunitasModal();
                         });
                     }
                 }
             });
         } catch (error) {
-            console.log("Sistem mendeteksi tombol non-teks, diabaikan dengan aman:", error.message);
+            console.log("Proteksi Tombol Aktif:", error.message);
         }
     }
     
-    // RUNNER EXECUTION
+    // RUNNER EXECUTION CORE
     document.addEventListener("DOMContentLoaded", function() {
         paksaAktifTombolWilayah();
-        muatStatusKemitraan(); // Jalankan inisialisasi awal pengisian box data
     });
     
     window.addEventListener("load", function() {
         paksaAktifTombolWilayah();
     });
     
-    // Lakukan pemindaian tombol berkala secara aman
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>

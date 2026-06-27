@@ -2104,17 +2104,17 @@ function inisialisasiGayaDigitalPro() {
 }
 
 // =========================================================================
-// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL
+// 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (FIXED REAL-TIME)
 // =========================================================================
 
 function cekPerubahanStatusSistem(statusBaru) {
     if (!statusBaru) return;
-    const statusLama = localStorage.getItem('dpi_last_known_status');
     
-    // Banner dipaksa muncul saat pertama kali aplikasi memuat status atau jika ada perubahan status di database
-    if (!statusLama || statusLama !== statusBaru) {
-        tampilkanBannerNotifikasiSistem(statusBaru);
-    }
+    // REVISI: Bypass validasi lama agar banner langsung dipaksa muncul/terbuka 
+    // di layar setiap kali status di database berubah atau dimuat ulang.
+    tampilkanBannerNotifikasiSistem(statusBaru);
+    
+    // Simpan status baru ke localStorage sebagai referensi log sistem
     localStorage.setItem('dpi_last_known_status', statusBaru);
 }
 
@@ -2156,7 +2156,6 @@ function bukaModalInvestorDigitalPro() {
         <div class="digital-bg-animated custom-pro-scroll" style="border: 2px solid #a855f7; padding: 35px 24px 25px; border-radius: 24px; max-width: 440px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 30px 70px rgba(0,0,0,0.8); position: relative; margin: 0 auto; box-sizing: border-box;">
             <div class="btn-close-pro-trigger" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #fff; font-size: 12px; z-index: 10;">✕</div>
             
-            <!-- HEADER -->
             <div style="text-align: center; margin-bottom: 22px;">
                 <span style="font-size: 36px; display: block; margin-bottom: 6px;">📢</span>
                 <h2 style="color: #ffffff; margin: 0; font-weight: 800; font-size: 1.2rem; line-height: 1.4;">
@@ -2164,7 +2163,6 @@ function bukaModalInvestorDigitalPro() {
                 </h2>
             </div>
 
-            <!-- KONTEN -->
             <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
                 <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa. Hingga saat ini, aplikasi ini terus berkembang meskipun dibangun dengan keterbatasan sumber daya dan tanpa dukungan modal besar.</p>
@@ -2202,7 +2200,6 @@ function bukaModalInvestorDigitalPro() {
                 </div>
             </div>
 
-            <!-- ACTION BUTTONS -->
             <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
                 <button class="btn-hubungi-manajemen" style="background: linear-gradient(90deg, #a855f7 0%, #3b82f6 100%); color: #ffffff; border: none; padding: 14px 0; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.5px;">Hubungi Hub Manajemen</button>
                 <button class="btn-close-pro-bawah" style="background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); color: #94a3b8; padding: 11px 0; border-radius: 10px; cursor: pointer; font-size: 0.8rem;">Kembali ke Profil</button>
@@ -2241,18 +2238,19 @@ function injeksiLoncengNotifikasiProfil() {
     const penunjukStatus = document.getElementById('partner-status');
     if (!penunjukStatus) return;
 
+    // REVISI: Lonceng lama wajib di-remove terlebih dahulu agar tidak membeku pada status lama 
+    // dan langsung memperbarui posisinya mengikuti perubahan status baru
     const loncengLama = document.getElementById('dpi-profile-bell');
-    if (loncengLama) return; // Jika lonceng sudah ada di layar, biarkan saja (jangan duplikat)
+    if (loncengLama) loncengLama.remove(); 
 
     const lonceng = document.createElement('span');
     lonceng.id = 'dpi-profile-bell';
     lonceng.className = 'bell-bounce';
     lonceng.innerHTML = '🔔';
     lonceng.title = 'Lihat Informasi Investor';
-    // Menambahkan style agar peletakan lonceng rapi dan responsif di sebelah kanan badge
-    lonceng.style.cssText = "margin-left: 8px !important; display: inline-block !important; cursor: pointer !important;";
+    lonceng.style.cssText = "margin-left: 8px !important; display: inline-block !important; cursor: pointer !important; vertical-align: middle !important;";
     
-    // Metode aman bawaan Anda agar lonceng diletakkan pas setelah element teks status tanpa menimpanya
+    // Mempertahankan struktur insertBefore bawaan Anda yang stabil
     penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
 
     lonceng.onclick = (e) => {
@@ -2301,7 +2299,7 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
-            // Eksekusi penempelan lonceng & pengkondisian kemunculan banner
+            // Eksekusi ulang secara sekuensial & instan
             injeksiLoncengNotifikasiProfil();
             cekPerubahanStatusSistem(statusFinal);
             
@@ -2316,4 +2314,4 @@ window.muatStatusKemitraan = function() {
         }
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
-};                
+};    

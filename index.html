@@ -629,68 +629,75 @@
     }
 
     // =========================================================================
-    // MENDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
-    // =========================================================================
+// MENNDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
+// =========================================================================
+if (document.getElementById('upload-avatar-input')) {
     document.getElementById('upload-avatar-input').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (!file) return;
+        var file = e.target.files[0];
+        if (!file) return;
 
-    if (!currentUser || !currentUser.uid) {
-        alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
-        return;
-    }
+        if (!currentUser || !currentUser.uid) {
+            alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
+            return;
+        }
 
-    if (file.size > 2 * 1024 * 1024) {
-        alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
-        return;
-    }
+        if (file.size > 2 * 1024 * 1024) {
+            alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
+            return;
+        }
 
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-        const base64Data = evt.target.result.split(',')[1];
-        alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+            var base64Data = evt.target.result.split(',')[1];
+            alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
 
-        const payload = new URLSearchParams({
-            action: "ajukanFotoProfil",
-            uid: currentUser.uid,
-            imageName: file.name,
-            imageData: base64Data
-        });
+            var payload = new URLSearchParams({
+                action: "ajukanFotoProfil",
+                uid: currentUser.uid,
+                imageName: file.name,
+                imageData: base64Data
+            });
 
-        // PERBAIKAN UTAMA: Menggunakan backtick dan mengirim payload di dalam 'body' POST
-        fetch(`${SCRIPT_URL_UTAMA}`, { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: payload.toString()
-        })
-        .then(res => res.json())
-        .then(data => {
-            console.log("Respon pengajuan foto:", data);
-            muatFotoProfilTervalidasi();
-        })
-        .catch(err => {
-            console.error("Gagal mengirim berkas foto ke DB:", err);
-            alert("⚠️ Sistem database sibuk, namun pengajuan Anda sedang diantrekan.");
-        });
-    };
-    reader.readAsDataURL(file);
-});
+            fetch(SCRIPT_URL_UTAMA, { 
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: payload.toString()
+            })
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                console.log("Respon pengajuan foto:", data);
+                muatFotoProfilTervalidasi();
+            })
+            .catch(function(err) {
+                console.error("Gagal mengirim berkas foto ke DB:", err);
+            });
+        };
+        reader.readAsDataURL(file);
+    });
+}
 
 function muatFotoProfilTervalidasi() {
     if (!currentUser || !currentUser.uid) return;
 
-    // Menggunakan backtick dengan benar untuk metode GET
-    fetch(`${SCRIPT_URL_UTAMA}?action=ambilProfilUser&uid=${encodeURIComponent(currentUser.uid)}`)
-    .then(res => res.json())
-    .then(userData => {
-        if (userData && userData.statusFoto === "APPROVED") {
-            document.getElementById('user-profile-img').src = userData.urlFotoProfil;
-        } else {
-            document.getElementById('user-profile-img').src = (userData && userData.urlFotoLama) || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+    var urlGet = SCRIPT_URL_UTAMA + "?action=ambilProfilUser&uid=" + encodeURIComponent(currentUser.uid);
+    
+    fetch(urlGet)
+    .then(function(res) { return res.json(); })
+    .then(function(userData) {
+        var profilImg = document.getElementById('user-profile-img');
+        if (profilImg) {
+            if (userData && userData.statusFoto === "APPROVED") {
+                profilImg.src = userData.urlFotoProfil;
+            } else {
+                profilImg.src = (userData && userData.urlFotoLama) || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            }
         }
     })
-    .catch(err => console.log("Sinkronisasi foto profil aktif..."));
-            }
+    .catch(function(err) { 
+        console.log("Sinkronisasi foto profil aktif..."); 
+    });
+}
+// =========================================================================
 
     // =========================================================================
     // FUNGSI SINKRONISASI DATA PROFILE REALTIME DARI GOOGLE SHEET (GET)

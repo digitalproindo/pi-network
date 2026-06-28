@@ -566,10 +566,7 @@
     // URL Apps Script Utama (Omnibus) Anda
     const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 
-    // =========================================================================
-    // SYSTEM AUTO LOGIN / RE-AUTHENTICATE (MENCEGAH LOGOUT SETELAH COMMIT)
-    // =========================================================================
-    function inisialisasiAutoLoginPi() {
+function inisialisasiAutoLoginPi() {
         if (typeof Pi !== 'undefined') {
             Pi.init({ version: "2.0", sandbox: false });
             
@@ -596,6 +593,9 @@
                 // OTOMATIS AMBIL DATA STATUS DARI GOOGLE SHEET SETELAH LOGIN SUKSES
                 muatStatusKemitraan();
                 muatFotoProfilTervalidasi();
+                
+                // AKTIVASI EVENT LISTENER FOTO SETELAH LOGIN SUKSES
+                inisialisasiUploadFoto();
             })
             .catch(function(error) {
                 console.error("Gagal melakukan otentikasi otomatis Pi:", error);
@@ -629,75 +629,80 @@
     }
 
     // =========================================================================
-// MENNDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
-// =========================================================================
-if (document.getElementById('upload-avatar-input')) {
-    document.getElementById('upload-avatar-input').addEventListener('change', function(e) {
-        var file = e.target.files[0];
-        if (!file) return;
+    // MENDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
+    // =========================================================================
+    function inisialisasiUploadFoto() {
+        const targetInput = document.getElementById('upload-avatar-input');
+        if (!targetInput) return;
+        
+        if (targetInput.hasAttribute('data-load-bound')) return;
+        targetInput.setAttribute('data-load-bound', 'true');
 
-        if (!currentUser || !currentUser.uid) {
-            alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
-            return;
-        }
+        targetInput.addEventListener('change', function(e) {
+            var file = e.target.files[0];
+            if (!file) return;
 
-        if (file.size > 2 * 1024 * 1024) {
-            alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
-            return;
-        }
-
-        var reader = new FileReader();
-        reader.onload = function(evt) {
-            var base64Data = evt.target.result.split(',')[1];
-            alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
-
-            var payload = new URLSearchParams({
-                action: "ajukanFotoProfil",
-                uid: currentUser.uid,
-                imageName: file.name,
-                imageData: base64Data
-            });
-
-            fetch(SCRIPT_URL_UTAMA, { 
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: payload.toString()
-            })
-            .then(function(res) { return res.json(); })
-            .then(function(data) {
-                console.log("Respon pengajuan foto:", data);
-                muatFotoProfilTervalidasi();
-            })
-            .catch(function(err) {
-                console.error("Gagal mengirim berkas foto ke DB:", err);
-            });
-        };
-        reader.readAsDataURL(file);
-    });
-}
-
-function muatFotoProfilTervalidasi() {
-    if (!currentUser || !currentUser.uid) return;
-
-    var urlGet = SCRIPT_URL_UTAMA + "?action=ambilProfilUser&uid=" + encodeURIComponent(currentUser.uid);
-    
-    fetch(urlGet)
-    .then(function(res) { return res.json(); })
-    .then(function(userData) {
-        var profilImg = document.getElementById('user-profile-img');
-        if (profilImg) {
-            if (userData && userData.statusFoto === "APPROVED") {
-                profilImg.src = userData.urlFotoProfil;
-            } else {
-                profilImg.src = (userData && userData.urlFotoLama) || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            if (!currentUser || !currentUser.uid) {
+                alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
+                return;
             }
-        }
-    })
-    .catch(function(err) { 
-        console.log("Sinkronisasi foto profil aktif..."); 
-    });
-}
-// =========================================================================
+
+            if (file.size > 2 * 1024 * 1024) {
+                alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
+                return;
+            }
+
+            var reader = new FileReader();
+            reader.onload = function(evt) {
+                var base64Data = evt.target.result.split(',')[1];
+                alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
+
+                var payload = new URLSearchParams({
+                    action: "ajukanFotoProfil",
+                    uid: currentUser.uid,
+                    imageName: file.name,
+                    imageData: base64Data
+                });
+
+                fetch(SCRIPT_URL_UTAMA, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: payload.toString()
+                })
+                .then(function(res) { return res.json(); })
+                .then(function(data) {
+                    console.log("Respon pengajuan foto:", data);
+                    muatFotoProfilTervalidasi();
+                })
+                .catch(function(err) {
+                    console.error("Gagal mengirim berkas foto ke DB:", err);
+                });
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function muatFotoProfilTervalidasi() {
+        if (!currentUser || !currentUser.uid) return;
+
+        var urlGet = SCRIPT_URL_UTAMA + "?action=ambilProfilUser&uid=" + encodeURIComponent(currentUser.uid);
+        
+        fetch(urlGet)
+        .then(function(res) { return res.json(); })
+        .then(function(userData) {
+            var profilImg = document.getElementById('user-profile-img');
+            if (profilImg) {
+                if (userData && userData.statusFoto === "APPROVED") {
+                    profilImg.src = userData.urlFotoProfil;
+                } else {
+                    profilImg.src = (userData && userData.urlFotoLama) || "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+                }
+            }
+        })
+        .catch(function(err) { 
+            console.log("Sinkronisasi foto profil aktif..."); 
+        });
+    }
 
     // =========================================================================
     // FUNGSI SINKRONISASI DATA PROFILE REALTIME DARI GOOGLE SHEET (GET)
@@ -705,7 +710,7 @@ function muatFotoProfilTervalidasi() {
     function muatStatusKemitraan() {
         if (!currentUser || !currentUser.uid) return;
 
-        const cekURL = `${SCRIPT_URL_UTAMA}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`;
+        const cekURL = SCRIPT_URL_UTAMA + "?action=cekStatus&uid=" + encodeURIComponent(currentUser.uid);
 
         fetch(cekURL)
         .then(res => res.json())
@@ -750,17 +755,15 @@ function muatFotoProfilTervalidasi() {
     function closeModal() { document.getElementById("comingSoonModal").style.display = "none"; }
 
     function openKomunitasModal() {
-        document.getElementById("komunitasModal").style.display = "flex";
+        const targetModal = document.getElementById("komunitasModal");
+        if (targetModal) targetModal.style.display = "flex";
         var sideNav = document.getElementById("sideNav");
         if(sideNav) sideNav.style.width = "0";
     }
 
-    运作closeKomunitasModal() {
-        document.getElementById("komunitasModal").style.display = "none";
-    }
-
     function closeKomunitasModal() {
-        document.getElementById("komunitasModal").style.display = "none";
+        const targetModal = document.getElementById("komunitasModal");
+        if (targetModal) targetModal.style.display = "none";
     }
 
     // =========================================================================
@@ -811,7 +814,7 @@ function muatFotoProfilTervalidasi() {
                 uid: currentUser.uid
             });
 
-            fetch(`${SCRIPT_URL_UTAMA}?${params.toString()}`, { 
+            fetch(SCRIPT_URL_UTAMA + "?" + params.toString(), { 
                 method: 'POST' 
             })
             .then(response => {
@@ -972,57 +975,110 @@ function muatFotoProfilTervalidasi() {
         }
     }
 
-    // =========================================================================
     // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
+
     // =========================================================================
+
     function paksaAktifTombolWilayah() {
+
         try {
+
             const semuaTombol = document.querySelectorAll("button");
+
             if (!semuaTombol) return;
 
+
+
             semuaTombol.forEach(btn => {
+
                 if (!btn || !btn.innerText) return; 
+
                 
+
                 const txt = btn.innerText.toUpperCase();
+
                 
+
                 if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH") || txt.includes("GABUNG") || txt.includes("KOMUNITAS")) {
+
                     btn.disabled = false;
+
                     btn.style.pointerEvents = "auto";
+
                     btn.style.cursor = "pointer";
+
                     
+
                     if (!btn.hasAttribute('data-click-bound')) {
+
                         btn.setAttribute('data-click-bound', 'true');
+
                         btn.removeAttribute("onclick");
+
                         btn.onclick = null; 
+
                         
+
                         btn.addEventListener('click', function(e) {
+
                             e.preventDefault();
+
                             e.stopPropagation();
+
                             if (typeof openKomunitasModal === "function") {
+
                                 openKomunitasModal();
+
                             } else {
+
                                 const modalK = document.getElementById("komunitasModal");
+
                                 if (modalK) modalK.style.display = "flex";
+
                             }
+
                         });
+
                     }
+
                 }
+
             });
+
         } catch (error) {
+
             console.log("Sistem mendeteksi tombol non-teks, diabaikan dengan aman:", error.message);
+
         }
+
     }
+
     
+
     document.addEventListener("DOMContentLoaded", function() {
+
         paksaAktifTombolWilayah();
+
+        inisialisasiUploadFoto();
+
         if (typeof inisialisasiAutoLoginPi === "function") inisialisasiAutoLoginPi();
+
     });
+
     
+
     window.addEventListener("load", function() {
+
         paksaAktifTombolWilayah();
+
+        inisialisasiUploadFoto();
+
     });
+
     
+
     setInterval(paksaAktifTombolWilayah, 1500);
+           
 </script>
 </body>
 </html>

@@ -627,7 +627,6 @@ function inisialisasiAutoLoginPi() {
             console.error("Gagal menyalin text: ", err);
         });
     }
-
     // =========================================================================
     // MENDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
     // =========================================================================
@@ -655,15 +654,15 @@ function inisialisasiAutoLoginPi() {
             var reader = new FileReader();
             reader.onload = function(evt) {
                 var base64Data = evt.target.result.split(',')[1];
-                alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
 
-                var payload = new URLSearchParams({
-                    action: "ajukanFotoProfil",
-                    uid: currentUser.uid,
-                    imageName: file.name,
-                    imageData: base64Data
-                });
+                // SINKRONISASI POST PARAMETER YANG BENAR UNTUK GOOGLE APPS SCRIPT
+                var payload = new URLSearchParams();
+                payload.append("action", "ajukanFotoProfil");
+                payload.append("uid", currentUser.uid);
+                payload.append("imageName", file.name);
+                payload.append("imageData", base64Data);
 
+                // Kirim menggunakan POST body murni (Aman dari pembatasan panjang URL)
                 fetch(SCRIPT_URL_UTAMA, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -672,16 +671,17 @@ function inisialisasiAutoLoginPi() {
                 .then(function(res) { return res.json(); })
                 .then(function(data) {
                     console.log("Respon pengajuan foto:", data);
+                    alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
                     muatFotoProfilTervalidasi();
                 })
                 .catch(function(err) {
                     console.error("Gagal mengirim berkas foto ke DB:", err);
+                    alert("❌ Gagal terhubung ke server database. Silakan coba lagi.");
                 });
             };
             reader.readAsDataURL(file);
         });
     }
-
     function muatFotoProfilTervalidasi() {
         if (!currentUser || !currentUser.uid) return;
 

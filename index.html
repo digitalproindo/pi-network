@@ -628,60 +628,67 @@ function inisialisasiAutoLoginPi() {
         });
     }
     // =========================================================================
-    // MENDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
-    // =========================================================================
-    function inisialisasiUploadFoto() {
-        const targetInput = document.getElementById('upload-avatar-input');
-        if (!targetInput) return;
-        
-        if (targetInput.hasAttribute('data-load-bound')) return;
-        targetInput.setAttribute('data-load-bound', 'true');
+// MENDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
+// =========================================================================
+if (document.getElementById('upload-avatar-input')) {
+  document.getElementById('upload-avatar-input').addEventListener('change', function(e) {
+    var file = e.target.files[0];
+    if (!file) return;
 
-        targetInput.addEventListener('change', function(e) {
-            var file = e.target.files[0];
-            if (!file) return;
-
-            if (!currentUser || !currentUser.uid) {
-                alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
-                return;
-            }
-
-            if (file.size > 2 * 1024 * 1024) {
-                alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
-                return;
-            }
-
-            var reader = new FileReader();
-            reader.onload = function(evt) {
-                var base64Data = evt.target.result.split(',')[1];
-
-                // SINKRONISASI POST PARAMETER YANG BENAR UNTUK GOOGLE APPS SCRIPT
-                var payload = new URLSearchParams();
-                payload.append("action", "ajukanFotoProfil");
-                payload.append("uid", currentUser.uid);
-                payload.append("imageName", file.name);
-                payload.append("imageData", base64Data);
-
-                // Kirim menggunakan POST body murni (Aman dari pembatasan panjang URL)
-                fetch(SCRIPT_URL_UTAMA, { 
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: payload.toString()
-                })
-                .then(function(res) { return res.json(); })
-                .then(function(data) {
-                    console.log("Respon pengajuan foto:", data);
-                    alert("📸 Foto profil baru Anda telah dikirim ke sistem admin!\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
-                    muatFotoProfilTervalidasi();
-                })
-                .catch(function(err) {
-                    console.error("Gagal mengirim berkas foto ke DB:", err);
-                    alert("❌ Gagal terhubung ke server database. Silakan coba lagi.");
-                });
-            };
-            reader.readAsDataURL(file);
-        });
+    if (!currentUser || !currentUser.uid) {
+      alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
+      return;
     }
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
+      return;
+    }
+
+    // Menampilkan loading sederhana agar user tahu proses sedang berjalan
+    console.log("Sedang memproses dan mengunggah foto...");
+
+    var reader = new FileReader();
+    reader.onload = function(evt) {
+      var base64Data = evt.target.result.split(',')[1];
+
+      // Siapkan data payload pengiriman
+      var formData = new URLSearchParams();
+      formData.append("action", "ajukanFotoProfil");
+      formData.append("uid", currentUser.uid);
+      formData.append("fotoBase64", base64Data);
+      formData.append("namaFoto", "Foto_" + currentUser.username + "_" + Date.now() + ".jpg");
+
+      // PROSES KIRIM KE GOOGLE APPS SCRIPT
+      fetch(SCRIPT_URL_UTAMA, {
+        method: "POST",
+        body: formData,
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
+      .then(response => response.json())
+      .then(res => {
+        if (res.status === "success") {
+          // ALERT HANYA MUNCUL JIKA CODESCRIPT MENJAWAB SUKSES (KOLOM L SUDAH TERISI)
+          alert("📸 Foto profil baru Anda BERHASIL dikirim ke sistem admin!\n\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
+          
+          // Refresh data tampilan di aplikasi secara realtime
+          if (typeof muatFotoProfilTervalidasi === "function") muatFotoProfilTervalidasi();
+          if (typeof muatStatusKemitraan === "function") muatStatusKemitraan();
+        } else {
+          alert("❌ Gagal mengunggah: " + res.message);
+        }
+      })
+      .catch(err => {
+        console.error("Error unggah:", err);
+        alert("❌ Terjadi kesalahan jaringan. Gagal mengirim foto ke server admin.");
+      });
+    };
+
+    reader.readAsDataURL(file);
+  });
+}
     function muatFotoProfilTervalidasi() {
         if (!currentUser || !currentUser.uid) return;
 

@@ -185,19 +185,22 @@
         }
 
         /* =========================================================================
-           STYLE PREMIUM PROFILE CARD REVISI (NUANSA PI NETWORK GAMBAR 2)
+           STYLE PREMIUM PROFILE CARD REVISI - IMPLEMENTASI PRESETS GAMBAR BARU
            ========================================================================= */
         #page-profile { padding: 0 20px; margin-top: -30px; position: relative; z-index: 10; }
         
         .profile-premium-card {
-            background: linear-gradient(180deg, #ffffff 0%, #f4efff 100%);
+            background: linear-gradient(180deg, rgba(26, 11, 46, 0.45) 0%, rgba(12, 1, 26, 0.95) 100%), 
+                        url('https://i.ibb.co.com/Ngs4YqHh/Chat-GPT-Image-29-Jun-2026-23-18-38.png');
+            background-size: cover;
+            background-position: center;
             border-radius: 32px;
             padding: 0 20px 30px 20px;
             text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.35);
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(109, 36, 207, 0.1);
+            border: 2px solid rgba(212, 175, 55, 0.5);
             margin-top: 55px;
             margin-bottom: 20px;
         }
@@ -208,7 +211,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 20px;
+            height: 12px;
             background: linear-gradient(90deg, #671ca8 0%, #4a0d80 100%);
             border-radius: 0 0 32px 32px;
         }
@@ -227,9 +230,9 @@
             border-radius: 50%;
             border: 4px solid #6d24cf;
             padding: 3px;
-            background: #fff;
+            background: rgba(26, 11, 46, 0.8);
             position: relative;
-            box-shadow: 0 8px 20px rgba(109, 36, 207, 0.2);
+            box-shadow: 0 8px 20px rgba(109, 36, 207, 0.3);
         }
 
         .premium-avatar-frame img {
@@ -239,34 +242,42 @@
             object-fit: cover;
         }
 
-        .premium-upload-overlay {
-            position: absolute;
-            top: 3px; left: 3px; width: 124px; height: 124px;
-            border-radius: 50%; background: rgba(0, 0, 0, 0.5);
-            color: #fff; display: flex; justify-content: center;
-            align-items: center; font-size: 11px; font-weight: bold;
-            cursor: pointer; opacity: 0; transition: opacity 0.3s ease;
-        }
-
-        .premium-avatar-frame:hover .premium-upload-overlay { opacity: 1; }
-
         .premium-avatar-mini-badge {
-            position: absolute; bottom: 3px; right: 3px; width: 28px; height: 28px;
-            background: #e6a100; border: 2px solid #fff; border-radius: 50%;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.2); display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 800; font-size: 13px;
+            position: absolute;
+            bottom: 3px;
+            right: 3px;
+            width: 28px;
+            height: 28px;
+            background: #e6a100;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 13px;
         }
 
         .premium-pi-coin-decor {
-            width: 38px; height: 38px; background: #fab802;
-            border-radius: 50%; box-shadow: 0 4px 10px rgba(250, 184, 2, 0.4);
-            position: absolute; display: flex; align-items: center; justify-content: center;
-            color: #1a053a; font-weight: bold; font-size: 16px;
+            width: 38px;
+            height: 38px;
+            background: #fab802;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(250, 184, 2, 0.4);
+            position: absolute;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1a053a;
+            font-weight: bold;
+            font-size: 16px;
         }
         .premium-coin-left { left: 25px; top: 35px; transform: rotate(-15deg); }
         .premium-coin-right { right: 25px; top: 45px; transform: rotate(15deg); }
 
-        .premium-user-name { color: #1a053a; font-size: 24px; font-weight: 800; margin: 15px 0 8px 0; }
+        .premium-user-name { color: #ffffff; font-size: 24px; font-weight: 800; margin: 15px 0 8px 0; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8); }
 
         .premium-pioneer-badge {
             display: inline-flex; align-items: center; background: linear-gradient(90deg, #782cdb 0%, #5215a3 100%);
@@ -474,12 +485,6 @@
             
             <div class="premium-avatar-frame">
                 <img id="user-profile-img" src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Avatar">
-                
-                <label for="upload-avatar-input" class="premium-upload-overlay">
-                    <span>Ganti Foto</span>
-                </label>
-                <input type="file" id="upload-avatar-input" accept="image/*" style="display: none;">
-                
                 <div class="premium-avatar-mini-badge">π</div>
             </div>
             
@@ -529,7 +534,7 @@
         </div>
 
         <button type="button" id="btnPerbaruiWilayah" style="width:100%; background:#4c1d95; color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(76,29,149,0.3); transition: all 0.3s;">
-    PERBARUI / AJUKAN WILAYAH BARU
+            PERBARUI / AJUKAN WILAYAH BARU
         </button>
     </div>
 </main>
@@ -558,15 +563,13 @@
 <script src="/dpi-bot.js"></script>
 
 <script>
-    // Inisialisasi awal variabel user jika file app.js lambat memuat
     if (typeof currentUser === 'undefined') {
         var currentUser = null;
     }
 
-    // URL Apps Script Utama (Omnibus) Anda
     const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 
-function inisialisasiAutoLoginPi() {
+    function inisialisasiAutoLoginPi() {
         if (typeof Pi !== 'undefined') {
             Pi.init({ version: "2.0", sandbox: false });
             
@@ -576,7 +579,6 @@ function inisialisasiAutoLoginPi() {
                 currentUser = auth.user;
                 console.log("Auto-login sukses untuk user:", currentUser.username);
                 
-                // Update Elemen Tampilan UI secara Realtime
                 const loginBtn = document.getElementById('login-btn');
                 if (loginBtn) {
                     loginBtn.innerText = currentUser.username;
@@ -590,12 +592,8 @@ function inisialisasiAutoLoginPi() {
                 const profAddr = document.getElementById('profile-address');
                 if (profAddr && currentUser.uid) profAddr.innerText = currentUser.uid;
 
-                // OTOMATIS AMBIL DATA STATUS DARI GOOGLE SHEET SETELAH LOGIN SUKSES
                 muatStatusKemitraan();
                 muatFotoProfilTervalidasi();
-                
-                // AKTIVASI EVENT LISTENER FOTO SETELAH LOGIN SUKSES
-                inisialisasiUploadFoto();
             })
             .catch(function(error) {
                 console.error("Gagal melakukan otentikasi otomatis Pi:", error);
@@ -612,9 +610,6 @@ function inisialisasiAutoLoginPi() {
         inisialisasiAutoLoginPi();
     }
 
-    // =========================================================================
-    // FUNGSI COPY CLIPBOARD WALLET UID
-    // =========================================================================
     function salinWalletUID() {
         const uidText = document.getElementById('profile-address').innerText;
         if(uidText === "Belum Terhubung") {
@@ -627,68 +622,7 @@ function inisialisasiAutoLoginPi() {
             console.error("Gagal menyalin text: ", err);
         });
     }
-    // =========================================================================
-// MENDETEKSI UNGGAH FOTO & RETRIEVAL SINKRONISASI PERSETUJUAN ADMIN (Sheet)
-// =========================================================================
-if (document.getElementById('upload-avatar-input')) {
-  document.getElementById('upload-avatar-input').addEventListener('change', function(e) {
-    var file = e.target.files[0];
-    if (!file) return;
 
-    if (!currentUser || !currentUser.uid) {
-      alert("⚠️ Harap lakukan otentikasi login Pi terlebih dahulu sebelum mengunggah foto.");
-      return;
-    }
-
-    if (file.size > 2 * 1024 * 1024) {
-      alert("⚠️ File terlalu besar! Maksimal ukuran gambar adalah 2MB.");
-      return;
-    }
-
-    // Menampilkan loading sederhana agar user tahu proses sedang berjalan
-    console.log("Sedang memproses dan mengunggah foto...");
-
-    var reader = new FileReader();
-    reader.onload = function(evt) {
-      var base64Data = evt.target.result.split(',')[1];
-
-      // Siapkan data payload pengiriman
-      var formData = new URLSearchParams();
-      formData.append("action", "ajukanFotoProfil");
-      formData.append("uid", currentUser.uid);
-      formData.append("fotoBase64", base64Data);
-      formData.append("namaFoto", "Foto_" + currentUser.username + "_" + Date.now() + ".jpg");
-
-      // PROSES KIRIM KE GOOGLE APPS SCRIPT
-      fetch(SCRIPT_URL_UTAMA, {
-        method: "POST",
-        body: formData,
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
-        }
-      })
-      .then(response => response.json())
-      .then(res => {
-        if (res.status === "success") {
-          // ALERT HANYA MUNCUL JIKA CODESCRIPT MENJAWAB SUKSES (KOLOM L SUDAH TERISI)
-          alert("📸 Foto profil baru Anda BERHASIL dikirim ke sistem admin!\n\nStatus: MENUNGGU PERSETUJUAN ADMIN.");
-          
-          // Refresh data tampilan di aplikasi secara realtime
-          if (typeof muatFotoProfilTervalidasi === "function") muatFotoProfilTervalidasi();
-          if (typeof muatStatusKemitraan === "function") muatStatusKemitraan();
-        } else {
-          alert("❌ Gagal mengunggah: " + res.message);
-        }
-      })
-      .catch(err => {
-        console.error("Error unggah:", err);
-        alert("❌ Terjadi kesalahan jaringan. Gagal mengirim foto ke server admin.");
-      });
-    };
-
-    reader.readAsDataURL(file);
-  });
-}
     function muatFotoProfilTervalidasi() {
         if (!currentUser || !currentUser.uid) return;
 
@@ -711,9 +645,6 @@ if (document.getElementById('upload-avatar-input')) {
         });
     }
 
-    // =========================================================================
-    // FUNGSI SINKRONISASI DATA PROFILE REALTIME DARI GOOGLE SHEET (GET)
-    // =========================================================================
     function muatStatusKemitraan() {
         if (!currentUser || !currentUser.uid) return;
 
@@ -748,9 +679,6 @@ if (document.getElementById('upload-avatar-input')) {
         .catch(err => console.error("Gagal membaca profil dari Database:", err));
     }
 
-    // =========================================================================
-    // NAVIGASI DAN MODAL INTERFACE
-    // =========================================================================
     function toggleMenu() {
         var sideNav = document.getElementById("sideNav");
         if (sideNav) {
@@ -773,9 +701,6 @@ if (document.getElementById('upload-avatar-input')) {
         if (targetModal) targetModal.style.display = "none";
     }
 
-    // =========================================================================
-    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST)
-    // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
         form.addEventListener('submit', e => {
@@ -898,9 +823,6 @@ if (document.getElementById('upload-avatar-input')) {
         }
     }
 
-    // =========================================================================
-    // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF
-    // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
     const kecSelect = document.getElementById('selectKecamatan');
@@ -946,18 +868,6 @@ if (document.getElementById('upload-avatar-input')) {
         });
     }
 
-    if (kecSelect) {
-        kecSelect.addEventListener('change', function() {
-            const id = this.options[this.selectedIndex].dataset.id;
-            resetDropdown(kelSelect, "Kelurahan");
-            if(!id) return;
-            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${id}.json`)
-                .then(res => res.json())
-                .then(data => populate(kelSelect, data))
-                .catch(e => console.log(e));
-        });
-    }
-
     function populate(target, data) {
         if (!target) return;
         target.disabled = false;
@@ -982,110 +892,54 @@ if (document.getElementById('upload-avatar-input')) {
         }
     }
 
-    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
-
-    // =========================================================================
-
     function paksaAktifTombolWilayah() {
-
         try {
-
             const semuaTombol = document.querySelectorAll("button");
-
             if (!semuaTombol) return;
 
-
-
             semuaTombol.forEach(btn => {
-
                 if (!btn || !btn.innerText) return; 
-
                 
-
                 const txt = btn.innerText.toUpperCase();
-
                 
-
                 if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH") || txt.includes("GABUNG") || txt.includes("KOMUNITAS")) {
-
                     btn.disabled = false;
-
                     btn.style.pointerEvents = "auto";
-
                     btn.style.cursor = "pointer";
-
                     
-
                     if (!btn.hasAttribute('data-click-bound')) {
-
                         btn.setAttribute('data-click-bound', 'true');
-
                         btn.removeAttribute("onclick");
-
                         btn.onclick = null; 
-
                         
-
                         btn.addEventListener('click', function(e) {
-
                             e.preventDefault();
-
                             e.stopPropagation();
-
                             if (typeof openKomunitasModal === "function") {
-
                                 openKomunitasModal();
-
                             } else {
-
                                 const modalK = document.getElementById("komunitasModal");
-
                                 if (modalK) modalK.style.display = "flex";
-
                             }
-
                         });
-
                     }
-
                 }
-
             });
-
         } catch (error) {
-
             console.log("Sistem mendeteksi tombol non-teks, diabaikan dengan aman:", error.message);
-
         }
-
     }
-
     
-
     document.addEventListener("DOMContentLoaded", function() {
-
         paksaAktifTombolWilayah();
-
-        inisialisasiUploadFoto();
-
         if (typeof inisialisasiAutoLoginPi === "function") inisialisasiAutoLoginPi();
-
     });
-
     
-
     window.addEventListener("load", function() {
-
         paksaAktifTombolWilayah();
-
-        inisialisasiUploadFoto();
-
     });
-
     
-
     setInterval(paksaAktifTombolWilayah, 1500);
-           
 </script>
 </body>
 </html>

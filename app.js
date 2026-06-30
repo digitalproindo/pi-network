@@ -2355,3 +2355,61 @@ window.muatStatusKemitraan = function() {
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
 };
+// ... Baris 530-533 (Akhir dari fungsi tampilkanNotifikasiGlobal bawaan Anda)
+    setTimeout(() => {
+        toast.classList.add("opacity-0", "translate-y-[-4px]");
+        setTimeout(() => { toast.remove(); }, 300);
+    }, 4000);
+} // <--- Ini adalah baris 533 di gambar Anda
+
+// 🟢 MULAI TEMPELKAN KODE BARU DI SINI (Baris 534)
+// =========================================================================
+// 10. NOTIFIKASI GERAKAN Rp10.000 LOGIC
+// =========================================================================
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        const banner = document.getElementById("banner-gerakan");
+        if (banner) {
+            banner.classList.remove("translate-y-full");
+            banner.classList.add("translate-y-0");
+        }
+    }, 3000); 
+});
+
+function tutupBannerGerakan() {
+    const banner = document.getElementById("banner-gerakan");
+    if (banner) {
+        banner.classList.remove("translate-y-0");
+        banner.classList.add("translate-y-full");
+    }
+}
+
+function bukaModalDonasiBCA() {
+    tutupBannerGerakan();
+    const modal = document.getElementById("modal-donasi-bca");
+    if (modal) {
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+    }
+}
+
+function tutupModalDonasiBCA() {
+    const modal = document.getElementById("modal-donasi-bca");
+    if (modal) {
+        modal.classList.add("hidden");
+        modal.classList.remove("flex");
+    }
+}
+
+function salinNomorRekening() {
+    const norek = document.getElementById("nomor-rekening-bca").innerText;
+    navigator.clipboard.writeText(norek).then(() => {
+        if (typeof tampilkanNotifikasiGlobal === "function") {
+            tampilkanNotifikasiGlobal("Nomor rekening BCA berhasil disalin!", "success");
+        } else {
+            alert("Nomor rekening berhasil disalin: " + norek);
+        }
+    }).catch(err => {
+        console.error("Gagal menyalin teks: ", err);
+    });
+}

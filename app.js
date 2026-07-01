@@ -1820,11 +1820,30 @@ window.switchPage = (pageId) => {
 // =========================================================================
 window.handlePayment = async (amount, name) => {
     if (!isPiInitialized) {
-        alert("Koneksi Blockchain belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai.");
+        alert("Koneksi belum siap. Mohon tunggu beberapa detik hingga inisialisasi selesai atau refresh kembali");
         return;
     }
     if (!currentUser) { showLoginPrompt(); return; }
     if (!userAddress.nama) { showAddressPrompt(); return; }
+
+    // =========================================================================
+    // PINTU PENGAMAN KEDUA: CEK DUPLIKASI SEBELUM MASUK JALUR PEMBAYARAN
+    // =========================================================================
+    const nomorTerakhir = localStorage.getItem('last_registered_phone');
+    if (nomorTerakhir === userAddress.telepon.trim()) {
+        const waitPopup = document.createElement('div');
+        waitPopup.id = "digital-pro-wait-alert";
+        waitPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px); z-index: 100006; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; font-family: 'Inter', sans-serif;";
+        waitPopup.innerHTML = `
+            <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border: 2px solid #FFD700; padding: 30px 20px; border-radius: 24px; max-width: 320px; width: 100%; text-align: center; box-shadow: 0 15px 50px rgba(255, 77, 79, 0.2);">
+                <div style="background: rgba(255, 215, 0, 0.1); width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 2px solid #FFD700;"><span style="font-size: 28px;">⏳</span></div>
+                <h3 style="color: #FFD700; margin: 0 0 8px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; font-size: 1.1rem;">Sedang Diproses</h3>
+                <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5; font-weight: 500;">Mohon bersabar, admin ubay akan segera proses.</p>
+                <button onclick="document.getElementById('digital-pro-wait-alert').remove()" style="background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0b2135; border: none; padding: 12px 0; width: 100%; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; text-transform: uppercase;">Mengerti</button>
+            </div>`;
+        document.body.appendChild(waitPopup);
+        return; // Blokir proses createPayment agar saldo Pi user tidak terpotong dan tidak duplikasi ke excel
+    }
 
     let detailedItemName = name;
     if (name === 'Total Keranjang' && typeof cart !== 'undefined' && cart.length > 0) {
@@ -2042,7 +2061,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const btnAman = document.getElementById('btnKirim');
-            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
 
             const namaUser = formAman.querySelector('[name="nama"]') ? formAman.querySelector('[name="nama"]').value.trim() : "";
             const waUser = formAman.querySelector('[name="whatsapp"]') ? formAman.querySelector('[name="whatsapp"]').value.trim() : "";
@@ -2057,6 +2075,30 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return;
             }
 
+            // =========================================================================
+            // VALIDASI ANTI-SPAM FORM KOMUNITAS (CEK NOMOR WHATSAPP GANDA)
+            // =========================================================================
+            const lastWaRegistered = localStorage.getItem('last_community_wa');
+            if (lastWaRegistered === waUser) {
+                // Tampilkan Popup Kustom Sesuai Permintaan
+                const waitPopup = document.createElement('div');
+                waitPopup.id = "digital-pro-wait-alert";
+                waitPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 4, 14, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; font-family: 'Inter', sans-serif;";
+                waitPopup.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border: 2px solid #FFD700; padding: 35px 25px; border-radius: 24px; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 15px 50px rgba(255, 215, 0, 0.25);">
+                        <div style="background: rgba(255, 215, 0, 0.1); width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 2px solid #FFD700;"><span style="font-size: 28px;">⏳</span></div>
+                        <h3 style="color: #FFD700; margin: 0 0 10px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; font-size: 1.15rem;">Sedang Diproses</h3>
+                        <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5; font-weight: 500;">Mohon bersabar, admin ubay akan segera proses.</p>
+                        <button onclick="document.getElementById('digital-pro-wait-alert').remove()" style="background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0b2135; border: none; padding: 12px 0; width: 100%; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; width: 100%;">OK, SAYA TUNGGU</button>
+                    </div>`;
+                document.body.appendChild(waitPopup);
+                
+                // Kembalikan kondisi tombol form ke semula
+                if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+                return; // Blokir pipeline pengiriman data ke Google Sheets Webhook
+            }
+
+            if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
             statusKirimKomunitas = true;
             const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
@@ -2067,6 +2109,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .then(res => res.json())
             .then(response => {
+                // JIKA BERHASIL: Catat nomor WhatsApp ini ke memori lokal browser agar tidak bisa didaftarkan ulang berturut-turut
+                localStorage.setItem('last_community_wa', waUser);
+
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 tampilkanModalSuksesDPI();
@@ -2082,7 +2127,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
-});
 
 // =========================================================================
 // FUNGSI POPUP SUKSES: PREMIUM DIGITAL PRO (RE-DESIGNED VERSION)
@@ -2174,13 +2218,9 @@ function cekPerubahanStatusSistem(statusBaru) {
     
     // JIKA ANDA INGIN BANNER SELALU MUNCUL SAAT TESTING (TANPA SYARAT HARUS BERUBAH):
     // Ubah baris di bawah ini menjadi: tampilkanBannerNotifikasiSistem(statusBaru);
-    if (statusLama && statusLama !== statusBaru) {
-        tampilkanBannerNotifikasiSistem(statusBaru);
-    } else if (!statusLama) {
-        // Pemicu pertama kali jika local storage kosong
+    if (!statusLama || statusLama !== statusBaru) {
         tampilkanBannerNotifikasiSistem(statusBaru);
     }
-    localStorage.setItem('dpi_last_known_status', statusBaru);
 }
 
 function tampilkanBannerNotifikasiSistem(statusTerbaru) {
@@ -2209,9 +2249,12 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
         if (e.target.classList.contains('close-banner-x')) { 
             e.stopPropagation(); 
             banner.remove(); 
+            // Tetap simpan status ke localstorage agar tidak spam muncul saat pindah halaman setelah di-close
+            localStorage.setItem('dpi_last_known_status', statusTerbaru);
             return; 
         }
         banner.remove();
+        localStorage.setItem('dpi_last_known_status', statusTerbaru);
         bukaModalInvestorDigitalPro();
     });
 }
@@ -2273,7 +2316,6 @@ function bukaModalInvestorDigitalPro() {
 }
 
 function injeksiLoncengNotifikasiProfil() {
-    // STRATEGI ANTI-GAGAL: Cari elemen status kemitraan dengan segala kemungkinan selektor selector
     const penunjukStatus = document.getElementById('partner-status') || 
                            document.querySelector('.partner-status-val') || 
                            document.querySelector('[id*="status"]');
@@ -2292,7 +2334,6 @@ function injeksiLoncengNotifikasiProfil() {
     lonceng.innerHTML = ' 🔔';
     lonceng.style.cssText = "cursor: pointer !important; display: inline-block !important; margin-left: 8px !important; font-size: 1.25rem !important; vertical-align: middle !important; position: relative; z-index: 99999;";
     
-    // Pasang lonceng tepat di samping teks status kemitraan Anda
     penunjukStatus.parentNode.insertBefore(lonceng, penunjukStatus.nextSibling);
 
     lonceng.onclick = (e) => {
@@ -2315,7 +2356,8 @@ window.muatStatusKemitraan = function() {
         return;
     }
     
-    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}`)
+    // Menambahkan timestamp parameter unik agar browser tidak menyajikan data cache yang usang
+    fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}&_ts=${Date.now()}`)
     .then(res => res.json())
     .then(data => {
         if (!data) return;
@@ -2343,11 +2385,10 @@ window.muatStatusKemitraan = function() {
             if (labelLogistik) labelLogistik.innerText = data.logistikShare || "0.00 %";
             if (labelItem) labelItem.innerText = data.produkTerproses || "0 Item";
             
-            // PAKSA EKSEKUSI RENDERING KE LAYAR HP / BROWSER
             setTimeout(() => {
                 injeksiLoncengNotifikasiProfil();
                 cekPerubahanStatusSistem(statusFinal);
-            }, 300); // Penundaan 300ms untuk memastikan HTML halaman profil selesai dimuat utuh oleh Pi Browser
+            }, 300);
             
         } else {
             if (penunjukStatus) penunjukStatus.innerText = "BELUM TERDAFTAR";

@@ -2089,7 +2089,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div style="background: linear-gradient(135deg, #1a0033 0%, #0b2135 100%); border: 2px solid #FFD700; padding: 35px 25px; border-radius: 24px; max-width: 340px; width: 100%; text-align: center; box-shadow: 0 15px 50px rgba(255, 215, 0, 0.25);">
                         <div style="background: rgba(255, 215, 0, 0.1); width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 2px solid #FFD700;"><span style="font-size: 28px;">⏳</span></div>
                         <h3 style="color: #FFD700; margin: 0 0 10px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; font-size: 1.15rem;">Sedang Diproses</h3>
-                        <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5; font-weight: 500;">Mohon bersabar, admin ubay akan segera proses.</p>
+                        <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5; font-weight: 500;">Mohon bersabar, admin Digital Pro Indo akan segera proses.</p>
                         <button type="button" id="btnSelesaiTunggu" style="background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0b2135; border: none; padding: 12px 0; width: 100%; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; text-transform: uppercase;">OK, SAYA TUNGGU</button>
                     </div>`;
                 document.body.appendChild(waitPopup);

@@ -2116,7 +2116,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             // =========================================================================
             if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
             statusKirimKomunitas = true;
-            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, city: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
+            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
             fetch(SCRIPT_URL_AMAN, { 
                 method: 'POST',

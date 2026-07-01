@@ -2048,11 +2048,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN PROTEKSI ANTI-SPAM)
+    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN REVISI PROTEKSI ANTI-SPAM MUTLAK)
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
             e.preventDefault();
+            
+            // JIKA STATUS SEDANG MENGIRIM, BLOKIR SEGERA
             if (statusKirimKomunitas) return;
             
             if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
@@ -2076,11 +2078,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             // =========================================================================
-            // VALIDASI ANTI-SPAM FORM KOMUNITAS (CEK NOMOR WHATSAPP GANDA)
+            // VALIDASI ANTI-SPAM FORM KOMUNITAS (MUTLAK - RETURNING EARLY)
             // =========================================================================
             const lastWaRegistered = localStorage.getItem('last_community_wa');
             if (lastWaRegistered === waUser) {
-                // Tampilkan Popup Kustom Sesuai Permintaan
+                // 1. Tampilkan Popup Kustom Emas (Pertahankan Tampilan Sesuai Gambar 1)
                 const waitPopup = document.createElement('div');
                 waitPopup.id = "digital-pro-wait-alert";
                 waitPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 4, 14, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; font-family: 'Inter', sans-serif;";
@@ -2089,14 +2091,29 @@ document.addEventListener("DOMContentLoaded", async () => {
                         <div style="background: rgba(255, 215, 0, 0.1); width: 65px; height: 65px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; border: 2px solid #FFD700;"><span style="font-size: 28px;">⏳</span></div>
                         <h3 style="color: #FFD700; margin: 0 0 10px 0; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; font-size: 1.15rem;">Sedang Diproses</h3>
                         <p style="color: #dfcbf2; margin: 0 0 25px 0; font-size: 0.95rem; line-height: 1.5; font-weight: 500;">Mohon bersabar, admin ubay akan segera proses.</p>
-                        <button onclick="document.getElementById('digital-pro-wait-alert').remove()" style="background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0b2135; border: none; padding: 12px 0; width: 100%; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; text-transform: uppercase; width: 100%;">OK, SAYA TUNGGU</button>
+                        <button type="button" id="btnSelesaiTunggu" style="background: linear-gradient(90deg, #FFD700 0%, #FFA500 100%); color: #0b2135; border: none; padding: 12px 0; width: 100%; border-radius: 12px; font-weight: 800; font-size: 0.95rem; cursor: pointer; text-transform: uppercase;">OK, SAYA TUNGGU</button>
                     </div>`;
                 document.body.appendChild(waitPopup);
                 
+                // Berikan event handler tutup yang bersih tanpa memicu submit ulang
+                const btnTutupPopup = waitPopup.querySelector('#btnSelesaiTunggu');
+                if (btnTutupPopup) {
+                    btnTutupPopup.onclick = (event) => {
+                        event.preventDefault();
+                        waitPopup.remove();
+                    };
+                }
+
+                // 2. Kembalikan kondisi tombol daftar utama agar tidak stuck 'MENGIRIM...'
                 if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
+                
+                // 3. FORCE EXIT! Stop total baris kode di bawahnya agar tidak menembak database
                 return; 
             }
 
+            // =========================================================================
+            // JIKA LOLOS VALIDASI, BARULAH DATA DIKIRIM KE DATABASE G-SHEETS
+            // =========================================================================
             if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
             statusKirimKomunitas = true;
             const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, city: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
@@ -2108,7 +2125,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .then(res => res.json())
             .then(response => {
+                // Catat nomor WhatsApp yang berhasil didaftarkan pertama kali
                 localStorage.setItem('last_community_wa', waUser);
+                
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 tampilkanModalSuksesDPI();
@@ -2124,7 +2143,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
-});
 
 // =========================================================================
 // FUNGSI POPUP SUKSES: PREMIUM DIGITAL PRO (RE-DESIGNED VERSION)

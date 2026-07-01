@@ -2048,7 +2048,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN REVISI PROTEKSI ANTI-SPAM MUTLAK)
+    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN REVISI PROTEKSI ANTI-SPAM MUTLAK & VARIABEL ASLI)
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -2116,6 +2116,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             // =========================================================================
             if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
             statusKirimKomunitas = true;
+            
+            // KEMBALI MENGGUNAKAN PROPERTI 'kota' SESUAI CODE AWAL ANDA (MENCEGAH CRASH RENDER)
             const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
             fetch(SCRIPT_URL_AMAN, { 

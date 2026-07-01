@@ -2126,7 +2126,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
             });
         });
-    }
 
 // =========================================================================
 // FUNGSI POPUP SUKSES: PREMIUM DIGITAL PRO (RE-DESIGNED VERSION)

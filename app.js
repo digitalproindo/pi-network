@@ -1956,7 +1956,7 @@ function showSuccessOverlay(amount, name, txid) {
     document.body.appendChild(overlay);
 }
 
-// =========================================================================
+                // =========================================================================
 // 7. SIDEBAR MENU & BANNER LOGIC - FIXED VERSION
 // =========================================================================
 window.toggleMenu = () => {
@@ -1986,7 +1986,9 @@ let statusKirimKomunitas = false;
 
 document.addEventListener("DOMContentLoaded", async () => {
     // 1. Suntik Gaya Animasi & Desain Futuristik
-    inisialisasiGayaDigitalPro();
+    if (typeof inisialisasiGayaDigitalPro === "function") {
+        inisialisasiGayaDigitalPro();
+    }
 
     // 2. LANGSUNG EKSEKUSI RENDER AGAR PRODUK TIDAK KOSONG
     if (typeof renderProducts === "function" && typeof productsData !== "undefined") {
@@ -2048,13 +2050,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN REVISI PROTEKSI ANTI-SPAM MUTLAK & VARIABEL ASLI)
+    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN PROTEKSI ANTI-SPAM MUTLAK)
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
             e.preventDefault();
-            
-            // JIKA STATUS SEDANG MENGIRIM, BLOKIR SEGERA
             if (statusKirimKomunitas) return;
             
             if (typeof currentUser === 'undefined' || !currentUser || !currentUser.uid) {
@@ -2082,7 +2082,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             // =========================================================================
             const lastWaRegistered = localStorage.getItem('last_community_wa');
             if (lastWaRegistered === waUser) {
-                // 1. Tampilkan Popup Kustom Emas (Pertahankan Tampilan Sesuai Gambar 1)
                 const waitPopup = document.createElement('div');
                 waitPopup.id = "digital-pro-wait-alert";
                 waitPopup.style.cssText = "position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(6, 4, 14, 0.88); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px; box-sizing: border-box; font-family: 'Inter', sans-serif;";
@@ -2095,7 +2094,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>`;
                 document.body.appendChild(waitPopup);
                 
-                // Berikan event handler tutup yang bersih tanpa memicu submit ulang
                 const btnTutupPopup = waitPopup.querySelector('#btnSelesaiTunggu');
                 if (btnTutupPopup) {
                     btnTutupPopup.onclick = (event) => {
@@ -2104,10 +2102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                     };
                 }
 
-                // 2. Kembalikan kondisi tombol daftar utama agar tidak stuck 'MENGIRIM...'
                 if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-                
-                // 3. FORCE EXIT! Stop total baris kode di bawahnya agar tidak menembak database
                 return; 
             }
 
@@ -2117,7 +2112,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
             statusKirimKomunitas = true;
             
-            // KEMBALI MENGGUNAKAN PROPERTI 'kota' SESUAI CODE AWAL ANDA (MENCEGAH CRASH RENDER)
             const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
             fetch(SCRIPT_URL_AMAN, { 
@@ -2127,12 +2121,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .then(res => res.json())
             .then(response => {
-                // Catat nomor WhatsApp yang berhasil didaftarkan pertama kali
                 localStorage.setItem('last_community_wa', waUser);
-                
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
-                tampilkanModalSuksesDPI();
+                if (typeof tampilkanModalSuksesDPI === "function") tampilkanModalSuksesDPI();
                 if (typeof window.muatStatusKemitraan === "function") window.muatStatusKemitraan();
             })
             .catch(err => {
@@ -2145,6 +2137,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
     }
+}); // <--- INI ADALAH PENUTUP DOMCONTENTLOADED YANG STRUKTURNYA DIJAMIN REKAT DAN BENAR
 
 // =========================================================================
 // FUNGSI POPUP SUKSES: PREMIUM DIGITAL PRO (RE-DESIGNED VERSION)

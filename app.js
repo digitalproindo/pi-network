@@ -2048,7 +2048,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         loginBtn.onclick = window.handleAuth;
     }
 
-    // 8. PENANGANAN SUBMIT FORM KOMUNITAS
+    // 8. PENANGANAN SUBMIT FORM KOMUNITAS (DENGAN PROTEKSI ANTI-SPAM)
     const formAman = document.getElementById('formKomunitas');
     if (formAman) {
         formAman.addEventListener('submit', e => {
@@ -2093,14 +2093,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>`;
                 document.body.appendChild(waitPopup);
                 
-                // Kembalikan kondisi tombol form ke semula
                 if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
-                return; // Blokir pipeline pengiriman data ke Google Sheets Webhook
+                return; 
             }
 
             if (btnAman) { btnAman.innerText = "MENGIRIM..."; btnAman.disabled = true; }
             statusKirimKomunitas = true;
-            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, kota: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
+            const dataKomunitas = { nama: namaUser, whatsapp: waUser, provinsi: provUser, city: kotaUser, kecamatan: kecUser, kelurahan: kelUser, uid: currentUser.uid };
 
             fetch(SCRIPT_URL_AMAN, { 
                 method: 'POST',
@@ -2109,9 +2108,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .then(res => res.json())
             .then(response => {
-                // JIKA BERHASIL: Catat nomor WhatsApp ini ke memori lokal browser agar tidak bisa didaftarkan ulang berturut-turut
                 localStorage.setItem('last_community_wa', waUser);
-
                 if (typeof window.closeKomunitasModal === "function") window.closeKomunitasModal();
                 formAman.reset();
                 tampilkanModalSuksesDPI();
@@ -2126,6 +2123,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 if (btnAman) { btnAman.innerText = "DAFTAR SEKARANG"; btnAman.disabled = false; }
             });
         });
+    }
+});
 
 // =========================================================================
 // FUNGSI POPUP SUKSES: PREMIUM DIGITAL PRO (RE-DESIGNED VERSION)
@@ -2210,13 +2209,10 @@ function inisialisasiGayaDigitalPro() {
 // =========================================================================
 // 8B. SINKRONISASI STATUS PROFIL, BELL NOTIFIKASI & BANNER INVESTOR MODAL (FORCE RENDER)
 // =========================================================================
-
 function cekPerubahanStatusSistem(statusBaru) {
     if (!statusBaru) return;
     const statusLama = localStorage.getItem('dpi_last_known_status');
     
-    // JIKA ANDA INGIN BANNER SELALU MUNCUL SAAT TESTING (TANPA SYARAT HARUS BERUBAH):
-    // Ubah baris di bawah ini menjadi: tampilkanBannerNotifikasiSistem(statusBaru);
     if (!statusLama || statusLama !== statusBaru) {
         tampilkanBannerNotifikasiSistem(statusBaru);
     }
@@ -2230,7 +2226,6 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
     banner.id = 'dpi-top-banner';
     banner.className = 'notif-banner-pro';
     
-    // inline style diperkuat dengan !important secara terprogram agar pasti merestart posisi paling atas layar
     banner.style.cssText = "position: fixed !important; top: 20px !important; left: 5% !important; right: 5% !important; max-width: 400px; margin: 0 auto; background: linear-gradient(135deg, #130b24 0%, #0a0d1a 100%) !important; border: 2px solid #9333ea !important; border-radius: 16px; padding: 14px 18px; z-index: 999999999 !important; cursor: pointer; box-shadow: 0 20px 50px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 14px; font-family: sans-serif; box-sizing: border-box;";
 
     banner.innerHTML = `
@@ -2248,7 +2243,6 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
         if (e.target.classList.contains('close-banner-x')) { 
             e.stopPropagation(); 
             banner.remove(); 
-            // Tetap simpan status ke localstorage agar tidak spam muncul saat pindah halaman setelah di-close
             localStorage.setItem('dpi_last_known_status', statusTerbaru);
             return; 
         }
@@ -2257,7 +2251,6 @@ function tampilkanBannerNotifikasiSistem(statusTerbaru) {
         bukaModalInvestorDigitalPro();
     });
 }
-
 function bukaModalInvestorDigitalPro() {
     const modalEksis = document.getElementById('dpi-modal-investor-pro');
     if (modalEksis) modalEksis.remove();
@@ -2279,11 +2272,11 @@ function bukaModalInvestorDigitalPro() {
 
             <div style="color: #cbd5e1; font-size: 0.86rem; line-height: 1.6; text-align: left;">
                 <p>Halo Sahabat Digital Pro Indo! 👋</p>
-                <p>Digital Pro Indo lahir dari semangat, kerja keras, dan komitmen untuk menghadirkan inovasi digital karya anak bangsa.</p>
+                <p>Digital Pro Indo lahir dari semangat, kerja keras, and komitmen untuk menghadirkan inovasi digital karya anak bangsa.</p>
                 <p style="background: rgba(168, 85, 247, 0.08); border-left: 3px solid #a855f7; padding: 12px; border-radius: 0 12px 12px 0; margin: 16px 0; color: #e2e8f0;">
                     🚀 Kami membuka kesempatan bagi anggota yang memiliki visi yang sama untuk bergabung sebagai <strong>Investor dan Mitra Pengembangan Digital Pro Indo</strong>.
                 </p>
-                <p>📞 <strong>Jika Anda berminat menjadi bagian dari manajemen, mitra strategis, atau investor Digital Pro Indo, silakan hubungi kami untuk mendapatkan informasi lebih lanjut.</strong></p>
+                <p>📞 <strong>Jika Anda berminat menjadi bagian dari manajemen, mitra strategis, atau investor Digital Pro Indo, silakan hubungi kami untuk mendapatkan information lebih lanjut.</strong></p>
             </div>
 
             <div style="margin-top: 25px; display: flex; flex-direction: column; gap: 8px;">
@@ -2355,7 +2348,6 @@ window.muatStatusKemitraan = function() {
         return;
     }
     
-    // Menambahkan timestamp parameter unik agar browser tidak menyajikan data cache yang usang
     fetch(`${SCRIPT_URL_AMAN}?action=cekStatus&uid=${encodeURIComponent(currentUser.uid)}&_ts=${Date.now()}`)
     .then(res => res.json())
     .then(data => {
@@ -2395,3 +2387,4 @@ window.muatStatusKemitraan = function() {
     })
     .catch(err => { console.error("Gagal sinkronisasi profil:", err); });
 };
+          

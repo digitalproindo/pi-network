@@ -537,13 +537,12 @@
         if(sideNav) sideNav.style.width = "0";
     }
 
-    // Mengubah fungsi close agar fleksibel dengan modularitas event
     function closeKomunitasModal() {
         document.getElementById("komunitasModal").style.display = "none";
     }
 
     // =========================================================================
-    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST)
+    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST + CEK KUOTA)
     // =========================================================================
     const form = document.getElementById('formKomunitas');
     if (form) {
@@ -575,39 +574,64 @@
 
             const btn = document.getElementById('btnKirim');
             if (btn) {
-                btn.innerText = "MENGIRIM...";
+                btn.innerText = "MEMERIKSA KUOTA...";
                 btn.disabled = true;
             }
             
-            // KUNCI UTAMA: Menyusun data payload POST lengkap dengan menyertakan parameter action
-            const params = new URLSearchParams({
-                action: "gabungKomunitas", // <-- Jalur Eksekusi Database Google Sheet Anda
-                nama: namaUser,
-                whatsapp: waUser,
-                provinsi: provUser,
-                kota: kotaUser,
-                kecamatan: kecUser,
-                kelurahan: kelUser,
-                uid: currentUser.uid
-            });
+            // --- PROSES ANTISIPASI: CEK KUOTA PROVINSI SEBELUM SUBMIT KE DATABASE ---
+            const urlCekKuota = `${SCRIPT_URL_UTAMA}?action=cekKuotaProvinsi&provinsi=${encodeURIComponent(provUser)}`;
 
-            fetch(`${SCRIPT_URL_UTAMA}?${params.toString()}`, { 
-                method: 'POST' 
+            fetch(urlCekKuota)
+            .then(res => res.json())
+            .then(kuotaData => {
+                if (kuotaData.status === "penuh") {
+                    // JIKA PENUH: Hentikan eksekusi, jangan kirim data, jangan muncul popup sukses!
+                    alert(`⚠️ Pendaftaran Ditolak! Mohon maaf, kuota otoritas untuk Provinsi ${provUser} sudah terpenuhi (Maksimal 1 Orang).`);
+                    if (btn) {
+                        btn.innerText = "DAFTAR SEKARANG";
+                        btn.disabled = false;
+                    }
+                } else {
+                    // JIKA TERSEDIA: Baru lanjutkan pengiriman payload asli ke Apps Script
+                    if (btn) btn.innerText = "MENGIRIM...";
+
+                    const params = new URLSearchParams({
+                        action: "gabungKomunitas", 
+                        nama: namaUser,
+                        whatsapp: waUser,
+                        provinsi: provUser,
+                        kota: kotaUser,
+                        kecamatan: kecUser,
+                        kelurahan: kelUser,
+                        uid: currentUser.uid
+                    });
+
+                    fetch(`${SCRIPT_URL_UTAMA}?${params.toString()}`, { 
+                        method: 'POST' 
+                    })
+                    .then(response => {
+                        form.reset();
+                        closeKomunitasModal();
+                        tampilkanModalSuksesDigitalTerbaru();
+                        
+                        // Refresh data UI profil setelah pendaftaran baru
+                        setTimeout(muatStatusKemitraan, 2000);
+                    })
+                    .catch(error => {
+                        console.error("Eror pengiriman database:", error);
+                        alert("⚠️ Terjadi kesalahan jaringan saat mengirim data. Silakan coba lagi.");
+                    })
+                    .finally(() => {
+                        if (btn) {
+                            btn.innerText = "DAFTAR SEKARANG";
+                            btn.disabled = false;
+                        }
+                    });
+                }
             })
-            .then(response => {
-                form.reset();
-                closeKomunitasModal();
-                tampilkanModalSuksesDigitalTerbaru();
-                
-                // Refresh data UI profil setelah pendaftaran baru
-                setTimeout(muatStatusKemitraan, 2000);
-            })
-            .catch(error => {
-                console.error("Eror pengiriman database:", error);
-                form.reset();
-                tampilkanModalSuksesDigitalTerbaru();
-            })
-            .finally(() => {
+            .catch(err => {
+                console.error("Gagal memeriksa kuota:", err);
+                alert("⚠️ Gagal terhubung ke server untuk verifikasi kuota wilayah.");
                 if (btn) {
                     btn.innerText = "DAFTAR SEKARANG";
                     btn.disabled = false;
@@ -627,9 +651,7 @@
     }
 
     function bukaGrupWhatsApp() {
-        // Membuka link grup WA resmi Anda di tab baru
         window.open('https://chat.whatsapp.com/JSa1D2JnoNL5HE5ruEuJ5q?s=sw&p=a&mlu=2&amv=1', '_blank');
-        // Menyembunyikan modal sukses setelah tombol diklik
         const suksesModal = document.getElementById('digitalSuksesModal');
         if (suksesModal) suksesModal.style.display = 'none';
     }
@@ -815,8 +837,5 @@
     // Lakukan pemindaian tombol berkala secara aman
     setInterval(paksaAktifTombolWilayah, 1500);
 </script>
-    </div>
-
-</div>
 </body>
 </html>

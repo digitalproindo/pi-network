@@ -184,12 +184,6 @@
         .search-container { position: relative; z-index: 999; pointer-events: auto !important; }
         .slider-container { width: 100%; height: 100%; position: relative; overflow: hidden; border-radius: 15px 15px 0 0; }
         .slider-container img { transition: opacity 0.5s ease-in-out; }
-
-        @keyframes pulse-glow {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 165, 0.6); }
-            70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(0, 191, 165, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 191, 165, 0); }
-        }
     </style>
 </head>
 
@@ -249,15 +243,17 @@
             <div style="display: flex; justify-content: center; margin-bottom: 20px;">
                 <img src="https://i.ibb.co.com/pvxL2cWL/ORANG-PERTAMA-414-x-44-piksel-20260208-173105-0000.png" alt="Logo Komunitas" style="width: 100%; max-width: 250px; height: auto; object-fit: contain;">
             </div>
-            <form id="formKomunitas">
-                <input type="text" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
-                <input type="number" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+            <!-- Mencegah submit default murni browser secara total -->
+            <form id="formKomunitas" onsubmit="return false;">
+                <input type="text" id="inputNama" name="nama" placeholder="Nama Lengkap" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
+                <input type="number" id="inputWA" name="whatsapp" placeholder="Nomor WhatsApp" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;">
                 <select id="selectProvinsi" name="provinsi" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;"><option value="">Pilih Provinsi</option></select>
                 <select id="selectKota" name="kota" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled><option value="">Pilih Kota/Kabupaten</option></select>
                 <select id="selectKecamatan" name="kecamatan" required style="width:100%; padding:12px; margin-bottom:10px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled><option value="">Pilih Kecamatan</option></select>
                 <select id="selectKelurahan" name="kelurahan" required style="width:100%; padding:12px; margin-bottom:20px; border-radius:8px; border:1px solid rgba(212, 175, 55, 0.3); background:rgba(10, 10, 26, 0.8); color:#fff; box-sizing: border-box;" disabled><option value="">Pilih Kelurahan</option></select>
                 <div style="display: flex; justify-content: center; width: 100%;">
-                    <button type="submit" id="btnKirim" class="btn-converter" style="width: 100%; max-width: 280px; padding: 15px 0; background: linear-gradient(45deg, #d4af37, #f1c40f); border: none; border-radius: 12px; color: black; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5); text-align: center; display: flex; align-items: center; justify-content: center;">DAFTAR SEKARANG</button>
+                    <!-- Diubah tipe ke "button" agar tidak bisa memicu double submit otomatis -->
+                    <button type="button" id="btnKirim" onclick="prosesVerifikasiDanKirim()" style="width: 100%; max-width: 280px; padding: 15px 0; background: linear-gradient(45deg, #d4af37, #f1c40f); border: none; border-radius: 12px; color: black; font-weight: 800; font-size: 14px; cursor: pointer; text-transform: uppercase; letter-spacing: 1.5px; box-shadow: 0 4px 15px rgba(212, 175, 55, 0.5); text-align: center; display: flex; align-items: center; justify-content: center;">DAFTAR SEKARANG</button>
                 </div>
             </form>
         </div>
@@ -323,7 +319,7 @@
         <p style="margin: 0 0 15px 0; font-size: 0.75rem; color: #a4b3c6; line-height: 1.4;">
             Kuota terbatas ketat 1 Orang per Provinsi untuk mengendalikan rantai pasok logistik ekosistem perdagangan PT. Digital Pro Indo.
         </p>
-        <button onclick="openKomunitasModal()" style="width: 100%; padding: 12px; background: linear-gradient(45deg, var(--pi-gold), #f1c40f); border: none; border-radius: 10px; color: black; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(212,175,55,0.3);">
+        <button id="btnBukaModalUtama" style="width: 100%; padding: 12px; background: linear-gradient(45deg, var(--pi-gold), #f1c40f); border: none; border-radius: 10px; color: black; font-weight: 800; font-size: 0.75rem; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(212,175,55,0.3);">
             🤝 Ajukan Otoritas Perwakilan Wilayah
         </button>
     </div>
@@ -395,7 +391,8 @@
             </div>
         </div>
 
-        <button type="button" onclick="openKomunitasModal()" style="width:100%; background:#4c1d95; color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(76,29,149,0.3); transition: all 0.3s;">
+        <!-- Tombol diganti id agar tidak terikat paksa oleh handler setInterval -->
+        <button type="button" id="btnBukaModalProfil" style="width:100%; background:#4c1d95; color:#ffffff; border:none; padding:14px; border-radius:12px; font-size:15px; font-weight:600; cursor:pointer; box-shadow:0 4px 15px rgba(76,29,149,0.3); transition: all 0.3s;">
             PERBARUI / AJUKAN WILAYAH BARU
         </button>
     </div>
@@ -425,16 +422,14 @@
 <script src="/dpi-bot.js"></script>
 
 <script>
-    // Inisialisasi awal variabel user jika file app.js lambat memuat
     if (typeof currentUser === 'undefined') {
         var currentUser = null;
     }
 
-    // URL Apps Script Utama (Omnibus) Anda
     const SCRIPT_URL_UTAMA = "https://script.google.com/macros/s/AKfycbxhmcYyT3lBeLrm4dMGotKonJPwT9ZCMU1jRNMBD8CZITVD3Gyreuv_s81Vgw5Kra3b/exec";
 
     // =========================================================================
-    // SYSTEM AUTO LOGIN / RE-AUTHENTICATE (MENCEGAH LOGOUT SETELAH COMMIT)
+    // SYSTEM AUTO LOGIN / RE-AUTHENTICATE
     // =========================================================================
     function inisialisasiAutoLoginPi() {
         if (typeof Pi !== 'undefined') {
@@ -446,7 +441,6 @@
                 currentUser = auth.user;
                 console.log("Auto-login sukses untuk user:", currentUser.username);
                 
-                // Update Elemen Tampilan UI secara Realtime
                 const loginBtn = document.getElementById('login-btn');
                 if (loginBtn) {
                     loginBtn.innerText = currentUser.username;
@@ -460,7 +454,6 @@
                 const profAddr = document.getElementById('profile-address');
                 if (profAddr && currentUser.uid) profAddr.innerText = currentUser.uid;
 
-                // OTOMATIS AMBIL DATA STATUS DARI GOOGLE SHEET SETELAH LOGIN SUKSES
                 muatStatusKemitraan();
             })
             .catch(function(error) {
@@ -490,20 +483,16 @@
         .then(res => res.json())
         .then(resData => {
             if (resData.status === "ditemukan") {
-                // Perbarui label status di Tab Profil
                 const labelStatus = document.getElementById('partner-status');
                 if (labelStatus) {
                     labelStatus.innerText = resData.statusKemitraan.toUpperCase();
-                    
-                    // Variasi warna background berdasarkan status dari Google Sheet
                     if (resData.statusKemitraan.includes("VERIFIKASI") || resData.statusKemitraan.includes("REVIEW")) {
                         labelStatus.style.background = "#fef3c7"; labelStatus.style.color = "#f59e0b";
                     } else {
-                        labelStatus.style.background = "#d1fae5"; labelStatus.style.color = "#065f46"; // Sukses / Aktif
+                        labelStatus.style.background = "#d1fae5"; labelStatus.style.color = "#065f46";
                     }
                 }
 
-                // Perbarui info Logistik Share & Produk Terproses secara Realtime
                 const shareBox = document.getElementById('logistik-share-val');
                 if (shareBox && resData.logistikShare !== undefined) {
                     shareBox.innerText = resData.logistikShare + " %";
@@ -542,101 +531,98 @@
     }
 
     // =========================================================================
-    // HANDLER SUBMIT FORM PENDAFTARAN KOMUNITAS WILAYAH (POST + CEK KUOTA)
+    // KUNCI UTAMA MUTLAK: PENANGANAN INTERAL VIA KLIK JS MURNI (ANTI-DOUBLE)
     // =========================================================================
-    const form = document.getElementById('formKomunitas');
-    if (form) {
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            
-            if (!currentUser || !currentUser.uid) {
-                alert("⚠️ Otorisasi login Pi belum terbaca. Harap muat ulang aplikasi Anda.");
-                return;
-            }
+    function prosesVerifikasiDanKirim() {
+        if (!currentUser || !currentUser.uid) {
+            alert("⚠️ Otorisasi login Pi belum terbaca. Harap muat ulang aplikasi Anda.");
+            return;
+        }
 
-            const namaUser = form.querySelector('[name="nama"]') ? form.querySelector('[name="nama"]').value.trim() : "";
-            const waUser = form.querySelector('[name="whatsapp"]') ? form.querySelector('[name="whatsapp"]').value.trim() : "";
-            
-            const provSelect = document.getElementById('selectProvinsi');
-            const kotaSelect = document.getElementById('selectKota');
-            const kecSelect = document.getElementById('selectKecamatan');
-            const kelSelect = document.getElementById('selectKelurahan');
+        const namaUser = document.getElementById('inputNama') ? document.getElementById('inputNama').value.trim() : "";
+        const waUser = document.getElementById('inputWA') ? document.getElementById('inputWA').value.trim() : "";
+        
+        const provSelect = document.getElementById('selectProvinsi');
+        const kotaSelect = document.getElementById('selectKota');
+        const kecSelect = document.getElementById('selectKecamatan');
+        const kelSelect = document.getElementById('selectKelurahan');
 
-            const provUser = provSelect ? provSelect.value : "";
-            const kotaUser = kotaSelect ? kotaSelect.value : "";
-            const kecUser = kecSelect ? kecSelect.value : "";
-            const kelUser = kelSelect ? kelSelect.value : "";
-            
-            if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
-                alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
-                return;
-            }
+        const provUser = provSelect ? provSelect.value : "";
+        const kotaUser = kotaSelect ? kotaSelect.value : "";
+        const kecUser = kecSelect ? kecSelect.value : "";
+        const kelUser = kelSelect ? kelSelect.value : "";
+        
+        if (!namaUser || !waUser || !provUser || !kotaUser || !kecUser || !kelUser) {
+            alert("⚠️ Mohon lengkapi semua pilihan wilayah Anda terlebih dahulu!");
+            return;
+        }
 
-            const btn = document.getElementById('btnKirim');
-            if (btn) {
-                btn.innerText = "MEMERIKSA KUOTA...";
-                btn.disabled = true;
-            }
-            
-            // --- PROSES ANTISIPASI: CEK KUOTA PROVINSI SEBELUM SUBMIT KE DATABASE ---
-            const urlCekKuota = `${SCRIPT_URL_UTAMA}?action=cekKuotaProvinsi&provinsi=${encodeURIComponent(provUser)}`;
+        const btn = document.getElementById('btnKirim');
+        if (btn) {
+            btn.innerText = "MEMERIKSA KUOTA...";
+            btn.disabled = true;
+            btn.style.pointerEvents = "none"; // Matikan fungsi klik instan
+        }
+        
+        // LANGKAH I: Ambil Verifikasi Kuota Provinsi Terkini
+        const urlCekKuota = `${SCRIPT_URL_UTAMA}?action=cekKuotaProvinsi&provinsi=${encodeURIComponent(provUser)}`;
 
-            fetch(urlCekKuota)
-            .then(res => res.json())
-            .then(kuotaData => {
-                if (kuotaData.status === "penuh") {
-                    // JIKA PENUH: Hentikan eksekusi, jangan kirim data, jangan muncul popup sukses!
-                    alert(`⚠️ Pendaftaran Ditolak! Mohon maaf, kuota otoritas untuk Provinsi ${provUser} sudah terpenuhi (Maksimal 1 Orang).`);
-                    if (btn) {
-                        btn.innerText = "DAFTAR SEKARANG";
-                        btn.disabled = false;
-                    }
-                } else {
-                    // JIKA TERSEDIA: Baru lanjutkan pengiriman payload asli ke Apps Script
-                    if (btn) btn.innerText = "MENGIRIM...";
-
-                    const params = new URLSearchParams({
-                        action: "gabungKomunitas", 
-                        nama: namaUser,
-                        whatsapp: waUser,
-                        provinsi: provUser,
-                        kota: kotaUser,
-                        kecamatan: kecUser,
-                        kelurahan: kelUser,
-                        uid: currentUser.uid
-                    });
-
-                    fetch(`${SCRIPT_URL_UTAMA}?${params.toString()}`, { 
-                        method: 'POST' 
-                    })
-                    .then(response => {
-                        form.reset();
-                        closeKomunitasModal();
-                        tampilkanModalSuksesDigitalTerbaru();
-                        
-                        // Refresh data UI profil setelah pendaftaran baru
-                        setTimeout(muatStatusKemitraan, 2000);
-                    })
-                    .catch(error => {
-                        console.error("Eror pengiriman database:", error);
-                        alert("⚠️ Terjadi kesalahan jaringan saat mengirim data. Silakan coba lagi.");
-                    })
-                    .finally(() => {
-                        if (btn) {
-                            btn.innerText = "DAFTAR SEKARANG";
-                            btn.disabled = false;
-                        }
-                    });
-                }
-            })
-            .catch(err => {
-                console.error("Gagal memeriksa kuota:", err);
-                alert("⚠️ Gagal terhubung ke server untuk verifikasi kuota wilayah.");
+        fetch(urlCekKuota)
+        .then(res => res.json())
+        .then(kuotaData => {
+            if (kuotaData.status === "penuh") {
+                // JIKA KUOTA SUDAH PENUH: Berhenti mutlak, jangan kirim data apapun!
+                alert(`⚠️ Pendaftaran Ditolak! Mohon maaf, kuota otoritas untuk Provinsi ${provUser} sudah terpenuhi (Maksimal 1 Orang).`);
                 if (btn) {
                     btn.innerText = "DAFTAR SEKARANG";
                     btn.disabled = false;
+                    btn.style.pointerEvents = "auto";
                 }
-            });
+            } else {
+                // JIKA KUOTA MASIH KOSONG: Lakukan eksekusi kirim data
+                if (btn) btn.innerText = "MENGIRIM...";
+
+                const params = new URLSearchParams({
+                    action: "gabungKomunitas", 
+                    nama: namaUser,
+                    whatsapp: waUser,
+                    provinsi: provUser,
+                    kota: kotaUser,
+                    kecamatan: kecUser,
+                    kelurahan: kelUser,
+                    uid: currentUser.uid
+                });
+
+                fetch(`${SCRIPT_URL_UTAMA}?${params.toString()}`, { 
+                    method: 'POST' 
+                })
+                .then(response => {
+                    document.getElementById('formKomunitas').reset();
+                    closeKomunitasModal();
+                    tampilkanModalSuksesDigitalTerbaru();
+                    setTimeout(muatStatusKemitraan, 2000);
+                })
+                .catch(error => {
+                    console.error("Eror pengiriman database:", error);
+                    alert("⚠️ Terjadi gangguan jaringan saat mendaftar. Silakan dicoba kembali.");
+                })
+                .finally(() => {
+                    if (btn) {
+                        btn.innerText = "DAFTAR SEKARANG";
+                        btn.disabled = false;
+                        btn.style.pointerEvents = "auto";
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.error("Gagal memeriksa kuota:", err);
+            alert("⚠️ Koneksi server sibuk. Gagal melakukan pengecekan data wilayah.");
+            if (btn) {
+                btn.innerText = "DAFTAR SEKARANG";
+                btn.disabled = false;
+                btn.style.pointerEvents = "auto";
+            }
         });
     }
 
@@ -695,7 +681,7 @@
     }
 
     // =========================================================================
-    // API PEMETAAN DAERAH (EMSIFA) - AMAN & DEFENSIF
+    // API PEMETAAN DAERAH (EMSIFA)
     // =========================================================================
     const provSelect = document.getElementById('selectProvinsi');
     const kotaSelect = document.getElementById('selectKota');
@@ -779,63 +765,27 @@
     }
 
     // =========================================================================
-    // REVISI SUPREMASI: SCRIPT AKTIVASI TOMBOL ANTI-CRASH (MUTLAK BERFUNGSI)
+    // MODUL PENANGANAN INTERAKSI MANAJEMEN TOMBOL AMAN
     // =========================================================================
-    function paksaAktifTombolWilayah() {
-        try {
-            const semuaTombol = document.querySelectorAll("button");
-            if (!semuaTombol) return;
-
-            semuaTombol.forEach(btn => {
-                if (!btn || !btn.innerText) return; 
-                
-                const txt = btn.innerText.toUpperCase();
-                
-                if (txt.includes("AJUKAN") || txt.includes("PERBARUI") || txt.includes("WILAYAH") || txt.includes("GABUNG") || txt.includes("KOMUNITAS")) {
-                    
-                    btn.removeAttribute("disabled");
-                    btn.disabled = false;
-                    btn.style.pointerEvents = "auto";
-                    btn.style.cursor = "pointer";
-                    
-                    if (!btn.hasAttribute('data-click-bound')) {
-                        btn.setAttribute('data-click-bound', 'true');
-                        
-                        btn.removeAttribute("onclick");
-                        btn.onclick = null; 
-                        
-                        btn.addEventListener('click', function(e) {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            console.log("Memicu pembukaan modal pendaftaran wilayah...");
-                            
-                            if (typeof openKomunitasModal === "function") {
-                                openKomunitasModal();
-                            } else {
-                                const modalK = document.getElementById("komunitasModal");
-                                if (modalK) modalK.style.display = "flex";
-                            }
-                        });
-                    }
-                }
-            });
-        } catch (error) {
-            console.log("Sistem mendeteksi tombol non-teks, diabaikan dengan aman:", error.message);
-        }
-    }
-    
-    // RUNNER EXECUTION
     document.addEventListener("DOMContentLoaded", function() {
-        paksaAktifTombolWilayah();
         if (typeof inisialisasiAutoLoginPi === "function") inisialisasiAutoLoginPi();
+        
+        // Pasang trigger modal ke elemen spesifik Anda agar aman dari crash loop
+        const btnUtama = document.getElementById('btnBukaModalUtama');
+        if(btnUtama) {
+            btnUtama.addEventListener('click', function(e) {
+                e.preventDefault();
+                openKomunitasModal();
+            });
+        }
+        const btnProfil = document.getElementById('btnBukaModalProfil');
+        if(btnProfil) {
+            btnProfil.addEventListener('click', function(e) {
+                e.preventDefault();
+                openKomunitasModal();
+            });
+        }
     });
-    
-    window.addEventListener("load", function() {
-        paksaAktifTombolWilayah();
-    });
-    
-    // Lakukan pemindaian tombol berkala secara aman
-    setInterval(paksaAktifTombolWilayah, 1500);
 </script>
 </body>
 </html>
